@@ -1,0 +1,26 @@
+node_modules
+package-lock.json
+
+# Output
+.output
+.vercel
+/.svelte-kit
+/.vscode
+/build
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env
+.env
+.env.*
+!.env.example
+!.env.test
+
+# Vite
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
+
+# Local icons
+/static/loxicons
