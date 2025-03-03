@@ -11,7 +11,6 @@
   }
 </script>
 
-
 <AppBar gridColumns="grid-cols-3" slotDefault="place-self-center" slotTrail="place-content-end">
   <svelte:fragment slot="lead">
     <div class="flex items-center space-x-4">

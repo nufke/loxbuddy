@@ -34,6 +34,8 @@ firefox http://localhost:5173/
 
 Please submit your issues and questions via the GitHub issue tracker: https://github.com/nufke/loxbuddy/issues
 
-**Happy with the plugin and willing to support the development?**
+## Buy Me A Coffee
 
-<a href="https://www.buymeacoffee.com/nufke" target="_blank"><img src="./icons/svg/bmc.svg" alt="Buy Me A Coffee"></a>
+Interested in supporting the development of this App?
+
+<a href="https://www.buymeacoffee.com/nufke" target="_blank"><img src="./static/icons/svg/bmc.svg" alt="Buy Me A Coffee"></a>

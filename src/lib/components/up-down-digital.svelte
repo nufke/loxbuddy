@@ -18,7 +18,7 @@
     console.log('count:', count);
   }
   $: image = $structure.cats[control.cat].image;
-  $: icon = "/icons/svg/" + (control.defaultIcon ? control.defaultIcon : image);
+  $: icon = "/loxicons/" + (control.defaultIcon ? control.defaultIcon : image);
 </script>
 
 <div class="card min-h-[70px] justify-start items-center flex px-3 py-2 bg-linear-to-r m-0
