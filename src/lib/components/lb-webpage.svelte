@@ -1,20 +1,17 @@
 <script lang="ts">
   import { inlineSvg } from '@svelte-put/inline-svg';
-  import type { Control, State } from "$lib/types/models";  
-  import { state, structure, categories } from '$lib/stores/stores';
+  import type { Control } from "$lib/types/models";
+  import { state, structure } from '$lib/stores/stores';
 
   export let control: Control;
 
-  let controlState: string;
-  let controlStateName: string;
-  let controlStateColor: string;
-  let image: string;
-  let icon: string;
+  let count = 0;
+  function push() {
+    count++;
+    console.log('count:', count);
+  }
 
-  $: controlState = Number($state[control.states.active]) ? "on" : "off";
-  $: controlStateName = control.details.text[controlState];
-  $: controlStateColor = control.details.color[controlState];
-  $: image = $structure.cats[control.cat].image;
+  let image = $structure.cats[control.cat].image;
   $: icon = "/loxicons/" + (control.defaultIcon ? control.defaultIcon : image);
 </script>
 
@@ -27,8 +24,12 @@
       </div>
       <div class="ml-3 mt-0 truncate">
         <h1 class="text-lg truncate">{control?.name}</h1>
-        <p class="text-md truncate text-red" style="color: {controlStateColor}">{controlStateName}</p>
+        <p>Web Link</p>
       </div>
+    </div>
+    <div class="mr-1 flex items-center">
+      <button type="button" class="btn-icon btn-icon-sm variant-ghost" on:click|preventDefault={push}>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M14 3v2h3.59l-9.83 9.83l1.41 1.41L19 6.41V10h2V3m-2 16H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2z" stroke-width="0.5" stroke="currentColor"/></svg>      </button>
     </div>
   </div>
 </div>

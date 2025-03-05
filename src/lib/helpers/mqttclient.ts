@@ -84,6 +84,7 @@ function monitorInitialStates(topic: string, msg: string) {
   if (found && found[1]) {
     const regex2 = new RegExp( "loxone/" + found[1] + "/", "g"); // TODO replace stored states at server 
     msg = msg.replace(regex2, "");
+    //console.log('states', topic, msg);
     state.set(JSON.parse(msg))
   }
 }
@@ -93,6 +94,7 @@ function monitorStates(topic: string, msg: string) {
   const found = topic.match(regex);
   const data = msg.length ? msg : "<empty>";
   if (found && found[1] && found[2]) {
+    //console.log('state', topic, msg);
     state.update((state) => state = { ...state, [found[2]]: msg} );
   }
 }

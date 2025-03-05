@@ -239,3 +239,21 @@ export type MessageCenter = {
     states: any;
   }
 }
+
+export type StyleView = {
+  name: string;
+  type?: string;
+  color?: string;
+  action?: any;
+}
+
+export type ControlView = {
+  icon: StyleView;
+  main: StyleView;
+  buttons: StyleView[];
+}
+
+export type ControlState = {
+  name: string;
+  color?: string;
+}
