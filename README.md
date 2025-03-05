@@ -1,5 +1,6 @@
-<img style="float: right;" src="./static/icons/loxbuddy_64.png">
-# LoxBuddy
+<img src="./static/icons/loxbuddy_64.png">
+
+# LoxBuddy 
 
 LoxBuddy is a modern and fast (Web)App to control your [Loxone](https://www.loxone.com/) and [LoxBerry](https://wiki.loxberry.de/start) based Smart Home.
 

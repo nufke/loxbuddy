@@ -45,17 +45,15 @@
 </script>
 
 <div class="container mx-auto p-3 space-y-3">
-
-  <h1 class="h1">Hello LoxBuddy</h1>
-  <!--<p>App under development. Use at your own risk.</p>-->
-
+  <h3 class="h3">Woonkamer</h3>
   {#each labels as label}
-    <h1 class="h3">{label.name}</h1>
-    {#each filteredControls as control}
-      {#if control.cat == label.uuid}
-        <svelte:component this={getComponent(control.type)} {control}/>
-      {/if}
-    {/each}
+    <h1 class="h4">{label.name}</h1>
+    <div class="grid gap-2 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 lg:flex-wrap">
+      {#each filteredControls as control}
+        {#if control.cat == label.uuid}
+          <svelte:component this={getComponent(control.type)} {control}/>
+        {/if}
+      {/each}
+    </div>
   {/each}
-
 </div>
