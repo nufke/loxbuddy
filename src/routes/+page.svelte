@@ -11,17 +11,18 @@
   import LbSlider from "$lib/components/lb-slider.svelte";
   import LbSwitch from "$lib/components/lb-switch.svelte";
   import { mqttConnect } from '$lib/helpers/mqttclient';
-  import { controls, categories } from '$lib/stores/stores';
+  import { controlList, categoryList } from '$lib/stores/stores';
   import type { PageData } from './$types'
   export let data: PageData
 
   mqttConnect(data);
 
-  let uuid = "0f5ad681-006d-218c-ffff9fbd670c23f7"; // Woonkamer
-
-  $: filteredControls = $controls.filter(control => control.room === uuid).sort((a, b) => (a.name.localeCompare(b.name)));
+  //let uuid = "0f5ad681-006d-218c-ffff9fbd670c23f7"; // Woonkamer
+  let uuid = "0f5ad681-0080-2222-ffff9fbd670c23f7"; // algemeen
+  
+  $: filteredControls = $controlList.filter(control => control.room === uuid).sort((a, b) => (a.name.localeCompare(b.name)));
   $: filteredLabels = filteredControls.map(control => control.cat);
-  $: labels = $categories.filter(item => filteredLabels.indexOf(item.uuid) > -1).sort((a, b) => (a.name.localeCompare(b.name)));
+  $: labels = $categoryList.filter(item => filteredLabels.indexOf(item.uuid) > -1).sort((a, b) => (a.name.localeCompare(b.name)));
 
   let componentList = [
     { format: 'UpDownDigital', component: LbUpDownDigital },

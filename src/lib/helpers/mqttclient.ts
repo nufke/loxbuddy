@@ -1,8 +1,11 @@
 import mqtt from "mqtt"
 import { structure, state } from "$lib/stores/stores";
 
-let connected;
-export let mqttclient:any;
+let connected: boolean;
+let serialNr: string;  // TODO support multiple miniservers
+let prefix = 'loxone'; // TODO configure prefix in GUI
+
+export let mqttclient:any = null;
 
 export const mqttConnect = (env: any) => {
   const mqttOptions = {
@@ -20,22 +23,22 @@ export const mqttConnect = (env: any) => {
   mqttclient.on("error", (error:any) => {
     console.log("error.name", error.name);
     mqttclient.end();
-    connected = mqttclient.connected;
+    connected = false;
     //throw error
   });
 
   mqttclient.on("close", () => {
     console.log("MQTT disconnected");
-    connected = mqttclient.connected;
+    connected = false;
   });
 }
 
 const onConnect = () => {
   console.log("MQTT: connected\n");
+  connected = true;
   const registerTopics = ["loxone/+/states", "loxone/+/structure", "loxone/+/#"];
 
   registerTopics.forEach((topic) => {
-    console.log('regoster', topic);
     mqttclient.subscribe(topic, function (err:any) {
       if (err) {
         console.error(err);
@@ -55,31 +58,34 @@ const onMessage = (topic: string, message: any) => {
   monitorStates(topic, msg);
 };
 
-
 export async function reconnect() {
   mqttclient.reconnect();
 }
 
-export async function sendTopic() {
+export const publishTopic = (uuid: string, msg: string) => {
   const retain = true;
   const qos = 1;
 
-  if (mqttclient.connected) {
-    //mqtt.publish('test123', 'online', { retain, qos })
+  if (connected && serialNr) {
+    const topic = prefix + '/' + serialNr + '/' + uuid + "/cmd";
+    console.log('MQTT publish:' , topic, msg);
+    mqttclient.publish(topic, msg, { retain, qos });
   }
-}
+};
 
 function monitorStructure(topic: string, msg: string) {
-  const regex = new RegExp("loxone/(.*)/structure");
+  const regex = new RegExp(prefix + "/(.*)/structure");
   const found = topic.match(regex);
   if (found && found[1]) {
     //console.log('structure', msg);
     structure.set(JSON.parse(msg));
+    serialNr = found[1];
+    console.log('miniserver registered', serialNr);
   }
 }
 
 function monitorInitialStates(topic: string, msg: string) {
-  const regex = new RegExp("loxone/(.*)/states");
+  const regex = new RegExp(prefix + "/(.*)/states");
   const found = topic.match(regex);
   if (found && found[1]) {
     const regex2 = new RegExp( "loxone/" + found[1] + "/", "g"); // TODO replace stored states at server 
@@ -90,7 +96,7 @@ function monitorInitialStates(topic: string, msg: string) {
 }
 
 function monitorStates(topic: string, msg: string) {
-  const regex = new RegExp("loxone/(.*)/(.*)");
+  const regex = new RegExp(prefix + "/(.*)/(.*)");
   const found = topic.match(regex);
   const data = msg.length ? msg : "<empty>";
   if (found && found[1] && found[2]) {

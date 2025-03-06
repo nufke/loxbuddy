@@ -1,33 +1,42 @@
 <script lang="ts">
   import type { Control } from "$lib/types/models";
-  import LbControl from '$lib/components/lb-control.svelte';
-  import { structure } from '$lib/stores/stores';
+  import LbControl from "$lib/components/lb-control.svelte";
+  import { categories } from "$lib/stores/stores";
 
   export let control: Control;
 
-  let image = $structure.cats[control.cat].image;
-  $: view = {
-      icon: {
-        name: "/loxicons/" + (control.defaultIcon ? control.defaultIcon : image),
-        color: "white"
-      },
-      main: {
-        name: control.name,
-        color: ""
-      },
-      buttons: [
-        {
-          name: "mdi:checkbox-blank-circle-outline",
-          color: "",
-          action: () => console.log('push')
-        }
-      ]
-    }
+  $: image = $categories[control.cat].image;
 
-    $: cstate = {
-       name: "",
-       color: ""
-    }
+  $: iconView = {
+    name: "/loxicons/" + (control.defaultIcon ? control.defaultIcon : image),
+    color: "white",
+  };
+
+  $: textView = {
+    name: control.name,
+    color: "",
+  };
+
+  $: stateView = {
+    name: "",
+    color: "",
+  };
+
+  $: buttonView = {
+    buttons: [
+      {
+        name: "mdi:checkbox-blank-circle-outline",
+        type: "button",
+        color: "",
+        action: () => console.log("push"),
+      }
+    ]
+  };
 </script>
 
-<LbControl controlView={{...view}} controlState={{...cstate}}/>
+<LbControl
+  iconView={{ ...iconView }}
+  textView={{ ...textView }}
+  stateView={{ ...stateView }}
+  buttonView={{ ...buttonView }}
+/>

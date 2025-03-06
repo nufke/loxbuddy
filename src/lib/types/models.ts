@@ -240,20 +240,28 @@ export type MessageCenter = {
   }
 }
 
-export type StyleView = {
+export type SingleButtonView = {
+  name?: string;
+  type: string;
+  state?: boolean;
+  action: any;
+}
+
+export type ButtonView = {
+  buttons: SingleButtonView[];
+}
+
+export type IconView = {
   name: string;
-  type?: string;
   color?: string;
-  action?: any;
 }
 
-export type ControlView = {
-  icon: StyleView;
-  main: StyleView;
-  buttons: StyleView[];
+export type TextView = {
+  name: string;
+  color?: string;
 }
 
-export type ControlState = {
+export type StateView = {
   name: string;
   color?: string;
 }

@@ -1,36 +1,45 @@
 <script lang="ts">
   import LbControl from '$lib/components/lb-control.svelte';
   import type { Control } from "$lib/types/models";
-  import { state, structure } from '$lib/stores/stores';
+  import { state, categories } from '$lib/stores/stores';
+  import { publishTopic } from '$lib/helpers/mqttclient';
 
   export let control: Control;
 
-  //$: checked = $state[control.states.active]!="1";
-  //$: iconColor = checked ? "green" : "white"; // TODO use theme colours
-  //$: console.log('checked', checked, $state[control.states.active])
-  let image = $structure.cats[control.cat].image;
-  $: view = {
-      icon: {
-        name: "/loxicons/" + (control.defaultIcon ? control.defaultIcon : image),
-        color: "white"
-      },
-      main: {
-        name: control.name,
-        color: ""
-      },
-      buttons: [
-        {
-          name: "", // switch has no name
-          type: "switch",
-          action: () => console.log('switch')
-        },
-      ]
-    }
+  $: image = $categories[control.cat].image;
+  $: buttonActive = $state[control.states.active] == "1";
+  
+  $: iconView = {
+    name: "/loxicons/" + (control.defaultIcon ? control.defaultIcon : image),
+    color: buttonActive ? "#0ea774" : "white",
+  };
 
-  $: cstate = {
-       name: "",
-       color: ""
-    }
+  $: textView = {
+    name: control.name,
+    color: ""
+  };
+
+  $: stateView = {
+    name: "",
+    color: ""
+  };
+
+  $: buttonView = {
+    buttons: [
+      {
+        type: "switch",
+        state: buttonActive,
+        action: (e:any) => { 
+          publishTopic(control.uuidAction, e.target.checked ? "1" : "0");
+        }
+      }
+    ]
+  };
 </script>
 
-<LbControl controlView={{...view}} controlState={{...cstate}}/>
+<LbControl
+  iconView={{ ...iconView }}
+  textView={{ ...textView }}
+  stateView={{ ...stateView }}
+  buttonView={{ ...buttonView }}
+/>
