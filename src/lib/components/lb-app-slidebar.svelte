@@ -1,6 +1,7 @@
 <script lang="ts">
   import { AppRail, AppRailAnchor, getDrawerStore } from "@skeletonlabs/skeleton";
   import { Drawer } from '@skeletonlabs/skeleton';
+  import { LightSwitch } from '@skeletonlabs/skeleton';
 
   const drawerStore = getDrawerStore();
 
@@ -36,6 +37,12 @@
       </svelte:fragment>
       <span>Utilities</span>
     </AppRailAnchor>
+ 
+    <svelte:fragment slot="trail">
+      <div class="mb-4 ml-4">
+        <LightSwitch />
+      </div>
+    </svelte:fragment>
   </AppRail>
 
 </Drawer>
