@@ -1,8 +1,9 @@
 <script lang="ts">
   import type { Control } from "$lib/types/models";
   import LbControl from '$lib/components/lb-control.svelte';
-  import { state, categories } from '$lib/stores/stores';
-
+  import { categories } from '$lib/stores/stores';
+  import { publishTopic } from '$lib/helpers/mqttclient';
+  
   export let control: Control;
 
   $: image = $categories[control.cat].image;
@@ -28,13 +29,13 @@
         name: "mdi:chevron-down",
         type: "button",
         color: "",
-        action: () => console.log('down')
+        action: () => publishTopic(control.uuidAction, "PulseDown")
       },
       {
         name: "mdi:chevron-up",
         type: "button",
         color: "",
-        action: () => console.log('up')
+        action: () => publishTopic(control.uuidAction, "PulseUp")
       }
     ]
   };

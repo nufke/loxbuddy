@@ -16,9 +16,9 @@
   import type { PageData } from './$types'
 
   const dispatch = createEventDispatcher();
- 
+
   export let data: PageData
- 
+
   mqttConnect(data);
 
   let componentList = [
@@ -46,7 +46,7 @@
     dispatch('message', {value: idx});
   }
 
-  $: filteredControls = $controlList.filter(control => control.room === rooms[idx].uuid);
+  $: filteredControls = $controlList.filter(control => control.room === rooms[idx].uuid).sort((a, b) => (a.name.localeCompare(b.name)));
   $: filteredLabels = filteredControls.map(control => control.cat);
   $: labels = $categoryList.filter(item => filteredLabels.indexOf(item.uuid) > -1).sort((a, b) => (a.name.localeCompare(b.name)));
   $: rooms = $roomList.sort((a, b) => (a.name.localeCompare(b.name)));
@@ -83,7 +83,6 @@ select::-webkit-scrollbar { /* For WebKit Browsers */
     </div>
   {/if}
 
-  
   {#each labels as label}
     <h1 class="ml-2 h4">{label.name}</h1>
     <div class="grid gap-2 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 lg:flex-wrap">

@@ -2,6 +2,7 @@
   import type { Control } from "$lib/types/models";
   import LbControl from "$lib/components/lb-control.svelte";
   import { categories } from "$lib/stores/stores";
+  import { publishTopic } from '$lib/helpers/mqttclient';
 
   export let control: Control;
 
@@ -28,7 +29,7 @@
         name: "mdi:checkbox-blank-circle-outline",
         type: "button",
         color: "",
-        action: () => console.log("push"),
+        action: () => { publishTopic(control.uuidAction, "pulse"); }
       }
     ]
   };

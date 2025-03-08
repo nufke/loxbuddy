@@ -8,7 +8,6 @@
   export let textView: TextView;
   export let stateView: StateView;
   export let buttonView: ButtonView = {buttons: []};
-
 </script>
 
 <div class="card min-h-[70px] justify-start items-center flex px-3 py-2 bg-linear-to-r m-0
