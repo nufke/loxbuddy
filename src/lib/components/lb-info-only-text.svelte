@@ -1,31 +1,27 @@
 <script lang="ts">
-  import type { Control } from "$lib/types/models";
-  import LbControl from "$lib/components/lb-control.svelte";
-  import { state, categories } from "$lib/stores/stores";
-  import fmt from "sprintf-js";
-  
-  export let control: Control;
+	import type { Control } from '$lib/types/models';
+	import LbControl from '$lib/components/lb-control.svelte';
+	import { state, categories } from '$lib/stores/stores';
+	import fmt from 'sprintf-js';
 
-  $: image = $categories[control.cat].image;
+	export let control: Control;
 
-  $: iconView = {
-    name: "/loxicons/" + (control.defaultIcon ? control.defaultIcon : image),
-    color: "white",
-  };
+	$: image = $categories[control.cat].image;
 
-  $: textView = {
-    name: control.name,
-    color: "",
-  };
+	$: iconView = {
+		name: '/loxicons/' + (control.defaultIcon ? control.defaultIcon : image),
+		color: 'white'
+	};
 
-  $: stateView = {
-    name: fmt.sprintf(control.details.format, $state[control.states.text]),
-    color: "",
-  };
+	$: textView = {
+		name: control.name,
+		color: ''
+	};
+
+	$: stateView = {
+		name: fmt.sprintf(control.details.format, $state[control.states.text]),
+		color: ''
+	};
 </script>
 
-<LbControl
-  iconView={{ ...iconView }}
-  textView={{ ...textView }}
-  stateView={{ ...stateView }}
-/>
+<LbControl iconView={{ ...iconView }} textView={{ ...textView }} stateView={{ ...stateView }} />

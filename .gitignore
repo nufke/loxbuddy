@@ -4,6 +4,8 @@ package-lock.json
 # Output
 .output
 .vercel
+.netlify
+.wrangler
 /.svelte-kit
 /.vscode
 /build

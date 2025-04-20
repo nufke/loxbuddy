@@ -1,12 +1,15 @@
 <script lang="ts">
 	import type { Control } from '$lib/types/models';
 	import LbControl from '$lib/components/lb-control.svelte';
-	import { categories } from '$lib/stores/stores';
+	import { state, categories, rooms } from '$lib/stores/stores';
 	import { publishTopic } from '$lib/helpers/mqttclient';
 
 	export let control: Control;
 
 	$: image = $categories[control.cat].image;
+	$: moodList = JSON.parse($state[control.states.moodList]);
+	$: selectedMood = JSON.parse($state[control.states.activeMoods])[0];
+	$: console.log('selectedMood', moodList, moodList.find((item) => item.id == selectedMood));
 
 	$: iconView = {
 		name: '/loxicons/' + (control.defaultIcon ? control.defaultIcon : image),
@@ -14,24 +17,22 @@
 	};
 
 	$: textView = {
-		name: control.name,
+		name: $rooms[control.room].name,
 		color: ''
 	};
 
 	$: stateView = {
-		name: '',
+		name: moodList.find((item) => item.id == selectedMood).name,
 		color: ''
 	};
 
 	$: buttonView = {
 		buttons: [
 			{
-				name: 'Circle',
+				name: 'circle',
 				type: 'button',
 				color: '',
-				action: () => {
-					publishTopic(control.uuidAction, 'pulse');
-				}
+				action: () => {publishTopic(control.uuidAction, 'pulse');}
 			}
 		]
 	};

@@ -1,49 +1,49 @@
 <script lang="ts">
-  import type { Control } from "$lib/types/models";
-  import LbControl from '$lib/components/lb-control.svelte';
-  import { categories } from '$lib/stores/stores';
-  import { publishTopic } from '$lib/helpers/mqttclient';
-  
-  export let control: Control;
+	import type { Control } from '$lib/types/models';
+	import LbControl from '$lib/components/lb-control.svelte';
+	import { categories } from '$lib/stores/stores';
+	import { publishTopic } from '$lib/helpers/mqttclient';
 
-  $: image = $categories[control.cat].image;
+	export let control: Control;
 
-  $: iconView = {
-    name: "/loxicons/" + (control.defaultIcon ? control.defaultIcon : image),
-    color: "white"
-  };
-  
-  $: textView =  {
-    name: control.name,
-    color: ""
-  };
+	$: image = $categories[control.cat].image;
 
-  $: stateView = {
-    name:  "",
-    color: ""
-  };
+	$: iconView = {
+		name: '/loxicons/' + (control.defaultIcon ? control.defaultIcon : image),
+		color: 'white'
+	};
 
-  $: buttonView = {
-    buttons: [
-      {
-        name: "mdi:chevron-down",
-        type: "button",
-        color: "",
-        action: () => publishTopic(control.uuidAction, "PulseDown")
-      },
-      {
-        name: "mdi:chevron-up",
-        type: "button",
-        color: "",
-        action: () => publishTopic(control.uuidAction, "PulseUp")
-      }
-    ]
-  };
+	$: textView = {
+		name: control.name,
+		color: ''
+	};
+
+	$: stateView = {
+		name: '',
+		color: ''
+	};
+
+	$: buttonView = {
+		buttons: [
+			{
+				name: 'ChevronDown',
+				type: 'button',
+				color: '',
+				action: () => publishTopic(control.uuidAction, 'PulseDown')
+			},
+			{
+				name: 'ChevronUp',
+				type: 'button',
+				color: '',
+				action: () => publishTopic(control.uuidAction, 'PulseUp')
+			}
+		]
+	};
 </script>
 
 <LbControl
-  iconView={{ ...iconView }}
-  textView={{ ...textView }}
-  stateView={{ ...stateView }}
-  buttonView={{ ...buttonView }}
+	iconView={{ ...iconView }}
+	textView={{ ...textView }}
+	stateView={{ ...stateView }}
+	buttonView={{ ...buttonView }}
 />

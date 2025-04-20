@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { createEventDispatcher } from 'svelte';
   import LbUpDownDigital  from "$lib/components/lb-up-down-digital.svelte";
   import LbTextState from "$lib/components/lb-text-state.svelte";
   import LbInfoOnlyAnalog from "$lib/components/lb-info-only-analog.svelte";
@@ -11,12 +10,11 @@
   import LbWebpage from "$lib/components/lb-webpage.svelte";
   import LbSlider from "$lib/components/lb-slider.svelte";
   import LbSwitch from "$lib/components/lb-switch.svelte";
+  import LbLightControllerV2 from "$lib/components/lb-lightcontroller-v2.svelte";
   import { mqttConnect } from '$lib/helpers/mqttclient';
   import { controlList, categoryList, roomList } from '$lib/stores/stores';
-  import type { PageData } from './$types'
-
-  const dispatch = createEventDispatcher();
-
+  import type { PageData } from './home/$types'
+ 
   export let data: PageData
 
   mqttConnect(data);
@@ -32,7 +30,8 @@
     { format: 'Webpage', component: LbWebpage },
     { format: 'Slider', component: LbSlider },
     { format: 'Switch', component: LbSwitch },
-    { format: 'Jalousie', component: LbJalousie }
+    { format: 'Jalousie', component: LbJalousie },
+    { format: 'LightControllerV2', component: LbLightControllerV2 }
   ];
 
   function getComponent(name: string) {
@@ -42,47 +41,13 @@
 
   let idx = 0; // TODO select favorite room
 
-  function selectRoom() {
-    dispatch('message', {value: idx});
-  }
-
   $: filteredControls = $controlList.filter(control => control.room === rooms[idx].uuid).sort((a, b) => (a.name.localeCompare(b.name)));
   $: filteredLabels = filteredControls.map(control => control.cat);
   $: labels = $categoryList.filter(item => filteredLabels.indexOf(item.uuid) > -1).sort((a, b) => (a.name.localeCompare(b.name)));
   $: rooms = $roomList.sort((a, b) => (a.name.localeCompare(b.name)));
 </script>
 
-<style>
-/* TODO do we still need this? */
-select{
-  scrollbar-width: none;     /* For Firefox */;
-  -ms-overflow-style: none;  /* For Internet Explorer 10+ */;
-}
-
-.select {
-  //background: none;
-  //border: none;
-  //-webkit-appearance: none;
-  padding-left:15px;
-}
-
-select::-webkit-scrollbar { /* For WebKit Browsers */
-  width: 0;
-}
-</style>
-
 <div class="container mx-auto p-3 space-y-3">
-
-  {#if rooms.length>0} <!-- make sure we have a list before we render the select-->
-    <div class="ml-0 w-60 font-bold" >
-      <select class="select h4" bind:value={idx} on:change={selectRoom}>
-        {#each rooms as room, index}
-          <option value={index}>{room.name}</option>
-        {/each}
-      </select>
-    </div>
-  {/if}
-
   {#each labels as label}
     <h1 class="ml-2 h4">{label.name}</h1>
     <div class="grid gap-2 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 lg:flex-wrap">

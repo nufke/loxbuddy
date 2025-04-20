@@ -1,50 +1,45 @@
 <script lang="ts">
-  import type { Control } from "$lib/types/models";
-  import LbControl from "$lib/components/lb-control.svelte";
-  import { state, categories } from "$lib/stores/stores";
-  import fmt from "sprintf-js";
+	import type { Control } from '$lib/types/models';
+	import LbControl from '$lib/components/lb-control.svelte';
+	import { state, categories } from '$lib/stores/stores';
+	import fmt from 'sprintf-js';
 
-  export let control: Control;
+	export let control: Control;
 
-  $: position = Number($state[control.states.position]) * 100;
-  $: image = $categories[control.cat].image;
+	$: position = Number($state[control.states.position]) * 100;
+	$: image = $categories[control.cat].image;
 
-  $: iconView = {
-    name: "/loxicons/" + (control.defaultIcon ? control.defaultIcon : image),
-    color: "white"
-  };
+	$: iconView = {
+		name: '/loxicons/' + (control.defaultIcon ? control.defaultIcon : image),
+		color: 'white'
+	};
 
-  $: textView = {
-    name: control.name,
-    color: ""
-  };
+	$: textView = {
+		name: control.name,
+		color: ''
+	};
 
-  $: stateView = {
-    name: position < 1 ? "Gesloten" : position > 99 ? "Geopend" : fmt.sprintf("%1.0f%% ", position),
-    color: "",
-  };
+	$: stateView = {
+		name: position < 1 ? 'Gesloten' : position > 99 ? 'Geopend' : fmt.sprintf('%1.0f%% ', position),
+		color: ''
+	};
 
-  $: buttonView = {
-    buttons: [
-      {
-        name: "mdi:chevron-down",
-        type: "button",
-        color: "",
-        action: () => console.log("down")
-      },
-      {
-        name: "mdi:chevron-up",
-        type: "button",
-        color: "",
-        action: () => console.log("up")
-      }
-    ]
-  };
+	$: buttonView = {
+		buttons: [
+			{
+				name: 'ChevronDown',
+				type: 'button',
+				color: '',
+				action: () => console.log('down')
+			},
+			{
+				name: 'ChevronUp',
+				type: 'button',
+				color: '',
+				action: () => console.log('up')
+			}
+		]
+	};
 </script>
 
-<LbControl
-  iconView={{ ...iconView }}
-  textView={{ ...textView }}
-  stateView={{ ...stateView }}
-  buttonView={{ ...buttonView }}
-/>
+<LbControl iconView={{ ...iconView }} textView={{ ...textView }} stateView={{ ...stateView }} buttonView={{ ...buttonView }} />
