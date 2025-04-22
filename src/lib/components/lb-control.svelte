@@ -2,7 +2,6 @@
 	import { inlineSvg } from '@svelte-put/inline-svg';
 	import type { IconView, TextView, ButtonView, StateView } from '$lib/types/models';
 	import { Switch } from '@skeletonlabs/skeleton-svelte';
-	import { type Icon as IconType } from '@lucide/svelte';
 	import LucideIcon from './icon-by-name.svelte';
 
 	export let iconView: IconView;

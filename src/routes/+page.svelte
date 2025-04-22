@@ -13,7 +13,8 @@
   import LbLightControllerV2 from "$lib/components/lb-lightcontroller-v2.svelte";
   import { mqttConnect } from '$lib/helpers/mqttclient';
   import { controlList, categoryList, roomList } from '$lib/stores/stores';
-  import type { PageData } from './home/$types'
+
+  import type { PageData } from './$types'
  
   export let data: PageData
 
@@ -39,9 +40,9 @@
     return comp ? comp.component : null;
   }
 
-  let idx = 0; // TODO select favorite room
+  let uuid = "0f5ad681-0080-2222-ffff9fbd670c23f7"; // TODO select favorite room
 
-  $: filteredControls = $controlList.filter(control => control.room === rooms[idx].uuid).sort((a, b) => (a.name.localeCompare(b.name)));
+  $: filteredControls = $controlList.filter(control => control.room === uuid).sort((a, b) => (a.name.localeCompare(b.name)));
   $: filteredLabels = filteredControls.map(control => control.cat);
   $: labels = $categoryList.filter(item => filteredLabels.indexOf(item.uuid) > -1).sort((a, b) => (a.name.localeCompare(b.name)));
   $: rooms = $roomList.sort((a, b) => (a.name.localeCompare(b.name)));

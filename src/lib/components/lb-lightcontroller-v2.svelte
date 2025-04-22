@@ -8,8 +8,10 @@
 
 	$: image = $categories[control.cat].image;
 	$: moodList = JSON.parse($state[control.states.moodList]);
-	$: selectedMood = JSON.parse($state[control.states.activeMoods])[0];
-	$: console.log('selectedMood', moodList, moodList.find((item) => item.id == selectedMood));
+//	$: console.log('moodList', moodList);
+	$: activeMoods = JSON.parse($state[control.states.activeMoods]);
+	$: selectedMood = activeMoods && activeMoods.length ? activeMoods[0] : 778;
+//	$: console.log('selectedMood', $state[control.states.activeMoods], moodList, moodList.find((item) => item.id == selectedMood));
 
 	$: iconView = {
 		name: '/loxicons/' + (control.defaultIcon ? control.defaultIcon : image),
@@ -38,8 +40,4 @@
 	};
 </script>
 
-<LbControl
-	iconView={{ ...iconView }}
-	textView={{ ...textView }}
-	stateView={{ ...stateView }}
-	buttonView={{ ...buttonView }} />
+<LbControl {iconView}	{textView} {stateView} {buttonView} />

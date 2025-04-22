@@ -37,8 +37,4 @@
 	};
 </script>
 
-<LbControl
-	iconView={{ ...iconView }}
-	textView={{ ...textView }}
-	stateView={{ ...stateView }}
-	buttonView={{ ...buttonView }} />
+<LbControl {iconView}	{textView} {stateView} {buttonView} />

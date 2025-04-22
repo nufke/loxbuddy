@@ -74,4 +74,4 @@
 	};
 </script>
 
-<LbControl iconView={{ ...iconView }} textView={{ ...textView }} stateView={{ ...stateView }} />
+<LbControl {iconView} {textView} {stateView} />
