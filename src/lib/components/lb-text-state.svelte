@@ -5,22 +5,11 @@
 
 	export let control: Control;
 
-	$: image = $categories[control.cat].image;
-
-	$: iconView = {
-		name: '/loxicons/' + (control.defaultIcon ? control.defaultIcon : image),
-		color: 'white'
-	};
-
-	$: textView = {
-		name: control.name,
-		color: ''
-	};
-
-	$: stateView = {
-		name: $state[control.states.textAndIcon],
-		color: ''
+	$: controlView = {
+		iconName: control.defaultIcon || $categories[control.cat].image,
+		textName: control.name,
+		statusName: $state[control.states.textAndIcon]
 	};
 </script>
 
-<LbControl {iconView}	{textView} {stateView} />
+<LbControl {controlView} />

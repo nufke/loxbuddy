@@ -6,49 +6,6 @@
 
 	export let control: Control;
 
-	$: image = $categories[control.cat].image;
-
-	$: radioList = [{ id: 0, name: control.details.allOff }].concat(
-		Object.entries(control.details.outputs).map((entry) => ({
-			id: Number(entry[0]),
-			name: String(entry[1])
-		}))
-	);
-
-	$: selectedRadio = Number($state[control.states.activeOutput]);
-
-	$: iconView = {
-		name: '/loxicons/' + (control.defaultIcon ? control.defaultIcon : image),
-		color: 'white'
-	};
-
-	$: textView = {
-		name: control.name,
-		color: ''
-	};
-
-	$: stateView = {
-		name: radioList[selectedRadio].name,
-		color: ''
-	};
-
-	$: buttonView = {
-		buttons: [
-			{
-				name: 'Minus',
-				type: 'button',
-				color: '',
-				action: () => clickRadio(selectedRadio, -1)
-			},
-			{
-				name: 'Plus',
-				type: 'button',
-				color: '',
-				action: () => clickRadio(selectedRadio, 1)
-			}
-		]
-	};
-
 	function clickRadio(selectedRadio: number, step: number) {
 		let min: number = 0;
 		let max: number = radioList.length - 1;
@@ -71,6 +28,35 @@
 
 		publishTopic(control.uuidAction, msg);
 	}
+
+	$: selectedRadio = Number($state[control.states.activeOutput]);
+
+	$: radioList = [{ id: 0, name: control.details.allOff }].concat(
+		Object.entries(control.details.outputs).map((entry) => ({
+			id: Number(entry[0]),
+			name: String(entry[1])
+		}))
+	);
+
+	$: controlView = {
+		iconName: control.defaultIcon || $categories[control.cat].image,
+		textName: control.name,
+		statusName: radioList[selectedRadio].name,
+		buttons: [
+			{
+				name: 'Minus',
+				type: 'button',
+				color: '',
+				action: () => clickRadio(selectedRadio, -1)
+			},
+			{
+				name: 'Plus',
+				type: 'button',
+				color: '',
+				action: () => clickRadio(selectedRadio, 1)
+			}
+		]
+	};
 </script>
 
-<LbControl {iconView}	{textView} {stateView} {buttonView} />
+<LbControl {controlView} />

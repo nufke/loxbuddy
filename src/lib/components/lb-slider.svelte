@@ -7,25 +7,22 @@
 
 	export let control: Control;
 
-	$: image = $categories[control.cat].image;
 	$: position = Number($state[control.states.value]);
 
-	$: iconView = {
-		name: '/loxicons/' + (control.defaultIcon ? control.defaultIcon : image),
-		color: 'white'
-	};
-
-	$: textView = {
-		name: control.name,
-		color: ''
-	};
-
-	$: stateView = {
-		name: fmt.sprintf(control.details.format, position),
-		color: ''
-	};
-
-	$: buttonView = {
+	function updatePosition(position: number, isUp: number) {
+		let min: number = Number(control.details.min);
+		let max: number = Number(control.details.max);
+		let step: number = Number(control.details.step);
+		let pos: number = position + step * isUp;
+		if (pos > max) pos = max;
+		if (pos < min) pos = min;
+		publishTopic(control.uuidAction, String(pos));
+	}
+	
+  $: controlView = {
+		iconName: control.defaultIcon || $categories[control.cat].image,
+		textName: control.name,
+		statusName: fmt.sprintf(control.details.format, position),
 		buttons: [
 			{
 				name: 'Minus',
@@ -41,16 +38,6 @@
 			}
 		]
 	};
-
-	function updatePosition(position: number, isUp: number) {
-		let min: number = Number(control.details.min);
-		let max: number = Number(control.details.max);
-		let step: number = Number(control.details.step);
-		let pos: number = position + step * isUp;
-		if (pos > max) pos = max;
-		if (pos < min) pos = min;
-		publishTopic(control.uuidAction, String(pos));
-	}
 </script>
 
-<LbControl {iconView}	{textView} {stateView} {buttonView} />
+<LbControl {controlView} />

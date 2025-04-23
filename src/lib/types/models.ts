@@ -64,7 +64,7 @@ export const INITIAL_STRUCTURE: Structure = {
 }
 
 export type State = {
-  [key: string]: string
+  [key: string]: string;
 };
 
 export const INITIAL_STATE: State = {}
@@ -247,21 +247,29 @@ export type SingleButtonView = {
   action: any;
 }
 
-export type ButtonView = {
-  buttons: SingleButtonView[];
+export type ControlView = {
+  iconName: string;
+  iconColor?: string;
+  textName: string;
+  textColor?: string;
+  statusName?: string;
+  statusColor?: string;
+  buttons?: SingleButtonView[];
 }
 
-export type IconView = {
-  name: string;
-  color?: string;
+export const DEFAULT_CONTROLVIEW: ControlView = {
+  iconName: '',
+  iconColor: 'white',
+  textName: '',
+  textColor: 'white',
+  statusName: '',
+  statusColor: 'white',
+  buttons: []
 }
 
-export type TextView = {
+export type MoodList = {
   name: string;
-  color?: string;
-}
-
-export type StateView = {
-  name: string;
-  color?: string;
+  id: number;
+  static: boolean;
+  used: number;
 }

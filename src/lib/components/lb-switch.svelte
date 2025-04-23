@@ -6,25 +6,12 @@
 
 	export let control: Control;
 
-	$: image = $categories[control.cat].image;
 	$: buttonActive = $state[control.states.active] == '1';
 
-	$: iconView = {
-		name: '/loxicons/' + (control.defaultIcon ? control.defaultIcon : image),
-		color: buttonActive ? '#0ea774' : 'white'
-	};
-
-	$: textView = {
-		name: control.name,
-		color: ''
-	};
-
-	$: stateView = {
-		name: '',
-		color: ''
-	};
-
-	$: buttonView = {
+	$: controlView = {
+		iconName: control.defaultIcon || $categories[control.cat].image,
+		iconColor: buttonActive ? '#0ea774' : 'white',
+		textName: control.name,
 		buttons: [
 			{
 				type: 'switch',
@@ -38,4 +25,4 @@
 	};
 </script>
 
-<LbControl {iconView}	{textView} {stateView} {buttonView} />
+<LbControl {controlView} />

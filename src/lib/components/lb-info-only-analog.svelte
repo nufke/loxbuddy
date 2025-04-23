@@ -57,21 +57,11 @@
 		return s;
 	}
 
-	$: iconView = {
-		name:
-			'/loxicons/' + (control.defaultIcon ? control.defaultIcon : $categories[control.cat].image),
-		color: 'white'
-	};
-
-	$: textView = {
-		name: control.name,
-		color: ''
-	};
-
-	$: stateView = {
-		name: getFormattedString(),
-		color: ''
+	$: controlView = {
+		iconName: control.defaultIcon || $categories[control.cat].image,
+		textName: control.name,
+		statusName: getFormattedString(),
 	};
 </script>
 
-<LbControl {iconView} {textView} {stateView} />
+<LbControl {controlView} />

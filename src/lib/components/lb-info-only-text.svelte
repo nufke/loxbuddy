@@ -6,22 +6,11 @@
 
 	export let control: Control;
 
-	$: image = $categories[control.cat].image;
-
-	$: iconView = {
-		name: '/loxicons/' + (control.defaultIcon ? control.defaultIcon : image),
-		color: 'white'
-	};
-
-	$: textView = {
-		name: control.name,
-		color: ''
-	};
-
-	$: stateView = {
-		name: fmt.sprintf(control.details.format, $state[control.states.text]),
-		color: ''
+	$: controlView = {
+		iconName: control.defaultIcon || $categories[control.cat].image,
+		textName: control.name,
+		statusName: fmt.sprintf(control.details.format, $state[control.states.text]),
 	};
 </script>
 
-<LbControl {iconView}	{textView} {stateView} />
+<LbControl {controlView} />

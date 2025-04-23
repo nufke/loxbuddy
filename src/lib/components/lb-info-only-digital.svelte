@@ -6,22 +6,13 @@
 	export let control: Control;
 
 	$: controlState = Number($state[control.states.active]) ? 'on' : 'off';
-	$: image = $categories[control.cat].image;
 
-	$: iconView = {
-		name: '/loxicons/' + (control.defaultIcon ? control.defaultIcon : image),
-		color: 'white'
-	};
-
-	$: textView = {
-		name: control.name,
-		color: ''
-	};
-
-	$: stateView = {
-		name: control.details.text[controlState],
-		color: control.details.color[controlState]
+	$: controlView = {
+		iconName: control.defaultIcon || $categories[control.cat].image,
+		textName: control.name,
+		statusName: control.details.text[controlState],
+		statusColor: control.details.color[controlState]
 	};
 </script>
 
-<LbControl {iconView}	{textView} {stateView} />
+<LbControl {controlView} />

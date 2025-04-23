@@ -7,24 +7,11 @@
 	export let control: Control;
 
 	$: position = Number($state[control.states.position]) * 100;
-	$: image = $categories[control.cat].image;
 
-	$: iconView = {
-		name: '/loxicons/' + (control.defaultIcon ? control.defaultIcon : image),
-		color: 'white'
-	};
-
-	$: textView = {
-		name: control.name,
-		color: ''
-	};
-
-	$: stateView = {
-		name: position < 1 ? 'Gesloten' : position > 99 ? 'Geopend' : fmt.sprintf('%1.0f%% ', position),
-		color: ''
-	};
-
-	$: buttonView = {
+	$: controlView = {
+		iconName: control.defaultIcon || $categories[control.cat].image,
+		textName: control.name,
+		statusName: position < 1 ? 'Gesloten' : position > 99 ? 'Geopend' : fmt.sprintf('%1.0f%% ', position),
 		buttons: [
 			{
 				name: 'ChevronDown',
@@ -42,4 +29,4 @@
 	};
 </script>
 
-<LbControl {iconView}	{textView} {stateView} {buttonView} />
+<LbControl {controlView} />

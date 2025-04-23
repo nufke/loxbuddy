@@ -40,7 +40,7 @@
     return comp ? comp.component : null;
   }
 
-  let uuid = "0f5ad681-0080-2222-ffff9fbd670c23f7"; // TODO select favorite room
+  let uuid = "0f5ad681-0073-21c0-ffff9fbd670c23f7"; // TODO select favorite room
 
   $: filteredControls = $controlList.filter(control => control.room === uuid).sort((a, b) => (a.name.localeCompare(b.name)));
   $: filteredLabels = filteredControls.map(control => control.cat);

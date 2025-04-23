@@ -1,43 +1,32 @@
 <script lang="ts">
-	import type { Control } from '$lib/types/models';
+	import type { Control, MoodList } from '$lib/types/models';
 	import LbControl from '$lib/components/lb-control.svelte';
 	import { state, categories, rooms } from '$lib/stores/stores';
 	import { publishTopic } from '$lib/helpers/mqttclient';
 
 	export let control: Control;
 
-	$: image = $categories[control.cat].image;
 	$: moodList = JSON.parse($state[control.states.moodList]);
-//	$: console.log('moodList', moodList);
+	$: console.log('moodlist', activeMoods, manualMood, selectedMood, $state[control.states.activeMoodsNum]);
 	$: activeMoods = JSON.parse($state[control.states.activeMoods]);
-	$: selectedMood = activeMoods && activeMoods.length ? activeMoods[0] : 778;
-//	$: console.log('selectedMood', $state[control.states.activeMoods], moodList, moodList.find((item) => item.id == selectedMood));
+	$: manualMood = Number($state[control.states.activeMoodsNum]) < 0;
+	$: selectedMood = activeMoods && activeMoods.length && activeMoods[0] ? Number(activeMoods[0]) : 778;
 
-	$: iconView = {
-		name: '/loxicons/' + (control.defaultIcon ? control.defaultIcon : image),
-		color: 'white'
-	};
-
-	$: textView = {
-		name: $rooms[control.room].name,
-		color: ''
-	};
-
-	$: stateView = {
-		name: moodList.find((item) => item.id == selectedMood).name,
-		color: ''
-	};
-
-	$: buttonView = {
+	$: controlView = {
+		iconName: control.defaultIcon || $categories[control.cat].image,
+		textName: $rooms[control.room].name,
+		statusName: manualMood ? 'Handmatig' : moodList.find((item:MoodList) => item.id == selectedMood).name,
 		buttons: [
 			{
-				name: 'circle',
+				name: 'Plus',
 				type: 'button',
 				color: '',
-				action: () => {publishTopic(control.uuidAction, 'pulse');}
+				action: () => {
+					publishTopic(control.uuidAction, 'changeTo/778' ); // TODO
+				}
 			}
 		]
 	};
 </script>
 
-<LbControl {iconView}	{textView} {stateView} {buttonView} />
+<LbControl {controlView} />
