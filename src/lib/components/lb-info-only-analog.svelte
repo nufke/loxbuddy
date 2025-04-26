@@ -5,7 +5,8 @@
 	import { format } from 'date-fns';
 	import { nl } from 'date-fns/locale';
 	import fmt from 'sprintf-js';
-
+	import LbTextModal from '$lib/components/lb-text-modal.svelte';
+	
 	export let control: Control;
 
 	const loxTimeRef = 1230764400000; // correction to epoch, Loxone calculates from 1-1-2009
@@ -57,11 +58,20 @@
 		return s;
 	}
 
+	let openModal: boolean;
+
 	$: controlView = {
 		iconName: control.defaultIcon || $categories[control.cat].image,
 		textName: control.name,
 		statusName: getFormattedString(),
+		modal: {
+			action: (state: boolean) => {openModal = state},
+			state: openModal
+		}
 	};
 </script>
 
-<LbControl {controlView} />
+<div>
+	<LbControl {controlView} />
+	<LbTextModal {controlView} />
+</div>

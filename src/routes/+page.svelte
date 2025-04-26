@@ -27,12 +27,11 @@
 	mqttConnect(data.mqtt);
 
 	let openModal: boolean = false;
-  let currentMenuState = 'Home';
+	let currentMenuState = 'Home';
 	let currentLabel = 'Home';
 	let items: Room[] | Category[];
 	let uuid:string;
-	let item: Room | Category | undefined;
-	
+
 	$: checkMenu($selectedMenu);
 
 	function checkMenu(item: any) {

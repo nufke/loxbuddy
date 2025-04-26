@@ -8,8 +8,9 @@
 	$: vm = { ...DEFAULT_CONTROLVIEW, ...controlView };
 </script>
 
-<div class="card m-0 flex min-h-[70px] items-center justify-start rounded-lg border border-white/5
-            bg-linear-to-r from-white/[0.095] to-white/5 px-3 py-2 hover:border-white/10">
+<div role="button" tabindex="0" on:keydown={()=>{}} aria-label="card" on:click={()=>vm.modal?.action(true)}
+     class="card m-0 flex min-h-[70px] items-center justify-start rounded-lg border border-white/5
+						bg-linear-to-r from-white/[0.095] to-white/5 px-3 py-2 hover:border-white/10">
 	<div class="flex w-full justify-between">
 		<div class="flex items-center truncate">
 			<div class="placeholder-circle flex h-10 w-10 items-center justify-center">
@@ -27,7 +28,8 @@
 						<div class="ml-2"></div>
 					{/if}
 					{#if button.type === 'button' && button.name}
-						<button type="button" class="btn-icon preset-tonal-surface rounded-lg border border-white/15 hover:border-white/50" on:click|preventDefault={button.action}>
+						<button type="button" class="btn-icon preset-tonal-surface rounded-lg border border-white/15 hover:border-white/50" 
+								on:click|stopPropagation|preventDefault={button.action}>
 							<span style="font-size:26px">
 								<LucideIcon name={button.name} />
 							</span>

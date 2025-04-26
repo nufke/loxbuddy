@@ -1,10 +1,13 @@
 <script lang="ts">
 	import type { Control } from '$lib/types/models';
 	import LbControl from '$lib/components/lb-control.svelte';
+	import LbButtonModal from '$lib/components/lb-button-modal.svelte';
 	import { categories } from '$lib/stores/stores';
 	import { publishTopic } from '$lib/helpers/mqttclient';
 
 	export let control: Control;
+
+	let openModal: boolean;
 
 	$: controlView = {
 		iconName: control.defaultIcon || $categories[control.cat].image,
@@ -18,8 +21,15 @@
 					publishTopic(control.uuidAction, 'pulse');
 				}
 			}
-		]
+		],
+		modal: {
+			action: (state: boolean) => {openModal = state},
+			state: openModal
+		}
 	};
 </script>
 
-<LbControl {controlView} />
+<div>
+	<LbControl {controlView} />
+	<LbButtonModal {controlView} />
+</div>

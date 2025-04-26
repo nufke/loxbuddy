@@ -34,20 +34,20 @@
 		{/snippet}
 	</Navigation.Rail>
 </aside>
-  <main class="">
+  <main>
 		{@render children()}
   </main>
 </div>
 {:else}
 <div class="md:hidden grid grid-rows-[auto_1fr_auto]">
-	<main class="h-screen">
+	<main>
 		{@render children()}
 	</main>
-	<footer class="sticky bottom-0">
+	<footer class="fixed bottom-0 w-full">
 		<Navigation.Bar>
 			{#each routes as {label, action, icon}}
 				{@const Icon = icon}
-				<Navigation.Tile {label} onclick={action} selected={label==selectedMenu}>
+				<Navigation.Tile active="preset-tonal" {label} onclick={action} selected={label==selectedMenu}>
 					<Icon />
 				</Navigation.Tile>
 			{/each}
