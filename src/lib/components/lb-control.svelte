@@ -24,10 +24,10 @@
 			{#if vm.buttons}
 				{#each vm.buttons as button, index}
 					{#if index > 0}
-						<div class="ml-3"></div>
+						<div class="ml-2"></div>
 					{/if}
 					{#if button.type === 'button' && button.name}
-						<button type="button" class="btn-icon btn-icon-sm" on:click|preventDefault={button.action}>
+						<button type="button" class="btn-icon preset-tonal-surface rounded-lg border border-white/15 hover:border-white/50" on:click|preventDefault={button.action}>
 							<span style="font-size:26px">
 								<LucideIcon name={button.name} />
 							</span>

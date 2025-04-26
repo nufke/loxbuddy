@@ -1,3 +1,5 @@
+import { type Icon as IconType } from '@lucide/svelte';
+
 export type MQTTStatus = {
   enabled: boolean;
   connected: boolean;
@@ -273,3 +275,9 @@ export type MoodList = {
   static: boolean;
   used: number;
 }
+
+export type Route = {
+  label: string;
+  action: any;
+  icon: typeof IconType;
+};
