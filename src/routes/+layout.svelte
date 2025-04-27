@@ -45,10 +45,10 @@
 </div>
 {:else}
 <div class="md:hidden grid grid-rows-[auto_1fr_auto]">
-	<main>
+	<main class="main">
 		{@render children()}
 	</main>
-	<footer class="fixed bottom-0 w-full">
+	<footer class="sticky bottom-0">
 		<Navigation.Bar>
 			{#each routes as {label, action, icon}}
 				{@const Icon = icon}
@@ -60,3 +60,9 @@
 	</footer>
 </div>
 {/if}
+
+<style>
+.main {
+	min-height: calc(100vh - 80px); /* trick to keep sticky footer at bottom */
+}
+</style>

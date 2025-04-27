@@ -13,7 +13,7 @@
 
 	$: controlView = {
 		iconName: control.defaultIcon || $categories[control.cat].image,
-		iconColor: buttonActive ? '#0ea774' : 'white',
+		iconColor: buttonActive ? '#69C350' : 'white', //TODO add color map
 		textName: control.name,
 		buttons: [
 			{

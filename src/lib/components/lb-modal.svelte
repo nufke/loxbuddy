@@ -15,6 +15,18 @@
 		return state ? s[0] : s[1];
 	}
 
+  $: value = vm.modal && vm.modal.slider? [vm.modal.slider.position] : [0];
+	$: min = vm.modal && vm.modal.slider ? vm.modal.slider.min : 0;
+	$: max = vm.modal && vm.modal.slider ? vm.modal.slider.max : 100;
+	$: step = vm.modal && vm.modal.slider ? vm.modal.slider.step : 1;
+
+	function setPostion(pos: number[]) {
+		if (vm && vm.buttons && vm.buttons[0]) {
+			console.log('pos', pos[0]);
+			vm.buttons[0].action({checked: pos[0]});
+		}
+	}
+
 </script>
 
 <Modal
@@ -42,10 +54,10 @@
 			<h2 class="h4 text-center">{vm.textName}</h2>
 		</div>
 			<div class="mt-4 truncate">
-			<p class="text-md truncate">{vm.statusName}</p>
+			<p class="text-lg truncate">{vm.statusName}</p>
 		</div>
 		<div class="container flex">
-		{#if vm.buttons}
+		{#if vm.buttons && !vm.modal?.slider}
 			{#each vm.buttons as button, index}
 				{#if index > 0}
 					<div class="ml-2"></div>
@@ -64,11 +76,15 @@
 				{/if}
 				{#if button.type == 'switch' && button.name }
 					<button type="button" class="w-full btn btn-lg preset-tonal-primary shadow-xl rounded-lg border border-white/15 hover:border-white/50" 
-							on:click|stopPropagation|preventDefault={() => button.action({checked: !button.state})}>
+							on:click|stopPropagation|preventDefault={() => { button.action({checked: !button.state}); vm.modal?.action(false); }}>
 						<span style="font-size:18px">{$_(getButtonName(vm, button.name, button.state ? true : false))}</span>
 					</button>
 				{/if}
 				{/each}
+		{/if} <!--buttons-->
+		{#if vm && vm.modal && vm.modal.slider && vm.modal.slider.position}
+	  <Slider classes="mt-6 ml-2 mr-2 mb-2" thumbSize="size-5" name="example" {value} {min} {max} {step} onValueChange={(e) => setPostion(e.value)} markers={[min, max]}
+			markText="size-8" markersClasses="-mt-11 ml-2 -mr-2"/>
 		{/if}
 		</div>
 	</div>

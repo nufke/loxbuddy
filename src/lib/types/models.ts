@@ -250,9 +250,25 @@ export type SingleButtonView = {
 	action: any;
 }
 
+export type ListItem = {
+  id: number;
+  name: string;
+  value?: number[];
+  show?: boolean;
+}
+
+export type Slider = {
+  min: number;
+  max: number;
+  step: number;
+  position: number;
+}
+
 export type ModalState = {
-	state?: boolean;
 	action: any;
+	state?: boolean;
+	list?: ListItem[]
+	slider?: Slider;
 }
 
 export type ControlView = {
@@ -265,6 +281,7 @@ export type ControlView = {
 	buttons?: SingleButtonView[];
 	modal?: ModalState;
 }
+
 
 export const DEFAULT_CONTROLVIEW: ControlView = {
 	iconName: '',

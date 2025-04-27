@@ -1,22 +1,30 @@
 <script lang="ts">
 	import type { Control } from '$lib/types/models';
 	import LbControl from '$lib/components/lb-control.svelte';
+	import LbModal from '$lib/components/lb-modal.svelte';
 	import { state, categories } from '$lib/stores/stores';
 	import { publishTopic } from '$lib/helpers/mqttclient';
 	import fmt from 'sprintf-js';
 
 	export let control: Control;
 
+	let openModal: boolean;
+	let min: number = Number(control.details.min);
+	let max: number = Number(control.details.max);
+	let step: number = Number(control.details.step);
+	let newPosition: number;
+
 	$: position = Number($state[control.states.value]);
 
-	function updatePosition(position: number, isUp: number) {
-		let min: number = Number(control.details.min);
-		let max: number = Number(control.details.max);
-		let step: number = Number(control.details.step);
-		let pos: number = position + step * isUp;
-		if (pos > max) pos = max;
-		if (pos < min) pos = min;
-		publishTopic(control.uuidAction, String(pos));
+	function updatePosition(e: any, isUp: number) {
+		if (e && e.checked == undefined) { // no index given, assume button
+			newPosition = position + step * isUp;
+			if (newPosition > max) newPosition = max;
+			if (newPosition < min) newPosition = min;
+		} else {
+			newPosition = e.checked;
+		}
+		publishTopic(control.uuidAction, String(newPosition));
 	}
 	
   $: controlView = {
@@ -28,16 +36,30 @@
 				iconName: 'Minus',
 				type: 'button',
 				color: '',
-				action: () => updatePosition(position, -1)
+				action: (e:any) => updatePosition(e, -1)
 			},
 			{
 				iconName: 'Plus',
 				type: 'button',
 				color: '',
-				action: () => updatePosition(position, 1)
+				action: (e:any) => updatePosition(e, 1)
 			}
-		]
+		],
+		modal: {
+			action: (state: boolean) => {openModal = state},
+			state: openModal,
+			slider: {
+				min: Number(control.details.min),
+				max: Number(control.details.max),
+				step: Number(control.details.step),
+				position: position
+			}
+		}
 	};
 </script>
 
-<LbControl {controlView} />
+<div>
+	<LbControl {controlView} />
+	<LbModal {controlView} />
+</div>
+

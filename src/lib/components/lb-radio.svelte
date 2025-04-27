@@ -1,31 +1,37 @@
 <script lang="ts">
 	import type { Control } from '$lib/types/models';
 	import LbControl from '$lib/components/lb-control.svelte';
+	import LbListModal from '$lib/components/lb-list-modal.svelte';
 	import { state, categories } from '$lib/stores/stores';
 	import { publishTopic } from '$lib/helpers/mqttclient';
 
 	export let control: Control;
 
-	function clickRadio(selectedRadio: number, step: number) {
+	let openModal: boolean;
+
+	function clickRadio(e: any, step: number) {
 		let min: number = 0;
 		let max: number = radioList.length - 1;
 		let idx: number = radioList.findIndex((item) => {
 			return item.id === selectedRadio;
 		});
 
-		idx += step;
+		if (e && e.checked == undefined) { // no index given, use step
+			idx += step;
 
-		if (idx > max) {
-			idx = min;
-		} else {
-			if (idx < min) {
-				idx = max;
+			if (idx > max) {
+				idx = min;
+			} else {
+				if (idx < min) {
+					idx = max;
+				}
 			}
+		} else {
+			idx = Number(e.checked);
 		}
 
 		let msg = String(radioList[idx].id);
-		if (msg === '0') msg = 'reset'; // loxone requires text "reset" instead of ID 0
-
+		if (msg === '0') msg = 'reset'; // off requires text "reset" instead of id 0
 		publishTopic(control.uuidAction, msg);
 	}
 
@@ -47,16 +53,24 @@
 				iconName: 'Minus',
 				type: 'button',
 				color: '',
-				action: () => clickRadio(selectedRadio, -1)
+				action: (e:any) => clickRadio(e, -1)
 			},
 			{
 				iconName: 'Plus',
 				type: 'button',
 				color: '',
-				action: () => clickRadio(selectedRadio, 1)
+				action: (e:any) => clickRadio(e, 1)
 			}
-		]
+		],
+		modal: {
+			action: (state: boolean) => {openModal = state},
+			state: openModal,
+			list: radioList
+		}
 	};
 </script>
 
-<LbControl {controlView} />
+<div>
+	<LbControl {controlView} />
+	<LbListModal {controlView} />
+</div>
