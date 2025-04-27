@@ -6,7 +6,8 @@
 	import type { Route } from '$lib/types/models';
 	import { setMenuItem } from '$lib/stores/menu';
 	import { mqttConnect } from '$lib/helpers/mqttclient';
-
+	import { _ } from 'svelte-i18n';
+	
 	import { page } from '$app/state';
 
 	/* start MQTT client */
@@ -31,7 +32,7 @@
 		{#snippet tiles()}
 		{#each routes as {label, action, icon}}
 		  {@const Icon = icon}
-			<Navigation.Tile active="preset-tonal" {label} onclick={action} selected={label==selectedMenu}>
+			<Navigation.Tile active="preset-tonal" label={$_(label)} onclick={action} selected={label==selectedMenu}>
 			  <Icon />
 			</Navigation.Tile>
 		{/each}

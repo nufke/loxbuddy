@@ -1,9 +1,8 @@
 <script lang="ts">
-
+	import { _ } from 'svelte-i18n';
 	import { controlList, categoryList, roomList } from '$lib/stores/stores';
 	import { Modal } from '@skeletonlabs/skeleton-svelte';
 	import type { Room, Category, Control } from '$lib/types/models';
-	
 	import LbUpDownDigital from '$lib/components/lb-up-down-digital.svelte';
 	import LbTextState from '$lib/components/lb-text-state.svelte';
 	import LbInfoOnlyAnalog from '$lib/components/lb-info-only-analog.svelte';
@@ -133,7 +132,7 @@
 	{#snippet content()}
 	<header class="flex justify-between">
 		<div>
-			<h2 class="h4">Select {currentMenuState}</h2>
+			<h2 class="h4">{$_(currentMenuState)}</h2>
 		</div>
 		<div class="justify-end">
 			<button type="button" class="btn-icon" on:click={()=>modalClose()}><X/></button>

@@ -22,7 +22,7 @@
 			</div>
 		</div>
 		<div class="absolute right-0 top-0">
-			<button type="button" class="btn-icon" on:click={()=>vm.modal?.action(false)}><X/></button>
+			<button type="button" class="btn-icon w-auto" on:click={()=>vm.modal?.action(false)}><X/></button>
 		</div>
 	</header>
 

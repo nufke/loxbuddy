@@ -18,7 +18,7 @@
 		buttons: [
 			{
 				type: 'switch',
-				name: 'Uitschakelen,Inschakelen',
+				name: 'Switch off,Switch on',
 				state: buttonActive,
 				action: (e: any) => {
 					publishTopic(control.uuidAction, e.checked ? '1' : '0');

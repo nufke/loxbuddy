@@ -5,6 +5,7 @@
 	import LucideIcon from './icon-by-name.svelte';
 	import { X } from '@lucide/svelte';
 	import { Slider } from '@skeletonlabs/skeleton-svelte';
+	import { _ } from 'svelte-i18n';
 
 	export let controlView: ControlView;
 	$: vm = { ...DEFAULT_CONTROLVIEW, ...controlView };
@@ -31,7 +32,9 @@
 			</div>
 		</div>
 		<div class="absolute right-0 top-0">
-			<button type="button" class="btn-icon" on:click={()=>vm.modal?.action(false)}><X/></button>
+			<button type="button" aria-label="close" class="btn-icon w-auto" on:click={()=>vm.modal?.action(false)}>
+				<X/>
+			</button>
 		</div>
 	</header>
 	<div class="flex flex-col items-center justify-center m-2">
@@ -51,10 +54,10 @@
 					<button type="button" class="w-full btn btn-lg preset-tonal-primary shadow-xl rounded-lg border border-white/15 hover:border-white/50" 
 							on:click|stopPropagation|preventDefault={button.action}>
 							{#if button.name}
-								<span style="font-size:18px">{button.name}</span>
+								<span>{$_(button.name)}</span>
 							{:else}
-								<span style="font-size:26px">
-									<LucideIcon name={button.iconName} />
+								<span>
+									<LucideIcon name={button.iconName}/>
 								</span>
 							{/if}
 					</button>
@@ -62,7 +65,7 @@
 				{#if button.type == 'switch' && button.name }
 					<button type="button" class="w-full btn btn-lg preset-tonal-primary shadow-xl rounded-lg border border-white/15 hover:border-white/50" 
 							on:click|stopPropagation|preventDefault={() => button.action({checked: !button.state})}>
-						<span style="font-size:18px">{getButtonName(vm, button.name, button.state ? true : false)}</span>
+						<span style="font-size:18px">{$_(getButtonName(vm, button.name, button.state ? true : false))}</span>
 					</button>
 				{/if}
 				{/each}

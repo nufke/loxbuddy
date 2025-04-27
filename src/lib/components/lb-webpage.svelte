@@ -14,7 +14,7 @@
 		buttons: [
 			{
 				iconName: 'SquareArrowOutUpRight',
-				name: 'Open webpage',
+				name: 'Open link',
 				type: 'button',
 				color: '',
 				action: () => window.open(control.details.url, "_blank")
