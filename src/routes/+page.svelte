@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { mqttConnect } from '$lib/helpers/mqttclient';
+
 	import { controlList, categoryList, roomList } from '$lib/stores/stores';
 	import { Modal } from '@skeletonlabs/skeleton-svelte';
 	import type { Room, Category, Control } from '$lib/types/models';
@@ -16,15 +16,10 @@
 	import LbSlider from '$lib/components/lb-slider.svelte';
 	import LbSwitch from '$lib/components/lb-switch.svelte';
 	import LbLightControllerV2 from '$lib/components/lb-lightcontroller-v2.svelte';
+	import LbUnknown from '$lib/components/lb-unknown.svelte';
 	import LbCard from '$lib/components/lb-card.svelte';
 	import { selectedMenu } from '$lib/stores/menu';
 	import { X } from '@lucide/svelte';
-	
-	import type { PageData } from './$types';
-	export let data: PageData;
-
-	/* start MQTT client */
-	mqttConnect(data.mqtt);
 
 	let openModal: boolean = false;
 	let currentMenuState = 'Home';
@@ -82,7 +77,7 @@
 
 	function getComponent(name: string) {
 		const comp = componentList.find((type) => type.format == name);
-		return comp ? comp.component : null;
+		return comp ? comp.component : LbUnknown;
 	}
 
 	$: isRoom = (currentLabel == 'Rooms');

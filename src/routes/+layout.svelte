@@ -5,8 +5,12 @@
   import { Home, List, Music, Grid2x2, type Icon as IconType } from '@lucide/svelte';
 	import type { Route } from '$lib/types/models';
 	import { setMenuItem } from '$lib/stores/menu';
-	
+	import { mqttConnect } from '$lib/helpers/mqttclient';
+
 	import { page } from '$app/state';
+
+	/* start MQTT client */
+	mqttConnect(page.data.mqtt);
 
 	let { children } = $props();
 	let selectedMenu:string = $state('Home');

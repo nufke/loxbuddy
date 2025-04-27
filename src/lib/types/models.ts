@@ -244,6 +244,7 @@ export type MessageCenter = {
 
 export type SingleButtonView = {
 	name?: string;
+	iconName?: string;
 	type: string;
 	state?: boolean;
 	action: any;

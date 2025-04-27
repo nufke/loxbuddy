@@ -18,7 +18,7 @@
 		statusName: (activeMoodsNum < 0) ? 'Handmatig' : moodList.find((item:MoodList) => item.id == activeMoodsNum).name,
 		buttons: [
 			{
-				name: 'Plus',
+				iconName: 'Plus',
 				type: 'button',
 				color: '',
 				action: () => {

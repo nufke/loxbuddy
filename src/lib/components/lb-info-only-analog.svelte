@@ -5,7 +5,7 @@
 	import { format } from 'date-fns';
 	import { nl } from 'date-fns/locale';
 	import fmt from 'sprintf-js';
-	import LbTextModal from '$lib/components/lb-text-modal.svelte';
+	import LbModal from '$lib/components/lb-modal.svelte';
 	
 	export let control: Control;
 
@@ -73,5 +73,5 @@
 
 <div>
 	<LbControl {controlView} />
-	<LbTextModal {controlView} />
+	<LbModal {controlView} />
 </div>

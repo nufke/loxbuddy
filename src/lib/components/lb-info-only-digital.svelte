@@ -2,7 +2,7 @@
 	import type { Control } from '$lib/types/models';
 	import LbControl from '$lib/components/lb-control.svelte';
 	import { state, categories } from '$lib/stores/stores';
-	import LbTextModal from '$lib/components/lb-text-modal.svelte';
+	import LbModal from '$lib/components/lb-modal.svelte';
 
 	export let control: Control;
 
@@ -24,5 +24,5 @@
 
 <div>
 	<LbControl {controlView} />
-	<LbTextModal {controlView} />
+	<LbModal {controlView} />
 </div>

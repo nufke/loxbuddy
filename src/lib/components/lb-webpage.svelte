@@ -2,22 +2,32 @@
 	import LbControl from '$lib/components/lb-control.svelte';
 	import type { Control } from '$lib/types/models';
 	import { categories } from '$lib/stores/stores';
+	import LbModal from '$lib/components/lb-modal.svelte';
 
 	export let control: Control;
+
+	let openModal: boolean;
 
   $: controlView = {
 		iconName: control.defaultIcon || $categories[control.cat].image,
 		textName: control.name,
-		statusName: 'Web Link',
 		buttons: [
 			{
-				name: 'SquareArrowOutUpRight',
+				iconName: 'SquareArrowOutUpRight',
+				name: 'Open webpage',
 				type: 'button',
 				color: '',
-				action: () => console.log('external link')
+				action: () => window.open(control.details.url, "_blank")
 			}
-		]
+		],
+		modal: {
+			action: (state: boolean) => {openModal = state},
+			state: openModal
+		}
 	};
 </script>
 
-<LbControl {controlView} />
+<div>
+	<LbControl {controlView} />
+	<LbModal {controlView} />
+</div>

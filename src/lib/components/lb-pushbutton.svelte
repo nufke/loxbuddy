@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Control } from '$lib/types/models';
 	import LbControl from '$lib/components/lb-control.svelte';
-	import LbButtonModal from '$lib/components/lb-button-modal.svelte';
+	import LbModal from '$lib/components/lb-modal.svelte';
 	import { categories } from '$lib/stores/stores';
 	import { publishTopic } from '$lib/helpers/mqttclient';
 
@@ -14,7 +14,8 @@
 		textName: control.name,
 		buttons: [
 			{
-				name: 'Circle',
+				name: 'Push',
+				iconName: 'Circle',
 				type: 'button',
 				color: '',
 				action: () => {
@@ -31,5 +32,5 @@
 
 <div>
 	<LbControl {controlView} />
-	<LbButtonModal {controlView} />
+	<LbModal {controlView} />
 </div>

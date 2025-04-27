@@ -27,16 +27,18 @@
 					{#if index > 0}
 						<div class="ml-2"></div>
 					{/if}
-					{#if button.type === 'button' && button.name}
+					{#if button.type === 'button' && button.iconName}
 						<button type="button" class="btn-icon preset-tonal-surface rounded-lg border border-white/15 hover:border-white/50" 
 								on:click|stopPropagation|preventDefault={button.action}>
 							<span style="font-size:26px">
-								<LucideIcon name={button.name} />
+								<LucideIcon name={button.iconName} />
 							</span>
 						</button>
 					{/if}
 					{#if button.type == 'switch'}
+					<a href='http:/' on:click={(e) => { e.stopPropagation(); }}> <!-- workaround wrapper to stop propagation for switch -->
 						<Switch name="slide" controlActive="bg-green-500" checked={button.state} onCheckedChange={button.action} />
+					</a>
 					{/if}
 				{/each}
 			{/if}

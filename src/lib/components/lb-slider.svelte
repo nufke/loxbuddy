@@ -25,13 +25,13 @@
 		statusName: fmt.sprintf(control.details.format, position),
 		buttons: [
 			{
-				name: 'Minus',
+				iconName: 'Minus',
 				type: 'button',
 				color: '',
 				action: () => updatePosition(position, -1)
 			},
 			{
-				name: 'Plus',
+				iconName: 'Plus',
 				type: 'button',
 				color: '',
 				action: () => updatePosition(position, 1)

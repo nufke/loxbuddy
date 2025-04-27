@@ -44,13 +44,13 @@
 		statusName: radioList[selectedRadio].name,
 		buttons: [
 			{
-				name: 'Minus',
+				iconName: 'Minus',
 				type: 'button',
 				color: '',
 				action: () => clickRadio(selectedRadio, -1)
 			},
 			{
-				name: 'Plus',
+				iconName: 'Plus',
 				type: 'button',
 				color: '',
 				action: () => clickRadio(selectedRadio, 1)

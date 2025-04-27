@@ -1,10 +1,13 @@
 <script lang="ts">
 	import LbControl from '$lib/components/lb-control.svelte';
 	import type { Control } from '$lib/types/models';
+	import LbModal from '$lib/components/lb-modal.svelte';
 	import { state, categories } from '$lib/stores/stores';
 	import { publishTopic } from '$lib/helpers/mqttclient';
 
 	export let control: Control;
+
+	let openModal: boolean;
 
 	$: buttonActive = $state[control.states.active] == '1';
 
@@ -15,14 +18,21 @@
 		buttons: [
 			{
 				type: 'switch',
+				name: 'Uitschakelen,Inschakelen',
 				state: buttonActive,
 				action: (e: any) => {
-					console.log(e.checked);
 					publishTopic(control.uuidAction, e.checked ? '1' : '0');
 				}
 			}
-		]
+		],
+		modal: {
+			action: (state: boolean) => {openModal = state},
+			state: openModal
+		}
 	};
 </script>
 
-<LbControl {controlView} />
+<div>
+	<LbControl {controlView} />
+	<LbModal {controlView} />
+</div>

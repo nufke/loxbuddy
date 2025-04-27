@@ -2,17 +2,26 @@
 	import { inlineSvg } from '@svelte-put/inline-svg';
 	import { Modal } from '@skeletonlabs/skeleton-svelte';
   import { type ControlView, DEFAULT_CONTROLVIEW } from '$lib/types/models';
+	import LucideIcon from './icon-by-name.svelte';
 	import { X } from '@lucide/svelte';
+	import { Slider } from '@skeletonlabs/skeleton-svelte';
 
 	export let controlView: ControlView;
 	$: vm = { ...DEFAULT_CONTROLVIEW, ...controlView };
+
+  function getButtonName(vm: any, name: string, state: boolean) {
+		let s = name.split(',');
+		return state ? s[0] : s[1];
+	}
+
 </script>
 
 <Modal
 	open={vm.modal?.state}
 	onOpenChange={()=>vm.modal?.action(false)}
 	triggerBase="btn preset-tonal"
-	contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-xl max-w-9/10 max-h-9/10 overflow-auto w-[380px]"
+	contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-xl rounded-lg border border-white/5
+							from-white/[0.095] to-white/5 max-w-9/10 max-h-9/10 overflow-auto w-[380px]"
 	backdropClasses="backdrop-blur-sm">
 	{#snippet content()}
 	<header class="relative">
@@ -32,22 +41,33 @@
 			<div class="mt-4 truncate">
 			<p class="text-md truncate">{vm.statusName}</p>
 		</div>
+		<div class="container flex">
 		{#if vm.buttons}
 			{#each vm.buttons as button, index}
 				{#if index > 0}
 					<div class="ml-2"></div>
 				{/if}
-				{#if button.type === 'button' && button.name}
-					<button type="button" class="w-[250px] btn btn-lg preset-tonal-primary shadow-xl" 
+				{#if button.type === 'button' && button.action}
+					<button type="button" class="w-full btn btn-lg preset-tonal-primary shadow-xl rounded-lg border border-white/15 hover:border-white/50" 
 							on:click|stopPropagation|preventDefault={button.action}>
-						<span style="font-size:18px">Push</span>
+							{#if button.name}
+								<span style="font-size:18px">{button.name}</span>
+							{:else}
+								<span style="font-size:26px">
+									<LucideIcon name={button.iconName} />
+								</span>
+							{/if}
 					</button>
 				{/if}
-				{#if button.type == 'switch'}
-					<!--<Switch name="slide" controlActive="bg-green-500" checked={button.state} onCheckedChange={button.action} />-->
+				{#if button.type == 'switch' && button.name }
+					<button type="button" class="w-full btn btn-lg preset-tonal-primary shadow-xl rounded-lg border border-white/15 hover:border-white/50" 
+							on:click|stopPropagation|preventDefault={() => button.action({checked: !button.state})}>
+						<span style="font-size:18px">{getButtonName(vm, button.name, button.state ? true : false)}</span>
+					</button>
 				{/if}
-			{/each}
+				{/each}
 		{/if}
+		</div>
 	</div>
 	{/snippet}
 </Modal>

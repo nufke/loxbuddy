@@ -14,13 +14,13 @@
 		statusName: position < 1 ? 'Gesloten' : position > 99 ? 'Geopend' : fmt.sprintf('%1.0f%% ', position),
 		buttons: [
 			{
-				name: 'ChevronDown',
+				iconName: 'ChevronDown',
 				type: 'button',
 				color: '',
 				action: () => console.log('down')
 			},
 			{
-				name: 'ChevronUp',
+				iconName: 'ChevronUp',
 				type: 'button',
 				color: '',
 				action: () => console.log('up')
