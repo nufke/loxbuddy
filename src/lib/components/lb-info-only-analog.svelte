@@ -6,7 +6,7 @@
 	import { nl } from 'date-fns/locale';
 	import fmt from 'sprintf-js';
 	import LbModal from '$lib/components/lb-modal.svelte';
-	
+
 	export let control: Control;
 
 	const loxTimeRef = 1230764400000; // correction to epoch, Loxone calculates from 1-1-2009

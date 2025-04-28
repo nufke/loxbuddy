@@ -4,15 +4,15 @@
 
 LoxBuddy is a modern and fast (Web)App to control your [Loxone](https://www.loxone.com/) and [LoxBerry](https://wiki.loxberry.de/start) based Smart Home.
 
-LoxBuddy uses MQTT for monitoring and control. All devices available via MQTT can be controlled using LoxBuddy. The additional [Lox2MQTT](https://github.com/nufke/LoxBerry-Plugin-Lox2MQTT) plugin for LoxBerry is recommended for a seamless integration of your Loxone Miniserver into MQTT.
+LoxBuddy uses MQTT for monitoring and control. All devices available via MQTT can be controlled using LoxBuddy. The [Lox2MQTT](https://github.com/nufke/LoxBerry-Plugin-Lox2MQTT) plugin for LoxBerry is recommended for a seamless integration of your Loxone Miniserver using MQTT.
 
 **NOTE: The LoxBuddy App is in early developement, thus unstable and incomplete. Use it at your own risk.**
 
 ## Development environment
 
-To help in the development of this App, you need a NodeJS installation on your desktop. Requirement is node >= v20.11.1. The application is based on [Svelte](https://svelte.dev/), [SvelteKit](https://kit.svelte.dev/) and [Skeleton](https://www.skeleton.dev/). 
+To help in the development of this App, you need a NodeJS installation on your desktop. Requirement is node &ge; v20.11.1. The application is based on [Svelte](https://svelte.dev/), [SvelteKit](https://kit.svelte.dev/) and [Skeleton](https://www.skeleton.dev/). 
 
-```
+```bash
 # install
 git clone https://github.com/nufke/loxbuddy.git
 cd loxbuddy
@@ -25,12 +25,16 @@ code .env.local
 # copy icons to static folder 
 cp <path to loxicons> ./static/loxicons
 
-# launch server
+# launch development server
 npm run dev
 
 # launch the browser 
 firefox http://localhost:5173/
 ```
+
+## Deployment to a webserver
+
+To deploy LoxBuddy to a webserver (e.g. running on LoxBerry), follow the steps described in this [README](./infra/README.md)
 
 ## Issues and questions
 

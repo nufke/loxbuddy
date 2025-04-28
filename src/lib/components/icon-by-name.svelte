@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import * as icons from '@lucide/svelte';
 	export let name;
 </script>

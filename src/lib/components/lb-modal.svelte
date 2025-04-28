@@ -76,15 +76,15 @@
 				{/if}
 				{#if button.type == 'switch' && button.name }
 					<button type="button" class="w-full btn btn-lg preset-tonal-primary shadow-xl rounded-lg border border-white/15 hover:border-white/50" 
-							on:click|stopPropagation|preventDefault={() => { button.action({checked: !button.state}); vm.modal?.action(false); }}>
+							on:click|stopPropagation|preventDefault={() => {button.action({checked: !button.state})}}>
 						<span style="font-size:18px">{$_(getButtonName(vm, button.name, button.state ? true : false))}</span>
 					</button>
 				{/if}
 				{/each}
 		{/if} <!--buttons-->
 		{#if vm && vm.modal && vm.modal.slider && vm.modal.slider.position}
-	  <Slider classes="mt-6 ml-2 mr-2 mb-2" thumbSize="size-5" name="example" {value} {min} {max} {step} onValueChange={(e) => setPostion(e.value)} markers={[min, max]}
-			markText="size-8" markersClasses="-mt-11 ml-2 -mr-2"/>
+	 	 <Slider classes="mt-6 ml-2 mr-2 mb-2" thumbSize="size-5" name="example" {value} {min} {max} {step} onValueChange={(e) => setPostion(e.value)} markers={[min, max]}
+				markText="size-8" markersClasses="-mt-11 ml-2 -mr-2"/>
 		{/if}
 		</div>
 	</div>

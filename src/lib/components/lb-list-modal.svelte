@@ -7,7 +7,7 @@
 
 	export let controlView: ControlView;
 	$: vm = { ...DEFAULT_CONTROLVIEW, ...controlView };
-	
+
 	$: index = (vm.modal && vm.modal.list) ? vm.modal.list.findIndex(item => { return item.name === vm.statusName }) : 0;
 
 	function setColor(i: number) {
@@ -21,7 +21,6 @@
 	function setItem(i: number) {
 		if (vm && vm.buttons && vm.buttons[0]) {
 			vm.buttons[0].action({checked: i});
-			vm.modal?.action(false);
 		}
 	}
 </script>

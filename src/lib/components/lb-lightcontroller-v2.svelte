@@ -4,11 +4,11 @@
 	import { state, categories, rooms } from '$lib/stores/stores';
 	import { publishTopic } from '$lib/helpers/mqttclient';
 	import LbListModal from '$lib/components/lb-list-modal.svelte';
-	
+
 	export let control: Control;
 
 	let openModal: boolean;
-	
+
 	$: moodList = JSON.parse($state[control.states.moodList]);
 	$: activeMoodsNum = Number($state[control.states.activeMoodsNum]);
 
@@ -48,7 +48,6 @@
 		}
 		publishTopic(control.uuidAction, 'changeTo/' + String(moodList[moodIndex].id));
 	}
-
 </script>
 
 <div>
