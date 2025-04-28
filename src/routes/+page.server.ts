@@ -6,7 +6,8 @@ export async function load() {
 			MQTT_HOSTNAME: env.MQTT_HOSTNAME,
 			MQTT_PORT: env.MQTT_PORT,
 			MQTT_USERNAME: env.MQTT_USERNAME,
-			MQTT_PASSWORD: env.MQTT_PASSWORD
+			MQTT_PASSWORD: env.MQTT_PASSWORD,
+			MQTT_TOPIC: env.MQTT_TOPIC
 		}
 	}
   return data;

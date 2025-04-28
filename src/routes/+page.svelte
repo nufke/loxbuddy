@@ -98,7 +98,7 @@
 				.indexOf(item.uuid) > -1)
 				.sort((a, b) => a.name.localeCompare(b.name));
 
-	$: pageTitle = isHome ? {name: 'Favorieten'} : ( isRoom ? 
+	$: pageTitle = isHome ? {name: $_('Favorites')} : ( isRoom ? 
 			$roomList.find((item) => filteredControls[0].room == item.uuid) :
 			$categoryList.find((item) => filteredControls[0].cat == item.uuid) );
 
