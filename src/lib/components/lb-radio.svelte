@@ -36,18 +36,19 @@
 	}
 
 	$: selectedRadio = Number($state[control.states.activeOutput]);
+	$: radioIndex = radioList.find( item => item.id == selectedRadio);
 
-	$: radioList = [{ id: 0, name: control.details.allOff }].concat(
+	$: radioList = 
 		Object.entries(control.details.outputs).map((entry) => ({
 			id: Number(entry[0]),
 			name: String(entry[1])
-		}))
-	);
+		})).concat([{ id: 0, name: control.details.allOff }]);
 
 	$: controlView = {
 		iconName: control.defaultIcon || $categories[control.cat].image,
 		textName: control.name,
-		statusName: radioList[selectedRadio].name,
+		statusName: radioIndex ? radioIndex.name : 'unknown',
+		statusColor: selectedRadio ? '#69C350' : 'white', //TODO add color map
 		buttons: [
 			{
 				iconName: 'Minus',

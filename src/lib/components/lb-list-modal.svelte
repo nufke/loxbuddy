@@ -50,7 +50,7 @@
 			<h2 class="h4 text-center">{vm.textName}</h2>
 		</div>
 			<div class="mt-4 truncate">
-			<p class="text-lg truncate">{vm.statusName}</p>
+			<p class="text-lg truncate" style="color: {vm.statusColor}">{vm.statusName}</p>
 		</div>
 		<div class="container mt-2">
 		{#if vm.modal?.list}

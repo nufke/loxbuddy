@@ -305,6 +305,6 @@ export type MoodList = {
 
 export type Route = {
 	label: string;
-	action: any;
+	href: string;
 	icon: typeof IconType;
 };

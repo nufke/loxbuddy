@@ -10,13 +10,13 @@
 
 <div role="button" tabindex="0" on:keydown={()=>{}} aria-label="card" on:click={()=>vm.modal?.action(true)}
      class="card m-0 flex min-h-[70px] items-center justify-start rounded-lg border border-white/5
-						bg-linear-to-r from-white/[0.095] to-white/5 px-3 py-2 hover:border-white/10">
+						bg-linear-to-r from-white/[0.095] to-white/5 px-2 py-2 hover:border-white/10">
 	<div class="flex w-full justify-between">
 		<div class="flex items-center truncate">
-			<div class="flex ml-1 items-center justify-center">
+			<div class="relative inline-flex items-center justify-center w-12 h-12 min-w-12 overflow-hidden bg-white rounded-full dark:bg-black">
 				<svg use:inlineSvg={'/loxicons/' + vm.iconName} fill={vm.iconColor} width="24" height="24"></svg>
 			</div>
-			<div class="mt-0 ml-4 truncate">
+			<div class="mt-0 ml-3 truncate">
 				<h1 class="truncate text-lg">{vm.textName}</h1>
 				<p class="text-md truncate" style="color: {vm.statusColor}">{vm.statusName}</p>
 			</div>
@@ -28,7 +28,7 @@
 						<div class="ml-2"></div>
 					{/if}
 					{#if button.type === 'button' && button.iconName}
-						<button type="button" class="btn-icon p-3 preset-tonal-surface rounded-lg border border-white/15 hover:border-white/50" 
+						<button type="button" class="btn-icon p-3 preset-tonal-surface rounded-lg border border-black hover:border-white/50" 
 								on:click|stopPropagation|preventDefault={button.action}>
 							<span style="font-size:26px ">
 								<LucideIcon name={button.iconName} />
