@@ -10,6 +10,7 @@ import LbWebpage from '$lib/components/lb-webpage.svelte';
 import LbSlider from '$lib/components/lb-slider.svelte';
 import LbSwitch from '$lib/components/lb-switch.svelte';
 import LbLightControllerV2 from '$lib/components/lb-lightcontroller-v2.svelte';
+import LbFronius from '$lib/components/lb-fronius.svelte';
 import LbUnknown from '$lib/components/lb-unknown.svelte';
 
 let componentList = [
@@ -24,7 +25,8 @@ let componentList = [
 	{ format: 'Slider', component: LbSlider },
 	{ format: 'Switch', component: LbSwitch },
 	{ format: 'Jalousie', component: LbJalousie },
-	{ format: 'LightControllerV2', component: LbLightControllerV2 }
+	{ format: 'LightControllerV2', component: LbLightControllerV2 },
+	{ format: 'Fronius', component: LbFronius }
 ];
 
 export function getComponent(name: string) {

@@ -247,7 +247,9 @@ export type SingleButtonView = {
 	iconName?: string;
 	type: string;
 	state?: boolean;
-	action: any;
+	click?: any;
+	mousedown?: any;
+	mouseup?: any;
 }
 
 export type ListItem = {
@@ -265,10 +267,11 @@ export type Slider = {
 }
 
 export type ModalState = {
-	action: any;
+	action: any,
 	state?: boolean;
 	list?: ListItem[]
 	slider?: Slider;
+	buttons?: SingleButtonView[];
 }
 
 export type ControlView = {
@@ -292,7 +295,7 @@ export const DEFAULT_CONTROLVIEW: ControlView = {
 	statusColor: 'white',
 	buttons: [],
 	modal: {
-		action: () => { }
+		action: () => {}
 	}
 }
 

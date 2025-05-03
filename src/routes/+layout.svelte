@@ -6,7 +6,7 @@
 	import type { Route } from '$lib/types/models';
 	import { mqttConnect } from '$lib/helpers/mqttclient';
 	import { _ } from 'svelte-i18n';
-	
+
 	import { page } from '$app/state';
 
 	/* start MQTT client */
@@ -20,6 +20,13 @@
 		{ label: 'Categories', href: '/category', icon: List },
 		{ label: 'Messages', href: '/messages', icon: FileText },
 	];
+
+	function checkUrl(href: string) {
+		if (href === '/') {
+			return page.url.pathname === href;
+		}
+		return page.url.pathname.includes(href);
+	}
 </script>
 
 <!-- we need to use the innerWidth to avoid we render the children twice -->
@@ -30,8 +37,8 @@
 		{#snippet tiles()}
 		{#each routes as {label, href, icon}}
 		  {@const Icon = icon}
-			<Navigation.Tile active="preset-tonal" label={$_(label)} {href} selected={page.url.pathname  === href}>
-			  <Icon />
+			<Navigation.Tile labelClasses={checkUrl(href) ? 'text-green-500' : 'white'} classes="flex-col justify-center hover:bg-transparent" label={$_(label)} {href}>
+				<Icon class={checkUrl(href) ? 'text-green-500' : 'white'} />
 			</Navigation.Tile>
 		{/each}
 		{/snippet}
@@ -50,8 +57,8 @@
 		<Navigation.Bar>
 			{#each routes as {label, href, icon}}
 				{@const Icon = icon}
-				<Navigation.Tile active="preset-tonal" label={$_(label)} {href} selected={page.url.pathname  === href}>
-					<Icon />
+				<Navigation.Tile labelClasses={checkUrl(href) ? 'text-green-500' : 'white'} classes="flex-col justify-center hover:bg-transparent" label={$_(label)} {href}>
+					<Icon class={checkUrl(href) ? 'text-green-500' : 'white'} />
 				</Navigation.Tile>
 			{/each}
 		</Navigation.Bar>

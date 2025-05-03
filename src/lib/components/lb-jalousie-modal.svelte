@@ -2,26 +2,17 @@
 	import { inlineSvg } from '@svelte-put/inline-svg';
 	import { Modal } from '@skeletonlabs/skeleton-svelte';
   import { type ControlView, DEFAULT_CONTROLVIEW } from '$lib/types/models';
+	import LucideIcon from './icon-by-name.svelte';
 	import { X } from '@lucide/svelte';
+	import { Slider } from '@skeletonlabs/skeleton-svelte';
 	import { _ } from 'svelte-i18n';
 
 	export let controlView: ControlView;
 	$: vm = { ...DEFAULT_CONTROLVIEW, ...controlView };
 
-	$: index = (vm.modal && vm.modal.list) ? vm.modal.list.findIndex(item => { return item.name === vm.statusName }) : 0;
-
-	function setColor(i: number) {
-		if (i==index) {
-			return 'preset-tonal'
-		} else {
-			return 'preset-tonal-primary' 
-		}
-	}
-
-	function setItem(i: number) {
-		if (vm && vm.buttons && vm.buttons[0]) {
-			vm.buttons[0].click({checked: i});
-		}
+  function getColSpan(i: number, j: number) {
+		console.log(j);
+		return (i==4 && j!=0)  ? 'col-span-2' : '';
 	}
 </script>
 
@@ -45,21 +36,31 @@
 			</button>
 		</div>
 	</header>
-	<div class="flex flex-col items-center justify-center m-2">
+	<div class="flex flex-col items-center justify-center mt-2">
 		<div>
 			<h2 class="h4 text-center">{vm.textName}</h2>
 		</div>
-			<div class="mt-4 mb-2 truncate">
+			<div class="mt-4 truncate">
 			<p class="text-lg truncate" style="color: {vm.statusColor}">{vm.statusName}</p>
 		</div>
-		<div class="container mt-2">
-		{#if vm.modal?.list}
-			{#each vm.modal?.list as listItem, index}
-				<button type="button" class="w-full mt-2 btn btn-lg {setColor(index)} shadow-xl rounded-lg border border-white/15 hover:border-white/50" 
-					on:click|stopPropagation|preventDefault={() => {setItem(index)}}>
-						<span>{$_(listItem.name)}</span>
-				</button>
-				{/each}
+		<div class="container flex grid grid-cols-2 gap-2 mt-6 m-2">
+		{#if vm.modal && vm.modal.buttons}
+			{#each vm.modal.buttons as button, index}
+				{#if button.type === 'button'}
+					<button type="button" class="w-full {getColSpan(index, vm.modal.buttons.length)} btn btn-lg preset-tonal-primary shadow-xl rounded-lg border border-white/15 hover:border-white/50" 
+							on:click|stopPropagation|preventDefault={button.click}
+							on:mousedown|stopPropagation|preventDefault={button.mousedown}
+							on:mouseup|stopPropagation|preventDefault={button.mouseup}>
+							{#if button.name}
+								<span>{$_(button.name)}</span>
+							{:else}
+								<span>
+									<LucideIcon name={button.iconName}/>
+								</span>
+							{/if}
+					</button>
+				{/if}
+			{/each}
 		{/if}
 		</div>
 	</div>

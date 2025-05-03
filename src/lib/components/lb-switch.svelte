@@ -20,7 +20,7 @@
 				type: 'switch',
 				name: 'Switch off,Switch on',
 				state: buttonActive,
-				action: (e: any) => {
+				click: (e: any) => {
 					publishTopic(control.uuidAction, e.checked ? '1' : '0');
 				}
 			}

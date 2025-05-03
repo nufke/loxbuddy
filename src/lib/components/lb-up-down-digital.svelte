@@ -17,13 +17,13 @@
 				iconName: 'ChevronDown',
 				type: 'button',
 				color: '',
-				action: () => publishTopic(control.uuidAction, 'PulseDown')
+				click: () => publishTopic(control.uuidAction, 'PulseDown')
 			},
 			{
 				iconName: 'ChevronUp',
 				type: 'button',
 				color: '',
-				action: () => publishTopic(control.uuidAction, 'PulseUp')
+				click: () => publishTopic(control.uuidAction, 'PulseUp')
 			}
 		],
 		modal: {

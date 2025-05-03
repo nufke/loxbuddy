@@ -23,10 +23,14 @@
 	function setPostion(pos: number[]) {
 		if (vm && vm.buttons && vm.buttons[0]) {
 			console.log('pos', pos[0]);
-			vm.buttons[0].action({checked: pos[0]});
+			vm.buttons[0].click({checked: pos[0]});
 		}
 	}
 
+  function getColSpan(i: number, j: number) {
+		console.log(j);
+		return (i==4 && j!=0)  ? 'col-span-2' : '';
+	}
 </script>
 
 <Modal
@@ -39,7 +43,7 @@
 	{#snippet content()}
 	<header class="relative">
 		<div class="flex justify-center">
-			<div class="placeholder-circle flex h-18 w-18 items-center justify-center">
+			<div class="relative inline-flex h-18 w-18 items-center justify-center overflow-hidden rounded-full dark:bg-surface-950">
 				<svg use:inlineSvg={'/loxicons/' + vm.iconName} fill={vm.iconColor} width="36" height="36"></svg>
 			</div>
 		</div>
@@ -49,22 +53,22 @@
 			</button>
 		</div>
 	</header>
-	<div class="flex flex-col items-center justify-center m-2">
+	<div class="flex flex-col items-center justify-center mt-2">
 		<div>
 			<h2 class="h4 text-center">{vm.textName}</h2>
 		</div>
 			<div class="mt-4 truncate">
-			<p class="text-lg truncate">{vm.statusName}</p>
+			<p class="text-lg truncate" style="color: {vm.statusColor}">{vm.statusName}</p>
 		</div>
-		<div class="container flex">
-		{#if vm.buttons && !vm.modal?.slider}
+		{#if vm.buttons && !vm.modal?.slider && !vm.modal?.buttons}
+		<div class="container flex m-2 ">
 			{#each vm.buttons as button, index}
 				{#if index > 0}
 					<div class="ml-2"></div>
 				{/if}
-				{#if button.type === 'button' && button.action}
+				{#if button.type === 'button' && button.click}
 					<button type="button" class="w-full btn btn-lg preset-tonal-primary shadow-xl rounded-lg border border-white/15 hover:border-white/50" 
-							on:click|stopPropagation|preventDefault={button.action}>
+							on:click|stopPropagation|preventDefault={button.click}>
 							{#if button.name}
 								<span>{$_(button.name)}</span>
 							{:else}
@@ -76,17 +80,37 @@
 				{/if}
 				{#if button.type == 'switch' && button.name }
 					<button type="button" class="w-full btn btn-lg preset-tonal-primary shadow-xl rounded-lg border border-white/15 hover:border-white/50" 
-							on:click|stopPropagation|preventDefault={() => {button.action({checked: !button.state})}}>
+							on:click|stopPropagation|preventDefault={() => {button.click({checked: !button.state})}}>
 						<span style="font-size:18px">{$_(getButtonName(vm, button.name, button.state ? true : false))}</span>
 					</button>
 				{/if}
 				{/each}
+		</div>
 		{/if} <!--buttons-->
 		{#if vm && vm.modal && vm.modal.slider && vm.modal.slider.position}
+		<div class="container flex m-2 p-0">
 	 	 <Slider classes="mt-6 ml-2 mr-2 mb-2" thumbSize="size-5" name="example" {value} {min} {max} {step} onValueChange={(e) => setPostion(e.value)} markers={[min, max]}
 				markText="size-8" markersClasses="-mt-11 ml-2 -mr-2"/>
-		{/if}
 		</div>
+		{/if}
+		{#if vm && vm.modal && vm.modal.buttons}
+		<div class="container flex grid grid-cols-2 gap-2 mt-6 m-2">
+			{#each vm.modal.buttons as button, index}
+			{#if button.type === 'button' && button.click}
+				<button type="button" class="w-full {getColSpan(index, vm.modal.buttons.length)} btn btn-lg preset-tonal-primary shadow-xl rounded-lg border border-white/15 hover:border-white/50" 
+						on:click|stopPropagation|preventDefault={button.click}>
+						{#if button.name}
+							<span>{$_(button.name)}</span>
+						{:else}
+							<span>
+								<LucideIcon name={button.iconName}/>
+							</span>
+						{/if}
+				</button>
+			{/if}
+			{/each}
+		</div>
+		{/if}
 	</div>
 	{/snippet}
 </Modal>

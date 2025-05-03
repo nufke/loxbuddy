@@ -18,7 +18,7 @@
 				iconName: 'Circle',
 				type: 'button',
 				color: '',
-				action: () => {
+				click: () => {
 					publishTopic(control.uuidAction, 'pulse');
 				}
 			}

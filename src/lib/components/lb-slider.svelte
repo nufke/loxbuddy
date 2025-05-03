@@ -36,13 +36,13 @@
 				iconName: 'Minus',
 				type: 'button',
 				color: '',
-				action: (e:any) => updatePosition(e, -1)
+				click: (e:any) => updatePosition(e, -1)
 			},
 			{
 				iconName: 'Plus',
 				type: 'button',
 				color: '',
-				action: (e:any) => updatePosition(e, 1)
+				click: (e:any) => updatePosition(e, 1)
 			}
 		],
 		modal: {

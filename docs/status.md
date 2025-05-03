@@ -58,7 +58,7 @@ For additional requests or ideas, you can raise an [issue](https://github.com/nu
 | IRoomControllerV2        | Not started       |
 | IRoomControllerV2021     | Not started       |
 | Irrigation               | Not started       |
-| Jalousie                 | Under development |
+| Jalousie                 | Available         |
 | LeftRightAnalog          | Not started       |
 | LeftRightDigital         | Not started       |
 | Light                    | Not started       |

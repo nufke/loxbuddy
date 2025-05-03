@@ -54,13 +54,13 @@
 				iconName: 'Minus',
 				type: 'button',
 				color: '',
-				action: (e:any) => clickRadio(e, -1)
+				click: (e:any) => clickRadio(e, -1)
 			},
 			{
 				iconName: 'Plus',
 				type: 'button',
 				color: '',
-				action: (e:any) => clickRadio(e, 1)
+				click: (e:any) => clickRadio(e, 1)
 			}
 		],
 		modal: {

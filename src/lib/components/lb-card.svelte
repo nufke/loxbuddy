@@ -13,7 +13,7 @@
            	bg-linear-to-r from-white/[0.095] to-white/5 px-2 py-2 hover:border-white/10">
 	<div class="flex w-full justify-between">
 		<div class="flex items-center truncate">
-			<div class="relative inline-flex items-center justify-center w-12 h-12 min-w-12 overflow-hidden bg-white rounded-full dark:bg-black">
+			<div class="relative inline-flex items-center justify-center w-12 h-12 min-w-12 overflow-hidden rounded-full dark:bg-surface-950">
 				<svg use:inlineSvg={'/loxicons/' + item.image} fill={color} width="24" height="24"></svg>
 			</div>
 			<div class="mt-0 ml-3 truncate">
