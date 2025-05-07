@@ -6,7 +6,6 @@
 	import type { Route } from '$lib/types/models';
 	import { mqttConnect } from '$lib/helpers/mqttclient';
 	import { _ } from 'svelte-i18n';
-
 	import { page } from '$app/state';
 
 	/* start MQTT client */

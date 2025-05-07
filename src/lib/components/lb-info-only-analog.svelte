@@ -18,7 +18,7 @@
 			switch (control.details.format) {
 				case '<v.u>': // date + time, e.g. 6 maart 2025 22:56
 					const date = new Date(value * 1000 + loxTimeRef);
-					s = format(date, 'PPP p', { locale: nl });
+					s = format(date, 'PPP p', { locale: nl }); // TODO change locale
 					break;
 				case '<v.t>': // duration/time
 					let du = value / 60;
@@ -29,7 +29,7 @@
 					break;
 				case '<v.d>': // EIS4, dd:mm:yyyy
 					const d = new Date(value * 1000 + loxTimeRef);
-					s = format(d, 'dd:MM:yyyy', { locale: nl });
+					s = format(d, 'dd:MM:yyyy', { locale: nl }); // TODO change locale
 					break;
 				case '<v.x>': // digital value
 					s = value ? '1' : '0'; // TODO check

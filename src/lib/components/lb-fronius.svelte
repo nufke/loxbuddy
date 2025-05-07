@@ -10,16 +10,16 @@
 
 	let openModal: boolean;
 
-	$: p = $state[control.states.prodCurr];
-	$: c = $state[control.states.consCurr];
+	const prod = $_('Production');
+  const cons = $_('Consumption');
 
-	const prod = $_('Production')[0];
-  const cons = $_('Consumption')[0];
+	$: prodCurr = $state[control.states.prodCurr];
+	$: consCurr = $state[control.states.consCurr];
 
-  $: controlView = {
+	$: controlView = {
 		iconName: control.defaultIcon || $categories[control.cat].image,
 		textName: control.name,
-		statusName: prod + fmt.sprintf(' %.2f', p) + ' kW • ' + cons + fmt.sprintf(' %.2f', c) + ' kW',
+		statusName: fmt.sprintf('%s %.2f kW • %s %.2f kW', prod[0], prodCurr, cons[0], consCurr),
 		statusColor: '#69C350', //TODO add color map
 		modal: {
 			action: (state: boolean) => {openModal = state},

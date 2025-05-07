@@ -4,14 +4,12 @@
   import { type ControlView, DEFAULT_CONTROLVIEW } from '$lib/types/models';
 	import LucideIcon from './icon-by-name.svelte';
 	import { X } from '@lucide/svelte';
-	import { Slider } from '@skeletonlabs/skeleton-svelte';
 	import { _ } from 'svelte-i18n';
 
 	export let controlView: ControlView;
 	$: vm = { ...DEFAULT_CONTROLVIEW, ...controlView };
 
   function getColSpan(i: number, j: number) {
-		console.log(j);
 		return (i==4 && j!=0)  ? 'col-span-2' : '';
 	}
 </script>

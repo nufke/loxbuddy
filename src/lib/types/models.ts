@@ -272,6 +272,7 @@ export type ModalState = {
 	list?: ListItem[]
 	slider?: Slider;
 	buttons?: SingleButtonView[];
+	details?:any;
 }
 
 export type ControlView = {
@@ -311,3 +312,7 @@ export type Route = {
 	href: string;
 	icon: typeof IconType;
 };
+
+export type DateMap = {
+	[key: number]: string[];
+}

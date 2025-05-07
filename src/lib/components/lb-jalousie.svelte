@@ -24,13 +24,13 @@
 				iconName: 'ChevronDown',
 				type: 'button',
 				color: '',
-				click: () => console.log('fully down')
+				click: () => publishTopic(control.uuidAction, 'FullDown')
 			},
 			{
 				iconName: 'ChevronUp',
 				type: 'button',
 				color: '',
-				click: () => console.log('fully up')
+				click: () => publishTopic(control.uuidAction, 'FullUp')
 			}
 		],
 		modal: {
