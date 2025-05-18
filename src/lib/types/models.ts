@@ -312,7 +312,3 @@ export type Route = {
 	href: string;
 	icon: typeof IconType;
 };
-
-export type DateMap = {
-	[key: number]: string[];
-}

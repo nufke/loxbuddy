@@ -1,5 +1,5 @@
 import mqtt from 'mqtt';
-import { structure, state, securedDetails } from '$lib/stores/stores';
+import { structure, state, securedDetails, bellImages } from '$lib/stores/stores';
 
 let connected: boolean;
 let serialNr: string;  // TODO support multiple miniservers
@@ -44,8 +44,9 @@ const onConnect = () => {
 	const registerTopics = [
 		topicPrefix + '/+/states',
 		topicPrefix + '/+/structure',
-		topicPrefix + '/+/#',
-		topicPrefix + '/+/securedDetails'
+		topicPrefix + '/#',
+		topicPrefix + '/+/securedDetails',
+		topicPrefix + '/+/lastBellEventImage/#'
 	];
 
 	registerTopics.forEach((topic) => {
@@ -65,6 +66,8 @@ const onMessage = (topic: string, message: any) => {
 	const msg = message.toString();
 	monitorStructure(topic, msg);
 	monitorInitialStates(topic, msg);
+	monitorSecuredDetails(topic, msg);
+	monitorLastBellEventImage(topic, msg);
 	monitorStates(topic, msg);
 };
 
@@ -72,10 +75,8 @@ export async function reconnect() {
 	mqttclient.reconnect();
 }
 
-export const publishTopic = (uuid: string, msg: string) => {
-	const retain = true;
-	const qos = 1;
-
+export const publishTopic = (uuid: string, msg: string, retain: boolean = false) => {
+	const qos = 1; // TODO add to configuration?
 	if (connected && serialNr) {
 		const topic = topicPrefix + '/' + serialNr + '/' + uuid + '/cmd';
 		console.log('MQTT publish:', topic, msg);
@@ -87,7 +88,6 @@ function monitorStructure(topic: string, msg: string) {
 	const regex = new RegExp(topicPrefix + '/(.*)/structure');
 	const found = topic.match(regex);
 	if (found && found[1]) {
-		//console.log('structure', msg);
 		structure.set(JSON.parse(msg));
 		serialNr = found[1];
 		console.log('Miniserver registered', serialNr);
@@ -100,21 +100,35 @@ function monitorInitialStates(topic: string, msg: string) {
 	if (found && found[1]) {
 		const regex2 = new RegExp(topicPrefix + '/' + found[1] + '/', 'g'); // TODO replace stored states at server 
 		msg = msg.replace(regex2, '');
-		//console.log('states', topic, msg);
 		state.set(JSON.parse(msg))
+	}
+}
+
+function monitorSecuredDetails(topic: string, msg: string) {
+	const regex = new RegExp(topicPrefix + '/(.*)/securedDetails');
+	const found = topic.match(regex);
+	if (found && found[1]) {
+		console.log('monitorSecuredDetails', found[1],msg);
+		securedDetails.update((state) => state = { ...state, [found[1].split('/')[1]]: JSON.parse(msg) });
+	}
+}
+
+function monitorLastBellEventImage(topic: string, msg: string) {
+	const regex = new RegExp(topicPrefix + '/(.*)/lastBellEventImage/(.*)');
+	const found = topic.match(regex);
+	if (found && found[1] && found[2]) {
+		bellImages.update((state) => { 
+			let events = state && state[found[1].split('/')[1]] ? state[found[1].split('/')[1]] : null;
+			state = { ...state, [found[1].split('/')[1]]: { ...events, [found[2]]: msg }}; 
+			return state;
+		});
 	}
 }
 
 function monitorStates(topic: string, msg: string) {
 	const regex = new RegExp(topicPrefix + '/(.*)/(.*)');
 	const found = topic.match(regex);
-	const data = msg.length ? msg : '<empty>';
 	if (found && found[1] && found[2]) {
-		if (found[2] == 'securedDetails') {
-			//console.log(found[1], msg);
-			securedDetails.update((state) => state = { ...state, [found[1].split('/')[1]]: JSON.parse(msg) });
-		} else {
-		  state.update((state) => state = { ...state, [found[2]]: msg });
-		}
+		state.update((state) => state = { ...state, [found[2]]: msg });
 	}
 }
