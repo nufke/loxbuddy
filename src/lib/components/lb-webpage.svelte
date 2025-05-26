@@ -1,33 +1,43 @@
 <script lang="ts">
 	import LbControl from '$lib/components/lb-control.svelte';
-	import type { Control } from '$lib/types/models';
-	import { categories } from '$lib/stores/stores';
+	import type { Control, ControlView, ModalView, SingleButtonView } from '$lib/types/models';
+	import { DEFAULT_CONTROLVIEW } from '$lib/types/models';
 	import LbModal from '$lib/components/lb-modal.svelte';
+	import { store } from '$lib/stores/store.svelte';
 
-	export let control: Control;
+	let { control }: { control: Control } = $props();
 
-	let openModal: boolean;
+	let url = $derived(control.details.url);
 
-  $: controlView = {
-		iconName: control.defaultIcon || $categories[control.cat].image,
-		textName: control.name,
-		buttons: [
-			{
-				iconName: 'SquareArrowOutUpRight',
-				name: 'Open link',
-				type: 'button',
-				color: '',
-				click: () => window.open(control.details.url, "_blank")
-			}
-		],
-		modal: {
-			action: (state: boolean) => {openModal = state},
-			state: openModal
+	function openWebPage() {
+		window.open(url, "_blank")
+	}
+	
+	let buttons: SingleButtonView[] = $state([
+		{
+			iconName: 'SquareArrowOutUpRight',
+			name: 'Open link',
+			type: 'button',
+			color: '',
+			click: () => openWebPage()
 		}
-	};
+	]);
+
+	let	modal: ModalView = $state({
+		action: (state: boolean) => {modal.state = state},
+		state: false
+	});
+
+  let controlView: ControlView = $derived({
+		...DEFAULT_CONTROLVIEW,
+		iconName: control.defaultIcon || store.getCategoryIcon(control),
+		textName: control.name,
+		buttons: buttons,
+		modal: modal
+	});
 </script>
 
 <div>
-	<LbControl {controlView} />
-	<LbModal {controlView} />
+	<LbControl bind:controlView={controlView}/>
+	<LbModal bind:controlView={controlView}/>
 </div>

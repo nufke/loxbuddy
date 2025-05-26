@@ -1,13 +1,12 @@
 <script lang="ts">
-	import type { Control } from '$lib/types/models';
+	import type { Control, ControlView, SingleButtonView, ModalView } from '$lib/types/models';
+	import { DEFAULT_CONTROLVIEW } from '$lib/types/models';
 	import LbControl from '$lib/components/lb-control.svelte';
 	import LbListModal from '$lib/components/lb-list-modal.svelte';
-	import { state, categories } from '$lib/stores/stores';
 	import { publishTopic } from '$lib/helpers/mqttclient';
+	import { store } from '$lib/stores/store.svelte';
 
-	export let control: Control;
-
-	let openModal: boolean;
+	let { control }: { control: Control } = $props();
 
 	function clickRadio(e: any, step: number) {
 		let min: number = 0;
@@ -35,43 +34,49 @@
 		publishTopic(control.uuidAction, msg);
 	}
 
-	$: selectedRadio = Number($state[control.states.activeOutput]);
-	$: radioIndex = radioList.find( item => item.id == selectedRadio);
-
-	$: radioList = 
+	let radioList = $derived(
 		Object.entries(control.details.outputs).map((entry) => ({
 			id: Number(entry[0]),
 			name: String(entry[1])
-		})).concat([{ id: 0, name: control.details.allOff }]);
+		})).concat([{ id: 0, name: control.details.allOff }]));
 
-	$: controlView = {
-		iconName: control.defaultIcon || $categories[control.cat].image,
+	let selectedRadio = $derived(Number(store.getState(control.states.activeOutput)));
+
+	let radioIndex = $derived(radioList.find( item => item.id == selectedRadio));
+
+	let	modal: ModalView = $state({
+		action: (state: boolean) => {modal.state = state},
+		state: false,
+	});
+	
+	let buttons: SingleButtonView[] = $state([
+		{
+			iconName: 'Minus',
+			type: 'button',
+			color: '',
+			click: (e: any) => clickRadio(e, -1)
+		},
+		{
+			iconName: 'Plus',
+			type: 'button',
+			color: '',
+			click: (e: any) => clickRadio(e, 1)
+		}
+	]);
+
+	let controlView: ControlView = $derived({
+		...DEFAULT_CONTROLVIEW,
+		iconName: control.defaultIcon || store.getCategoryIcon(control),
 		textName: control.name,
 		statusName: radioIndex ? radioIndex.name : 'unknown',
 		statusColor: selectedRadio ? '#69C350' : 'white', //TODO add color map
-		buttons: [
-			{
-				iconName: 'Minus',
-				type: 'button',
-				color: '',
-				click: (e:any) => clickRadio(e, -1)
-			},
-			{
-				iconName: 'Plus',
-				type: 'button',
-				color: '',
-				click: (e:any) => clickRadio(e, 1)
-			}
-		],
-		modal: {
-			action: (state: boolean) => {openModal = state},
-			state: openModal,
-			list: radioList
-		}
-	};
+		list: radioList,
+		buttons: buttons,
+		modal: modal
+	});
 </script>
 
 <div>
-	<LbControl {controlView} />
-	<LbListModal {controlView} />
+	<LbControl bind:controlView={controlView}/>
+	<LbListModal bind:controlView={controlView}/>
 </div>

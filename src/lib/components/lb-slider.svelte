@@ -1,65 +1,67 @@
 <script lang="ts">
-	import type { Control } from '$lib/types/models';
+	import type { Control, ControlView, SingleButtonView, Slider, ModalView } from '$lib/types/models';
+	import { DEFAULT_CONTROLVIEW } from '$lib/types/models';
 	import LbControl from '$lib/components/lb-control.svelte';
 	import LbModal from '$lib/components/lb-modal.svelte';
-	import { state, categories } from '$lib/stores/stores';
+	import { store } from '$lib/stores/store.svelte';
 	import { publishTopic } from '$lib/helpers/mqttclient';
 	import fmt from 'sprintf-js';
 
-	export let control: Control;
+	let { control }: { control: Control } = $props();
 
-	let openModal: boolean;
-	let min: number = Number(control.details.min);
-	let max: number = Number(control.details.max);
-	let step: number = Number(control.details.step);
-	let newPosition: number;
+	let slider: Slider = $derived({
+		min: Number(control.details.min),
+		max: Number(control.details.max),
+		step: Number(control.details.step),
+	});
 
-	$: position = Number($state[control.states.value]);
+	let position = $derived(Number(store.getState(control.states.value)));
 
 	function updatePosition(e: any, isUp: number) {
-		if (e && e.checked == undefined) { // no index given, assume button
-			newPosition = position + step * isUp;
-			if (newPosition > max) newPosition = max;
-			if (newPosition < min) newPosition = min;
-		} else {
-			newPosition = e.checked;
+		let newPosition;
+		if (e && e.sliderPosition == undefined && controlView.sliderPosition) { // no sliderPosition, is button
+			newPosition = controlView.sliderPosition + slider.step * isUp;
+			if (newPosition > slider.max) newPosition = slider.max;
+			if (newPosition < slider.min) newPosition = slider.min;
+		} else { // is slider
+			newPosition = e.sliderPosition;
 		}
 		publishTopic(control.uuidAction, String(newPosition));
 	}
-	
-  $: controlView = {
-		iconName: control.defaultIcon || $categories[control.cat].image,
+
+	let buttons: SingleButtonView[] = $state([
+		{
+			iconName: 'Minus',
+			type: 'button',
+			color: '',
+			click: (e: any) => {updatePosition(e, -1)}
+		},
+		{
+			iconName: 'Plus',
+			type: 'button',
+			color: '',
+			click: (e: any) => {updatePosition(e, 1)}
+		}
+	]);
+
+	let modal: ModalView = $state({
+		action: (state: boolean) => {modal.state = state},
+		state: false,
+	});
+
+	let controlView: ControlView = $derived({
+		...DEFAULT_CONTROLVIEW,
+		iconName: control.defaultIcon || store.getCategoryIcon(control),
 		textName: control.name,
 		statusName: fmt.sprintf(control.details.format, position),
-		buttons: [
-			{
-				iconName: 'Minus',
-				type: 'button',
-				color: '',
-				click: (e:any) => updatePosition(e, -1)
-			},
-			{
-				iconName: 'Plus',
-				type: 'button',
-				color: '',
-				click: (e:any) => updatePosition(e, 1)
-			}
-		],
-		modal: {
-			action: (state: boolean) => {openModal = state},
-			state: openModal,
-			slider: {
-				min: Number(control.details.min),
-				max: Number(control.details.max),
-				step: Number(control.details.step),
-				position: position
-			}
-		}
-	};
+		buttons: buttons,
+		slider: slider,
+		sliderPosition: position,
+		modal: modal
+	});
 </script>
 
 <div>
-	<LbControl {controlView} />
-	<LbModal {controlView} />
+	<LbControl bind:controlView={controlView}/>
+	<LbModal bind:controlView={controlView}/>
 </div>
-

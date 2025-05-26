@@ -1,36 +1,50 @@
 <script lang="ts">
-	import type { Control } from '$lib/types/models';
+	import type { Control, ControlView, ModalView } from '$lib/types/models';
+	import { DEFAULT_CONTROLVIEW } from '$lib/types/models';
 	import LbControl from '$lib/components/lb-control.svelte';
-	import { state, categories, securedDetails, bellImages } from '$lib/stores/stores';
 	import LbIntercomModal from '$lib/components/lb-intercom-modal.svelte';
 	import fmt from 'sprintf-js';
+	import { store } from '$lib/stores/store.svelte';
+	import { publishTopic } from '$lib/helpers/mqttclient';
 
-	export let control: Control;
+	let { control }: { control: Control } = $props();
 
-	let openModal: boolean;
+	function requestLastImages() {
+		publishTopic(control.uuidAction + '/lastBellEventImages', '1');
+	}
 
-	$: details = $securedDetails ? $securedDetails[control.uuidAction] : null;
-	$: lastBellEvents = $state[control.states.lastBellEvents].split('|');
-	$: lastBellImages = $bellImages ? $bellImages[control.uuidAction] : null;
+	let modal: ModalView = $state({
+		action: (state: boolean) => {modal.state = state; if (state) { requestLastImages(); } },
+		state: false,
+	});
 
-	$: controlView = {
-		iconName: control.defaultIcon || $categories[control.cat].image,
+	type DetailsView = {
+		hasLastBellEventImages: Boolean;
+		lastBellEvents: string[];
+		lastBellEventImages: any;
+	}
+
+	let lastBellEvents = $derived(store.getState(control.states.lastBellEvents).split('|'));
+	let lastBellEventImages = $derived(store.getLastBellEventImages(control.uuidAction));
+
+	let	details: DetailsView = $derived({
+		hasLastBellEventImages: control.details.lastBellEventImages,
+		lastBellEvents: lastBellEvents,
+		lastBellEventImages: lastBellEventImages
+	});
+
+	let controlView: ControlView = $derived({
+		...DEFAULT_CONTROLVIEW,
+		iconName: control.defaultIcon || store.getCategoryIcon(control),
 		textName: control.name,
-		statusName: fmt.sprintf(control.details.format, $state[control.states.text]),
-		modal: {
-			action: (state: boolean) => {openModal = state},
-			state: openModal,
-			details: {
-				video: details,
-				lastBellEventImages: control.details.lastBellEventImages,
-				lastBellEvents: lastBellEvents,
-				lastBellImages: lastBellImages
-			}
-		}
-	};
+		statusName: fmt.sprintf(control.details.format, store.getState(control.states.text)),
+		details: details,
+		securedDetails: store.getSecuredDetails(control.uuidAction),
+		modal: modal,
+	});
 </script>
 
 <div>
-	<LbControl {controlView} />
-	<LbIntercomModal {controlView} />
+	<LbControl bind:controlView={controlView}/>
+	<LbIntercomModal bind:controlView={controlView}/>
 </div>

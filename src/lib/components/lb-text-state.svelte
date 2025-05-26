@@ -1,25 +1,27 @@
 <script lang="ts">
 	import LbControl from '$lib/components/lb-control.svelte';
-	import type { Control } from '$lib/types/models';
-	import { state, categories } from '$lib/stores/stores';
+	import type { Control, ControlView, ModalView } from '$lib/types/models';
+	import { DEFAULT_CONTROLVIEW } from '$lib/types/models';
 	import LbModal from '$lib/components/lb-modal.svelte';
+	import { store } from '$lib/stores/store.svelte';
 
-	export let control: Control;
+	let { control }: { control: Control } = $props();
 
-	let openModal: boolean;
+	let modal: ModalView = $state({
+		action: (state: boolean) => {modal.state = state},
+		state: false
+	});
 
-	$: controlView = {
-		iconName: control.defaultIcon || $categories[control.cat].image,
+	let controlView: ControlView = $derived({
+		...DEFAULT_CONTROLVIEW,
+		iconName: control.defaultIcon || store.getCategoryIcon(control),
 		textName: control.name,
-		statusName: $state[control.states.textAndIcon],
-		modal: {
-			action: (state: boolean) => {openModal = state},
-			state: openModal
-		}
-	};
+		statusName: store.getState(control.states.textAndIcon),
+		modal: modal
+	});
 </script>
 
 <div>
-	<LbControl {controlView} />
-	<LbModal {controlView} />
+	<LbControl bind:controlView={controlView} />
+	<LbModal bind:controlView={controlView} />
 </div>

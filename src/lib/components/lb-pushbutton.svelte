@@ -1,36 +1,40 @@
 <script lang="ts">
-	import type { Control } from '$lib/types/models';
+	import type { Control, ControlView, ModalView, SingleButtonView } from '$lib/types/models';
+	import { DEFAULT_CONTROLVIEW } from '$lib/types/models';
 	import LbControl from '$lib/components/lb-control.svelte';
 	import LbModal from '$lib/components/lb-modal.svelte';
-	import { categories } from '$lib/stores/stores';
 	import { publishTopic } from '$lib/helpers/mqttclient';
+	import { store } from '$lib/stores/store.svelte';
 
-	export let control: Control;
+	let { control }: { control: Control } = $props();
 
-	let openModal: boolean;
+	let modal: ModalView = $state({
+		action: (state: boolean) => {modal.state = state},
+		state: false
+	});
 
-	$: controlView = {
-		iconName: control.defaultIcon || $categories[control.cat].image,
-		textName: control.name,
-		buttons: [
-			{
-				name: 'Push',
-				iconName: 'Circle',
-				type: 'button',
-				color: '',
-				click: () => {
-					publishTopic(control.uuidAction, 'pulse');
-				}
+	let buttons: SingleButtonView[] = $state([
+		{
+			name: 'Push',
+			iconName: 'Circle',
+			type: 'button',
+			color: '',
+			click: () => {
+				publishTopic(control.uuidAction, 'pulse');
 			}
-		],
-		modal: {
-			action: (state: boolean) => {openModal = state},
-			state: openModal
 		}
-	};
+	]);
+
+	let controlView: ControlView = $derived({
+		...DEFAULT_CONTROLVIEW,
+		iconName: control.defaultIcon || store.getCategoryIcon(control),
+		textName: control.name,
+		buttons: buttons,
+		modal: modal
+	});
 </script>
 
 <div>
-	<LbControl {controlView} />
-	<LbModal {controlView} />
+	<LbControl bind:controlView={controlView}/>
+	<LbModal bind:controlView={controlView}/>
 </div>

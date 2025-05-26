@@ -1,19 +1,24 @@
 <script lang="ts">
+	import type { PageProps } from './$types';
 	import { _ } from 'svelte-i18n';
-	import { controlList, categoryList, roomList } from '$lib/stores/stores';
 	import { getComponent } from '$lib/helpers/components';
+	import { store } from '$lib/stores/store.svelte';
 
-	export let data;
-	let uuid = data.uuid;
+	let { data }: PageProps = $props();
+	const uuid = data.uuid;
 
-	$: filteredControls = $controlList.filter((control) => control.room === uuid)
-				.sort((a, b) => a.name.localeCompare(b.name));
+	let filteredControls = $derived(
+		store.controlList.filter((control) => control.room === uuid)
+			.sort((a, b) => a.name.localeCompare(b.name)));
 
-	$: labels =  $categoryList.filter((item) => filteredControls.map((control) => control.cat)
-				.indexOf(item.uuid) > -1)
-				.sort((a, b) => a.name.localeCompare(b.name));
+	let labels = $derived(
+		store.categoryList.filter((item) => filteredControls.map((control) => control.cat)
+			.indexOf(item.uuid) > -1)
+			.sort((a, b) => a.name.localeCompare(b.name)));
 
-	$: pageTitle = $roomList.find((item) => filteredControls[0].room == item.uuid)
+	let pageTitle =  $derived(
+		store.roomList.find((item) => filteredControls[0].room == item.uuid)
+	);
 </script>
 
 <div class="container space-y-3 p-3 mx-auto max-w-[1280px]">
@@ -22,7 +27,8 @@
 		<h1 class="h5 ml-2">{label.name}</h1>
 		<div class="grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 lg:flex-wrap">
 			{#each filteredControls.filter( item => item.cat == label.uuid ) as control}
-				<svelte:component this={getComponent(control.type)} {control} />
+				{@const Component = getComponent(control.type)}
+    		<Component {control} />
 			{/each}
 		</div>
 	{/each}

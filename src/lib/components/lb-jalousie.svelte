@@ -1,82 +1,92 @@
 <script lang="ts">
-	import type { Control } from '$lib/types/models';
+	import type { Control, ControlView, SingleButtonView, ModalView } from '$lib/types/models';
+	import { DEFAULT_CONTROLVIEW } from '$lib/types/models';
 	import LbControl from '$lib/components/lb-control.svelte';
-	import { state, categories } from '$lib/stores/stores';
+	import LbJalousieModal from '$lib/components/lb-jalousie-modal.svelte';
 	import fmt from 'sprintf-js';
 	import { _ } from 'svelte-i18n';
-	import LbJalousieModal from '$lib/components/lb-jalousie-modal.svelte';
 	import { publishTopic } from '$lib/helpers/mqttclient';
+	import { store } from '$lib/stores/store.svelte';
+	
+	let { control }: { control: Control } = $props();
 
-	export let control: Control;
+	let position = $derived(Number(store.getState(control.states.position)) * 100);
 
-	let openModal: boolean;
+	let buttons: SingleButtonView[] = $state([
+		{
+			iconName: 'ChevronDown',
+			type: 'button',
+			color: '',
+			click: () => publishTopic(control.uuidAction, 'FullDown')
+		},
+		{
+			iconName: 'ChevronUp',
+			type: 'button',
+			color: '',
+			click: () => publishTopic(control.uuidAction, 'FullUp')
+		}
+	]);
 
-	$: position = Number($state[control.states.position]) * 100;
-
-	$: controlView = {
-		iconName: control.defaultIcon || $categories[control.cat].image,
-		iconColor: (position > 0) ? '#69C350' : 'white', //TODO add color map
-		textName: control.name,
-		statusName: position < 1 ? $_('Opened') : position > 99 ? $_('Closed') : fmt.sprintf('%1.0f%% ', position),
-		statusColor: (position > 0) ? '#69C350' : 'white', //TODO add color map
+	let modal: ModalView = $state({
+		action: (state: boolean) => {modal.state = state},
+		state: false,
 		buttons: [
 			{
 				iconName: 'ChevronDown',
 				type: 'button',
 				color: '',
-				click: () => publishTopic(control.uuidAction, 'FullDown')
+				click: () => {},  // do nothing
+				mousedown: () => { console.log('ChevronDown'); publishTopic(control.uuidAction, 'down')},
+				mouseup: () => { console.log('ChevronDown'); publishTopic(control.uuidAction, 'DownOff')}
 			},
 			{
 				iconName: 'ChevronUp',
 				type: 'button',
 				color: '',
-				click: () => publishTopic(control.uuidAction, 'FullUp')
+				click: () => {}, // do nothing
+				mousedown: () => publishTopic(control.uuidAction, 'up'),
+				mouseup: () => publishTopic(control.uuidAction, 'UpOff')
+			},
+			{
+				iconName: 'ArrowDownToLine',
+				type: 'button',
+				color: '',
+				click: () => publishTopic(control.uuidAction, 'FullDown'),
+				mousedown: () => {}, // do nothing
+				mouseup: () => {} // do nothing
+			},
+			{
+				iconName: 'ArrowUpToLine',
+				type: 'button',
+				color: '',
+				click: () => publishTopic(control.uuidAction, 'FullUp'),
+				mousedown: () => {}, // do nothing
+				mouseup: () => {} // do nothing
+			},
+			{
+				name: $_('Shade'),
+				type: 'button',
+				color: '',
+				click: () => publishTopic(control.uuidAction, 'shade'),
+				mousedown: () => {}, // do nothing
+				mouseup: () => {} // do nothing
 			}
-		],
-		modal: {
-			action: (state: boolean) => {openModal = state},
-			state: openModal,
-			buttons: [
-				{
-					iconName: 'ChevronDown',
-					type: 'button',
-					color: '',
-					mousedown: () => publishTopic(control.uuidAction, 'down'),
-					mouseup: () => publishTopic(control.uuidAction, 'DownOff')
-				},
-				{
-					iconName: 'ChevronUp',
-					type: 'button',
-					color: '',
-					mousedown: () => publishTopic(control.uuidAction, 'up'),
-					mouseup: () => publishTopic(control.uuidAction, 'UpOff')
-				},
-				{
-					iconName: 'ArrowDownToLine',
-					type: 'button',
-					color: '',
-					click: () => publishTopic(control.uuidAction, 'FullDown')
-				},
-				{
-					iconName: 'ArrowUpToLine',
-					type: 'button',
-					color: '',
-					click: () => publishTopic(control.uuidAction, 'FullUp')
-				},
-				{
-					name: $_('Shade'),
-					type: 'button',
-					color: '',
-					click: () => publishTopic(control.uuidAction, 'shade')
-				}
-				
-			]
-		}
-	};
+		]
+	});
+
+	let controlView: ControlView = $derived({
+		...DEFAULT_CONTROLVIEW,
+		iconName: control.defaultIcon || store.getCategoryIcon(control),
+		iconColor: (position > 0) ? '#69C350' : 'white', //TODO add color map
+		textName: control.name,
+		statusName: position < 1 ? $_('Opened') : position > 99 ? $_('Closed') : fmt.sprintf('%1.0f%% ', position),
+		statusColor: (position > 0) ? '#69C350' : 'white', //TODO add color map
+		buttons: buttons,
+		modal: modal
+	});
 </script>
 
 <div>
-	<LbControl {controlView} />
-	<LbJalousieModal {controlView} />
+	<LbControl bind:controlView={controlView}/>
+	<LbJalousieModal bind:controlView={controlView}/>
 </div>
-

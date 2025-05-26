@@ -1,35 +1,33 @@
 <script lang="ts">
 	import LbControl from '$lib/components/lb-control.svelte';
-	import { state, categories } from '$lib/stores/stores';
 	import LbModal from '$lib/components/lb-modal.svelte';
-	import type { Control } from '$lib/types/models';
+	import type { Control, ControlView, ModalView } from '$lib/types/models';
+	import { DEFAULT_CONTROLVIEW } from '$lib/types/models';
+	import { store } from '$lib/stores/store.svelte';
 	import fmt from 'sprintf-js';
 	import { _ } from 'svelte-i18n';
 
-	export let control: Control;
-
-	let openModal: boolean;
+	let { control }: { control: Control } = $props();
 
 	const prod = $_('Production');
-  const cons = $_('Consumption');
+	const cons = $_('Consumption');
 
-	$: prodCurr = $state[control.states.prodCurr];
-	$: consCurr = $state[control.states.consCurr];
+	let modal: ModalView = $state({
+		action: (state: boolean) => {modal.state = state},
+		state: false
+	});
 
-	$: controlView = {
-		iconName: control.defaultIcon || $categories[control.cat].image,
+	let controlView: ControlView = $derived({
+		...DEFAULT_CONTROLVIEW,
+		iconName: control.defaultIcon || store.getCategoryIcon(control),
 		textName: control.name,
-		statusName: fmt.sprintf('%s %.2f kW • %s %.2f kW', prod[0], prodCurr, cons[0], consCurr),
+		statusName: fmt.sprintf('%s %.2f kW • %s %.2f kW', prod[0], store.getState(control.states.prodCurr), cons[0], store.getState(control.states.consCurr)),
 		statusColor: '#69C350', //TODO add color map
-		modal: {
-			action: (state: boolean) => {openModal = state},
-			state: openModal
-		}
-	};
+		modal: modal
+	});
 </script>
 
 <div>
-	<LbControl {controlView} />
-	<LbModal {controlView} />
+	<LbControl bind:controlView={controlView}/>
+	<LbModal bind:controlView={controlView}/>
 </div>
-

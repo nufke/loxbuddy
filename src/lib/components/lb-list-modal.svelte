@@ -1,14 +1,13 @@
 <script lang="ts">
 	import { inlineSvg } from '@svelte-put/inline-svg';
 	import { Modal } from '@skeletonlabs/skeleton-svelte';
-  import { type ControlView, DEFAULT_CONTROLVIEW } from '$lib/types/models';
+  import type { ControlView, ListItem } from '$lib/types/models';
 	import { X } from '@lucide/svelte';
 	import { _ } from 'svelte-i18n';
 
-	export let controlView: ControlView;
-	$: vm = { ...DEFAULT_CONTROLVIEW, ...controlView };
+	let { controlView = $bindable() }: { controlView: ControlView } = $props();
 
-	$: index = (vm.modal && vm.modal.list) ? vm.modal.list.findIndex(item => { return item.name === vm.statusName }) : 0;
+	let index = $derived(controlView.list ? controlView.list.findIndex( (item: ListItem) => { return item.name === controlView.statusName }) : 0);
 
 	function setColor(i: number) {
 		if (i==index) {
@@ -19,15 +18,15 @@
 	}
 
 	function setItem(i: number) {
-		if (vm && vm.buttons && vm.buttons[0]) {
-			vm.buttons[0].click({checked: i});
+		if (controlView && controlView.buttons && controlView.buttons[0]) {
+			controlView.buttons[0].click({checked: i});
 		}
 	}
 </script>
 
 <Modal
-	open={vm.modal?.state}
-	onOpenChange={()=>vm.modal?.action(false)}
+	open={controlView.modal.state}
+	onOpenChange={()=>controlView.modal.action(false)}
 	triggerBase="btn preset-tonal"
 	contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-xl rounded-lg border border-white/5
 							from-white/[0.095] to-white/5 max-w-9/10 max-h-9/10 overflow-auto w-[380px]"
@@ -36,27 +35,27 @@
 	<header class="relative">
 		<div class="flex justify-center">
 			<div class="relative inline-flex h-18 w-18 items-center justify-center overflow-hidden rounded-full dark:bg-surface-950">
-				<svg use:inlineSvg={'/loxicons/' + vm.iconName} fill={vm.iconColor} width="36" height="36"></svg>
+				<svg use:inlineSvg={'/loxicons/' + controlView.iconName} fill={controlView.iconColor} width="36" height="36"></svg>
 			</div>
 		</div>
 		<div class="absolute right-0 top-0">
-			<button type="button" aria-label="close" class="btn-icon w-auto" on:click={()=>vm.modal?.action(false)}>
+			<button type="button" aria-label="close" class="btn-icon w-auto" onclick={()=>controlView.modal.action(false)}>
 				<X/>
 			</button>
 		</div>
 	</header>
 	<div class="flex flex-col items-center justify-center m-2">
 		<div>
-			<h2 class="h4 text-center">{vm.textName}</h2>
+			<h2 class="h4 text-center">{controlView.textName}</h2>
 		</div>
 			<div class="mt-4 mb-2 truncate">
-			<p class="text-lg truncate" style="color: {vm.statusColor}">{vm.statusName}</p>
+			<p class="text-lg truncate" style="color: {controlView.statusColor}">{controlView.statusName}</p>
 		</div>
 		<div class="container mt-2">
-		{#if vm.modal?.list}
-			{#each vm.modal?.list as listItem, index}
+		{#if controlView.list}
+			{#each controlView.list as listItem, index}
 				<button type="button" class="w-full mt-2 btn btn-lg {setColor(index)} shadow-xl rounded-lg border border-white/15 hover:border-white/50" 
-					on:click|stopPropagation|preventDefault={() => {setItem(index)}}>
+					onclick={(e) => { e.stopPropagation(); e.preventDefault(); setItem(index)}}>
 						<span>{$_(listItem.name)}</span>
 				</button>
 				{/each}

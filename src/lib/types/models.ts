@@ -65,12 +65,6 @@ export const INITIAL_STRUCTURE: Structure = {
 	messageCenter: {}
 }
 
-export type State = {
-	[key: string]: string;
-};
-
-export const INITIAL_STATE: State = {}
-
 export type MsInfo = {
 	serialNr: string;							// serial number of the Miniserver
 	msName: string;								// name of the Miniserver
@@ -263,16 +257,6 @@ export type Slider = {
   min: number;
   max: number;
   step: number;
-  position: number;
-}
-
-export type ModalState = {
-	action: any,
-	state?: boolean;
-	list?: ListItem[]
-	slider?: Slider;
-	buttons?: SingleButtonView[];
-	details?:any;
 }
 
 export type ControlView = {
@@ -282,10 +266,22 @@ export type ControlView = {
 	textColor?: string;
 	statusName?: string;
 	statusColor?: string;
-	buttons?: SingleButtonView[];
-	modal?: ModalState;
+	buttonState?: boolean;
+	buttons: SingleButtonView[];
+	slider?: Slider;
+	sliderPosition?: number;
+	list?: ListItem[];
+	securedDetails?: any;
+	details?: any;
+	modal: ModalView;
 }
 
+export type ModalView = {
+	action: any,
+	state?: boolean;
+	buttons?: SingleButtonView[];
+	details?:any;
+}
 
 export const DEFAULT_CONTROLVIEW: ControlView = {
 	iconName: '',
@@ -304,7 +300,13 @@ export type MoodList = {
 	name: string;
 	id: number;
 	static: boolean;
-	used: number;
+	used?: number;
+}
+
+export const DEFAULT_MOODLIST = {
+	name: '',
+	id: 778,
+	static: true
 }
 
 export type Route = {

@@ -1,15 +1,17 @@
 <script lang="ts">
 	import LbControl from '$lib/components/lb-control.svelte';
-	import type { Control } from '$lib/types/models';
-	import { categories } from '$lib/stores/stores';
+	import type { Control, ControlView } from '$lib/types/models';
+	import { DEFAULT_CONTROLVIEW } from '$lib/types/models';
+	import { store } from '$lib/stores/store.svelte';
 
-	export let control: Control;
+	let { control }: { control: Control } = $props();
 
-  $: controlView = {
-		iconName: control.defaultIcon || $categories[control.cat].image,
+  let controlView: ControlView = $derived({
+		...DEFAULT_CONTROLVIEW,
+		iconName: control.defaultIcon || store.getCategoryIcon(control),
 		textName: control.name,
 		statusName: '(control unknown)',
-	};
+	});
 </script>
 
-<LbControl {controlView} />
+<LbControl bind:controlView={controlView} />

@@ -1,39 +1,43 @@
 <script lang="ts">
-	import type { Control } from '$lib/types/models';
+	import type { Control, ControlView, SingleButtonView, ModalView } from '$lib/types/models';
+	import { DEFAULT_CONTROLVIEW } from '$lib/types/models';
 	import LbControl from '$lib/components/lb-control.svelte';
-	import { categories } from '$lib/stores/stores';
 	import { publishTopic } from '$lib/helpers/mqttclient';
 	import LbModal from '$lib/components/lb-modal.svelte';
-	
-	export let control: Control;
+	import { store } from '$lib/stores/store.svelte';
 
-	let openModal: boolean;
+	let { control }: { control: Control } = $props();
 
-  $: controlView = {
-		iconName: control.defaultIcon || $categories[control.cat].image,
-		textName: control.name,
-		buttons: [
-			{
-				iconName: 'ChevronDown',
-				type: 'button',
-				color: '',
-				click: () => publishTopic(control.uuidAction, 'PulseDown')
-			},
-			{
-				iconName: 'ChevronUp',
-				type: 'button',
-				color: '',
-				click: () => publishTopic(control.uuidAction, 'PulseUp')
-			}
-		],
-		modal: {
-			action: (state: boolean) => {openModal = state},
-			state: openModal
+	let buttons: SingleButtonView[] = $state([
+		{
+			iconName: 'ChevronDown',
+			type: 'button',
+			color: '',
+			click: () => publishTopic(control.uuidAction, 'PulseDown')
+		},
+		{
+			iconName: 'ChevronUp',
+			type: 'button',
+			color: '',
+			click: () => publishTopic(control.uuidAction, 'PulseUp')
 		}
-	};
+	]);
+
+	let modal: ModalView = $state({
+		action: (state: boolean) => {modal.state = state},
+		state: false
+	});
+
+  let controlView: ControlView = $derived({
+		...DEFAULT_CONTROLVIEW,
+		iconName: control.defaultIcon || store.getCategoryIcon(control),
+		textName: control.name,
+		buttons: buttons,
+		modal: modal
+	});
 </script>
 
 <div>
-	<LbControl {controlView} />
-	<LbModal {controlView} />
+	<LbControl bind:controlView={controlView}/>
+	<LbModal bind:controlView={controlView}/>
 </div>

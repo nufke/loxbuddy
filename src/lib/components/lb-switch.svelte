@@ -1,38 +1,42 @@
 <script lang="ts">
 	import LbControl from '$lib/components/lb-control.svelte';
-	import type { Control } from '$lib/types/models';
+	import type { Control, ControlView, SingleButtonView } from '$lib/types/models';
+	import { DEFAULT_CONTROLVIEW } from '$lib/types/models';
 	import LbModal from '$lib/components/lb-modal.svelte';
-	import { state, categories } from '$lib/stores/stores';
 	import { publishTopic } from '$lib/helpers/mqttclient';
+	import { store } from '$lib/stores/store.svelte';
 
-	export let control: Control;
+	let { control }: { control: Control } = $props();
 
-	let openModal: boolean;
+	let buttonActive = $derived(store.getState(control.states.active) == '1');
 
-	$: buttonActive = $state[control.states.active] == '1';
+	let buttons: SingleButtonView[] = $state([
+		{
+			type: 'switch',
+			name: 'Switch off,Switch on',
+			click: (e: any) => {
+				publishTopic(control.uuidAction, e.checked ? '1' : '0');
+			}	
+		}
+	]);
 
-	$: controlView = {
-		iconName: control.defaultIcon || $categories[control.cat].image,
+	let modal = $state({
+		action: (state: boolean) => {modal.state = state},
+		state: false
+	});
+
+	let controlView: ControlView = $derived({
+		...DEFAULT_CONTROLVIEW,
+		iconName: control.defaultIcon || store.getCategoryIcon(control),
 		iconColor: buttonActive ? '#69C350' : 'white', //TODO add color map
 		textName: control.name,
-		buttons: [
-			{
-				type: 'switch',
-				name: 'Switch off,Switch on',
-				state: buttonActive,
-				click: (e: any) => {
-					publishTopic(control.uuidAction, e.checked ? '1' : '0');
-				}
-			}
-		],
-		modal: {
-			action: (state: boolean) => {openModal = state},
-			state: openModal
-		}
-	};
+		buttonState: buttonActive,
+		buttons: buttons,
+		modal: modal
+	});
 </script>
 
 <div>
-	<LbControl {controlView} />
-	<LbModal {controlView} />
+	<LbControl bind:controlView={controlView}/>
+	<LbModal bind:controlView={controlView}/>
 </div>

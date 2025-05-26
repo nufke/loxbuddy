@@ -2,11 +2,10 @@
 	import { inlineSvg } from '@svelte-put/inline-svg';
 	import type { Room, Category } from '$lib/types/models';
 
-	export let key: string;
-	export let item: Room | Category;
+	let { key, item } : { key: string, item: Room | Category} = $props();
 
-	let color = 'white'; // TODO text and image colour
-	let href = key + '/' + item.uuid;
+	const color = 'white'; // TODO text and image colour
+	const href = key + '/' + item.uuid;
 </script>
 
 <a href={href} class="card m-0 flex min-h-[70px] items-center justify-start rounded-lg border border-white/5

@@ -1,40 +1,18 @@
 <script lang="ts">
-	import type { Control, MoodList } from '$lib/types/models';
+	import type { Control, ControlView, MoodList, SingleButtonView, ModalView } from '$lib/types/models';
+	import { DEFAULT_CONTROLVIEW, DEFAULT_MOODLIST } from '$lib/types/models';
 	import LbControl from '$lib/components/lb-control.svelte';
-	import { state, categories, rooms } from '$lib/stores/stores';
 	import { publishTopic } from '$lib/helpers/mqttclient';
 	import LbListModal from '$lib/components/lb-list-modal.svelte';
 	import { _ } from 'svelte-i18n';
+	import { store } from '$lib/stores/store.svelte';
+	
+	let { control }: { control: Control } = $props();
 
-	export let control: Control;
-
-	let openModal: boolean;
-
-	$: moodList = JSON.parse($state[control.states.moodList]);
-	$: activeMoodsNum = Number($state[control.states.activeMoodsNum]);
-
-	$: controlView = {
-		iconName: control.defaultIcon || $categories[control.cat].image,
-		iconColor: (activeMoodsNum != 778) ? '#69C350' : 'white', //TODO add color map
-		textName: (control.name === $_('LightcontrollerV2')) ? $rooms[control.room].name : control.name,
-		statusName: (activeMoodsNum < 0) ? 'Handmatig' : moodList.find((item:MoodList) => item.id == activeMoodsNum).name,
-		statusColor: (activeMoodsNum != 778) ? '#69C350' : 'white', //TODO add color map
-		buttons: [
-			{
-				iconName: 'Plus',
-				type: 'button',
-				color: '',
-				click: (e:any) => {
-					selectMood(e);
-				}
-			}
-		],
-		modal: {
-			action: (state: boolean) => {openModal = state},
-			state: openModal,
-			list: moodList
-		}
-	};
+	let moodList: MoodList[] = $derived(store.getState(control.states.moodList) ?
+		JSON.parse(store.getState(control.states.moodList)) : [DEFAULT_MOODLIST] );
+	
+	let activeMoodsNum = $derived(Number(store.getState(control.states.activeMoodsNum)));
 
 	function selectMood(e:any) {
 		let moodIndex: number;
@@ -49,9 +27,35 @@
 		}
 		publishTopic(control.uuidAction, 'changeTo/' + String(moodList[moodIndex].id));
 	}
+
+	let buttons: SingleButtonView[] = $state([
+		{
+			iconName: 'Plus',
+			type: 'button',
+			color: '',
+			click: (e:any) => selectMood(e)
+		}
+	]);
+
+	let modal: ModalView = $state({
+		action: (state: boolean) => {modal.state = state},
+		state: false,
+	});
+	
+	let controlView: ControlView = $derived({
+		...DEFAULT_CONTROLVIEW,
+		iconName: control.defaultIcon || store.getCategoryIcon(control),
+		iconColor: (activeMoodsNum != 778) ? '#69C350' : 'white', //TODO add color map
+		textName: (control.name === $_('LightcontrollerV2')) ? store.rooms[control.room].name : control.name,
+		statusName: (activeMoodsNum < 0) ? 'Handmatig' : moodList.find((item:MoodList) => item.id == activeMoodsNum)?.name,
+		statusColor: (activeMoodsNum != 778) ? '#69C350' : 'white', //TODO add color map
+		list: moodList,
+		buttons: buttons,
+		modal: modal
+	});
 </script>
 
 <div>
-	<LbControl {controlView} />
-	<LbListModal {controlView} />
+	<LbControl bind:controlView={controlView}/>
+	<LbListModal bind:controlView={controlView}/>
 </div>

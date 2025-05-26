@@ -1,18 +1,19 @@
 <script lang="ts">
-	import type { Control } from '$lib/types/models';
-	import { state, categories } from '$lib/stores/stores';
+	import type { Control, ControlView, ModalView } from '$lib/types/models';
+	import { DEFAULT_CONTROLVIEW } from '$lib/types/models';
 	import LbControl from '$lib/components/lb-control.svelte';
+	import LbModal from '$lib/components/lb-modal.svelte';
+	import { store } from '$lib/stores/store.svelte';
 	import { format } from 'date-fns';
 	import { nl } from 'date-fns/locale';
 	import fmt from 'sprintf-js';
-	import LbModal from '$lib/components/lb-modal.svelte';
-
-	export let control: Control;
+	
+	let { control }: { control: Control } = $props();
 
 	const loxTimeRef = 1230764400000; // correction to epoch, Loxone calculates from 1-1-2009
 
-	function getFormattedString() {
-		let s: string = $state[control.states.value];
+	function getFormattedString(input: string) {
+		let s: string = input;
 		const value = Number(s);
 		if (control.details.format) {
 			switch (control.details.format) {
@@ -21,10 +22,10 @@
 					s = format(date, 'PPP p', { locale: nl }); // TODO change locale
 					break;
 				case '<v.t>': // duration/time
-					let du = value / 60;
-					let days = Math.floor(du / 1440);
-					let hours = Math.floor((du % 1440) / 60);
-					let minutes = Math.floor((du % 1440) % 60);
+					const du = value / 60;
+					const days = Math.floor(du / 1440);
+					const hours = Math.floor((du % 1440) / 60);
+					const minutes = Math.floor((du % 1440) % 60);
 					s = days + 'd ' + hours + 'h ' + minutes + 'm';
 					break;
 				case '<v.d>': // EIS4, dd:mm:yyyy
@@ -58,20 +59,21 @@
 		return s;
 	}
 
-	let openModal: boolean;
+	let modal: ModalView = $state({
+		action: (state: boolean) => {modal.state = state},
+		state: false
+	});
 
-	$: controlView = {
-		iconName: control.defaultIcon || $categories[control.cat].image,
+	let controlView: ControlView = $derived({
+		...DEFAULT_CONTROLVIEW,
+		iconName: control.defaultIcon || store.getCategoryIcon(control),
 		textName: control.name,
-		statusName: getFormattedString(),
-		modal: {
-			action: (state: boolean) => {openModal = state},
-			state: openModal
-		}
-	};
+		statusName: getFormattedString(store.getState(control.states.value)),
+		modal: modal
+	});
 </script>
 
 <div>
-	<LbControl {controlView} />
-	<LbModal {controlView} />
+	<LbControl bind:controlView={controlView}/>
+	<LbModal bind:controlView={controlView}/>
 </div>

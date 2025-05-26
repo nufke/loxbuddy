@@ -1,29 +1,27 @@
 <script lang="ts">
+	import type { ControlView } from '$lib/types/models';
+	import LucideIcon from './icon-by-name.svelte';
 	import { inlineSvg } from '@svelte-put/inline-svg';
 	import { Modal } from '@skeletonlabs/skeleton-svelte';
-  import { type ControlView, DEFAULT_CONTROLVIEW } from '$lib/types/models';
-	import LucideIcon from './icon-by-name.svelte';
 	import { X } from '@lucide/svelte';
 	import { Slider } from '@skeletonlabs/skeleton-svelte';
 	import { _ } from 'svelte-i18n';
 
-	export let controlView: ControlView;
-	$: vm = { ...DEFAULT_CONTROLVIEW, ...controlView };
+	let { controlView = $bindable() }: { controlView: ControlView } = $props();
 
   function getButtonName(vm: any, name: string, state: boolean) {
 		let s = name.split(',');
 		return state ? s[0] : s[1];
 	}
 
-  $: value = vm.modal && vm.modal.slider? [vm.modal.slider.position] : [0];
-	$: min = vm.modal && vm.modal.slider ? vm.modal.slider.min : 0;
-	$: max = vm.modal && vm.modal.slider ? vm.modal.slider.max : 100;
-	$: step = vm.modal && vm.modal.slider ? vm.modal.slider.step : 1;
+  let value = $derived(controlView.slider && controlView.sliderPosition? [controlView.sliderPosition] : [0]);
+	let min = $derived(controlView.slider ? controlView.slider.min : 0);
+	let max = $derived(controlView.slider ? controlView.slider.max : 100);
+	let step = $derived(controlView.slider ? controlView.slider.step : 1);
 
 	function setPostion(pos: number[]) {
-		if (vm && vm.buttons && vm.buttons[0]) {
-			console.log('pos', pos[0]);
-			vm.buttons[0].click({checked: pos[0]});
+		if (controlView && controlView.buttons && controlView.buttons[0]) {
+			controlView.buttons[0].click({sliderPosition: pos[0]});
 		}
 	}
 
@@ -34,8 +32,8 @@
 </script>
 
 <Modal
-	open={vm.modal?.state}
-	onOpenChange={()=>vm.modal?.action(false)}
+	open={controlView.modal.state}
+	onOpenChange={()=>controlView.modal.action(false)}
 	triggerBase="btn preset-tonal"
 	contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-xl rounded-lg border border-white/5
 							from-white/[0.095] to-white/5 max-w-9/10 max-h-9/10 overflow-auto w-[380px]"
@@ -44,31 +42,31 @@
 	<header class="relative">
 		<div class="flex justify-center">
 			<div class="relative inline-flex h-18 w-18 items-center justify-center overflow-hidden rounded-full dark:bg-surface-950">
-				<svg use:inlineSvg={'/loxicons/' + vm.iconName} fill={vm.iconColor} width="36" height="36"></svg>
+				<svg use:inlineSvg={'/loxicons/' + controlView.iconName} fill={controlView.iconColor} width="36" height="36"></svg>
 			</div>
 		</div>
 		<div class="absolute right-0 top-0">
-			<button type="button" aria-label="close" class="btn-icon w-auto" on:click={()=>vm.modal?.action(false)}>
+			<button type="button" aria-label="close" class="btn-icon w-auto" onclick={()=>controlView.modal.action(false)}>
 				<X/>
 			</button>
 		</div>
 	</header>
 	<div class="flex flex-col items-center justify-center mt-2">
 		<div>
-			<h2 class="h4 text-center">{vm.textName}</h2>
+			<h2 class="h4 text-center">{controlView.textName}</h2>
 		</div>
 			<div class="mt-4 truncate">
-			<p class="text-lg truncate" style="color: {vm.statusColor}">{vm.statusName}</p>
+			<p class="text-lg truncate" style="color: {controlView.statusColor}">{controlView.statusName}</p>
 		</div>
-		{#if vm.buttons && !vm.modal?.slider && !vm.modal?.buttons}
+		{#if controlView.buttons && !controlView.slider && !controlView.modal.buttons}
 		<div class="container flex m-2 ">
-			{#each vm.buttons as button, index}
+			{#each controlView.buttons as button, index}
 				{#if index > 0}
 					<div class="ml-2"></div>
 				{/if}
 				{#if button.type === 'button' && button.click}
 					<button type="button" class="w-full btn btn-lg preset-tonal-primary shadow-xl rounded-lg border border-white/15 hover:border-white/50" 
-							on:click|stopPropagation|preventDefault={button.click}>
+							onclick={(e) => {e.stopPropagation(); e.preventDefault(); button.click}}>
 							{#if button.name}
 								<span>{$_(button.name)}</span>
 							{:else}
@@ -80,25 +78,25 @@
 				{/if}
 				{#if button.type == 'switch' && button.name }
 					<button type="button" class="w-full btn btn-lg preset-tonal-primary shadow-xl rounded-lg border border-white/15 hover:border-white/50" 
-							on:click|stopPropagation|preventDefault={() => {button.click({checked: !button.state})}}>
-						<span style="font-size:18px">{$_(getButtonName(vm, button.name, button.state ? true : false))}</span>
+							onclick={(e) => {e.stopPropagation(); e.preventDefault(); button.click({checked: !controlView.buttonState})}}>
+						<span style="font-size:18px">{$_(getButtonName(controlView, button.name, controlView.buttonState ? true : false))}</span>
 					</button>
 				{/if}
 				{/each}
 		</div>
 		{/if} <!--buttons-->
-		{#if vm && vm.modal && vm.modal.slider && vm.modal.slider.position}
+		{#if controlView && controlView.slider && controlView.sliderPosition}
 		<div class="container flex m-2 p-0">
 	 	 <Slider classes="mt-6 ml-2 mr-2 mb-2" thumbSize="size-5" name="example" {value} {min} {max} {step} onValueChange={(e) => setPostion(e.value)} markers={[min, max]}
 				markText="size-8" markersClasses="-mt-11 ml-2 -mr-2"/>
 		</div>
 		{/if}
-		{#if vm && vm.modal && vm.modal.buttons}
+		{#if controlView && controlView.modal && controlView.modal.buttons}
 		<div class="container flex grid grid-cols-2 gap-2 mt-6 m-2">
-			{#each vm.modal.buttons as button, index}
+			{#each controlView.modal.buttons as button, index}
 			{#if button.type === 'button' && button.click}
-				<button type="button" class="w-full {getColSpan(index, vm.modal.buttons.length)} btn btn-lg preset-tonal-primary shadow-xl rounded-lg border border-white/15 hover:border-white/50" 
-						on:click|stopPropagation|preventDefault={button.click}>
+				<button type="button" class="w-full {getColSpan(index, controlView.modal.buttons.length)} btn btn-lg preset-tonal-primary shadow-xl rounded-lg border border-white/15 hover:border-white/50" 
+						onclick={(e) => {e.stopPropagation(); e.preventDefault(); button.click}}>
 						{#if button.name}
 							<span>{$_(button.name)}</span>
 						{:else}

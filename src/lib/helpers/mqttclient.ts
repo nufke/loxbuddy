@@ -1,5 +1,5 @@
 import mqtt from 'mqtt';
-import { structure, state, securedDetails, bellImages } from '$lib/stores/stores';
+import { store } from '$lib/stores/store.svelte';
 
 let connected: boolean;
 let serialNr: string;  // TODO support multiple miniservers
@@ -67,7 +67,7 @@ const onMessage = (topic: string, message: any) => {
 	monitorStructure(topic, msg);
 	monitorInitialStates(topic, msg);
 	monitorSecuredDetails(topic, msg);
-	monitorLastBellEventImage(topic, msg);
+	monitorLastBellEventImages(topic, msg);
 	monitorStates(topic, msg);
 };
 
@@ -88,9 +88,9 @@ function monitorStructure(topic: string, msg: string) {
 	const regex = new RegExp(topicPrefix + '/(.*)/structure');
 	const found = topic.match(regex);
 	if (found && found[1]) {
-		structure.set(JSON.parse(msg));
+		store.initStructure(JSON.parse(msg));
 		serialNr = found[1];
-		console.log('Miniserver registered', serialNr);
+		console.log('Miniserver registered: ', serialNr);
 	}
 }
 
@@ -100,7 +100,7 @@ function monitorInitialStates(topic: string, msg: string) {
 	if (found && found[1]) {
 		const regex2 = new RegExp(topicPrefix + '/' + found[1] + '/', 'g'); // TODO replace stored states at server 
 		msg = msg.replace(regex2, '');
-		state.set(JSON.parse(msg))
+		store.setInitialStates(JSON.parse(msg))
 	}
 }
 
@@ -108,20 +108,18 @@ function monitorSecuredDetails(topic: string, msg: string) {
 	const regex = new RegExp(topicPrefix + '/(.*)/securedDetails');
 	const found = topic.match(regex);
 	if (found && found[1]) {
-		console.log('monitorSecuredDetails', found[1],msg);
-		securedDetails.update((state) => state = { ...state, [found[1].split('/')[1]]: JSON.parse(msg) });
+		let obj = JSON.parse(msg);
+		store.setSecuredDetails(found[1].split('/')[1], obj);
 	}
 }
 
-function monitorLastBellEventImage(topic: string, msg: string) {
+function monitorLastBellEventImages(topic: string, msg: string) {
 	const regex = new RegExp(topicPrefix + '/(.*)/lastBellEventImage/(.*)');
 	const found = topic.match(regex);
 	if (found && found[1] && found[2]) {
-		bellImages.update((state) => { 
-			let events = state && state[found[1].split('/')[1]] ? state[found[1].split('/')[1]] : null;
-			state = { ...state, [found[1].split('/')[1]]: { ...events, [found[2]]: msg }}; 
-			return state;
-		});
+		const uuid = found[1].split('/')[1];
+		const date = found[2];
+		store.setLastBellEventImage(uuid, date, msg);
 	}
 }
 
@@ -129,6 +127,6 @@ function monitorStates(topic: string, msg: string) {
 	const regex = new RegExp(topicPrefix + '/(.*)/(.*)');
 	const found = topic.match(regex);
 	if (found && found[1] && found[2]) {
-		state.update((state) => state = { ...state, [found[2]]: msg });
+		store.setState(found[2], msg);
 	}
 }
