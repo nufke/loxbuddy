@@ -12,10 +12,12 @@
 						bg-linear-to-r from-white/[0.095] to-white/5 px-2 py-2 hover:border-white/10">
 	<div class="flex w-full justify-between">
 		<div class="flex items-center truncate">
-			<div class="relative inline-flex items-center justify-center w-12 h-12 min-w-12 overflow-hidden rounded-full dark:bg-surface-950">
+			{#if controlView.iconName.length}
+			<div class="relative mr-1 inline-flex items-center justify-center w-12 h-12 min-w-12 overflow-hidden rounded-full dark:bg-surface-950">
 				<svg use:inlineSvg={'/loxicons/' + controlView.iconName} fill={controlView.iconColor} width="24" height="24"></svg>
 			</div>
-			<div class="mt-0 ml-3 truncate">
+			{/if}
+			<div class="mt-0 ml-2 truncate">
 				<h1 class="truncate text-lg">{controlView.textName}</h1>
 				<p class="text-md truncate" style="color: {controlView.statusColor}">{controlView.statusName}</p>
 			</div>
@@ -35,9 +37,9 @@
 						</button>
 					{/if}
 					{#if button.type == 'switch'}
-					<a class="mt-2" href='http:/' onclick={(e) => { e.stopPropagation(); }}> <!-- workaround wrapper to stop propagation for switch -->
+					<button class="mt-2" onclick={(e) => { e.stopPropagation()}}> <!-- workaround wrapper to stop propagation for switch -->
 						<Switch controlClasses="w-12 h-8 mr-1" name="slide" controlActive="bg-green-500" checked={controlView.buttonState} onCheckedChange={button.click} />
-					</a>
+					</button>
 					{/if}
 				{/each}
 			{/if}

@@ -5,7 +5,7 @@
 	import LbModal from '$lib/components/lb-modal.svelte';
 	import { store } from '$lib/stores/store.svelte';
 
-	let { control }: { control: Control } = $props();
+	let { control, isSubControl = false }: { control: Control, isSubControl: boolean } = $props();
 
 	let controlState = $derived(Number(store.getState(control.states.active)) ? 'on' : 'off');
 
@@ -16,7 +16,7 @@
 	
 	let controlView: ControlView = $derived({
 		...DEFAULT_CONTROLVIEW,
-		iconName: control.defaultIcon || store.getCategoryIcon(control),
+		iconName: store.getCategoryIcon(control, isSubControl),
 		textName: control.name,
 		statusName: control.details.text[controlState],
 		statusColor: control.details.color[controlState],

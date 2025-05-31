@@ -6,7 +6,7 @@
 	import { store } from '$lib/stores/store.svelte';
 	import fmt from 'sprintf-js';
 
-	let { control }: { control: Control } = $props();
+	let { control, isSubControl = false }: { control: Control, isSubControl: boolean } = $props();
 
 	let modal: ModalView = $state({
 		action: (state: boolean) => {modal.state = state},
@@ -15,7 +15,7 @@
 
 	let controlView: ControlView = $derived({
 		...DEFAULT_CONTROLVIEW,
-		iconName: control.defaultIcon || store.getCategoryIcon(control),
+		iconName: store.getCategoryIcon(control, isSubControl),
 		textName: control.name,
 		statusName: fmt.sprintf(control.details.format, store.getState(control.states.text)),
 		modal: modal

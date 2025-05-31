@@ -124,9 +124,10 @@ function monitorLastBellEventImages(topic: string, msg: string) {
 }
 
 function monitorStates(topic: string, msg: string) {
-	const regex = new RegExp(topicPrefix + '/(.*)/(.*)');
+	const regex = new RegExp(topicPrefix + '/(.+)/(.*)');
 	const found = topic.match(regex);
 	if (found && found[1] && found[2]) {
+		//console.log('setState: ', found[2]);
 		store.setState(found[2], msg);
 	}
 }

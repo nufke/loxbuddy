@@ -8,7 +8,7 @@
 	import { publishTopic } from '$lib/helpers/mqttclient';
 	import { store } from '$lib/stores/store.svelte';
 	
-	let { control }: { control: Control } = $props();
+	let { control, isSubControl = false }: { control: Control, isSubControl: boolean } = $props();
 
 	let position = $derived(Number(store.getState(control.states.position)) * 100);
 
@@ -36,8 +36,8 @@
 				type: 'button',
 				color: '',
 				click: () => {},  // do nothing
-				mousedown: () => { console.log('ChevronDown'); publishTopic(control.uuidAction, 'down')},
-				mouseup: () => { console.log('ChevronDown'); publishTopic(control.uuidAction, 'DownOff')}
+				mousedown: () => { publishTopic(control.uuidAction, 'down')},
+				mouseup: () => { publishTopic(control.uuidAction, 'DownOff')}
 			},
 			{
 				iconName: 'ChevronUp',
@@ -76,7 +76,7 @@
 
 	let controlView: ControlView = $derived({
 		...DEFAULT_CONTROLVIEW,
-		iconName: control.defaultIcon || store.getCategoryIcon(control),
+		iconName: store.getCategoryIcon(control, isSubControl),
 		iconColor: (position > 0) ? '#69C350' : 'white', //TODO add color map
 		textName: control.name,
 		statusName: position < 1 ? $_('Opened') : position > 99 ? $_('Closed') : fmt.sprintf('%1.0f%% ', position),

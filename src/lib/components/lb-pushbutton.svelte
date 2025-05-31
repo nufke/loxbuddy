@@ -6,7 +6,7 @@
 	import { publishTopic } from '$lib/helpers/mqttclient';
 	import { store } from '$lib/stores/store.svelte';
 
-	let { control }: { control: Control } = $props();
+	let { control, isSubControl = false }: { control: Control, isSubControl: boolean } = $props();
 
 	let modal: ModalView = $state({
 		action: (state: boolean) => {modal.state = state},
@@ -27,7 +27,7 @@
 
 	let controlView: ControlView = $derived({
 		...DEFAULT_CONTROLVIEW,
-		iconName: control.defaultIcon || store.getCategoryIcon(control),
+		iconName: store.getCategoryIcon(control, isSubControl),
 		textName: control.name,
 		buttons: buttons,
 		modal: modal

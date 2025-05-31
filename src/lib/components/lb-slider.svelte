@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Control, ControlView, SingleButtonView, Slider, ModalView } from '$lib/types/models';
+	import type { Control, ControlView, SingleButtonView, SliderBar, ModalView } from '$lib/types/models';
 	import { DEFAULT_CONTROLVIEW } from '$lib/types/models';
 	import LbControl from '$lib/components/lb-control.svelte';
 	import LbModal from '$lib/components/lb-modal.svelte';
@@ -7,22 +7,21 @@
 	import { publishTopic } from '$lib/helpers/mqttclient';
 	import fmt from 'sprintf-js';
 
-	let { control }: { control: Control } = $props();
+	let { control, isSubControl = false }: { control: Control, isSubControl: boolean } = $props();
 
-	let slider: Slider = $derived({
+	let sliderBar: SliderBar = $derived({
 		min: Number(control.details.min),
 		max: Number(control.details.max),
 		step: Number(control.details.step),
+		position: Number(store.getState(control.states.value))
 	});
-
-	let position = $derived(Number(store.getState(control.states.value)));
 
 	function updatePosition(e: any, isUp: number) {
 		let newPosition;
-		if (e && e.sliderPosition == undefined && controlView.sliderPosition) { // no sliderPosition, is button
-			newPosition = controlView.sliderPosition + slider.step * isUp;
-			if (newPosition > slider.max) newPosition = slider.max;
-			if (newPosition < slider.min) newPosition = slider.min;
+		if (e && e.sliderPosition == undefined && sliderBar.position) { // no sliderPosition, is button
+			newPosition = sliderBar.position + sliderBar.step * isUp;
+			if (newPosition > sliderBar.max) newPosition = sliderBar.max;
+			if (newPosition < sliderBar.min) newPosition = sliderBar.min;
 		} else { // is slider
 			newPosition = e.sliderPosition;
 		}
@@ -51,12 +50,11 @@
 
 	let controlView: ControlView = $derived({
 		...DEFAULT_CONTROLVIEW,
-		iconName: control.defaultIcon || store.getCategoryIcon(control),
+		iconName: store.getCategoryIcon(control, isSubControl),
 		textName: control.name,
-		statusName: fmt.sprintf(control.details.format, position),
+		statusName: fmt.sprintf(control.details.format, sliderBar.position),
 		buttons: buttons,
-		slider: slider,
-		sliderPosition: position,
+		slider: sliderBar,
 		modal: modal
 	});
 </script>

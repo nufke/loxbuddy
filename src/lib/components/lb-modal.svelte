@@ -14,7 +14,7 @@
 		return state ? s[0] : s[1];
 	}
 
-  let value = $derived(controlView.slider && controlView.sliderPosition? [controlView.sliderPosition] : [0]);
+  let value = $derived(controlView.slider && controlView.slider.position? [controlView.slider.position] : [0]);
 	let min = $derived(controlView.slider ? controlView.slider.min : 0);
 	let max = $derived(controlView.slider ? controlView.slider.max : 100);
 	let step = $derived(controlView.slider ? controlView.slider.step : 1);
@@ -84,8 +84,8 @@
 				{/if}
 				{/each}
 		</div>
-		{/if} <!--buttons-->
-		{#if controlView && controlView.slider && controlView.sliderPosition}
+		{/if}
+		{#if controlView && controlView.slider && controlView.slider.position}
 		<div class="container flex m-2 p-0">
 	 	 <Slider classes="mt-6 ml-2 mr-2 mb-2" thumbSize="size-5" name="example" {value} {min} {max} {step} onValueChange={(e) => setPostion(e.value)} markers={[min, max]}
 				markText="size-8" markersClasses="-mt-11 ml-2 -mr-2"/>

@@ -6,7 +6,7 @@
 	import { publishTopic } from '$lib/helpers/mqttclient';
 	import { store } from '$lib/stores/store.svelte';
 
-	let { control }: { control: Control } = $props();
+	let { control, isSubControl = false }: { control: Control, isSubControl: boolean } = $props();
 
 	function clickRadio(e: any, step: number) {
 		let min: number = 0;
@@ -66,7 +66,7 @@
 
 	let controlView: ControlView = $derived({
 		...DEFAULT_CONTROLVIEW,
-		iconName: control.defaultIcon || store.getCategoryIcon(control),
+		iconName: store.getCategoryIcon(control, isSubControl),
 		textName: control.name,
 		statusName: radioIndex ? radioIndex.name : 'unknown',
 		statusColor: selectedRadio ? '#69C350' : 'white', //TODO add color map

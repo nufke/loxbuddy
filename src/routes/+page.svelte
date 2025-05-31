@@ -20,7 +20,7 @@
 		<div class="grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 lg:flex-wrap">
 			{#each filteredControls.filter( item => item.cat == label.uuid || item.room == label.uuid) as control}
 				{@const Component = getComponent(control.type)}
-    		<Component {control} />
+    		<Component {control} isSubControl={false}/>
 			{/each}
 		</div>
 	{/each}

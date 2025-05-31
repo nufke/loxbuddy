@@ -130,19 +130,24 @@ export type Control = {
 	states: any;									// control states
 	securedDetails?: any;					// secured details (optional)
 	subControls: {
-		[key: string]: SubControl;	// subControls
+		[key: string]: Control;			// subControls
 	}
 }
 
-export type SubControl = {
-	name: string;									// GUI name of the subcontrol
-	type: string;									// type of control, e.g., switch, button, slider, etc.
-	uuidAction: string;						// unique identifier to identify the subcontrol action (same as uuid)
-	defaultRating: number;				// default rating
-	isFavorite: boolean;					// elevate to favorite item
-	isSecured: boolean;						// passwd/PIN protected control
-	restrictions: number;
-	states: any;									// subcontrol states
+export const EMPTY_CONTROL: Control = {
+	name: '',
+	type: '',
+	uuidAction: '',
+	room: '',
+	cat: '',
+	defaultRating: 0,
+	isFavorite: false,
+	isSecured: false,
+	defaultIcon: '',
+	restrictions: 0,
+	details: {},
+	states: {},
+	subControls: {}
 }
 
 export type Room = {
@@ -253,13 +258,15 @@ export type ListItem = {
   show?: boolean;
 }
 
-export type Slider = {
+export type SliderBar = {
   min: number;
   max: number;
   step: number;
+	position: number;
 }
 
 export type ControlView = {
+	control?: Control,
 	iconName: string;
 	iconColor?: string;
 	textName: string;
@@ -268,8 +275,7 @@ export type ControlView = {
 	statusColor?: string;
 	buttonState?: boolean;
 	buttons: SingleButtonView[];
-	slider?: Slider;
-	sliderPosition?: number;
+	slider?: SliderBar;
 	list?: ListItem[];
 	securedDetails?: any;
 	details?: any;
@@ -292,7 +298,7 @@ export const DEFAULT_CONTROLVIEW: ControlView = {
 	statusColor: 'white',
 	buttons: [],
 	modal: {
-		action: () => {}
+		action: () => {} // no default action
 	}
 }
 

@@ -72,12 +72,13 @@ class Store {
 		return images || [];
 	}
 
-	getCategoryIcon(control: Control) {
-		const cat = this.categoryList.find((cat: Category) => cat.uuid == control.cat);
-		if (cat) {
-			return cat.image;
+	getCategoryIcon(control: Control, isSubControl: boolean) {
+		if (control.defaultIcon) return control.defaultIcon;
+		if (!isSubControl) {
+			const cat = this.categoryList.find((cat: Category) => cat.uuid == control.cat);
+			return cat ? cat.image : '';
 		} else {
-			return '';
+			return ''; // TODO
 		}
 	}
 }

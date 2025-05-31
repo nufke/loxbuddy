@@ -8,7 +8,7 @@
 	import { nl } from 'date-fns/locale';
 	import fmt from 'sprintf-js';
 	
-	let { control }: { control: Control } = $props();
+	let { control, isSubControl = false }: { control: Control, isSubControl: boolean } = $props();
 
 	const loxTimeRef = 1230764400000; // correction to epoch, Loxone calculates from 1-1-2009
 
@@ -66,7 +66,7 @@
 
 	let controlView: ControlView = $derived({
 		...DEFAULT_CONTROLVIEW,
-		iconName: control.defaultIcon || store.getCategoryIcon(control),
+		iconName: store.getCategoryIcon(control, isSubControl),
 		textName: control.name,
 		statusName: getFormattedString(store.getState(control.states.value)),
 		modal: modal

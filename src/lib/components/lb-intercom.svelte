@@ -7,7 +7,7 @@
 	import { store } from '$lib/stores/store.svelte';
 	import { publishTopic } from '$lib/helpers/mqttclient';
 
-	let { control }: { control: Control } = $props();
+	let { control, isSubControl = false }: { control: Control, isSubControl: boolean } = $props();
 
 	function requestLastImages() {
 		publishTopic(control.uuidAction + '/lastBellEventImages', '1');
@@ -35,7 +35,7 @@
 
 	let controlView: ControlView = $derived({
 		...DEFAULT_CONTROLVIEW,
-		iconName: control.defaultIcon || store.getCategoryIcon(control),
+		iconName: store.getCategoryIcon(control, isSubControl),
 		textName: control.name,
 		statusName: fmt.sprintf(control.details.format, store.getState(control.states.text)),
 		details: details,
