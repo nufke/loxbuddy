@@ -20,6 +20,7 @@
   outline: none;
   -webkit-transition: .2s;
   transition: opacity .2s;
+  cursor: pointer;
 }
 .slider::-webkit-slider-thumb {
   -webkit-appearance: none;

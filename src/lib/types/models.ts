@@ -134,22 +134,6 @@ export type Control = {
 	}
 }
 
-export const EMPTY_CONTROL: Control = {
-	name: '',
-	type: '',
-	uuidAction: '',
-	room: '',
-	cat: '',
-	defaultRating: 0,
-	isFavorite: false,
-	isSecured: false,
-	defaultIcon: '',
-	restrictions: 0,
-	details: {},
-	states: {},
-	subControls: {}
-}
-
 export type Room = {
 	uuid: string;									// unique identifier to identify the room as MQTT topic (device-uuid)
 	name: string;									// GUI name of the room
@@ -320,3 +304,12 @@ export type Route = {
 	href: string;
 	icon: typeof IconType;
 };
+
+export type ColorType = { 
+	rgb: { 
+		r: number; 
+		g: number; 
+		b: number;
+	}
+	kelvin: number;
+}

@@ -6,7 +6,7 @@
 	import { publishTopic } from '$lib/helpers/mqttclient';
 	import { store } from '$lib/stores/store.svelte';
 
-	let { control, isSubControl = false }: { control: Control, isSubControl: boolean } = $props();
+	let { control, controlAction = undefined } = $props();
 
 	let buttonActive = $derived(store.getState(control.states.active) == '1');
 
@@ -27,18 +27,19 @@
 
 	let controlView: ControlView = $derived({
 		...DEFAULT_CONTROLVIEW,
-		iconName: store.getCategoryIcon(control, isSubControl),
+		control: control,
+		iconName: store.getCategoryIcon(control, controlAction),
 		iconColor: buttonActive ? '#69C350' : 'white', //TODO add color map
 		textName: control.name,
 		buttonState: buttonActive,
 		buttons: buttons,
-		modal: modal
+		modal: modal,
 	});
 </script>
 
 <div>
 	<LbControl bind:controlView={controlView}/>
-	{#if !isSubControl} <!-- disable modal popup for subcontrols -->
+	{#if !controlAction} <!-- disable modal popup for controls with action -->
 	<LbModal bind:controlView={controlView}/>
 	{/if}
 </div>
