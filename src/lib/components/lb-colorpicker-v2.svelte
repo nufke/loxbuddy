@@ -5,8 +5,9 @@
 	import { store } from '$lib/stores/store.svelte';
 	import { Utils } from '$lib/utils';
 	import { publishTopic } from '$lib/helpers/mqttclient';
+	import { _ } from 'svelte-i18n';
 
-	let { control, tempOrColor = $bindable() } = $props();
+	let { control }: { control: Control } = $props();
 
 	let picker: iro.ColorPicker;
 	let element: HTMLDivElement;
@@ -39,69 +40,81 @@
 
 	let busy = $state(false);
 	let color = $derived(store.getState(control.states.color));
-	let rgbColorObj = $derived(calcRgbColor(color));
-	let rgbColor = $derived(rgbColorObj.rgb);
-	let tempColorObj = $derived(calcTempColor(color));
-	let tempColor = $derived(tempColorObj.kelvin);
-	let brightness = $derived(rgbColorObj.brightness || tempColorObj.brightness);
-
-	let layout = $derived(tempOrColor);
+	let {rgbColor, tempColor, brightness, isTempColor} = $derived(getColor(color));
 
 	$effect(() => {
-		if (tempOrColor) {
+		if (isTempColor) {
 			busy = false;
 		}
 
 		if (picker) {
-			if (tempOrColor) {
+			if (isTempColor) {
 				picker.setOptions({ layout: temperatureLayout });
 			} else {
 				picker.setOptions({ layout: colorLayout });
 			}
 		}
-		
+
 		if (picker && !busy) {
-			if (tempOrColor && tempColor) {
+			if (isTempColor && tempColor) {
 				picker.color.kelvin = tempColor;
-			} else if ( rgbColor) {
+			} else if (rgbColor) {
 				picker.color.rgb = {
 					r: rgbColor[0],
 					g: rgbColor[1],
 					b: rgbColor[2]
-				};
-			};
+				}
+			}
 		}
 	});
 
-	function calcRgbColor(color: string) {
+	function getColor(color: string) {
 		let hsv = color.match(/hsv\(([0-9]*),([0-9]*),([0-9]*)\)/);
-		if (hsv) {
-			let rgb = Utils.hsv2rgb(Number(hsv[1]), Number(hsv[2]), 100);
-			return { brightness: Number(hsv[3]), rgb: rgb};
-		} else {
-			return { brightness: 100, rgb: [255,255,255] }; // TODO need default?
-		}
-	}
-
-	function calcTempColor(color: string) {
 		let temp = color.match(/temp\(([0-9]*),([0-9]*)\)/);
-		if (temp) {
-			return { brightness: Number(temp[1]), kelvin: Number(temp[2])};
-		} else {
-			return { brightness: 100, kelvin: 2700}; // TODO need default?
+		let rgb, kelvin, brightness, isTempColor;
+		if (hsv && hsv.length > 3) {
+			rgb = Utils.hsv2rgb(Number(hsv[1]), Number(hsv[2]), 100);
+			brightness = Number(hsv[3]);
+			isTempColor = false; // rgb
+		} else if (temp && temp.length > 2) {
+			kelvin = Number(temp[2]);
+			brightness = Number(temp[1]);
+			isTempColor = true;
+		} else { // nothing found, set default
+			rgb = [255,255,255];
+			brightness = 100;
+			isTempColor = false;  // rgb
 		}
+		return {rgbColor: rgb, tempColor: kelvin, brightness: brightness, isTempColor: isTempColor};
 	}
 
+	/*
+	 * Pending issues
+	 *  [Violation] Added non-passive event listener to a scroll-blocking 'touchstart' event. 
+	 *  Consider marking event handler as 'passive' to make the page more responsive. 
+	 *  See https://www.chromestatus.com/feature/5745543795965952
+	 */
 	onMount(async () => {
 		picker = iro.ColorPicker(element, {
 			width: 275,
-			color: `rgb(${rgbColor || '255, 255, 255'})`,
 			handleRadius: 16,
 			wheelLightness: false,
 			borderWidth: 3,
 			layoutDirection: 'horizontal',
-			layout: tempOrColor ? temperatureLayout : colorLayout
+			layout: isTempColor ? temperatureLayout : colorLayout
 		});
+
+		if (isTempColor && tempColor) {
+				picker.color.kelvin = tempColor;
+		}
+
+		if (rgbColor) {
+			picker.color.rgb = {
+				r: rgbColor[0],
+				g: rgbColor[1],
+				b: rgbColor[2]
+			}
+		}
 
 		picker.on('input:start', () => {
 			clearTimeout(timeout);
@@ -116,7 +129,7 @@
 			// release after 500ms
 			timeout = setTimeout(() => {
 				busy = false;
-			}, 500);
+			}, 100);
 		});
 	});
 
@@ -153,5 +166,10 @@
 		timeout = undefined;
 	});
 </script>
+
+<div class="w-full btn-group preset-outlined-surface-200-800 grid-cols-2 mt-3 mb-10 p-2 flex-row">
+	<button type="button" class="w-full h-9 rounded-sm {!isTempColor ? 'preset-tonal' : ''}" onclick={() => isTempColor=false}>{$_("Colors")}</button>
+	<button type="button" class="w-full h-9 rounded-sm {isTempColor ? 'preset-tonal' : ''}" onclick={() => isTempColor=true}>{$_("Color temperature")}</button>
+</div>
 
 <div bind:this={element} class="flex justify-center"></div>

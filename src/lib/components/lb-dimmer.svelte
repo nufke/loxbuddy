@@ -7,7 +7,7 @@
 	import { _ } from 'svelte-i18n';
   import SimpleSlider from '$lib/components/lb-simple-slider.svelte'
 	import { ChevronRight } from '@lucide/svelte';
-	
+
 	let { control, controlAction = undefined } = $props();
 
 	let min = $derived(control.states.min ? Number(store.getState(control.states.min)) : 0 );
@@ -15,32 +15,29 @@
 	let step = $derived(control.states.step ? Number(store.getState(control.states.step)) : 1);
 	let nPosition = $derived(Number(store.getState(control.states.position)));
 	let color = $derived(store.getState(control.states.color));
-	let rgbPosition = $derived(calcPosition(color));
-	let position = $derived ( (control.type === 'ColorPickerV2') ? rgbPosition : Math.round(nPosition));
+	let {rgbColor, brightness} = $derived(getColor(color));
+	let position = $derived ( (control.type === 'ColorPickerV2') ? brightness : Math.round(nPosition));
 
-	function calcRGB(color: string) {
+	function getColor(color: string) {
 		let hsv = color.match(/hsv\(([0-9]*),([0-9]*),([0-9]*)\)/);
-		if (hsv) {
-			let rgb = Utils.hsv2rgb(Number(hsv[1]), Number(hsv[2]), 100);
-			return rgb;
-		} else {
-			return [255,255,255];
+		let temp = color.match(/temp\(([0-9]*),([0-9]*)\)/);
+		let rgb, brightness;
+		if (hsv && hsv.length > 3) {
+			rgb = Utils.hsv2rgb(Number(hsv[1]), Number(hsv[2]), 100);
+			brightness = Number(hsv[3]);
+		} else if (temp && temp.length > 2) {
+			brightness = Number(temp[1]);
 		}
+		return {rgbColor: rgb, brightness: brightness};
 	}
 
-	function calcPosition(color: string) {
-		let hsv = color.match(/hsv\(([0-9]*),([0-9]*),([0-9]*)\)/);
-		if (hsv) {
-			return hsv[3] ? Number(hsv[3]) : 0;
-		} else {
-			return 0;
+	function trackColor() {
+		const rgb = rgbColor;
+		if (rgb) {
+			return String('background-image: linear-gradient(to right, rgba('+ rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ',0.1), rgba(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ',1)');
+		} else { // normal dimmer or tempColor
+			return 'background-image: linear-gradient(to right, rgba(49,56,62,1), rgba(255,191,64,1)';
 		}
-	}
-
-	function trackColor(color: string) {
-		let rgb = calcRGB(color);
-		let str =  String('background-image: linear-gradient(to right, rgba('+ rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ',0.1), rgba(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ',1)');
-		return (control.type === 'ColorPickerV2') ? str : 'background-image: linear-gradient(to right, rgba(49,56,62,1), rgba(255,191,64,1)';
 	}
 
   function updatePosition(e: any) {
@@ -82,7 +79,7 @@
 		</div>
 		<div class="container">
 			<button class="w-full" onclick={(e) => { e.stopPropagation()}}> <!-- workaround wrapper to stop propagation for slider -->
-				<SimpleSlider classes="ml-1 mr-1 mb-1" thumbStyle={trackColor(color)}
+				<SimpleSlider classes="ml-1 mr-1 mb-1" thumbStyle={trackColor()}
 									min={min} max={max} step={step} value={position} onValueChangeEnd={(e: any) => {updatePosition(e.value)}}/>
 			</button>
 		</div>

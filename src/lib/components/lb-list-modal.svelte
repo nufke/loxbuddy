@@ -17,9 +17,8 @@
 
 	let selectedTab = $state(0);
 	let isLightController = $derived(controlView.control?.type=='LightControllerV2' || controlView.control?.type=='LightController');
+  let id = $state(0); // selected subControl, default is first
 
-	let selectedSubControl: Control | undefined = $derived(subControlsColorPicker.length ? subControlsColorPicker[0] : undefined);
-	
 	function setColor(i: number) {
 		if (i==index) {
 			return 'preset-tonal'
@@ -32,12 +31,6 @@
 		if (controlView && controlView.buttons && controlView.buttons[0]) {
 			controlView.buttons[0].click({checked: i});
 		}
-	}
-	
-	let tempOrColor = $state(false); // color: false/undefined, temp: true
-
-	function selected(s: boolean) {
-		return s ? 'preset-tonal' : '';
 	}
 </script>
 
@@ -107,13 +100,13 @@
 				<LbDimmer control={subControl}/>
 			{/if}
 			{#if subControl.type=='ColorPickerV2'}
-				<LbDimmer control={subControl} controlAction={()=>{selectedSubControl = subControl; selectedTab=2}}/>
+				<LbDimmer control={subControl} controlAction={()=>{id=index; selectedTab=2}}/>
 			{/if}
 			{/each}
 	</div>
 	{/if}
 
-	{#if selectedTab==2 && selectedSubControl } <!-- colors -->
+	{#if selectedTab==2 && subControlsColorPicker.length } <!-- colors -->
 	<header class="relative">
 		<div class="flex justify-center mb-3">
 			<h2 class="h4 text-center">{controlView.textName}</h2>
@@ -125,32 +118,28 @@
 		</div>
 	</header>
 	<div class="overflow-y-scroll" style="max-height: 500px; scrollbar-width: none;">
-	{#if selectedSubControl?.type === 'Dimmer' || selectedSubControl?.type === 'ColorPickerV2' }
-		<LbDimmer control={selectedSubControl}/>
-		<div class="w-full btn-group preset-outlined-surface-200-800 grid-cols-2 mt-3 mb-10 p-2 flex-row">
-  		<button type="button" class="w-full rounded-sm {selected(!tempOrColor)}" onclick={() => tempOrColor=false}>Color</button>
-  		<button type="button" class="w-full rounded-sm {selected(tempOrColor)}" onclick={() => tempOrColor=true}>Temperature</button>
-		</div>
-		<LbColorPickerV2 control={selectedSubControl} bind:tempOrColor={tempOrColor}/>
+	{#if subControls[id].type === "Dimmer" || subControls[id].type === "ColorPickerV2" }
+		<LbDimmer control={subControls[id]}/>
+		<LbColorPickerV2 control={subControls[id]}/>
 	{/if}
 	</div>
 	{/if}
 
 	{#if isLightController}
 	<div class="sticky bottom-0 left-0 w-full h-16 pt-2">
-		<div class="grid h-full max-w-lg {selectedSubControl ? 'grid-cols-3' : 'grid-cols-2'}  mx-auto">
+		<div class="grid h-full max-w-lg {subControlsColorPicker.length ? 'grid-cols-3' : 'grid-cols-2'}  mx-auto">
 				<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==0 ? 'text-green-500' : ''} " onclick={() => selectedTab=0}>
 					<LucideIcon name='Lightbulb'/>
-					<span class="mt-1 text-xs">Scenes</span>
+					<span class="mt-1 text-xs">{$_("Scenes")}</span>
 				</button>
 				<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==1 ? 'text-green-500' : ''} " onclick={() => selectedTab=1}>
 					<LucideIcon name='SlidersHorizontal'/>
-					<span class="mt-1 text-xs">Control</span>
+					<span class="mt-1 text-xs">{$_("Controls")}</span>
 				</button>
-				{#if selectedSubControl}
+				{#if subControlsColorPicker.length}
 				<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==2 ? 'text-green-500' : ''} " onclick={() => selectedTab=2}>
 					<svg use:inlineSvg={"/icons/svg/streamline--color-palette.svg"} fill="white" width="24" height="24"></svg>
-					<span class="mt-1 text-xs">Colors</span>
+					<span class="mt-1 text-xs">{$_("Colors")}</span>
 				</button>
 				{/if}
 		</div>
