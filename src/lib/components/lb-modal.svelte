@@ -26,7 +26,6 @@
 	}
 
   function getColSpan(i: number, j: number) {
-		console.log(j);
 		return (i==4 && j!=0)  ? 'col-span-2' : '';
 	}
 </script>

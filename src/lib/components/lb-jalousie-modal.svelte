@@ -45,9 +45,9 @@
 			{#each controlView.modal.buttons as button, index}
 				{#if button.type === 'button'}
 					<button type="button" class="w-full {getColSpan(index, controlView.modal.buttons.length)} btn btn-lg preset-tonal-primary shadow-xl rounded-lg border border-white/15 hover:border-white/50" 
-							onclick={(e) => { e.stopPropagation(); e.preventDefault(); console.log('onclick'); button.click()}}
-							onmousedown={(e) => { e.stopPropagation(); e.preventDefault(); console.log('onmousedown'); button.mousedown()}}
-							onmouseup={(e) => { e.stopPropagation(); e.preventDefault(); console.log('onmouseup'); button.mouseup()}}>
+							onclick={(e) => { e.stopPropagation(); e.preventDefault(); button.click()}}
+							onmousedown={(e) => { e.stopPropagation(); e.preventDefault(); button.mousedown()}}
+							onmouseup={(e) => { e.stopPropagation(); e.preventDefault(); button.mouseup()}}>
 							{#if button.name}
 								<span>{$_(button.name)}</span>
 							{:else}

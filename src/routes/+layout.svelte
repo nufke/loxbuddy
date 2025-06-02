@@ -1,5 +1,6 @@
 <script lang="ts">
 	import '../app.css';
+	import '../global.css';
 	import { Navigation } from '@skeletonlabs/skeleton-svelte';
 	import { innerWidth } from 'svelte/reactivity/window';
   import { Home, List, FileText, Grid2x2, type Icon as IconType } from '@lucide/svelte';

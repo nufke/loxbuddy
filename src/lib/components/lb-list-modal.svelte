@@ -88,7 +88,7 @@
 			</button>
 		</div>
 	</header>
-	<div class="overflow-y-scroll" style="max-height: 500px; scrollbar-width: none;">
+	<div class="overflow-y-scroll" style="max-height: 500px;">
 		{#each subControls as subControl,index}
 			{#if index > 0}
 				<div class="mt-3"></div>
@@ -117,7 +117,7 @@
 			</button>
 		</div>
 	</header>
-	<div class="overflow-y-scroll" style="max-height: 500px; scrollbar-width: none;">
+	<div class="overflow-y-scroll" style="max-height: 500px;">
 	{#if subControls[id].type === "Dimmer" || subControls[id].type === "ColorPickerV2" }
 		<LbDimmer control={subControls[id]}/>
 		<LbColorPickerV2 control={subControls[id]}/>
