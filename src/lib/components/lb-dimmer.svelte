@@ -14,7 +14,7 @@
 	let max = $derived(control.states.max ? Number(store.getState(control.states.max)) : 100);
 	let step = $derived(control.states.step ? Number(store.getState(control.states.step)) : 1);
 	let nPosition = $derived(Number(store.getState(control.states.position)));
-	let color = $derived(store.getState(control.states.color));
+	let color = $derived(String(store.getState(control.states.color)));
 	let {rgbColor, brightness} = $derived(getColor(color));
 	let position = $derived ( (control.type === 'ColorPickerV2') ? brightness : Math.round(nPosition));
 
@@ -75,7 +75,7 @@
 					<p class="mt-1"><ChevronRight size="20"/></p>
 				{/if}
 			</div>
-			<p class="text-mc">{controlView.statusName}</p>
+			<p class="text-md">{controlView.statusName}</p>
 		</div>
 		<div class="container">
 			<button class="w-full" onclick={(e) => { e.stopPropagation()}}> <!-- workaround wrapper to stop propagation for slider -->

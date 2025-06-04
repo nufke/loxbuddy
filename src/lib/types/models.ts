@@ -286,6 +286,12 @@ export const DEFAULT_CONTROLVIEW: ControlView = {
 	}
 }
 
+export type LightItem = {
+	id: number;
+	uuid: string;
+	selected?: boolean;
+}
+
 export type MoodList = {
 	name: string;
 	id: number;

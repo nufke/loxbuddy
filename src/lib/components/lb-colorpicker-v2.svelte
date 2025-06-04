@@ -39,7 +39,7 @@
 	]);
 
 	let busy = $state(false);
-	let color = $derived(store.getState(control.states.color));
+	let color = $derived(String(store.getState(control.states.color)));
 	let {rgbColor, tempColor, brightness, isTempColor} = $derived(getColor(color));
 
 	$effect(() => {

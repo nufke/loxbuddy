@@ -9,9 +9,7 @@
 	
 	let { control, isSubControl = false }: { control: Control, isSubControl: boolean } = $props();
 
-	let moodList: MoodList[] = $derived(store.getState(control.states.moodList) ?
-		JSON.parse(store.getState(control.states.moodList)) : [DEFAULT_MOODLIST] );
-
+	let moodList = $derived(store.getState(control.states.moodList)) as MoodList[];
 	let activeMoodsNum = $derived(Number(store.getState(control.states.activeMoodsNum)));
 
 	function selectMood(e:any) {
@@ -48,7 +46,7 @@
 		iconName: store.getCategoryIcon(control, isSubControl),
 		iconColor: (activeMoodsNum != 778) ? '#69C350' : 'white', //TODO add color map
 		textName: (control.name === $_('LightcontrollerV2')) ? store.rooms[control.room].name : control.name,
-		statusName: (activeMoodsNum < 0) ? 'Handmatig' : moodList.find((item:MoodList) => item.id == activeMoodsNum)?.name,
+		statusName: (activeMoodsNum < 0) ? $_('Manual') : moodList.find((item:MoodList) => item.id == activeMoodsNum)?.name,
 		statusColor: (activeMoodsNum != 778) ? '#69C350' : 'white', //TODO add color map
 		list: moodList,
 		buttons: buttons,

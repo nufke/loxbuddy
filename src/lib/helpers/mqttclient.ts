@@ -1,5 +1,6 @@
 import mqtt from 'mqtt';
 import { store } from '$lib/stores/store.svelte';
+import { Utils } from '$lib/utils';
 
 let connected: boolean;
 let serialNr: string;  // TODO support multiple miniservers
@@ -91,6 +92,8 @@ function monitorStructure(topic: string, msg: string) {
 		store.initStructure(JSON.parse(msg));
 		serialNr = found[1];
 		console.log('Miniserver registered: ', serialNr);
+		console.log('Query all initial states for miniserver: ', serialNr);
+		publishTopic('states', '1');
 	}
 }
 
@@ -127,7 +130,8 @@ function monitorStates(topic: string, msg: string) {
 	const regex = new RegExp(topicPrefix + '/(.+)/(.*)');
 	const found = topic.match(regex);
 	if (found && found[1] && found[2]) {
-		//console.log('setState: ', found[2]);
-		store.setState(found[2], msg);
+		//console.log('setState: ', msg);
+		let obj = Utils.isValidJSONObject(msg) ? JSON.parse(msg) : msg;
+		store.setState(found[2], obj);
 	}
 }

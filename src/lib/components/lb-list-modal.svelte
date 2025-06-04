@@ -11,21 +11,13 @@
 
 	let { controlView = $bindable() }: { controlView: ControlView } = $props();
 
-	let index = $derived(controlView.list ? controlView.list.findIndex( (item: ListItem) => { return item.name === controlView.statusName }) : 0);
+	let selectedItem = $derived(controlView.list ? controlView.list.findIndex( (item: ListItem) => { return item.name === controlView.statusName }) : 0);
 	let subControls = $derived( controlView.control && controlView.control.subControls ? Object.values(controlView.control.subControls) : []);
 	let subControlsColorPicker = $derived(subControls.filter( control => control.type === 'ColorPickerV2'));
 
 	let selectedTab = $state(0);
 	let isLightController = $derived(controlView.control?.type=='LightControllerV2' || controlView.control?.type=='LightController');
   let id = $state(0); // selected subControl, default is first
-
-	function setColor(i: number) {
-		if (i==index) {
-			return 'preset-tonal'
-		} else {
-			return 'preset-tonal-primary' 
-		}
-	}
 
 	function setItem(i: number) {
 		if (controlView && controlView.buttons && controlView.buttons[0]) {
@@ -67,7 +59,8 @@
 		<div class="container mt-2">
 		{#if controlView.list}
 			{#each controlView.list as listItem, index}
-				<button type="button" class="w-full mt-2 btn btn-lg {setColor(index)} shadow-xl rounded-lg border border-white/15 hover:border-white/50" 
+				<button type="button" class="w-full mt-2 btn btn-lg {(index==selectedItem) ? 'preset-tonal' : 'preset-tonal-primary' }
+								 shadow-xl rounded-lg border border-white/15 hover:border-white/50" 
 					onclick={(e) => { e.stopPropagation(); e.preventDefault(); setItem(index)}}>
 						<span>{$_(listItem.name)}</span>
 				</button>

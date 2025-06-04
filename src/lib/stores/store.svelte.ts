@@ -1,6 +1,7 @@
 import { SvelteMap } from 'svelte/reactivity';
 import { INITIAL_STRUCTURE } from '$lib/types/models';
 import type { Structure, Control, Category } from '$lib/types/models';
+import { Utils } from '$lib/utils';
 
 class Store {
 	structure: Structure = $state(INITIAL_STRUCTURE);
@@ -27,13 +28,8 @@ class Store {
 		}
 	}
 
-	getState(uuid: string): string {
-		const s = this.state.get(uuid);
-		if (s) {
-			return String(s);
-		} else {
-			return '';
-		}
+	getState(uuid: string) {
+		return this.state.get(uuid);
 	}
 
 	setState(key: string, data: any) {
@@ -45,7 +41,8 @@ class Store {
 	setInitialStates(data: any) {
 		Object.keys(data).forEach( (key) => {
 			let item = $state(data[key]);
-			this.state.set(key, item);
+			let obj = Utils.isValidJSONObject(item) ? JSON.parse(item) : item;
+			this.state.set(key, obj);
 		});
 	}
 
@@ -72,13 +69,13 @@ class Store {
 		return images || [];
 	}
 
-	getCategoryIcon(control: Control, isSubControl: boolean) {
+	getCategoryIcon(control: Control, controlAction: any) {
 		if (control.defaultIcon) return control.defaultIcon;
-		if (!isSubControl) {
+		if (!controlAction) { 
 			const cat = this.categoryList.find((cat: Category) => cat.uuid == control.cat);
 			return cat ? cat.image : '';
 		} else {
-			return ''; // TODO
+			return ''; // Other control action hides icon 
 		}
 	}
 }
