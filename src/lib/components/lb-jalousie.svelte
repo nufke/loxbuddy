@@ -77,10 +77,10 @@
 	let controlView: ControlView = $derived({
 		...DEFAULT_CONTROLVIEW,
 		iconName: store.getCategoryIcon(control, isSubControl),
-		iconColor: (position > 0) ? '#69C350' : 'white', //TODO add color map
+		iconColor: (position > 0) ? 'fill-green-500' : 'fill-white',
 		textName: control.name,
 		statusName: position < 1 ? $_('Opened') : position > 99 ? $_('Closed') : fmt.sprintf('%1.0f%% ', position),
-		statusColor: (position > 0) ? '#69C350' : 'white', //TODO add color map
+		statusColor: (position > 0) ? 'text-green-500' : 'text-white',
 		buttons: buttons,
 		modal: modal
 	});

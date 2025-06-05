@@ -22,7 +22,7 @@
 		iconName: store.getCategoryIcon(control, isSubControl),
 		textName: control.name,
 		statusName: fmt.sprintf('%s %.2f kW • %s %.2f kW', prod[0], store.getState(control.states.prodCurr), cons[0], store.getState(control.states.consCurr)),
-		statusColor: '#69C350', //TODO add color map
+		statusColor: 'text-green-500',
 		modal: modal
 	});
 </script>

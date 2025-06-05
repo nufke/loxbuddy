@@ -39,7 +39,7 @@
 	<header class="relative">
 		<div class="flex justify-center">
 			<div class="relative inline-flex h-18 w-18 items-center justify-center overflow-hidden rounded-full dark:bg-surface-950">
-				<svg use:inlineSvg={'/loxicons/' + controlView.iconName} fill={controlView.iconColor} width="36" height="36"></svg>
+				<svg class={controlView.iconColor} use:inlineSvg={'/loxicons/' + controlView.iconName}  width="36" height="36"></svg>
 			</div>
 		</div>
 		<div class="absolute right-0 top-0">
@@ -54,7 +54,7 @@
 			<h2 class="h4 text-center">{controlView.textName}</h2>
 		</div>
 			<div class="mt-4 mb-2 truncate">
-			<p class="text-lg truncate" style="color: {controlView.statusColor}">{controlView.statusName}</p>
+			<p class="text-lg truncate {controlView.statusColor}">{controlView.statusName}</p>
 		</div>
 		<div class="container mt-2">
 		{#if controlView.list}

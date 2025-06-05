@@ -43,11 +43,7 @@ const onConnect = () => {
 	console.log('MQTT: connected\n');
 	connected = true;
 	const registerTopics = [
-		topicPrefix + '/+/states',
-		topicPrefix + '/+/structure',
-		topicPrefix + '/#',
-		topicPrefix + '/+/securedDetails',
-		topicPrefix + '/+/lastBellEventImage/#'
+		topicPrefix + '/#'
 	];
 
 	registerTopics.forEach((topic) => {

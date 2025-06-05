@@ -275,11 +275,11 @@ export type ModalView = {
 
 export const DEFAULT_CONTROLVIEW: ControlView = {
 	iconName: '',
-	iconColor: 'white',
+	iconColor: 'fill-white',
 	textName: '',
-	textColor: 'white',
+	textColor: 'text-white',
 	statusName: '',
-	statusColor: 'white',
+	statusColor: 'text-white',
 	buttons: [],
 	modal: {
 		action: () => {} // no default action
@@ -297,12 +297,6 @@ export type MoodList = {
 	id: number;
 	static: boolean;
 	used?: number;
-}
-
-export const DEFAULT_MOODLIST = {
-	name: '',
-	id: 778,
-	static: true
 }
 
 export type Route = {

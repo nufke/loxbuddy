@@ -4,7 +4,7 @@
 
 	let { key, item } : { key: string, item: Room | Category} = $props();
 
-	const color = 'white'; // TODO text and image colour
+	const color = 'fill-white'; // TODO text and image colour
 	const href = key + '/' + item.uuid;
 </script>
 
@@ -13,7 +13,7 @@
 	<div class="w-full">
 		<div class="flex items-center truncate">
 			<div class="relative inline-flex items-center justify-center w-12 h-12 min-w-12 overflow-hidden rounded-full dark:bg-surface-950">
-				<svg use:inlineSvg={'/loxicons/' + item.image} fill={color} width="24" height="24"></svg>
+				<svg class={color} use:inlineSvg={'/loxicons/' + item.image} width="24" height="24"></svg>
 			</div>
 			<div class="mt-0 ml-3 truncate">
 				<h1 class="truncate text-lg">{item.name}</h1>

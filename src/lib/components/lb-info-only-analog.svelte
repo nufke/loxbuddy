@@ -68,7 +68,7 @@
 		...DEFAULT_CONTROLVIEW,
 		iconName: store.getCategoryIcon(control, isSubControl),
 		textName: control.name,
-		statusName: getFormattedString(store.getState(control.states.value)),
+		statusName: getFormattedString(String(store.getState(control.states.value))),
 		modal: modal
 	});
 </script>

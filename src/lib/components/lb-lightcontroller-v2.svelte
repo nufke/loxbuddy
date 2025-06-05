@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Control, ControlView, MoodList, SingleButtonView, ModalView } from '$lib/types/models';
-	import { DEFAULT_CONTROLVIEW, DEFAULT_MOODLIST } from '$lib/types/models';
+	import { DEFAULT_CONTROLVIEW } from '$lib/types/models';
 	import LbControl from '$lib/components/lb-control.svelte';
 	import { publishTopic } from '$lib/helpers/mqttclient';
 	import LbListModal from '$lib/components/lb-list-modal.svelte';
@@ -44,10 +44,10 @@
 		...DEFAULT_CONTROLVIEW,
 		control: control,
 		iconName: store.getCategoryIcon(control, isSubControl),
-		iconColor: (activeMoodsNum != 778) ? '#69C350' : 'white', //TODO add color map
+		iconColor: (activeMoodsNum != 778) ? 'fill-green-500' : 'fill-white',
 		textName: (control.name === $_('LightcontrollerV2')) ? store.rooms[control.room].name : control.name,
-		statusName: (activeMoodsNum < 0) ? $_('Manual') : moodList.find((item:MoodList) => item.id == activeMoodsNum)?.name,
-		statusColor: (activeMoodsNum != 778) ? '#69C350' : 'white', //TODO add color map
+		statusName: (activeMoodsNum < 0) ? $_('Manual') : moodList.find((item: MoodList) => item.id == activeMoodsNum)?.name,
+		statusColor: (activeMoodsNum != 778) ? 'text-green-500' : 'text-white',
 		list: moodList,
 		buttons: buttons,
 		modal: modal

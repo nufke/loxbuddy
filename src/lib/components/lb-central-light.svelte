@@ -12,7 +12,7 @@
 	let { control, isSubControl = false }: { control: Control; isSubControl: boolean } = $props();
 
 	let lightList = control.details.controls as LightItem[];
-  lightList.forEach( item => item.selected = false); // default all lights unselected
+	lightList.forEach( item => item.selected = false ); // default all lights unselected
 
 	let lightsUuid = control.details.controls.map((item: LightItem) => item.uuid);
 	let lightControls = store.controlList.filter(
@@ -37,7 +37,7 @@
         default:
           status = fmt.sprintf($_('On in %s rooms'), lightsOn);
       }
-			return status;
+			return lightsOff.length ? status : '';
 	}
 
 	let modal: ModalView = $state({
@@ -51,10 +51,10 @@
 		...DEFAULT_CONTROLVIEW,
 		control: control,
 		iconName: store.getCategoryIcon(control, isSubControl),
-		iconColor: lightsOn ? '#69C350' : 'white',
+		iconColor: lightsOn ? 'fill-green-500' : 'fill-white',
 		textName: control.name,
 		statusName: getActiveLights(),
-		statusColor: lightsOn ? '#69C350' : 'white',
+		statusColor: lightsOn ? 'text-green-500' : 'white',
 		modal: modal
 	});
 
@@ -63,14 +63,14 @@
 	}
 
 	function getStatusName(control: Control) {
-		let moodList = $derived(store.getState(control.states.moodList)) as MoodList[];
+		let moodList = store.getState(control.states.moodList) as MoodList[];
 		let activeMoodsNum = Number(store.getState(control.states.activeMoodsNum));
-		return (activeMoodsNum < 0) ? $_('Manual') : moodList.find((item:MoodList) => item.id == activeMoodsNum)?.name;
+		return (activeMoodsNum < 0) ? $_('Manual') : moodList?.find((item:MoodList) => item.id == activeMoodsNum)?.name;
 	}
 
 	function getStatusColor(control: Control) {
 		let activeMoodsNum = Number(store.getState(control.states.activeMoodsNum));
-		return activeMoodsNum == 778 ? 'white' : '#69C350'; //TODO add color map
+		return activeMoodsNum == 778 ? 'white' : 'text-green-500';
 	}
 
 	function selectLight(i: number) {
@@ -112,7 +112,7 @@
 			<div class="mb-2 flex justify-center">
 				<h2 class="h4 text-center ">{controlView.textName}</h2>
 			</div>
-			<h2 class="text-md text-center" style="color: {lightsOn ? '#69C350' : 'white'}">{getActiveLights()}</h2>
+			<h2 class="text-md text-center {lightsOn ? 'text-green-500' : 'white'}">{getActiveLights()}</h2>
 			<div class="absolute top-0 right-0">
 				<button type="button" aria-label="close" class="btn-icon w-auto" onclick={() => controlView.modal.action(false)}>
 					<X />
@@ -138,10 +138,10 @@
 					<div class="w-full">
 						<div class="flex items-center truncate">
 							<div class="mt-0 ml-2 mr-2 flex w-full justify-between truncate">
-								<div class="flex truncate text-lg" style="color: {getStatusColor(control)}">
+								<div class="flex truncate text-lg {getStatusColor(control)}">
 									<p>{getControlName(control)}</p>
 								</div>
-									<div class="truncate text-lg" style="color: {getStatusColor(control)}">{getStatusName(control)}</div>
+									<div class="truncate text-lg {getStatusColor(control)}">{getStatusName(control)}</div>
 							</div>
 						</div>
 					</div>

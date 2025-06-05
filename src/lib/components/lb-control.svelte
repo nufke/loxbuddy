@@ -14,12 +14,12 @@
 		<div class="flex items-center truncate">
 			{#if controlView.iconName.length}
 			<div class="relative mr-1 inline-flex items-center justify-center w-12 h-12 min-w-12 overflow-hidden rounded-full dark:bg-surface-950">
-				<svg use:inlineSvg={'/loxicons/' + controlView.iconName} fill={controlView.iconColor} width="24" height="24"></svg>
+				<svg class={controlView.iconColor} use:inlineSvg={'/loxicons/' + controlView.iconName} width="24" height="24"></svg>
 			</div>
 			{/if}
 			<div class="mt-0 ml-2 truncate">
 				<h1 class="truncate text-lg">{controlView.textName}</h1>
-				<p class="text-md truncate" style="color: {controlView.statusColor}">{controlView.statusName}</p>
+				<p class="text-md truncate {controlView.statusColor}">{controlView.statusName}</p>
 			</div>
 		</div>
 		<div class="flex flex-row items-center justify-center">

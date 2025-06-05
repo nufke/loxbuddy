@@ -24,7 +24,8 @@
 		lastBellEventImages: any;
 	}
 
-	let lastBellEvents = $derived(store.getState(control.states.lastBellEvents).split('|'));
+	let events = String(store.getState(control.states.lastBellEvents));
+	let lastBellEvents = $derived(events.includes('|') ? events.split('|'): []);
 	let lastBellEventImages = $derived(store.getLastBellEventImages(control.uuidAction));
 
 	let	details: DetailsView = $derived({
