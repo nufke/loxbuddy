@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { Control, ControlView } from '$lib/types/models';
-	import { DEFAULT_CONTROLVIEW } from '$lib/types/models';
+	import type { Control, ControlOptions, ControlView } from '$lib/types/models';
+	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import { Utils } from '$lib/utils';
 	import { store } from '$lib/stores/store.svelte';
 	import { publishTopic } from '$lib/helpers/mqttclient';
@@ -8,7 +8,7 @@
   import SimpleSlider from '$lib/components/lb-simple-slider.svelte'
 	import { ChevronRight } from '@lucide/svelte';
 
-	let { control, controlAction = undefined } = $props();
+	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
 	let min = $derived(control.states.min ? Number(store.getState(control.states.min)) : 0 );
 	let max = $derived(control.states.max ? Number(store.getState(control.states.max)) : 100);
@@ -64,14 +64,14 @@
 	});
 </script>
 
-<div role="button" tabindex="0" onkeydown={()=>{}} aria-label="card" onclick={() => {controlAction ? controlAction() : controlView.modal.action(true)}}
+<div role="button" tabindex="0" onkeydown={()=>{}} aria-label="card" onclick={() => {controlOptions.action ? controlOptions.action() : controlView.modal.action(true)}}
      class="card m-0 flex min-h-[70px] items-center justify-start rounded-lg border border-white/5
 						bg-linear-to-r from-white/[0.095] to-white/5 px-2 py-2 hover:border-white/10">
 	<div class="w-full ">
 		<div class="flex justify-between mt-0 mb-3 ml-2 mr-2">
 			<div class="flex">
 				<p class="text-lg">{controlView.textName}</p>
-				{#if controlAction}
+				{#if controlOptions.action}
 					<p class="mt-1"><ChevronRight size="20"/></p>
 				{/if}
 			</div>

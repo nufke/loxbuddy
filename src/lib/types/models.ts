@@ -313,3 +313,33 @@ export type ColorType = {
 	}
 	kelvin: number;
 }
+
+export type ControlOptions = {
+	isSubControl: boolean;
+	action?: any;
+	showControl?: boolean;
+  showModal?: boolean;
+}
+
+export const DEFAULT_CONTROLOPTIONS: ControlOptions = {
+	isSubControl: false,
+	action: undefined,
+	showControl: true,
+  showModal: false
+}
+
+export const DEFAULT_CONTROL = {
+	name: '',
+	type: '',
+	uuidAction: '',
+	room: '',
+	cat: '',
+	defaultRating: 0,
+	isFavorite: false,
+	isSecured: false,
+	defaultIcon: '',
+	restrictions: 0,
+	details: {},
+	states: {},
+	subControls: {}
+}

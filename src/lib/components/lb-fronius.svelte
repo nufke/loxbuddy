@@ -1,13 +1,13 @@
 <script lang="ts">
 	import LbControl from '$lib/components/lb-control.svelte';
 	import LbModal from '$lib/components/lb-modal.svelte';
-	import type { Control, ControlView, ModalView } from '$lib/types/models';
-	import { DEFAULT_CONTROLVIEW } from '$lib/types/models';
+	import type { Control, ControlOptions, ControlView, ModalView } from '$lib/types/models';
+	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import { store } from '$lib/stores/store.svelte';
 	import fmt from 'sprintf-js';
 	import { _ } from 'svelte-i18n';
 
-	let { control, isSubControl = false }: { control: Control, isSubControl: boolean } = $props();
+	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
 	const prod = $_('Production');
 	const cons = $_('Consumption');
@@ -19,7 +19,7 @@
 
 	let controlView: ControlView = $derived({
 		...DEFAULT_CONTROLVIEW,
-		iconName: store.getCategoryIcon(control, isSubControl),
+		iconName: store.getCategoryIcon(control, controlOptions.isSubControl),
 		textName: control.name,
 		statusName: fmt.sprintf('%s %.2f kW • %s %.2f kW', prod[0], store.getState(control.states.prodCurr), cons[0], store.getState(control.states.consCurr)),
 		statusColor: 'text-green-500',

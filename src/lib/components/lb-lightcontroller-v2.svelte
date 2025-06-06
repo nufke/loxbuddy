@@ -1,13 +1,13 @@
 <script lang="ts">
-	import type { Control, ControlView, MoodList, SingleButtonView, ModalView } from '$lib/types/models';
-	import { DEFAULT_CONTROLVIEW } from '$lib/types/models';
+	import type { Control, ControlOptions, ControlView, MoodList, SingleButtonView, ModalView } from '$lib/types/models';
+	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import LbControl from '$lib/components/lb-control.svelte';
 	import { publishTopic } from '$lib/helpers/mqttclient';
 	import LbListModal from '$lib/components/lb-list-modal.svelte';
 	import { _ } from 'svelte-i18n';
 	import { store } from '$lib/stores/store.svelte';
 	
-	let { control, isSubControl = false }: { control: Control, isSubControl: boolean } = $props();
+	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
 	let moodList = $derived(store.getState(control.states.moodList)) as MoodList[];
 	let activeMoodsNum = $derived(Number(store.getState(control.states.activeMoodsNum)));
@@ -37,24 +37,27 @@
 
 	let modal: ModalView = $state({
 		action: (state: boolean) => {modal.state = state},
-		state: false,
+		state: controlOptions.showModal,
 	});
 
 	let controlView: ControlView = $derived({
 		...DEFAULT_CONTROLVIEW,
 		control: control,
-		iconName: store.getCategoryIcon(control, isSubControl),
+		iconName: store.getCategoryIcon(control, controlOptions.isSubControl),
 		iconColor: (activeMoodsNum != 778) ? 'fill-green-500' : 'fill-white',
 		textName: (control.name === $_('LightcontrollerV2')) ? store.rooms[control.room].name : control.name,
-		statusName: (activeMoodsNum < 0) ? $_('Manual') : moodList.find((item: MoodList) => item.id == activeMoodsNum)?.name,
+		statusName: (activeMoodsNum < 0) ? $_('Manual') : moodList?.find((item: MoodList) => item.id == activeMoodsNum)?.name,
 		statusColor: (activeMoodsNum != 778) ? 'text-green-500' : 'text-white',
 		list: moodList,
 		buttons: buttons,
 		modal: modal
 	});
+
 </script>
 
 <div>
-	<LbControl bind:controlView={controlView}/>
+	{#if controlOptions.showControl}
+		<LbControl bind:controlView={controlView}/>
+	{/if}
 	<LbListModal bind:controlView={controlView}/>
 </div>

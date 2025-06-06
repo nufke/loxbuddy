@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { Control, ControlView, ModalView } from '$lib/types/models';
-	import { DEFAULT_CONTROLVIEW } from '$lib/types/models';
+	import type { Control, ControlOptions, ControlView, ModalView } from '$lib/types/models';
+	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import LbControl from '$lib/components/lb-control.svelte';
 	import LbModal from '$lib/components/lb-modal.svelte';
 	import { store } from '$lib/stores/store.svelte';
@@ -8,7 +8,7 @@
 	import { nl } from 'date-fns/locale';
 	import fmt from 'sprintf-js';
 	
-	let { control, isSubControl = false }: { control: Control, isSubControl: boolean } = $props();
+	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
 	const loxTimeRef = 1230764400000; // correction to epoch, Loxone calculates from 1-1-2009
 
@@ -66,7 +66,7 @@
 
 	let controlView: ControlView = $derived({
 		...DEFAULT_CONTROLVIEW,
-		iconName: store.getCategoryIcon(control, isSubControl),
+		iconName: store.getCategoryIcon(control, controlOptions.isSubControl),
 		textName: control.name,
 		statusName: getFormattedString(String(store.getState(control.states.value))),
 		modal: modal

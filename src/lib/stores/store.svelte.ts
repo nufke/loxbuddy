@@ -69,13 +69,13 @@ class Store {
 		return images || [];
 	}
 
-	getCategoryIcon(control: Control, controlAction: any) {
+	getCategoryIcon(control: Control, isSubControl: boolean | undefined) {
 		if (control.defaultIcon) return control.defaultIcon;
-		if (!controlAction) { 
+		if (!isSubControl) { 
 			const cat = this.categoryList.find((cat: Category) => cat.uuid == control.cat);
 			return cat ? cat.image : '';
 		} else {
-			return ''; // Other control action hides icon 
+			return ''; // hide icon for subcontrols by returning empty name
 		}
 	}
 }

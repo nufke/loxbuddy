@@ -1,12 +1,12 @@
 <script lang="ts">
-	import type { Control, ControlView, ModalView } from '$lib/types/models';
-	import { DEFAULT_CONTROLVIEW } from '$lib/types/models';
+	import type { Control, ControlOptions, ControlView, ModalView } from '$lib/types/models';
+	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import LbControl from '$lib/components/lb-control.svelte';
 	import LbModal from '$lib/components/lb-modal.svelte';
 	import { store } from '$lib/stores/store.svelte';
 	import fmt from 'sprintf-js';
 
-	let { control, isSubControl = false }: { control: Control, isSubControl: boolean } = $props();
+	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
 	let modal: ModalView = $state({
 		action: (state: boolean) => {modal.state = state},
@@ -15,7 +15,7 @@
 
 	let controlView: ControlView = $derived({
 		...DEFAULT_CONTROLVIEW,
-		iconName: store.getCategoryIcon(control, isSubControl),
+		iconName: store.getCategoryIcon(control, controlOptions.isSubControl),
 		textName: control.name,
 		statusName: fmt.sprintf(control.details.format, store.getState(control.states.text)),
 		modal: modal

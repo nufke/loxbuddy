@@ -25,14 +25,14 @@ For additional requests or ideas, you can raise an [issue](https://github.com/nu
 | CentralAudioZone         | Not started       |
 | CentralGate              | Not started       |
 | CentralJalousie          | Not started       |
-| CentralLightController   | Under development |
+| CentralLightController   | Available         |
 | CentralWindow            | Not started       |
 | Climate                  | Not started       |
 | ClimateUs                | Not started       |
 | ClimateController        | Not started       |
 | ClimateControllerUS      | Not started       |
 | ColorPicker              | Not started       |
-| ColorPickerV2            | Under development |
+| ColorPickerV2            | Available         |
 | Daytimer                 | Under development |
 | Dimmer                   | Available         |
 | EIBDimmer                | Not started       |
@@ -64,7 +64,7 @@ For additional requests or ideas, you can raise an [issue](https://github.com/nu
 | Light                    | Not started       |
 | LightCentral             | Not started       |
 | LightController          | Not started       |
-| LightControllerV2        | Under development |
+| LightControllerV2        | Available         |
 | LightsceneRGB            | Not started       |
 | LightV2                  | Not started       |
 | LoadManager              | Not started       |

@@ -87,13 +87,13 @@
 				<div class="mt-3"></div>
 			{/if}
 			{#if subControl.type=='Switch'}
-				<LbSwitch control={subControl}/>
+				<LbSwitch control={subControl} controlOptions={{isSubControl: true}}/>
 			{/if}
 			{#if subControl.type=='Dimmer'}
-				<LbDimmer control={subControl}/>
+				<LbDimmer control={subControl} controlOptions={{isSubControl: true}}/>
 			{/if}
 			{#if subControl.type=='ColorPickerV2'}
-				<LbDimmer control={subControl} controlAction={()=>{id=index; selectedTab=2}}/>
+				<LbDimmer control={subControl} controlOptions={{isSubControl: true, action: ()=>{id=index; selectedTab=2}}}/>
 			{/if}
 			{/each}
 	</div>
@@ -112,7 +112,7 @@
 	</header>
 	<div class="overflow-y-scroll" style="max-height: 500px;">
 	{#if subControls[id].type === "Dimmer" || subControls[id].type === "ColorPickerV2" }
-		<LbDimmer control={subControls[id]}/>
+		<LbDimmer control={subControls[id]} controlOptions={{isSubControl: true}}/>
 		<LbColorPickerV2 control={subControls[id]}/>
 	{/if}
 	</div>

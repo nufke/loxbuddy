@@ -1,13 +1,13 @@
 <script lang="ts">
-	import type { Control, ControlView, ModalView } from '$lib/types/models';
-	import { DEFAULT_CONTROLVIEW } from '$lib/types/models';
+	import type { Control, ControlOptions, ControlView, ModalView } from '$lib/types/models';
+	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import LbControl from '$lib/components/lb-control.svelte';
 	import LbIntercomModal from '$lib/components/lb-intercom-modal.svelte';
 	import fmt from 'sprintf-js';
 	import { store } from '$lib/stores/store.svelte';
 	import { publishTopic } from '$lib/helpers/mqttclient';
 
-	let { control, isSubControl = false }: { control: Control, isSubControl: boolean } = $props();
+	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
 	function requestLastImages() {
 		publishTopic(control.uuidAction + '/lastBellEventImages', '1');
@@ -24,7 +24,7 @@
 		lastBellEventImages: any;
 	}
 
-	let events = String(store.getState(control.states.lastBellEvents));
+	let events = $derived(String(store.getState(control.states.lastBellEvents)));
 	let lastBellEvents = $derived(events.includes('|') ? events.split('|'): []);
 	let lastBellEventImages = $derived(store.getLastBellEventImages(control.uuidAction));
 
@@ -36,7 +36,7 @@
 
 	let controlView: ControlView = $derived({
 		...DEFAULT_CONTROLVIEW,
-		iconName: store.getCategoryIcon(control, isSubControl),
+		iconName: store.getCategoryIcon(control, controlOptions.isSubControl),
 		textName: control.name,
 		statusName: fmt.sprintf(control.details.format, store.getState(control.states.text)),
 		details: details,

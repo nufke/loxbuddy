@@ -1,13 +1,13 @@
 <script lang="ts">
-	import type { Control, ControlView, SingleButtonView, ModalView } from '$lib/types/models';
-	import { DEFAULT_CONTROLVIEW } from '$lib/types/models';
+	import type { Control, ControlOptions, ControlView, SingleButtonView, ModalView } from '$lib/types/models';
+	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import LbControl from '$lib/components/lb-control.svelte';
 	import LbListModal from '$lib/components/lb-list-modal.svelte';
 	import { publishTopic } from '$lib/helpers/mqttclient';
 	import { store } from '$lib/stores/store.svelte';
 
-	let { control, isSubControl = false }: { control: Control, isSubControl: boolean } = $props();
-
+	let { control, controlOptions = DEFAULT_CONTROLOPTIONS } : {control: Control, controlOptions: ControlOptions } = $props();
+	
 	function clickRadio(e: any, step: number) {
 		let min: number = 0;
 		let max: number = radioList.length - 1;
@@ -66,7 +66,7 @@
 
 	let controlView: ControlView = $derived({
 		...DEFAULT_CONTROLVIEW,
-		iconName: store.getCategoryIcon(control, isSubControl),
+		iconName: store.getCategoryIcon(control, controlOptions.isSubControl),
 		textName: control.name,
 		statusName: radioIndex ? radioIndex.name : 'unknown',
 		statusColor: selectedRadio ? 'text-green-500' : 'text-white',
