@@ -10,7 +10,7 @@ For additional requests or ideas, you can raise an [issue](https://github.com/nu
 | AalEmergency             | Not started       |
 | AalSmartAlarm            | Not started       |
 | ACControl                | Not started       |
-| Alarm                    | Under development |
+| Alarm                    | Available         |
 | AlarmCentral             | Not started       |
 | AlarmChain               | Not started       |
 | AlarmClock               | Not started       |
