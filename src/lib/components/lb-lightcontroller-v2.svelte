@@ -2,11 +2,11 @@
 	import type { Control, ControlOptions, ControlView, MoodList, SingleButtonView, ModalView } from '$lib/types/models';
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import LbControl from '$lib/components/lb-control.svelte';
-	import { publishTopic } from '$lib/helpers/mqttclient';
+	import { publishTopic } from '$lib/communication/mqttclient';
 	import LbListModal from '$lib/components/lb-list-modal.svelte';
 	import { _ } from 'svelte-i18n';
 	import { store } from '$lib/stores/store.svelte';
-	
+
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
 	let moodList = $derived(store.getState(control.states.moodList)) as MoodList[];
@@ -52,7 +52,6 @@
 		buttons: buttons,
 		modal: modal
 	});
-
 </script>
 
 <div>

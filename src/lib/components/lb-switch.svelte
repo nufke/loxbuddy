@@ -3,17 +3,17 @@
 	import type { Control, ControlOptions, ControlView, SingleButtonView } from '$lib/types/models';
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import LbModal from '$lib/components/lb-modal.svelte';
-	import { publishTopic } from '$lib/helpers/mqttclient';
+	import { publishTopic } from '$lib/communication/mqttclient';
 	import { store } from '$lib/stores/store.svelte';
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
-	let buttonActive = $derived(store.getState(control.states.active) == '1');
+	let buttonActive = $derived(Number(store.getState(control.states.active)) == 1);
 
-	let buttons: SingleButtonView[] = $state([
+	let buttons: SingleButtonView[] = $derived([
 		{
+			name: buttonActive ? 'Switch off' : 'Switch on',
 			type: 'switch',
-			name: 'Switch off,Switch on',
 			click: (e: any) => {
 				publishTopic(control.uuidAction, e.checked ? '1' : '0');
 			}	

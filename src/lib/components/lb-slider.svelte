@@ -4,7 +4,7 @@
 	import LbControl from '$lib/components/lb-control.svelte';
 	import LbModal from '$lib/components/lb-modal.svelte';
 	import { store } from '$lib/stores/store.svelte';
-	import { publishTopic } from '$lib/helpers/mqttclient';
+	import { publishTopic } from '$lib/communication/mqttclient';
 	import fmt from 'sprintf-js';
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();

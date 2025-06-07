@@ -3,11 +3,11 @@
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import LbControl from '$lib/components/lb-control.svelte';
 	import LbListModal from '$lib/components/lb-list-modal.svelte';
-	import { publishTopic } from '$lib/helpers/mqttclient';
+	import { publishTopic } from '$lib/communication/mqttclient';
 	import { store } from '$lib/stores/store.svelte';
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS } : {control: Control, controlOptions: ControlOptions } = $props();
-	
+
 	function clickRadio(e: any, step: number) {
 		let min: number = 0;
 		let max: number = radioList.length - 1;
@@ -48,7 +48,7 @@
 		action: (state: boolean) => {modal.state = state},
 		state: false,
 	});
-	
+
 	let buttons: SingleButtonView[] = $state([
 		{
 			iconName: 'Minus',

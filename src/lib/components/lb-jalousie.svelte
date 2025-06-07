@@ -5,7 +5,7 @@
 	import LbJalousieModal from '$lib/components/lb-jalousie-modal.svelte';
 	import fmt from 'sprintf-js';
 	import { _ } from 'svelte-i18n';
-	import { publishTopic } from '$lib/helpers/mqttclient';
+	import { publishTopic } from '$lib/communication/mqttclient';
 	import { store } from '$lib/stores/store.svelte';
 	
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();

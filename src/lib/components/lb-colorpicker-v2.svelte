@@ -3,8 +3,8 @@
 	import iro from '@jaames/iro';
 	import type { Control, ColorType } from '$lib/types/models';
 	import { store } from '$lib/stores/store.svelte';
-	import { Utils } from '$lib/utils';
-	import { publishTopic } from '$lib/helpers/mqttclient';
+	import { Utils } from '$lib/helpers/utils';
+	import { publishTopic } from '$lib/communication/mqttclient';
 	import { _ } from 'svelte-i18n';
 
 	let { control }: { control: Control } = $props();

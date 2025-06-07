@@ -2,7 +2,7 @@
 	import type { Control, ControlOptions, ControlView, SingleButtonView, ModalView } from '$lib/types/models';
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import LbControl from '$lib/components/lb-control.svelte';
-	import { publishTopic } from '$lib/helpers/mqttclient';
+	import { publishTopic } from '$lib/communication/mqttclient';
 	import LbModal from '$lib/components/lb-modal.svelte';
 	import { store } from '$lib/stores/store.svelte';
 

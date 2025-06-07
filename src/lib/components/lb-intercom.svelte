@@ -5,7 +5,7 @@
 	import LbIntercomModal from '$lib/components/lb-intercom-modal.svelte';
 	import fmt from 'sprintf-js';
 	import { store } from '$lib/stores/store.svelte';
-	import { publishTopic } from '$lib/helpers/mqttclient';
+	import { publishTopic } from '$lib/communication/mqttclient';
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 

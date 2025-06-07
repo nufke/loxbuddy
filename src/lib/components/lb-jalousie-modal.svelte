@@ -5,6 +5,7 @@
 	import LucideIcon from './icon-by-name.svelte';
 	import { X } from '@lucide/svelte';
 	import { _ } from 'svelte-i18n';
+	import { fade200 } from '$lib/helpers/transition';
 
 	let { controlView = $bindable() }: { controlView: ControlView } = $props();
 
@@ -15,6 +16,10 @@
 
 <Modal
 	open={controlView.modal.state}
+	transitionsBackdropIn = {fade200}
+	transitionsBackdropOut = {fade200}
+	transitionsPositionerIn = {fade200}
+	transitionsPositionerOut = {fade200}
 	onOpenChange={()=>controlView.modal.action(false)}
 	triggerBase="btn preset-tonal"
 	contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-xl rounded-lg border border-white/5
@@ -37,7 +42,7 @@
 		<div>
 			<h2 class="h4 text-center">{controlView.textName}</h2>
 		</div>
-			<div class="mt-4 truncate">
+		<div class="mt-4 truncate">
 			<p class="text-lg truncate {controlView.statusColor}">{controlView.statusName}</p>
 		</div>
 		<div class="container flex grid grid-cols-2 gap-2 mt-6 m-2">
@@ -49,11 +54,9 @@
 							onmousedown={(e) => { e.stopPropagation(); e.preventDefault(); button.mousedown()}}
 							onmouseup={(e) => { e.stopPropagation(); e.preventDefault(); button.mouseup()}}>
 							{#if button.name}
-								<span>{$_(button.name)}</span>
+								<span class="text-lg">{$_(button.name)}</span>
 							{:else}
-								<span>
-									<LucideIcon name={button.iconName}/>
-								</span>
+								<LucideIcon name={button.iconName}/>
 							{/if}
 					</button>
 				{/if}

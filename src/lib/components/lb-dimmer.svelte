@@ -1,9 +1,9 @@
 <script lang="ts">
 	import type { Control, ControlOptions, ControlView } from '$lib/types/models';
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
-	import { Utils } from '$lib/utils';
+	import { Utils } from '$lib/helpers/utils';
 	import { store } from '$lib/stores/store.svelte';
-	import { publishTopic } from '$lib/helpers/mqttclient';
+	import { publishTopic } from '$lib/communication/mqttclient';
 	import { _ } from 'svelte-i18n';
   import SimpleSlider from '$lib/components/lb-simple-slider.svelte'
 	import { ChevronRight } from '@lucide/svelte';
@@ -80,7 +80,7 @@
 		<div class="container">
 			<button class="w-full" onclick={(e) => { e.stopPropagation()}}> <!-- workaround wrapper to stop propagation for slider -->
 				<SimpleSlider classes="ml-1 mr-1 mb-1" thumbStyle={trackColor()}
-									min={min} max={max} step={step} value={position} onValueChangeEnd={(e: any) => {updatePosition(e.value)}}/>
+											min={min} max={max} step={step} value={position} onValueChangeEnd={(e: any) => {updatePosition(e.value)}}/>
 			</button>
 		</div>
 	</div>

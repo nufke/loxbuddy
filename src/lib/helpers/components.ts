@@ -13,6 +13,7 @@ import LbLightControllerV2 from '$lib/components/lb-lightcontroller-v2.svelte';
 import LbFronius from '$lib/components/lb-fronius.svelte';
 import LbIntercom from '$lib/components/lb-intercom.svelte';
 import LbCentralLight from '$lib/components/lb-central-light.svelte';
+import LbAlarm from '$lib/components/lb-alarm.svelte';
 import LbUnknown from '$lib/components/lb-unknown.svelte';
 
 let componentList = [
@@ -31,6 +32,7 @@ let componentList = [
 	{ format: 'Fronius', component: LbFronius },
 	{ format: 'Intercom', component: LbIntercom },
 	{ format: 'CentralLightController', component: LbCentralLight },
+	{ format: 'Alarm', component: LbAlarm }
 ];
 
 export function getComponent(name: string) {

@@ -1,7 +1,7 @@
 import { SvelteMap } from 'svelte/reactivity';
 import { INITIAL_STRUCTURE } from '$lib/types/models';
 import type { Structure, Control, Category } from '$lib/types/models';
-import { Utils } from '$lib/utils';
+import { Utils } from '$lib/helpers/utils';
 
 class Store {
 	structure: Structure = $state(INITIAL_STRUCTURE);

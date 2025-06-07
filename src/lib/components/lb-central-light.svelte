@@ -7,8 +7,9 @@
 	import { Modal } from '@skeletonlabs/skeleton-svelte';
 	import { X } from '@lucide/svelte';
 	import { _ } from 'svelte-i18n';
-	import { publishTopic } from '$lib/helpers/mqttclient';
+	import { publishTopic } from '$lib/communication/mqttclient';
 	import fmt from 'sprintf-js';
+	import { fade200 } from '$lib/helpers/transition';
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
@@ -33,7 +34,7 @@
 	let scenesEnabled = $state(false);
 
 	function getActiveLights() {
-		let status;
+		let status = '';
 		switch (lightsOn) {
         case 0:
           status = $_('All off');
@@ -44,7 +45,7 @@
         default:
           status = fmt.sprintf($_('On in %s rooms'), lightsOn);
       }
-			return lightsOff.length ? status : '';
+			return status;
 	}
 
 	let modal: ModalView = $state({
@@ -126,6 +127,10 @@
 	<LbControl bind:controlView />
 	<Modal
 		open={controlView.modal.state}
+		transitionsBackdropIn = {fade200}
+		transitionsBackdropOut = {fade200}
+		transitionsPositionerIn = {fade200}
+		transitionsPositionerOut = {fade200}
 		onOpenChange={() => controlView.modal.action(false)}
 		triggerBase="btn preset-tonal"
 		contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-xl rounded-lg border border-white/5
@@ -174,9 +179,8 @@
 	</Modal>
 
 	{#if selectedControl && selectedControlOptions }
-		{#key selectedControlOptions}
+		{#key selectedControlOptions} <!-- reinit component -->
 			<LbLightControllerV2 control={selectedControl} controlOptions={selectedControlOptions}/>
-		{/key }
+		{/key}
 	{/if}
 </div>
-

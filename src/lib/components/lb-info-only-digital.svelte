@@ -13,7 +13,7 @@
 		action: (state: boolean) => {modal.state = state},
 		state: false
 	});
-	
+
 	let controlView: ControlView = $derived({
 		...DEFAULT_CONTROLVIEW,
 		iconName: store.getCategoryIcon(control, controlOptions.isSubControl),

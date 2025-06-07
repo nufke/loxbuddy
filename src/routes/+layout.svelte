@@ -5,7 +5,7 @@
 	import { innerWidth } from 'svelte/reactivity/window';
   import { Home, List, FileText, Grid2x2, type Icon as IconType } from '@lucide/svelte';
 	import type { Route } from '$lib/types/models';
-	import { mqttConnect } from '$lib/helpers/mqttclient';
+	import { mqttConnect } from '$lib/communication/mqttclient';
 	import { _ } from 'svelte-i18n';
 	import { page } from '$app/state';
 

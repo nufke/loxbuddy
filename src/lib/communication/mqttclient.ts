@@ -1,6 +1,6 @@
 import mqtt from 'mqtt';
 import { store } from '$lib/stores/store.svelte';
-import { Utils } from '$lib/utils';
+import { Utils } from '$lib/helpers/utils';
 
 let connected: boolean;
 let serialNr: string;  // TODO support multiple miniservers
@@ -126,7 +126,7 @@ function monitorStates(topic: string, msg: string) {
 	const regex = new RegExp(topicPrefix + '/(.+)/(.*)');
 	const found = topic.match(regex);
 	if (found && found[1] && found[2]) {
-		//console.log('setState: ', msg);
+		//console.log('setState: ', found[2], msg);
 		let obj = Utils.isValidJSONObject(msg) ? JSON.parse(msg) : msg;
 		store.setState(found[2], obj);
 	}
