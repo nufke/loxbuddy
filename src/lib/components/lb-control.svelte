@@ -3,8 +3,17 @@
 	import { Switch } from '@skeletonlabs/skeleton-svelte';
 	import type { ControlView } from '$lib/types/models';
 	import LucideIcon from './icon-by-name.svelte';
+	import { _ } from 'svelte-i18n';
 
 	let { controlView = $bindable() }: { controlView: ControlView } = $props();
+	
+	function getT() {
+		let temp = controlView.iconText?.split('.') || '';
+		return {
+			num: temp[0] && temp[1]? (temp[0] + '.') : temp[0],
+			frac: temp[1] ? temp[1] : ''
+		}
+	}
 </script>
 
 <div role="button" tabindex="0" onkeydown={()=>{}} aria-label="card" onclick={() => {controlView.modal.action(true)}}
@@ -17,9 +26,19 @@
 					<svg class={controlView.iconColor} use:inlineSvg={'/loxicons/' + controlView.iconName} width="24" height="24"></svg>
 				</div>
 			{/if}
+			{#if controlView.iconText?.length} <!-- IRC -->
+				<div class="relative mr-1 inline-flex items-center justify-center w-12 h-12 min-w-12 overflow-hidden rounded-full dark:bg-surface-950">
+					<svg class="{controlView.iconColor}" width="32" height="32">
+						<text text-anchor="middle" x="16" y="22" fill="white" font-size="18">{getT().num}<tspan font-size="14">{getT().frac}</tspan>
+						</text>
+					</svg>
+				</div>
+			{/if}
 			<div class="mt-0 ml-2 truncate">
 				<h1 class="truncate text-lg">{controlView.textName}</h1>
-				<p class="text-md truncate {controlView.statusColor}">{controlView.statusName}</p>
+				{#if controlView.statusName}
+				<p class="text-md truncate {controlView.statusColor}">{$_(controlView.statusName)}</p>
+				{/if}
 			</div>
 		</div>
 		<div class="flex flex-row items-center justify-center">

@@ -238,8 +238,10 @@ export type SingleButtonView = {
 export type ListItem = {
   id: number;
   name: string;
-  value?: number[];
-  show?: boolean;
+  value?: number;
+	abs?: number;
+	corr?: number
+  visible?: boolean;
 }
 
 export type SliderBar = {
@@ -252,6 +254,7 @@ export type SliderBar = {
 export type ControlView = {
 	control?: Control,
 	iconName: string;
+	iconText?: string;
 	iconColor?: string;
 	textName: string;
 	textColor?: string;
@@ -277,6 +280,7 @@ export const DEFAULT_CONTROLVIEW: ControlView = {
 	iconName: '',
 	iconColor: 'fill-white',
 	textName: '',
+	iconText: '',
 	textColor: 'text-white',
 	statusName: '',
 	statusColor: 'text-white',
@@ -295,7 +299,7 @@ export type LightItem = {
 export type MoodList = {
 	name: string;
 	id: number;
-	static: boolean;
+	static?: boolean;
 	used?: number;
 }
 

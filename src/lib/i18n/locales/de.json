@@ -1,6 +1,7 @@
 {
     "About": "Über",
     "Active": "Aktiv",
+    "Actual": "Aktuell",
     "Address": "Addresse",
     "Armed": "Aktiviert",
     "Alarm suppression enabled": "Alarmunterdrückung aktiv",
@@ -31,7 +32,8 @@
     "Connected": "Verbunden",
     "Consumption": "Verbrauch",
     "Control not defined": "Steuerung nicht definiert",
-    "Controls": "Steuerung",
+    "Control": "Bedienelement",
+    "Controls": "Bedienelemente",
     "Dark mode": "Dunkler Modus",
     "Disarm alarm": "Alarm unscharf stellen",
     "Disarmed": "Deaktiviert",
@@ -53,6 +55,7 @@
     "Home": "Home",
     "Heat protection": "Hitzeschutztemperatur",
     "History": "Meldungsverlauf",
+    "Image": "Bild",
     "Import": "Bezug",
     "Increased heat": "Erhöhter Wärmebedarf",
     "Inactive": "Inaktiv",
@@ -96,6 +99,7 @@
     "Password": "Passwort",
     "Port": "Port",
     "Pre-alarm active": "Voralarm akti",
+    "Preset": "Vorgabe",
     "Presence detection": "Bewegungsmelder aktivieren",
     "Presence detection on": "Bewegungsmelder aktiv",
     "Production": "Produktion",
@@ -104,6 +108,7 @@
     "Rooms": "Räume",
     "Save settings": "Einstellungen speichern",
     "Scenes": "Szenen",
+    "Set to": "Eingestellt auf",
     "Settings": "Einstellungen",
     "Screensaver delay": "Bildschirmschoner aktivieren",
     "Screensaver lock": "Bildschirmschonersperre",
@@ -124,5 +129,6 @@
     "Up": "Auf",
     "Unknown state": "Zustand unbekannt",
     "Username": "Benutzername",
+    "Video": "Video",
     "You received %s notifications": "Sie haben %s Benachrichtigungen erhalten"
 }

@@ -1,6 +1,7 @@
 {
     "About": "Over",
     "Active": "Actief",
+    "Actual": "Acteel",
     "Address": "Adres",
     "Armed": "Ingeschakeld",
     "Alarm suppression enabled": "Alarm onderdrukking actief",
@@ -31,7 +32,8 @@
     "Connected": "Verbonden",
     "Consumption": "Verbruik",
     "Control not defined": "Element niet gedefinieerd",
-    "Controls": "Elementen",
+    "Control": "Bedieningselement",
+    "Controls": "Bedieningselementen",
     "Dark mode": "Donkere mode",
     "Disarm alarm": "Alarm uitschakelen",
     "Disarmed": "Uitgeschakeld",
@@ -53,6 +55,7 @@
     "Home": "Home",
     "Heat protection": "Hitte beschermingstemperatuur",
     "History": "Geschiedenis",
+    "Image": "Afbeelding",
     "Import": "Opgenomen",
     "Inactive": "Inactief",
     "Increased heat": "Verhoogde warmte vraag",
@@ -99,6 +102,7 @@
     "Pre-alarm active": "Pre-alarm actief",
     "Presence detection": "Bewegingsmelder activeren",
     "Presence detection on": "Bewegingsmelder actief",
+    "Preset": "Voorkeuren",
     "Production": "Productie",
     "Push": "Druk in",
     "Remote notifications": "Meldingen op afstand",
@@ -107,6 +111,7 @@
     "Scenes": "Scènes",
     "Screensaver delay": "Screensaver inschakelen",
     "Screensaver lock": "Screensaver vergrendeling",
+    "Set to": "Instelling",
     "Settings": "Instellingen",
     "Shade": "Zonwering",
     "Start alarm suppression": "Alarm onderdrukking activeren",
@@ -125,5 +130,6 @@
     "Up": "Omhoog",
     "Unknown state": "Status onbekend",
     "Username": "Gebruikersnaam",
+    "Video": "Video",
     "You received %s notifications": "U heeft %s meldingen ontvangen"
 }

@@ -1,6 +1,7 @@
 {
     "About": "About",
     "Active": "Active",
+    "Actual": "Actual",
     "Address": "Address",
     "Armed": "Armed",
     "Alarm suppression enabled": "Alarm suppression enabled",
@@ -31,6 +32,7 @@
     "Connected": "Connected",
     "Consumption": "Consumption",
     "Control not defined": "Control not defined",
+    "Control": "Control",
     "Controls": "Controls",
     "Dark mode": "Dark Mode",
     "Disarm alarm": "Disarm alarm",
@@ -53,6 +55,7 @@
     "Home": "Home",
     "Heat protection": "Heat protection",
     "History": "History",
+    "Image": "Image",
     "Import": "Import",
     "Inactive": "Inactive",
     "Increased heat": "Increased heat",
@@ -96,6 +99,7 @@
     "Password": "Password",
     "Port": "Port",
     "Pre-alarm active": "Pre-alarm active",
+    "Preset": "Preset",
     "Presence detection": "Enable motion sensors",
     "Presence detection on": "Motion sensors enabled",
     "Production": "Production",
@@ -106,6 +110,7 @@
     "Scenes": "Scenes",
     "Screensaver delay": "Screensaver delay",
     "Screensaver lock": "Screen lock",
+    "Set to": "Set to",
     "Settings": "Settings",
     "Shade": "Shade",
     "Start alarm suppression": "Start alarm suppression",
@@ -124,5 +129,6 @@
     "Up": "Up",
     "Unknown state": "Unknown state",
     "Username": "Username",
+    "Video": "Video",
     "You received %s notifications": "You received %s notifications"
 }

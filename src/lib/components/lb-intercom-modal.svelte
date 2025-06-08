@@ -100,24 +100,24 @@
 			<button type="button" class="inline-flex flex-col items-center justify-center px-5
 							group {selectedTab==0 ? 'text-green-500' : ''} " onclick={() => selectedTab=0}>
 				<LucideIcon name='Video'/>
-				<span class="mt-1 text-xs">Video</span>
+				<span class="mt-1 text-xs">{$_("Video")}</span>
 			</button>
 			{#if history}
 				<button type="button" class="inline-flex flex-col items-center justify-center px-5
 								group {selectedTab==1 ? 'text-green-500' : ''} " onclick={() => selectedTab=1}>
 					<LucideIcon name='Camera'/>
-					<span class="mt-1 text-xs">Image</span>
+					<span class="mt-1 text-xs">{$_("Image")}</span>
 				</button>
 				<button type="button" class="inline-flex flex-col items-center justify-center px-5
 								group {selectedTab==2 ? 'text-green-500' : ''} " onclick={() => selectedTab=2}>
 					<LucideIcon name='History'/>
-					<span class="mt-1 text-xs">History</span>
+					<span class="mt-1 text-xs">{$_("History")}</span>
 				</button>
 			{/if}
 			<button type="button" class="inline-flex flex-col items-center justify-center px-5
 							group {selectedTab==3 ? 'text-green-500' : ''} " onclick={() => selectedTab=3}>
 				<LucideIcon name='Settings'/>
-				<span class="mt-1 text-xs">Settings</span>
+				<span class="mt-1 text-xs">{$_("Settings")}</span>
 			</button>
 		</div>
 	</div>
