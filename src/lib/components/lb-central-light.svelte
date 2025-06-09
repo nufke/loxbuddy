@@ -69,12 +69,12 @@
 		iconColor: lightsOn ? 'fill-green-500' : 'fill-white',
 		textName: control.name,
 		statusName: getActiveLights(),
-		statusColor: lightsOn ? 'text-green-500' : 'white',
+		statusColor: lightsOn ? 'text-green-500' : 'text-surface-400',
 		modal: modal
 	});
 
 	function getControlName(control: Control) {
-		return control.name === $_('LightcontrollerV2') ? store.rooms[control.room].name : control.name;
+		return control.name === $_('LightControllerV2') ? store.rooms[control.room].name : control.name;
 	}
 
 	function getStatusName(control: Control) {

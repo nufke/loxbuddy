@@ -14,6 +14,10 @@
 			frac: temp[1] ? temp[1] : ''
 		}
 	}
+
+	function getStatusColorHex(hexColor: string) {
+		return (hexColor[0] == '#') ? 'color: ' + hexColor : '';
+	}
 </script>
 
 <div role="button" tabindex="0" onkeydown={()=>{}} aria-label="card" onclick={() => {controlView.modal.action(true)}}
@@ -37,7 +41,7 @@
 			<div class="mt-0 ml-2 truncate">
 				<h1 class="truncate text-lg">{controlView.textName}</h1>
 				{#if controlView.statusName}
-				<p class="text-md truncate {controlView.statusColor}">{$_(controlView.statusName)}</p>
+				<p class="text-md truncate {controlView.statusColor}" style={getStatusColorHex(controlView.statusColor)}>{$_(controlView.statusName)}</p>
 				{/if}
 			</div>
 		</div>

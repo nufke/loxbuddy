@@ -283,7 +283,7 @@ export const DEFAULT_CONTROLVIEW: ControlView = {
 	iconText: '',
 	textColor: 'text-white',
 	statusName: '',
-	statusColor: 'text-white',
+	statusColor: 'text-surface-400',
 	buttons: [],
 	modal: {
 		action: () => {} // no default action

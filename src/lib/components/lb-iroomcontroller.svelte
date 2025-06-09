@@ -36,7 +36,7 @@ let temperatureIdsList : ListItem[] = [
 
 	// grab temperature ID from first subcontrol
 	let firstSubControlUuid = $derived(subControls[0].uuidAction);
-	let id = $derived(Number(store.getState(control.subControls[firstSubControlUuid].states.value)));
+	let id = $derived(Number(store.getState(control.subControls[firstSubControlUuid].states.value))); // TODO check
 
 	let mode = $derived(Number(store.getState(control.states.mode)));
 	let isHeatPeriod = $derived(((mode == 1) || (mode == 3) || (mode == 5)));
@@ -55,9 +55,9 @@ let temperatureIdsList : ListItem[] = [
 		control: control,
 		iconName: '',
 		iconText: tempActual,
-		textName: control.type === 'IRoomController' ? store.rooms[control.room].name : control.name,
+		textName: control.name === $_('IRoomController') ? store.rooms[control.room].name : control.name,
 		statusName: temperatureIdsList[id]?.name,
-		statusColor: id ? 'text-green-500' : 'text-white', // TODO other colors for temperatures
+		statusColor: 'text-surface-400', // TODO other colors for temperatures
 		list: tempList,
 		modal: modal
 	});

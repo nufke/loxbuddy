@@ -27,10 +27,16 @@
 		{ id: 6, name: 'Manual cooling', visible: false }
 	];
 
-	let mode = $derived(store.getState(controlView.control.states.mode));
-
 	let tempActual = $derived(fmt.sprintf('%.1f', Number(store.getState(controlView.control.states.tempActual))));
 	let tempTarget = $derived(fmt.sprintf('%.1f', Number(store.getState(controlView.control.states.tempTarget))));
+	let override = $derived(Number(store.getState(controlView.control.states.override)));
+	let mode = $derived(store.getState(controlView.control.states.mode));
+
+	let modeId = $derived(temperatureModeList[mode].id);
+	let isAutomatic = $derived(modeId<5);
+	let isHeating = $derived(modeId==1 || modeId==3 || modeId==5);
+	let isCooling = $derived(modeId==2 || modeId==4 || modeId==6);
+	let isEco = $derived(selectedItem==0);
 
 	function setTempPresent(i: number) {
     let cmd = 'starttimer/' + i + '/60'; // TODO specify timer (now 60sec)
@@ -39,7 +45,7 @@
 		}
 	}
 
-	function updatePosition(e: any) {
+	function updatePosition(e: any) { // TODO
 	}
 </script>
 
@@ -68,11 +74,27 @@
 	{#if selectedTab==0}
 		<div class="items-center justify-center">
 			<button class="w-full mt-2" onclick={(e) => { e.stopPropagation()}}> <!-- workaround wrapper to stop propagation for slider -->
-				<LbCicleSlider min={10} max={30} step={1} target={tempTarget} actual={tempActual} onValueChangeEnd={(e: any) => {updatePosition(e.value)}}/>
+				<LbCicleSlider min={10} max={30} step={0.5} target={tempTarget} actual={tempActual} onValueChangeEnd={(e: any) => {updatePosition(e.value)}}/>
 			</button>
-			<div class="text-center -mt-10"> <!--TODO fix margin-top-->
-				<p class="text-lg truncate mb-2">{temperatureModeList[mode].name}</p>
-				<p class="text-lg truncate {controlView.statusColor}">{$_(controlView.statusName)}</p>
+			<div class="text-center">
+				<div class="flex items-center justify-center ml-2">
+					{#if isAutomatic}
+						<svg class="fill-white mr-2" use:inlineSvg={"/icons/svg/automatic.svg"} width="24" height="24"></svg>
+					{/if}
+					{#if isCooling}
+					<svg class="fill-cyan-400 mr-2" use:inlineSvg={"/icons/svg/mode_cool.svg"} width="24" height="24"></svg>
+					{/if}
+					{#if isHeating}
+					<LucideIcon class="text-red-500 fill-red-500 mr-2" name='Flame'/>
+					{/if}
+					{#if isEco}
+					<LucideIcon class="text-green-500 mr-2" name='Leaf'/>
+					{/if}
+					{#if override > 0}
+					<LucideIcon class="text-purple-500 mr-2" name='Timer'/>
+					{/if}
+				</div>
+				<p class="text-lg truncate mt-3 mb-2 {controlView.statusColor}">{$_(controlView.statusName)}</p>
 			</div>
 		</div>
 	{/if} 
@@ -104,7 +126,7 @@
 			</button>
 			<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==1 ? 'text-green-500' : ''} " onclick={() => selectedTab=1}>
 				<LucideIcon name='List'/>
-				<span class="mt-1 text-xs">{$_("Presets")}</span>
+				<span class="mt-1 text-xs">{$_("Preset")}</span>
 			</button>
 		</div>
 	</div>

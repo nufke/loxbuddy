@@ -21,6 +21,10 @@
 			controlView.buttons[0].click({sliderPosition: pos[0]});
 		}
 	}
+
+	function getStatusColorHex(hexColor: string) {
+		return (hexColor[0] == '#') ? 'color: ' + hexColor : '';
+	}
 </script>
 
 <Modal
@@ -52,7 +56,7 @@
 			<h2 class="h4 text-center">{controlView.textName}</h2>
 		</div>
 		<div class="m-2 truncate">
-			<p class="text-lg truncate {controlView.statusColor}">{controlView.statusName}</p>
+			<p class="text-lg truncate {controlView.statusColor}" style={getStatusColorHex(controlView.statusColor)}>{controlView.statusName}</p>
 		</div>
 		{#if controlView.buttons.length && !controlView.slider && !controlView.modal.buttons}
 		<div class="container flex m-2">

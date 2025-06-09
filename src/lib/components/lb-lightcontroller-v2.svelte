@@ -45,9 +45,9 @@
 		control: control,
 		iconName: store.getCategoryIcon(control, controlOptions.isSubControl),
 		iconColor: activeMoodsNum != 778 ? 'fill-green-500' : 'fill-white',
-		textName: control.type === 'LightControllerV2' ? store.rooms[control.room].name : control.name,
+		textName: control.name === $_('LightControllerV2') ? store.rooms[control.room].name : control.name,
 		statusName: activeMoodsNum < 0 ? $_('Manual') : moodList?.find((item: MoodList) => item.id == activeMoodsNum)?.name,
-		statusColor: activeMoodsNum != 778 ? 'text-green-500' : 'text-white',
+		statusColor: activeMoodsNum != 778 ? 'text-green-500' : 'text-surface-400',
 		list: moodList,
 		buttons: buttons,
 		modal: modal
