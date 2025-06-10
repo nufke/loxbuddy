@@ -14,6 +14,13 @@ class Store {
 	securedDetails = new SvelteMap();
 	lastBellEventImages = new SvelteMap();
   state = new SvelteMap();
+	time = $state(new Date());
+
+	constructor() {
+		setInterval(() => {
+	  	this.time = new Date();
+		}, 1000);
+  }
 
 	initStructure(data: Structure) {
 		Object.assign(this.structure, data);

@@ -16,13 +16,24 @@ export class Utils {
 
 	// input: r,g,b in [0-255,0-255,0-255], output: h in [0,360] and s,v in [0-100]
 	static rgb2hsv(r: number, g: number, b: number) {
-		let rabs, gabs, babs, rr, gg, bb, h, s, v, diff, diffc, percentRoundFn;
+		let rabs: number;
+		let gabs: number;
+		let babs: number;
+		let rr: number;
+		let gg: number;
+		let bb: number;
+		let h: any;
+		let s: number;
+		let v: number;
+		let diff;
+		let diffc;
+		let percentRoundFn: number;
 		rabs = r / 255;
 		gabs = g / 255;
 		babs = b / 255;
 		v = Math.max(rabs, gabs, babs),
 			diff = v - Math.min(rabs, gabs, babs);
-		diffc = c => (v - c) / 6 / diff + 1 / 2;
+		diffc = (c: number) => (v - c) / 6 / diff + 1 / 2;
 		if (diff == 0) {
 			h = s = 0;
 		} else {
@@ -62,4 +73,8 @@ export class Utils {
 		else false;
 	}
 
+	static hours2dec(t:string) {
+		let hhmm = t.split(':'); // HH:mm notation
+		return Number((Number(hhmm[0]) + Number(hhmm[1]) / 60).toFixed(2));
+	}
 }

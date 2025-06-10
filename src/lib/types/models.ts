@@ -347,3 +347,21 @@ export const DEFAULT_CONTROL = {
 	states: {},
 	subControls: {}
 }
+
+export type Entry = {
+	mode: string;
+	from: string;
+	to: string;
+	needActivate: string;
+	value: string;
+}
+export type EntriesAndDefaultValue = {
+	defValue: string;
+	entries: string;
+	entry: Entry[];
+	uuid: string;
+}
+
+export type WeekDays = {
+	[key: string]: string;
+};

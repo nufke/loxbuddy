@@ -11,7 +11,7 @@
 
 	let armed = $derived(Number(store.getState(control.states.armed))==1);
 	let disabledMove = $derived(Number(store.getState(control.states.disabledMove))==1);
-	
+
   function setUnsetAlarm(delay: boolean = false) {
 		let cmd = armed ? 'off' : (delay ? 'delayedon/' : 'on/');
 		cmd += armed ? '' : (disabledMove ? '0' : '1');
@@ -68,7 +68,7 @@
 		iconColor: armed ? 'fill-green-500' : 'fill-white',
 		textName: control.name,
 		statusName: getStatus(),
-		statusColor: armed ? 'text-green-500' : 'text-white',
+		statusColor: armed ? 'text-green-500' : 'text-surface-400',
 		buttonState: !disabledMove,
 		modal: {
 			...modal,

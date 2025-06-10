@@ -7,10 +7,16 @@
 	import { format } from 'date-fns';
 	import { nl } from 'date-fns/locale';
 	import fmt from 'sprintf-js';
-	
+
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
 	const loxTimeRef = 1230764400000; // correction to epoch, Loxone calculates from 1-1-2009
+
+	function isDST(d: Date) { // correction for daylight saving time
+    let jan = new Date(d.getFullYear(), 0, 1).getTimezoneOffset();
+    let jul = new Date(d.getFullYear(), 6, 1).getTimezoneOffset();
+    return Math.max(jan, jul) !== d.getTimezoneOffset();    
+	}
 
 	function getFormattedString(input: string) {
 		let s: string = input;
@@ -18,7 +24,8 @@
 		if (control.details.format) {
 			switch (control.details.format) {
 				case '<v.u>': // date + time, e.g. 6 maart 2025 22:56
-					const date = new Date(value * 1000 + loxTimeRef);
+					let date = new Date(value * 1000 + loxTimeRef);
+					date = isDST(date) ? new Date(value * 1000 + loxTimeRef - 3600000) : date;
 					s = format(date, 'PPP p', { locale: nl }); // TODO change locale
 					break;
 				case '<v.t>': // duration/time

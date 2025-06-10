@@ -141,7 +141,7 @@
 				<div class="mb-2 flex justify-center">
 					<h2 class="h4 text-center ">{controlView.textName}</h2>
 				</div>
-				<h2 class="text-lg text-center {lightsOn ? 'text-green-500' : 'white'}">{getActiveLights()}</h2>
+				<h2 class="text-lg text-center {lightsOn ? 'text-green-500' : 'text-surface-400'}">{getActiveLights()}</h2>
 				<div class="absolute top-0 right-0">
 					<button type="button" aria-label="close" class="btn-icon w-auto" onclick={() => controlView.modal.action(false)}>
 						<X />

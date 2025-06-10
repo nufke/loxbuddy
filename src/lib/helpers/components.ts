@@ -15,6 +15,7 @@ import LbIntercom from '$lib/components/lb-intercom.svelte';
 import LbCentralLight from '$lib/components/lb-central-light.svelte';
 import LbAlarm from '$lib/components/lb-alarm.svelte';
 import LbIRoomController from '$lib/components/lb-iroomcontroller.svelte';
+import LbDaytimer from '$lib/components/lb-daytimer.svelte';
 import LbUnknown from '$lib/components/lb-unknown.svelte';
 
 let componentList = [
@@ -34,7 +35,8 @@ let componentList = [
 	{ format: 'Intercom', component: LbIntercom },
 	{ format: 'CentralLightController', component: LbCentralLight },
 	{ format: 'Alarm', component: LbAlarm },
-	{ format: 'IRoomController', component: LbIRoomController }
+	{ format: 'IRoomController', component: LbIRoomController },
+	{ format: 'Daytimer', component: LbDaytimer }
 ];
 
 export function getComponent(name: string) {
