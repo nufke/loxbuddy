@@ -16,7 +16,8 @@ const config = {
 	 compilerOptions: {
 			warningFilter: (warning) => {
 				const ignore = [
-					'a11y_no_static_element_interactions'
+					'a11y_no_static_element_interactions',
+					'a11y_click_events_have_key_events'
 				]
 			return !ignore.includes(warning.code)
 		}

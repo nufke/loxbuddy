@@ -116,32 +116,32 @@
 </div>
 
 <style>
-svg {
-	cursor: default;
-	position: relative;
-}
-.track {
-	fill: none;
-	cursor: pointer;
-	stroke: rgba(0,0,0,1);
-	stroke-width: 15px;
-	stroke-dasharray: 660;
-	transform-origin: center;
-	transform: rotate(135deg);
-	stroke-linecap: round;
-	z-index: 1;
-}
-.set {
-	fill: #737373; /* TODO palette */
-	z-index: 2;
-}
-.knob {
-	cursor: pointer;
-	fill: #00c951; /* TODO palette */
-	z-index: 3;
-}
-.button {
-	cursor: pointer;
-	z-index: 14;
-}
+	svg {
+		cursor: default;
+		position: relative;
+	}
+	.track {
+		fill: none;
+		cursor: pointer;
+		stroke: rgba(0,0,0,1);
+		stroke-width: 15px;
+		stroke-dasharray: 660;
+		transform-origin: center;
+		transform: rotate(135deg);
+		stroke-linecap: round;
+		z-index: 1;
+	}
+	.set {
+		fill: #737373; /* TODO palette */
+		z-index: 2;
+	}
+	.knob {
+		cursor: pointer;
+		fill: #00c951; /* TODO palette */
+		z-index: 3;
+	}
+	.button {
+		cursor: pointer;
+		z-index: 14;
+	}
 </style>

@@ -4,8 +4,10 @@
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import LbControl from '$lib/components/lb-control.svelte';
 	import LbTimeGrid from '$lib/components/lb-time-grid.svelte';
+	import LbDatePicker from '$lib/components/lb-date-picker.svelte';
 	import { store } from '$lib/stores/store.svelte';
 	import { fade200 } from '$lib/helpers/transition';
+	import LucideIcon from './icon-by-name.svelte';
 	import { X } from '@lucide/svelte';
 	import fmt from 'sprintf-js';
 	import { _ } from 'svelte-i18n';
@@ -27,6 +29,8 @@
 	let status = $derived(isAnalog ? valueFormatted : ( value ? control.details.text.on : control.details.text.off)) as string;
 	let overrideTime = $derived(Number(store.getState(control.states.override)));
 	let timer = $derived(calcStartEndTime());
+
+	let selectedTab = $state(0);
 
 	function getDuration() {
 		let statusExt = '';
@@ -137,6 +141,7 @@
 					</button>
 				</div>
 			</header>
+			{#if selectedTab==0}
 			<div class="flex flex-col items-center justify-center m-2">
 				<div>
 					<LbTimeGrid {mode} {weekdays} {entries}/>
@@ -151,6 +156,26 @@
 					</button>
 				</div>
 			</div>
-			{/snippet}
+			{/if}
+			{#if selectedTab==1}
+			<div class="flex flex-col items-center justify-center m-2">
+				<div>
+					<LbDatePicker/>
+				</div>
+			</div>
+			{/if}
+			<div class="sticky bottom-0 left-0 w-full h-16 pt-2">
+				<div class="grid h-full max-w-lg grid-cols-2 mx-auto">
+					<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==0 ? 'text-green-500' : ''} " onclick={() => selectedTab=0}>
+						<LucideIcon name='Timer'/>
+						<span class="mt-1 text-xs">{$_("Schedule")}</span>
+					</button>
+					<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==1 ? 'text-green-500' : ''} " onclick={() => selectedTab=1}>
+						<LucideIcon name='CalendarClock'/>
+						<span class="mt-1 text-xs">{$_("Date & Time")}</span>
+					</button>
+				</div>
+			</div>
+		{/snippet}
 	</Modal>
 </div>

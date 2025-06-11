@@ -13,10 +13,6 @@
 
 	let { controlView = $bindable() }: { controlView: ControlView } = $props();
 
-	let selectedItem = $derived(controlView.list ? controlView.list.findIndex( (item: ListItem) => { return item.name === controlView.statusName }) : 0);
-
-	let selectedTab = $state(0);
-
 	let temperatureModeList : ListItem[] = [
 		{ id: 0, name: 'Automatic', visible: false },
 		{ id: 1, name: 'Automatic (currently heating)', visible: false },
@@ -27,10 +23,12 @@
 		{ id: 6, name: 'Manual cooling', visible: false }
 	];
 
-	let tempActual = $derived(fmt.sprintf('%.1f', Number(store.getState(controlView.control.states.tempActual))));
-	let tempTarget = $derived(fmt.sprintf('%.1f', Number(store.getState(controlView.control.states.tempTarget))));
-	let override = $derived(Number(store.getState(controlView.control.states.override)));
-	let mode = $derived(store.getState(controlView.control.states.mode));
+	let selectedItem = $derived(controlView.list ? controlView.list.findIndex( (item: ListItem) => { return item.name === controlView.statusName }) : 0);
+	let selectedTab = $state(0);
+	let tempActual = $derived(fmt.sprintf('%.1f', Number(store.getState(controlView.control?.states.tempActual))));
+	let tempTarget = $derived(fmt.sprintf('%.1f', Number(store.getState(controlView.control?.states.tempTarget))));
+	let override = $derived(Number(store.getState(controlView.control?.states.override)));
+	let mode = $derived(Number(store.getState(controlView.control?.states.mode)));
 
 	let modeId = $derived(temperatureModeList[mode].id);
 	let isAutomatic = $derived(modeId<5);
@@ -94,7 +92,9 @@
 					<LucideIcon class="text-purple-500 mr-2" name='Timer'/>
 					{/if}
 				</div>
+				{#if controlView.statusName}
 				<p class="text-lg truncate mt-3 mb-2 {controlView.statusColor}">{$_(controlView.statusName)}</p>
+				{/if}
 			</div>
 		</div>
 	{/if} 
@@ -125,7 +125,7 @@
 				<span class="mt-1 text-xs">{$_("Control")}</span>
 			</button>
 			<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==1 ? 'text-green-500' : ''} " onclick={() => selectedTab=1}>
-				<LucideIcon name='List'/>
+				<LucideIcon name="List"/>
 				<span class="mt-1 text-xs">{$_("Preset")}</span>
 			</button>
 		</div>
