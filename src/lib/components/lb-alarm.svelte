@@ -15,7 +15,6 @@
   function setUnsetAlarm(delay: boolean = false) {
 		let cmd = armed ? 'off' : (delay ? 'delayedon/' : 'on/');
 		cmd += armed ? '' : (disabledMove ? '0' : '1');
-		console.log(cmd)
     publishTopic(control.uuidAction, cmd);
   }
 

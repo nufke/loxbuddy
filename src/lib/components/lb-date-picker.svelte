@@ -1,44 +1,59 @@
 <script lang="ts">
+	import { SvelteDate } from 'svelte/reactivity';
 	import { ChevronLeft } from '@lucide/svelte';
 	import { ChevronRight } from '@lucide/svelte';
 	import { Clock3 } from '@lucide/svelte';
 	import { Undo2 } from '@lucide/svelte';
+	import { format } from 'date-fns';
+	import { nl } from 'date-fns/locale';
 	import { _ } from 'svelte-i18n';
+
+	let { date = $bindable(), view = $bindable() } = $props();
 
 	let days = $_('Days').split('|');
 	let months = $_('Months').split('|');
 	let start = 0; // first day of the week (0 = Sunday, 1 = Monday)
 
-	let selected: string = $state('');
 	let offset = $state(0); // offset in months from currently selected date
-	let today: string = $state(getDateStr(new Date()));
-	let date = $derived(today);
-	let viewDate = $derived(viewDateFrom(date, offset));
+	let dateStr = $derived(getDateStr(date));
+	let selected: string = $derived(dateStr);
+	let timeStr: string = $state(getTimeStr(date));
+	let viewDate = $derived(viewDateFrom(dateStr, offset));
 	let month = $derived(months[viewDate.getMonth()]);
 	let year = $derived(viewDate.getFullYear());
-  let weeks = $derived(weeksFrom(viewDate, date, start));
+  let weeks = $derived(weeksFrom(viewDate, start));
 
 	function getDateStr(date: Date) {
     const pad = (n:number) => n < 10 ? "0" + n : n;
     return date.getFullYear() + "-" + pad(date.getMonth()+1) + "-" + pad(date.getDate());
   }
 
+	function showDate() {
+		return format(date, 'PPP', { locale: nl }); // TODO change locale
+	}
+
+	function getTimeStr(date: Date) {
+		const hours = date.getHours() 
+		const minutes = date.getUTCMinutes(); 
+		return (hours < 10 ? `0${hours}` : hours) + ':' + (minutes < 10 ? `0${minutes}` : minutes);
+  }
+
 	function setMonth(direction: number) {
 		offset = offset + direction;
 	}
 
-	function setTime() {
-	}
-
 	function reset() {
-		date = getDateStr(new Date());
+		date = new Date();
+		dateStr = getDateStr(date);
+		timeStr = getTimeStr(date);
 		offset = 0;
-		selected = '';
+		selected = dateStr;
 	}
 
-	function selectDate(newDate: string) {
-		selected = newDate;
-		date = newDate;
+	function selectDate(newDateStr: string) {
+		selected = newDateStr;
+		dateStr = newDateStr;
+		date = new SvelteDate(dateStr + " " + timeStr);
 		offset = 0;
 	}
 
@@ -48,7 +63,7 @@
 		return viewDate;
 	}
 
-	function weeksFrom(viewDate: Date, date: string, start: number) {
+	function weeksFrom(viewDate: Date, start: number) {
 		let first = new Date(viewDate.getTime());
 		first.setDate(1);
 		first.setDate(first.getDate() + ((start - first.getDay() - 7) % 7));
@@ -68,14 +83,13 @@
 				mm = d.getMonth(),
 				yy = d.getFullYear(),
 				value = getDateStr(d);
-
+				
 			week.push({
 				date: dd,
 				value,
 				class: [
 					mm == M ? '' : (mm > M ? yy >= Y : yy > Y) ? 'future' : 'past',
-					value === today ? 'bg-green-500 text-black' : '',
-					value === selected ? 'selected' : ''
+					value === selected ? 'bg-green-500 text-black' : '',
 				].join(' ')
 			});
 
@@ -90,13 +104,24 @@
 	}
 </script>
 
-<div class="card m-0 flex  rounded-lg border border-white/5
+<div class="relative flex flex-row justify-center align-center mb-4">
+	<button type="button" class="text-lg">
+		Set timer: {showDate()}&#160;
+	</button>
+	<button type="button" class="text-lg" onclick={() => {view.isMinuteView = false; view.isDateView = false;}}>
+		{timeStr.split(':')[0]}:
+	</button>
+	<button type="button" class="text-lg" onclick={() => {view.isMinuteView = true; view.isDateView = false;}}>
+		{timeStr.split(':')[1]}
+	</button>
+</div>
+<div class="card m-0 flex rounded-lg border border-white/5
 						bg-linear-to-r from-white/[0.095] to-white/5 px-2 py-2 hover:border-white/10 min-h-[300px]">
 	<div class="grid grid-cols-7 gap-1">
 		<div class="btn-icon" onclick={() => setMonth(-1)}><ChevronLeft/></div>
 		<div class="btn-icon text-green-500" onclick={() => reset()}><Undo2/></div>
 		<div class="btn col-span-3">{month} {year}</div>
-		<div class="btn-icon text-green-500" onclick={() => setTime()}><Clock3/></div>
+		<div class="btn-icon text-green-500" onclick={() => {view.isMinuteView = false; view.isDateView = false}}><Clock3/></div>
 		<div class="btn-icon" onclick={() => setMonth(+1)}><ChevronRight/></div>
 		{#each days as day}
 			<div class="text-center">{day}</div>
@@ -116,8 +141,7 @@
 	.btn-icon {
 		cursor: pointer;
 	}
-	.btn:hover, .btn-icon:hover, .selected {
-		background: gray;
+	.btn:hover, .btn-icon:hover {
 		filter: brightness(100%);
 	}
 	.past, .future {

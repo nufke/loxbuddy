@@ -1,10 +1,12 @@
 <script lang="ts">
 	import { Modal } from '@skeletonlabs/skeleton-svelte';
+	import { SvelteDate } from 'svelte/reactivity';
 	import type { Control, ControlOptions, ControlView, ModalView, EntriesAndDefaultValue, WeekDays } from '$lib/types/models';
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import LbControl from '$lib/components/lb-control.svelte';
 	import LbTimeGrid from '$lib/components/lb-time-grid.svelte';
 	import LbDatePicker from '$lib/components/lb-date-picker.svelte';
+	import LbTimePicker from '$lib/components/lb-time-picker.svelte';
 	import { store } from '$lib/stores/store.svelte';
 	import { fade200 } from '$lib/helpers/transition';
 	import LucideIcon from './icon-by-name.svelte';
@@ -29,6 +31,8 @@
 	let status = $derived(isAnalog ? valueFormatted : ( value ? control.details.text.on : control.details.text.off)) as string;
 	let overrideTime = $derived(Number(store.getState(control.states.override)));
 	let timer = $derived(calcStartEndTime());
+
+	let date: SvelteDate = $state(new SvelteDate());
 
 	let selectedTab = $state(0);
 
@@ -100,6 +104,11 @@
 
 	function startTimer() {}
 
+	let dateTimeView = $state({
+		isDateView: true,
+		isMinuteView: false
+	});
+
 	let modal: ModalView = $state({
 		action: (state: boolean) => {modal.state = state},
 		state: false
@@ -134,7 +143,7 @@
 				<div class="mb-2 flex justify-center">
 					<h2 class="h4 text-center ">{controlView.textName}</h2>
 				</div>
-				<h2 class="text-lg text-center {(value > 0 ) ? 'text-green-500' : 'text-surface-400'}">{status + getDuration()}</h2>
+				
 				<div class="absolute top-0 right-0">
 					<button type="button" aria-label="close" class="btn-icon w-auto" onclick={() => controlView.modal.action(false)}>
 						<X />
@@ -143,6 +152,7 @@
 			</header>
 			{#if selectedTab==0}
 			<div class="flex flex-col items-center justify-center m-2">
+				<h2 class="text-lg text-center {(value > 0 ) ? 'text-green-500' : 'text-surface-400'}">{status + getDuration()}</h2>
 				<div>
 					<LbTimeGrid {mode} {weekdays} {entries}/>
 				</div>
@@ -160,7 +170,11 @@
 			{#if selectedTab==1}
 			<div class="flex flex-col items-center justify-center m-2">
 				<div>
-					<LbDatePicker/>
+					{#if dateTimeView.isDateView}
+						<LbDatePicker bind:date={date} bind:view={dateTimeView}/>
+					{:else}
+						<LbTimePicker bind:date={date} bind:view={dateTimeView}/>
+					{/if}
 				</div>
 			</div>
 			{/if}
@@ -172,7 +186,7 @@
 					</button>
 					<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==1 ? 'text-green-500' : ''} " onclick={() => selectedTab=1}>
 						<LucideIcon name='CalendarClock'/>
-						<span class="mt-1 text-xs">{$_("Date & Time")}</span>
+						<span class="mt-1 text-xs">{$_("Timer")}</span>
 					</button>
 				</div>
 			</div>

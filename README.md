@@ -40,6 +40,15 @@ To deploy LoxBuddy to a webserver (e.g. running on LoxBerry), follow the steps d
 
 Please submit your issues and questions via the GitHub issue tracker: https://github.com/nufke/loxbuddy/issues
 
+## Credits
+
+Special thanks and credits to:
+
+ * [Svelte team](https://svelte.dev/)
+ * [Skeleton team](https://www.skeleton.dev/)
+ * [iro.js](https://github.com/jaames/iro.js) of James Daniel
+ * [Svelty Picker](https://github.com/mskocik/svelty-picker) of Martin Skočík
+
 ## Buy Me A Coffee
 
 Interested in supporting the development of this App?
