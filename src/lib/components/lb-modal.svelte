@@ -22,8 +22,8 @@
 		}
 	}
 
-	function getStatusColorHex(hexColor: string) {
-		return (hexColor[0] == '#') ? 'color: ' + hexColor : '';
+	function getStatusColorHex(hexColor: string|undefined) {
+		return (hexColor && hexColor[0] == '#') ? 'color: ' + hexColor : '';
 	}
 </script>
 

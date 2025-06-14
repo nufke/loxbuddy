@@ -18,14 +18,19 @@
 	function getStatusColorHex(hexColor: string | undefined) {
 		return (hexColor && hexColor[0] == '#') ? 'color: ' + hexColor : '';
 	}
+
+	function openModal() {
+		if (!controlView.iconName.length && !controlView.iconText?.length) return; // no modal if we are at subcontrol level (we have no icon at this level)
+		controlView.modal.action(true);
+	}
 </script>
 
-<div role="button" tabindex="0" onkeydown={()=>{}} aria-label="card" onclick={() => {controlView.modal.action(true)}}
+<div role="button" tabindex="0" onkeydown={()=>{}} aria-label="card" onclick={openModal}
      class="card m-0 flex min-h-[70px] items-center justify-start rounded-lg border border-white/5
 						bg-linear-to-r from-white/[0.095] to-white/5 px-2 py-2 hover:border-white/10">
 	<div class="flex w-full justify-between">
 		<div class="flex items-center truncate">
-			{#if controlView.iconName.length}
+			{#if controlView.iconName.length} <!-- only show icon if name is given -->
 				<div class="relative mr-1 inline-flex items-center justify-center w-12 h-12 min-w-12 overflow-hidden rounded-full dark:bg-surface-950">
 					<svg class={controlView.iconColor} use:inlineSvg={'/loxicons/' + controlView.iconName} width="24" height="24"></svg>
 				</div>

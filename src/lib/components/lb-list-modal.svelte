@@ -5,9 +5,8 @@
 	import LbSwitch from '$lib/components/lb-switch.svelte';
 	import LbDimmer from '$lib/components/lb-dimmer.svelte';
 	import LbColorPickerV2 from '$lib/components/lb-colorpicker-v2.svelte';
-	import { X } from '@lucide/svelte';
+	import { X, Lightbulb, SlidersHorizontal } from '@lucide/svelte';
 	import { _ } from 'svelte-i18n';
-	import LucideIcon from './icon-by-name.svelte';
 	import { fade200 } from '$lib/helpers/transition';
 
 	let { controlView = $bindable() }: { controlView: ControlView } = $props();
@@ -127,11 +126,11 @@
 	<div class="sticky bottom-0 left-0 w-full h-16 pt-2">
 		<div class="grid h-full max-w-lg {subControlsColorPicker.length ? 'grid-cols-3' : 'grid-cols-2'}  mx-auto">
 				<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==0 ? 'text-green-500' : ''} " onclick={() => selectedTab=0}>
-					<LucideIcon name='Lightbulb'/>
+					<Lightbulb/>
 					<span class="mt-1 text-xs">{$_("Scenes")}</span>
 				</button>
 				<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==1 ? 'text-green-500' : ''} " onclick={() => selectedTab=1}>
-					<LucideIcon name='SlidersHorizontal'/>
+					<SlidersHorizontal/>
 					<span class="mt-1 text-xs">{$_("Controls")}</span>
 				</button>
 				{#if subControlsColorPicker.length}

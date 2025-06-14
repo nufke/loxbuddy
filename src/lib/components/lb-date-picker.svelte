@@ -1,9 +1,6 @@
 <script lang="ts">
 	import { SvelteDate } from 'svelte/reactivity';
-	import { ChevronLeft } from '@lucide/svelte';
-	import { ChevronRight } from '@lucide/svelte';
-	import { Clock3 } from '@lucide/svelte';
-	import { Undo2 } from '@lucide/svelte';
+	import { ChevronLeft, ChevronRight, Clock3, Undo2 } from '@lucide/svelte';
 	import { format } from 'date-fns';
 	import { nl } from 'date-fns/locale';
 	import { _ } from 'svelte-i18n';
@@ -106,7 +103,7 @@
 
 <div class="relative flex flex-row justify-center align-center mb-4">
 	<button type="button" class="text-lg">
-		Set timer: {showDate()}&#160;
+		{$_("Timer till")}: {showDate()}&#160;
 	</button>
 	<button type="button" class="text-lg" onclick={() => {view.isMinuteView = false; view.isDateView = false;}}>
 		{timeStr.split(':')[0]}:

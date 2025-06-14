@@ -1,8 +1,7 @@
 <script lang="ts">
 	import { Modal } from '@skeletonlabs/skeleton-svelte';
   import { type ControlView } from '$lib/types/models';
-	import LucideIcon from './icon-by-name.svelte';
-	import { X } from '@lucide/svelte';
+	import { X, Video, Camera, History, Settings } from '@lucide/svelte';
 	import { _ } from 'svelte-i18n';
 	import { fade200 } from '$lib/helpers/transition';
 
@@ -99,24 +98,24 @@
 		<div class="grid h-full max-w-lg { history ? 'grid-cols-4' : 'grid-cols-2'} mx-auto">
 			<button type="button" class="inline-flex flex-col items-center justify-center px-5
 							group {selectedTab==0 ? 'text-green-500' : ''} " onclick={() => selectedTab=0}>
-				<LucideIcon name='Video'/>
+				<Video/>
 				<span class="mt-1 text-xs">{$_("Video")}</span>
 			</button>
 			{#if history}
 				<button type="button" class="inline-flex flex-col items-center justify-center px-5
 								group {selectedTab==1 ? 'text-green-500' : ''} " onclick={() => selectedTab=1}>
-					<LucideIcon name='Camera'/>
+					<Camera/>
 					<span class="mt-1 text-xs">{$_("Image")}</span>
 				</button>
 				<button type="button" class="inline-flex flex-col items-center justify-center px-5
 								group {selectedTab==2 ? 'text-green-500' : ''} " onclick={() => selectedTab=2}>
-					<LucideIcon name='History'/>
+					<History/>
 					<span class="mt-1 text-xs">{$_("History")}</span>
 				</button>
 			{/if}
 			<button type="button" class="inline-flex flex-col items-center justify-center px-5
 							group {selectedTab==3 ? 'text-green-500' : ''} " onclick={() => selectedTab=3}>
-				<LucideIcon name='Settings'/>
+				<Settings/>
 				<span class="mt-1 text-xs">{$_("Settings")}</span>
 			</button>
 		</div>

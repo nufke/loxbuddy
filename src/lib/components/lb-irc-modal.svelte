@@ -2,9 +2,8 @@
 	import { Modal } from '@skeletonlabs/skeleton-svelte';
 	import type { ControlView, ListItem } from '$lib/types/models';
 	import { inlineSvg } from '@svelte-put/inline-svg';
-	import LucideIcon from './icon-by-name.svelte';
 	import { store } from '$lib/stores/store.svelte';	
-	import { X } from '@lucide/svelte';
+	import { X, Timer, Leaf, Flame, List } from '@lucide/svelte';
 	import { _ } from 'svelte-i18n';
 	import fmt from 'sprintf-js';
 	import { fade200 } from '$lib/helpers/transition';
@@ -83,13 +82,13 @@
 					<svg class="fill-cyan-400 mr-2" use:inlineSvg={"/icons/svg/mode_cool.svg"} width="24" height="24"></svg>
 					{/if}
 					{#if isHeating}
-					<LucideIcon class="text-red-500 fill-red-500 mr-2" name='Flame'/>
+					<Flame class="text-red-500 fill-red-500 mr-2"/>
 					{/if}
 					{#if isEco}
-					<LucideIcon class="text-green-500 mr-2" name='Leaf'/>
+					<Leaf class="text-green-500 mr-2"/>
 					{/if}
 					{#if override > 0}
-					<LucideIcon class="text-purple-500 mr-2" name='Timer'/>
+					<Timer class="text-purple-500 mr-2"/>
 					{/if}
 				</div>
 				{#if controlView.statusName}
@@ -125,7 +124,7 @@
 				<span class="mt-1 text-xs">{$_("Control")}</span>
 			</button>
 			<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==1 ? 'text-green-500' : ''} " onclick={() => selectedTab=1}>
-				<LucideIcon name="List"/>
+				<List/>
 				<span class="mt-1 text-xs">{$_("Preset")}</span>
 			</button>
 		</div>

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { Modal } from '@skeletonlabs/skeleton-svelte';
 	import { SvelteDate } from 'svelte/reactivity';
+	import { Switch } from '@skeletonlabs/skeleton-svelte';
 	import type { Control, ControlOptions, ControlView, ModalView, EntriesAndDefaultValue, WeekDays } from '$lib/types/models';
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import LbControl from '$lib/components/lb-control.svelte';
@@ -9,12 +10,14 @@
 	import LbTimePicker from '$lib/components/lb-time-picker.svelte';
 	import { store } from '$lib/stores/store.svelte';
 	import { fade200 } from '$lib/helpers/transition';
-	import LucideIcon from './icon-by-name.svelte';
 	import { X } from '@lucide/svelte';
+	import { Timer } from '@lucide/svelte';
+	import { CalendarClock } from '@lucide/svelte';
 	import fmt from 'sprintf-js';
 	import { _ } from 'svelte-i18n';
 	import { nl } from 'date-fns/locale';
 	import { format, isAfter, isBefore, setHours, setMinutes, setSeconds } from 'date-fns';
+	import { publishTopic } from '$lib/communication/mqttclient';
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
@@ -33,6 +36,8 @@
 	let timer = $derived(calcStartEndTime());
 
 	let date: SvelteDate = $state(new SvelteDate());
+
+	let outputActive = $derived(false);
 
 	let selectedTab = $state(0);
 
@@ -102,7 +107,22 @@
 		return weekdays;
 	}
 
-	function startTimer() {}
+	function startStopTimer() {
+		if (overrideTime > 0) { // Timer active, so deactivate
+			publishTopic(control.uuidAction, 'stopOverride');
+			return
+		}
+		let coeff = 1000 * 60; // round to minute
+		let overrideTimeSec = Math.round((date.getTime() - Date.now())/coeff)*coeff/1000;
+		let overrideValue = outputActive ? '1' : '0'; // TODO analog values
+		console.log("overrideTimeSec", overrideTimeSec);
+    if (overrideTimeSec > 60) {// TODO define minimum time of 1 minute
+	    let cmd = 'startOverride/' + String(overrideValue) + '/' + String(overrideTimeSec);
+			publishTopic(control.uuidAction, cmd);
+    } else {
+			console.log('Daytimer override timeperiod to low:', overrideTimeSec);
+		}
+	}
 
 	let dateTimeView = $state({
 		isDateView: true,
@@ -145,7 +165,7 @@
 				</div>
 				
 				<div class="absolute top-0 right-0">
-					<button type="button" aria-label="close" class="btn-icon w-auto" onclick={() => controlView.modal.action(false)}>
+					<button type="button" aria-label="close" class="btn-icon w-auto" onclick={() => {controlView.modal.action(false); selectedTab=0;}}>
 						<X />
 					</button>
 				</div>
@@ -159,12 +179,6 @@
 				<div class="container mt-4">
 					<h2 class="text-lg text-center text-white">{weekdays[mode]}</h2>
 				</div>
-				<div class="container mt-4">
-					<button type="button" class="w-full btn btn-lg preset-tonal-primary shadow-xl rounded-lg border border-white/15 hover:border-white/50" 
-									onclick={(e) => {e.stopPropagation(); e.preventDefault(); startTimer()}}>
-						<span>{$_("Start Timer")}</span>
-					</button>
-				</div>
 			</div>
 			{/if}
 			{#if selectedTab==1}
@@ -175,17 +189,31 @@
 					{:else}
 						<LbTimePicker bind:date={date} bind:view={dateTimeView}/>
 					{/if}
+					<div class="container mt-2">
+						<button class="w-[300px] btn btn-lg preset-tonal-primary shadow-xl rounded-lg border border-white/15 hover:border-white/50" onclick={(e) => { e.stopPropagation()}}> <!-- workaround wrapper to stop propagation for switch -->
+							<div class="flex w-full justify-between">
+								<h1 class="truncate text-lg">{$_("Uitgang")} {$_(outputActive ? "Active" : "Inactive").toLowerCase()}</h1>
+								<Switch controlClasses="w-12 h-8" name="slide" controlActive="bg-green-500" checked={outputActive} onCheckedChange={(e) => (outputActive = e.checked)} />
+							</div>
+						</button>
+					</div>
+					<div class="container mt-2">
+						<button type="button" class="w-[300px] btn btn-lg preset-tonal-primary shadow-xl rounded-lg border border-white/15 hover:border-white/50" 
+										onclick={(e) => {e.stopPropagation(); e.preventDefault(); startStopTimer()}}>
+							<span class="text-lg">{$_( (overrideTime > 0) ? "Stop" : "Start")} {$_("Timer").toLocaleLowerCase()}</span>
+						</button>
+					</div>
 				</div>
 			</div>
 			{/if}
 			<div class="sticky bottom-0 left-0 w-full h-16 pt-2">
 				<div class="grid h-full max-w-lg grid-cols-2 mx-auto">
-					<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==0 ? 'text-green-500' : ''} " onclick={() => selectedTab=0}>
-						<LucideIcon name='Timer'/>
+					<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==0 ? 'text-green-500' : ''} " onclick={() => {dateTimeView.isDateView=true; selectedTab=0;}}>
+						<Timer/>
 						<span class="mt-1 text-xs">{$_("Schedule")}</span>
 					</button>
-					<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==1 ? 'text-green-500' : ''} " onclick={() => selectedTab=1}>
-						<LucideIcon name='CalendarClock'/>
+					<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==1 ? 'text-green-500' : ''} " onclick={() => {dateTimeView.isDateView=true; selectedTab=1;}}>
+						<CalendarClock/>
 						<span class="mt-1 text-xs">{$_("Timer")}</span>
 					</button>
 				</div>

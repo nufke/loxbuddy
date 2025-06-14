@@ -91,8 +91,11 @@
 		clearInterval(interval);
 	}
 
-	setKnobValue(targetTemp);
-	setActualValue(actualTemp);
+	$effect(() => {
+		setKnobValue(targetTemp);
+		setActualValue(actualTemp);
+	});
+
 </script>
 
 <div class="w-full flex align-center justify-center">
