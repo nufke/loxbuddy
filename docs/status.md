@@ -34,7 +34,7 @@ or submit a [pull request](https://github.com/nufke/loxbuddy/pulls).
 | ClimateControllerUS      | Not started       |
 | ColorPicker              | Not started       |
 | ColorPickerV2            | Available         |
-| Daytimer                 | Under development |
+| Daytimer                 | Available |
 | Dimmer                   | Available         |
 | EIBDimmer                | Not started       |
 | EnergyFlowMonitor        | Not started       |

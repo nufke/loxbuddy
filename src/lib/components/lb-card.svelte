@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { inlineSvg } from '@svelte-put/inline-svg';
 	import type { Room, Category } from '$lib/types/models';
+	import { loxiconsPath } from '$lib/helpers/paths';
 
 	let { key, item } : { key: string, item: Room | Category} = $props();
 
@@ -13,7 +14,7 @@
 	<div class="w-full">
 		<div class="flex items-center truncate">
 			<div class="relative inline-flex items-center justify-center w-12 h-12 min-w-12 overflow-hidden rounded-full dark:bg-surface-950">
-				<svg class={color} use:inlineSvg={'/loxicons/' + item.image} width="24" height="24"></svg>
+				<svg class={color} use:inlineSvg={loxiconsPath + item.image} width="24" height="24"></svg>
 			</div>
 			<div class="mt-0 ml-3 truncate">
 				<h1 class="truncate text-lg">{item.name}</h1>

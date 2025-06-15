@@ -2,6 +2,7 @@ import { SvelteMap } from 'svelte/reactivity';
 import { INITIAL_STRUCTURE } from '$lib/types/models';
 import type { Structure, Control, Category } from '$lib/types/models';
 import { Utils } from '$lib/helpers/utils';
+import { loxiconsPath } from '$lib/helpers/paths';
 
 class Store {
 	structure: Structure = $state(INITIAL_STRUCTURE);
@@ -15,7 +16,7 @@ class Store {
 	lastBellEventImages = new SvelteMap();
   state = new SvelteMap();
 	time = $state(new Date());
-
+	
 	constructor() {
 		setInterval(() => {
 	  	this.time = new Date();
@@ -77,10 +78,10 @@ class Store {
 	}
 
 	getCategoryIcon(control: Control, isSubControl: boolean | undefined) {
-		if (control.defaultIcon) return control.defaultIcon;
+		if (control.defaultIcon) return  loxiconsPath + control.defaultIcon;
 		if (!isSubControl) { 
 			const cat = this.categoryList.find((cat: Category) => cat.uuid == control.cat);
-			return cat ? cat.image : '';
+			return cat ? loxiconsPath + cat.image : '';
 		} else {
 			return ''; // hide icon for subcontrols by returning empty name
 		}

@@ -43,7 +43,7 @@
 	<header class="relative">
 		<div class="flex justify-center">
 			<div class="relative inline-flex h-18 w-18 items-center justify-center overflow-hidden rounded-full dark:bg-surface-950">
-				<svg class={controlView.iconColor} use:inlineSvg={'/loxicons/' + controlView.iconName} width="36" height="36"></svg>
+				<svg class={controlView.iconColor} use:inlineSvg={controlView.iconName} width="36" height="36"></svg>
 			</div>
 		</div>
 		<div class="absolute right-0 top-0">

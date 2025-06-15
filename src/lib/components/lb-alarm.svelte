@@ -63,7 +63,7 @@
 
   let controlView: ControlView = $derived({
 		...DEFAULT_CONTROLVIEW,
-		iconName: store.getCategoryIcon(control, controlOptions.isSubControl),
+		iconName: armed ? '/icons/svg/shield.svg' : '/icons/svg/shield-off.svg',
 		iconColor: armed ? 'fill-green-500' : 'fill-white',
 		textName: control.name,
 		statusName: getStatus(),

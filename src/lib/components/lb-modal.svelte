@@ -42,7 +42,7 @@
 	<header class="relative">
 		<div class="flex justify-center">
 			<div class="relative inline-flex h-18 w-18 items-center justify-center overflow-hidden rounded-full dark:bg-surface-950">
-				<svg class={controlView.iconColor} use:inlineSvg={'/loxicons/' + controlView.iconName} width="36" height="36"></svg>
+				<svg class={controlView.iconColor} use:inlineSvg={controlView.iconName} width="36" height="36"></svg>
 			</div>
 		</div>
 		<div class="absolute right-0 top-0">
@@ -56,7 +56,9 @@
 			<h2 class="h4 text-center">{controlView.textName}</h2>
 		</div>
 		<div class="m-2 truncate">
-			<p class="text-lg truncate {controlView.statusColor}" style={getStatusColorHex(controlView.statusColor)}>{controlView.statusName}</p>
+			{#if controlView.statusName}
+				<p class="text-lg truncate {controlView.statusColor}" style={getStatusColorHex(controlView.statusColor)}>{$_(controlView.statusName)}</p>
+			{/if}
 		</div>
 		{#if controlView.buttons.length && !controlView.slider && !controlView.modal.buttons}
 		<div class="container flex m-2">
@@ -104,10 +106,10 @@
 							{/if}
 					</button>
 				{/if}
-				{#if button.type == 'switch'}
+				{#if button.type == 'switch' && button.name}
 					<button class="btn btn-lg preset-tonal-primary shadow-xl rounded-lg border border-white/15 hover:border-white/50" onclick={(e) => { e.stopPropagation()}}> <!-- workaround wrapper to stop propagation for switch -->
 						<div class="flex w-full justify-between">
-							<h1 class="truncate text-lg">{button.name}</h1>
+							<h1 class="truncate text-lg">{$_(button.name)}</h1>
 							<Switch controlClasses="w-12 h-8" name="slide" controlActive="bg-green-500" checked={controlView.buttonState} onCheckedChange={button.click} />
 						</div>
 					</button>

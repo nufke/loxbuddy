@@ -16,6 +16,7 @@ import LbCentralLight from '$lib/components/lb-central-light.svelte';
 import LbAlarm from '$lib/components/lb-alarm.svelte';
 import LbIRoomController from '$lib/components/lb-iroomcontroller.svelte';
 import LbDaytimer from '$lib/components/lb-daytimer.svelte';
+import LbSmokeAlarm from '$lib/components/lb-smoke-alarm.svelte';
 import LbUnknown from '$lib/components/lb-unknown.svelte';
 
 let componentList = [
@@ -36,7 +37,8 @@ let componentList = [
 	{ format: 'CentralLightController', component: LbCentralLight },
 	{ format: 'Alarm', component: LbAlarm },
 	{ format: 'IRoomController', component: LbIRoomController },
-	{ format: 'Daytimer', component: LbDaytimer }
+	{ format: 'Daytimer', component: LbDaytimer },
+	{ format: 'SmokeAlarm', component: LbSmokeAlarm }
 ];
 
 export function getComponent(name: string) {

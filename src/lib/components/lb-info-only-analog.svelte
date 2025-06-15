@@ -25,8 +25,10 @@
 			switch (control.details.format) {
 				case '<v.u>': // date + time, e.g. 6 maart 2025 22:56
 					let date = new Date(value * 1000 + loxTimeRef);
-					date = isDST(date) ? new Date(value * 1000 + loxTimeRef - 3600000) : date;
-					s = format(date, 'PPP p', { locale: nl }); // TODO change locale
+					if (date && value) {
+						date = isDST(date) ? new Date(value * 1000 + loxTimeRef - 3600000) : date;
+						s = format(date, 'PPP p', { locale: nl }); // TODO change locale
+					}
 					break;
 				case '<v.t>': // duration/time
 					const du = value / 60;

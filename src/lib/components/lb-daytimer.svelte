@@ -10,9 +10,7 @@
 	import LbTimePicker from '$lib/components/lb-time-picker.svelte';
 	import { store } from '$lib/stores/store.svelte';
 	import { fade200 } from '$lib/helpers/transition';
-	import { X } from '@lucide/svelte';
-	import { Timer } from '@lucide/svelte';
-	import { CalendarClock } from '@lucide/svelte';
+	import { X, Timer, CalendarClock } from '@lucide/svelte';
 	import fmt from 'sprintf-js';
 	import { _ } from 'svelte-i18n';
 	import { nl } from 'date-fns/locale';

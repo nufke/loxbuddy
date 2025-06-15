@@ -32,7 +32,7 @@
 		<div class="flex items-center truncate">
 			{#if controlView.iconName.length} <!-- only show icon if name is given -->
 				<div class="relative mr-1 inline-flex items-center justify-center w-12 h-12 min-w-12 overflow-hidden rounded-full dark:bg-surface-950">
-					<svg class={controlView.iconColor} use:inlineSvg={'/loxicons/' + controlView.iconName} width="24" height="24"></svg>
+					<svg class={controlView.iconColor} use:inlineSvg={controlView.iconName} width="24" height="24"></svg>
 				</div>
 			{/if}
 			{#if controlView.iconText?.length} <!-- IRC -->
