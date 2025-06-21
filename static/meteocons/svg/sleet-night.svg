@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 64 64"
+   version="1.1"
+   id="svg13"
+   sodipodi:docname="sleet.svg"
+   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview13"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="12.65625"
+     inkscape:cx="32"
+     inkscape:cy="31.960494"
+     inkscape:window-width="1920"
+     inkscape:window-height="1009"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg13" />
+  <defs
+     id="defs9">
+    <linearGradient
+       id="sleet_a"
+       x1="22.56"
+       y1="21.96"
+       x2="39.2"
+       y2="50.8"
+       gradientUnits="userSpaceOnUse">
+      <stop
+         offset="0"
+         stop-color="#f3f7fe"
+         id="stop1" />
+      <stop
+         offset="0.45"
+         stop-color="#f3f7fe"
+         id="stop2" />
+      <stop
+         offset="1"
+         stop-color="#deeafb"
+         id="stop3" />
+    </linearGradient>
+    <linearGradient
+       id="sleet_b"
+       x1="23.12"
+       y1="43.48"
+       x2="24.88"
+       y2="46.52"
+       gradientUnits="userSpaceOnUse">
+      <stop
+         offset="0"
+         stop-color="#86c3db"
+         id="stop4" />
+      <stop
+         offset="0.45"
+         stop-color="#86c3db"
+         id="stop5" />
+      <stop
+         offset="1"
+         stop-color="#5eafcf"
+         id="stop6" />
+    </linearGradient>
+    <linearGradient
+       id="sleet_c"
+       x1="22.67"
+       y1="42.69"
+       x2="25.33"
+       y2="47.31"
+       xlink:href="#sleet_b"
+       gradientTransform="translate(0,4.345679)" />
+    <linearGradient
+       id="sleet_d"
+       x1="37.12"
+       y1="43.48"
+       x2="38.88"
+       y2="46.52"
+       xlink:href="#sleet_b"
+       gradientTransform="translate(2.054321,4.345679)" />
+    <linearGradient
+       id="sleet_e"
+       x1="36.67"
+       y1="42.69"
+       x2="39.33"
+       y2="47.31"
+       xlink:href="#sleet_b"
+       gradientTransform="translate(2.054321,4.345679)" />
+    <linearGradient
+       id="sleet_f"
+       x1="23.31"
+       y1="44.3"
+       x2="24.69"
+       y2="46.7"
+       gradientUnits="userSpaceOnUse">
+      <stop
+         offset="0"
+         stop-color="#4286ee"
+         id="stop7" />
+      <stop
+         offset="0.45"
+         stop-color="#4286ee"
+         id="stop8" />
+      <stop
+         offset="1"
+         stop-color="#0950bc"
+         id="stop9" />
+    </linearGradient>
+    <linearGradient
+       id="sleet_g"
+       x1="30.31"
+       y1="44.3"
+       x2="31.69"
+       y2="46.7"
+       xlink:href="#sleet_f" />
+    <linearGradient
+       id="sleet_h"
+       x1="37.31"
+       y1="44.3"
+       x2="38.69"
+       y2="46.7"
+       xlink:href="#sleet_f" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#sleet_b"
+       id="linearGradient1"
+       gradientUnits="userSpaceOnUse"
+       x1="23.12"
+       y1="43.48"
+       x2="24.88"
+       y2="46.52"
+       gradientTransform="translate(0,4.345679)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#sleet_f"
+       id="linearGradient2"
+       gradientUnits="userSpaceOnUse"
+       x1="23.31"
+       y1="44.3"
+       x2="24.69"
+       y2="46.7" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#sleet_f"
+       id="linearGradient2-5"
+       gradientUnits="userSpaceOnUse"
+       x1="23.309999"
+       y1="44.299999"
+       x2="24.690001"
+       y2="46.700001" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#sleet_b"
+       id="linearGradient3"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(8.0196295,7.8148148)"
+       x1="23.12"
+       y1="43.48"
+       x2="24.88"
+       y2="46.52" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#sleet_b"
+       id="linearGradient4"
+       gradientTransform="translate(8.0196295,7.8148148)"
+       x1="22.67"
+       y1="42.69"
+       x2="25.33"
+       y2="47.31" />
+  </defs>
+  <path
+     d="M46.5,31.5l-.32,0a10.49,10.49,0,0,0-19.11-8,7,7,0,0,0-10.57,6,7.21,7.21,0,0,0,.1,1.14A7.5,7.5,0,0,0,18,45.5a4.19,4.19,0,0,0,.5,0v0h28a7,7,0,0,0,0-14Z"
+     stroke="#e6effc"
+     stroke-miterlimit="10"
+     stroke-width="0.5"
+     fill="url(#sleet_a)"
+     id="path9" />
+  <circle
+     cx="24"
+     cy="49.34568"
+     r="1.25"
+     fill="none"
+     stroke-miterlimit="10"
+     stroke="url(#sleet_b)"
+     id="circle9"
+     style="stroke:url(#linearGradient1)" />
+  <path
+     d="m 26.17,50.595679 -1.09,-0.63 m -2.16,-1.24 -1.09,-0.63 m 2.17,-1.25 v 1.25 m 0,3.75 v -1.25 m -1.08,-0.63 -1.09,0.63 m 4.34,-2.5 -1.09,0.63"
+     fill="none"
+     stroke-linecap="round"
+     stroke-miterlimit="10"
+     stroke="url(#sleet_c)"
+     id="path10"
+     style="stroke:url(#sleet_c)" />
+  <circle
+     cx="40.054321"
+     cy="49.34568"
+     r="1.25"
+     fill="none"
+     stroke-miterlimit="10"
+     stroke="url(#sleet_d)"
+     id="circle10"
+     style="stroke:url(#sleet_d)" />
+  <path
+     d="m 42.224321,50.595679 -1.09,-0.63 m -2.16,-1.24 -1.09,-0.63 m 2.17,-1.25 v 1.25 m 0,3.75 v -1.25 m -1.08,-0.63 -1.09,0.63 m 4.34,-2.5 -1.09,0.63"
+     fill="none"
+     stroke-linecap="round"
+     stroke-miterlimit="10"
+     stroke="url(#sleet_e)"
+     id="path11"
+     style="stroke:url(#sleet_e)" />
+  <line
+     x1="24.08"
+     y1="49.355679"
+     x2="23.92"
+     y2="50.335682"
+     fill="none"
+     stroke-linecap="round"
+     stroke-miterlimit="10"
+     stroke-width="2"
+     stroke="url(#sleet_f)"
+     id="line11"
+     style="stroke:url(#linearGradient2)" />
+  <circle
+     cx="32.01963"
+     cy="52.814816"
+     r="1.25"
+     fill="none"
+     stroke-miterlimit="10"
+     stroke="url(#sleet_b)"
+     id="circle9-3"
+     style="stroke:url(#linearGradient3)" />
+  <path
+     d="m 34.189629,54.064815 -1.09,-0.63 m -2.16,-1.24 -1.09,-0.63 m 2.17,-1.25 v 1.25 m 0,3.75 v -1.25 m -1.08,-0.63 -1.09,0.63 m 4.34,-2.5 -1.09,0.63"
+     fill="none"
+     stroke-linecap="round"
+     stroke-miterlimit="10"
+     stroke="url(#sleet_c)"
+     id="path10-4"
+     style="stroke:url(#linearGradient4)" />
+  <line
+     x1="32.099628"
+     y1="52.824814"
+     x2="31.939631"
+     y2="53.804817"
+     fill="none"
+     stroke-linecap="round"
+     stroke-miterlimit="10"
+     stroke-width="2"
+     stroke="url(#sleet_f)"
+     id="line11-1"
+     style="stroke:url(#linearGradient2-5)" />
+  <line
+     x1="40.134323"
+     y1="49.355679"
+     x2="39.974319"
+     y2="50.335682"
+     fill="none"
+     stroke-linecap="round"
+     stroke-miterlimit="10"
+     stroke-width="2"
+     stroke="url(#sleet_h)"
+     id="line13"
+     style="stroke:url(#sleet_h)" />
+</svg>

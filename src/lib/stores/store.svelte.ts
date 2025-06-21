@@ -16,7 +16,7 @@ class Store {
 	lastBellEventImages = new SvelteMap();
   state = new SvelteMap();
 	time = $state(new Date());
-	
+
 	constructor() {
 		setInterval(() => {
 	  	this.time = new Date();

@@ -7,8 +7,8 @@
 	import { publishTopic } from '$lib/communication/mqttclient';
 	import { fade200 } from '$lib/helpers/transition';
 	import { _ } from 'svelte-i18n';
-	import { X, Wrench, Info } from '@lucide/svelte';
-	
+	import { X, Wrench, Info, ChevronUp, ChevronDown } from '@lucide/svelte';
+
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS}: { control: Control, controlOptions: ControlOptions } = $props();
 
 	let timeServiceMode = $derived(Number(store.getState(control.states.timeServiceMode)));
@@ -17,10 +17,15 @@
 	let statusName = $state('');
 	let statusColor = $state('');
 	let selectedTab = $state(0);
-	let oneItemSelected = $state(false);
 	let serviceTime = $state(0);
+	let hours = $state(0);
+	let minutes = $state(0);
+	let duration = $state('');
 
-	$effect( () => updateStatus(level));
+	$effect( () => {
+		updateStatus(level);
+		if (timeServiceMode==0) duration = '';
+	});
 
 	function updateStatus(level: number) {
 		switch (level) {
@@ -37,7 +42,10 @@
 				statusColor = 'text-red-500 fill-red-500';
 				break;
 			case 99: // service
-				statusName = 'Alarm suppression enabled (' + Math.round(timeServiceMode/60) + ' min)';  
+				statusName = 'Alarm suppression enabled'
+				duration = ' (' + ((timeServiceMode>60) ? 
+												(Math.round(timeServiceMode/60) + ' min)') : 
+												(timeServiceMode + ' sec)'));
 				statusColor = 'text-blue-500 fill-blue-500';
 				break;
 			default: 
@@ -50,43 +58,22 @@
 		if (timeServiceMode > 0) { // only stop if servicemode is running
 			publishTopic(control.uuidAction, 'servicemode/0');
 		}
+		duration = '';
 	}
 
 	function startService() {
-    if (oneItemSelected && serviceTime > 60) { // TODO minimal time for service
+    if (serviceTime > 0) { // TODO minimal time for service
       let cmd = 'servicemode/' + String(serviceTime);
       publishTopic(control.uuidAction, cmd);
     }
 	}
 
-	type TimeList = {
-		time: string;
-		seconds: number;
-		selected: boolean;
-	}
-
-	let timeList: TimeList[] = $state([
-		{
-			time: '15 min',
-			seconds: 900,
-			selected: false
-		},
-		{
-			time: '30 min',
-			seconds: 1800,
-			selected: false
-		},
-		{
-			time: '60 min',
-			seconds: 3600,
-			selected: false
-		}
-	]);
-
-	function onClick(s: TimeList) {
-		timeList.forEach( item => s.time === item.time ? item.selected = !item.selected : item.selected = false );
-		serviceTime = s.seconds;
-		oneItemSelected = (timeList.filter(item => item.selected == true).length == 1);
+	function setTimer(h: number, m: number) {
+		hours += h;
+		hours = (hours>23) ? (hours = 0) : (hours<0) ? (hours = 23) : hours;
+		minutes += m;
+		minutes = (minutes>59) ? (minutes = 0) : (minutes<0) ? (minutes = 59) : minutes;
+		serviceTime= hours * 3600 + minutes * 60;
 	}
 
 	let serviceButton: SingleButtonView = $derived(
@@ -144,29 +131,33 @@
 			{#if selectedTab==0}
 			<div class="truncate justify-center text-center">
 				{#if controlView.statusName}
-					<p class="text-lg truncate {controlView.statusColor}">{$_(controlView.statusName)}</p>
+					<p class="text-lg truncate {controlView.statusColor}">{$_(controlView.statusName)} {duration}</p>
 				{/if}
 			</div>
 			{/if}
 			{#if selectedTab==1}
 			<div class="justify-center text-center">
-				<p class="h4 text-lg">{$_("Duration servicemode")}</p>
+				<p class="h4 text-lg text-surface-400">{$_("Duration servicemode")} ({$_("Uren").toLocaleLowerCase()} : {$_("Minuten").toLocaleLowerCase()})</p>
 			</div>
-			<div class="flex flex-row items-center justify-center gap-2 m-2 mt-2">
-				{#each timeList as item}
-					<button type="button" class="btn btn-lg shadow-xl rounded-lg border border-white/15 hover:border-white/50 
-									{item.selected ? 'preset-tonal' : 'preset-tonal-primary'}" 
-									onclick={(e) => {e.stopPropagation(); e.preventDefault(); onClick(item);}}>
-						<span>{item.time}</span>
-					</button>
-				{/each}
+			<div class="w-[100px] m-auto justify-center text-center">
+				<div class="grid grid-cols-3">
+					<div class="-mb-1"><button class="btn-icon p-1 preset-tonal-surface rounded-lg border border-black hover:border-white/50" type="button" onclick={() => setTimer(1,0)}><ChevronUp/></button></div>
+					<div class="-mb-1"></div>
+					<div class="-mb-1"><button class="btn-icon p-1 preset-tonal-surface rounded-lg border border-black hover:border-white/50" type="button" onclick={() => setTimer(0,1)}><ChevronUp/></button></div>
+					<div>{hours}</div>
+					<div>:</div>
+					<div>{minutes}</div>
+					<div><button type="button" class="btn-icon p-1 preset-tonal-surface rounded-lg border border-black hover:border-white/50" onclick={() => setTimer(-1,0)}><ChevronDown/></button></div>
+					<div></div>
+					<div><button type="button" class="btn-icon p-1 preset-tonal-surface rounded-lg border border-black hover:border-white/50" onclick={() => setTimer(0,-1)}><ChevronDown/></button></div>
+				</div>
 			</div>
 			<div class="m-3">
 				<button type="button" class="w-full btn btn-lg preset-tonal-primary shadow-xl rounded-lg border border-white/15 hover:border-white/50
-								{oneItemSelected || (timeServiceMode > 0) ? 'text-primary-800-200' : 'text-primary-400-600'}" 
+								{(serviceTime > 0) || (timeServiceMode > 0) ? 'text-primary-800-200' : 'text-primary-400-600'}" 
 								onclick={(e) => {e.stopPropagation(); e.preventDefault(); serviceButton.click();}}>
 					{#if serviceButton.name}
-						<span>{$_(serviceButton.name)}</span>
+						<span class="text-lg">{$_(serviceButton.name)}</span>
 					{/if}
 				</button>
 			</div>

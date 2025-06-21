@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 64 64"
+   version="1.1"
+   id="svg8"
+   sodipodi:docname="rain.svg"
+   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview8"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="12.65625"
+     inkscape:cx="32"
+     inkscape:cy="31.960494"
+     inkscape:window-width="1920"
+     inkscape:window-height="1009"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg8" />
+  <defs
+     id="defs6">
+    <linearGradient
+       id="rain_a"
+       x1="22.56"
+       y1="21.96"
+       x2="39.2"
+       y2="50.8"
+       gradientUnits="userSpaceOnUse">
+      <stop
+         offset="0"
+         stop-color="#f3f7fe"
+         id="stop1" />
+      <stop
+         offset="0.45"
+         stop-color="#f3f7fe"
+         id="stop2" />
+      <stop
+         offset="1"
+         stop-color="#deeafb"
+         id="stop3" />
+    </linearGradient>
+    <linearGradient
+       id="rain_b"
+       x1="22.53"
+       y1="42.95"
+       x2="25.47"
+       y2="48.05"
+       gradientUnits="userSpaceOnUse">
+      <stop
+         offset="0"
+         stop-color="#4286ee"
+         id="stop4" />
+      <stop
+         offset="0.45"
+         stop-color="#4286ee"
+         id="stop5" />
+      <stop
+         offset="1"
+         stop-color="#0950bc"
+         id="stop6" />
+    </linearGradient>
+    <linearGradient
+       id="rain_c"
+       x1="29.53"
+       y1="42.95"
+       x2="32.47"
+       y2="48.05"
+       xlink:href="#rain_b" />
+    <linearGradient
+       id="rain_d"
+       x1="36.53"
+       y1="42.95"
+       x2="39.47"
+       y2="48.05"
+       xlink:href="#rain_b" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#rain_b"
+       id="linearGradient1"
+       gradientUnits="userSpaceOnUse"
+       x1="22.53"
+       y1="42.95"
+       x2="25.47"
+       y2="48.05" />
+  </defs>
+  <path
+     d="M46.5,31.5l-.32,0a10.49,10.49,0,0,0-19.11-8,7,7,0,0,0-10.57,6,7.21,7.21,0,0,0,.1,1.14A7.5,7.5,0,0,0,18,45.5a4.19,4.19,0,0,0,.5,0v0h28a7,7,0,0,0,0-14Z"
+     stroke="#e6effc"
+     stroke-miterlimit="10"
+     stroke-width="0.5"
+     fill="url(#rain_a)"
+     id="path6" />
+  <line
+     x1="24.389999"
+     y1="47.612717"
+     x2="23.610001"
+     y2="52.552719"
+     fill="none"
+     stroke-linecap="round"
+     stroke-miterlimit="10"
+     stroke-width="2"
+     stroke="url(#rain_b)"
+     id="line6"
+     style="stroke:url(#linearGradient1)" />
+  <line
+     x1="30.915926"
+     y1="53.064568"
+     x2="30.135927"
+     y2="58.00457"
+     fill="none"
+     stroke-linecap="round"
+     stroke-miterlimit="10"
+     stroke-width="2"
+     stroke="url(#rain_c)"
+     id="line7"
+     style="stroke:url(#rain_c)" />
+  <line
+     x1="38.389999"
+     y1="47.612717"
+     x2="37.610001"
+     y2="52.552719"
+     fill="none"
+     stroke-linecap="round"
+     stroke-miterlimit="10"
+     stroke-width="2"
+     stroke="url(#rain_d)"
+     id="line8"
+     style="stroke:url(#rain_d)" />
+</svg>

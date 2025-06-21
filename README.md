@@ -48,6 +48,7 @@ Special thanks and credits to:
  * [Skeleton team](https://www.skeleton.dev/)
  * [iro.js](https://github.com/jaames/iro.js) of James Daniel
  * [Svelty Picker](https://github.com/mskocik/svelty-picker) of Martin Skočík
+ * [Meteocons](https://github.com/basmilius/weather-icons) of Bas Milius
 
 ## Buy Me A Coffee
 

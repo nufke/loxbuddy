@@ -7,4 +7,7 @@
 * {
   -ms-overflow-style: none;
   scrollbar-width: none;
+  
+  /* to resolve issue with slider in weather page */ 
+  min-width: 0;
 }

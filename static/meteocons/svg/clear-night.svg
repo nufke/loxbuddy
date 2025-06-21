@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 64 64"
+   version="1.1"
+   id="svg3"
+   sodipodi:docname="clear-night.svg"
+   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview3"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="12.703125"
+     inkscape:cx="32"
+     inkscape:cy="32"
+     inkscape:window-width="1920"
+     inkscape:window-height="1009"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg3" />
+  <defs
+     id="defs3">
+    <linearGradient
+       id="clearnight_a"
+       x1="21.92"
+       y1="18.75"
+       x2="38.52"
+       y2="47.52"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.8956615,0,0,0.8956615,3.1598117,3.3411585)">
+      <stop
+         offset="0"
+         stop-color="#86c3db"
+         id="stop1" />
+      <stop
+         offset="0.45"
+         stop-color="#86c3db"
+         id="stop2" />
+      <stop
+         offset="1"
+         stop-color="#5eafcf"
+         id="stop3" />
+    </linearGradient>
+  </defs>
+  <path
+     d="m 44.951378,35.764105 a 14.921721,14.921721 0 0 1 -15.0292,-14.823198 14.590326,14.590326 0 0 1 0.492614,-3.716995 14.832154,14.832154 0 1 0 16.184603,18.450627 c -0.546354,0.05374 -1.092707,0.08957 -1.648017,0.08957 z"
+     stroke="#72b9d5"
+     stroke-linecap="round"
+     stroke-linejoin="round"
+     stroke-width="0.447831"
+     fill="url(#clearnight_a)"
+     id="path3"
+     style="fill:url(#clearnight_a)" />
+</svg>

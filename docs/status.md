@@ -34,7 +34,7 @@ or submit a [pull request](https://github.com/nufke/loxbuddy/pulls).
 | ClimateControllerUS      | Not started       |
 | ColorPicker              | Not started       |
 | ColorPickerV2            | Available         |
-| Daytimer                 | Available |
+| Daytimer                 | Available         |
 | Dimmer                   | Available         |
 | EIBDimmer                | Not started       |
 | EnergyFlowMonitor        | Not started       |
@@ -138,7 +138,7 @@ or submit a [pull request](https://github.com/nufke/loxbuddy/pulls).
 | Statusbar (time, temp, etc) | Not started              |
 | System messages             | Not started              |
 | Voice control               | Not started              |
-| Weather forecast            | Not started              |
+| Weather forecast            | Available (Weather4Lox)  |
 
 ## Other ideas
 

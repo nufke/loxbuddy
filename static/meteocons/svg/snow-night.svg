@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 64 64"
+   version="1.1"
+   id="svg9"
+   sodipodi:docname="snow.svg"
+   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview9"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="12.65625"
+     inkscape:cx="32"
+     inkscape:cy="31.960494"
+     inkscape:window-width="1920"
+     inkscape:window-height="1009"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg9" />
+  <defs
+     id="defs6">
+    <linearGradient
+       id="snow_a"
+       x1="22.56"
+       y1="21.96"
+       x2="39.2"
+       y2="50.8"
+       gradientUnits="userSpaceOnUse">
+      <stop
+         offset="0"
+         stop-color="#f3f7fe"
+         id="stop1" />
+      <stop
+         offset="0.45"
+         stop-color="#f3f7fe"
+         id="stop2" />
+      <stop
+         offset="1"
+         stop-color="#deeafb"
+         id="stop3" />
+    </linearGradient>
+    <linearGradient
+       id="snow_b"
+       x1="30.12"
+       y1="43.48"
+       x2="31.88"
+       y2="46.52"
+       gradientUnits="userSpaceOnUse">
+      <stop
+         offset="0"
+         stop-color="#86c3db"
+         id="stop4" />
+      <stop
+         offset="0.45"
+         stop-color="#86c3db"
+         id="stop5" />
+      <stop
+         offset="1"
+         stop-color="#5eafcf"
+         id="stop6" />
+    </linearGradient>
+    <linearGradient
+       id="snow_c"
+       x1="29.67"
+       y1="42.69"
+       x2="32.33"
+       y2="47.31"
+       xlink:href="#snow_b"
+       gradientTransform="translate(0,10.745679)" />
+    <linearGradient
+       id="snow_d"
+       x1="23.12"
+       y1="43.48"
+       x2="24.88"
+       y2="46.52"
+       xlink:href="#snow_b"
+       gradientTransform="translate(0,4.5037037)" />
+    <linearGradient
+       id="snow_e"
+       x1="22.67"
+       y1="42.69"
+       x2="25.33"
+       y2="47.31"
+       xlink:href="#snow_b"
+       gradientTransform="translate(0,4.5037037)" />
+    <linearGradient
+       id="snow_f"
+       x1="37.12"
+       y1="43.48"
+       x2="38.88"
+       y2="46.52"
+       xlink:href="#snow_b"
+       gradientTransform="translate(0,4.5037037)" />
+    <linearGradient
+       id="snow_g"
+       x1="36.67"
+       y1="42.69"
+       x2="39.33"
+       y2="47.31"
+       xlink:href="#snow_b"
+       gradientTransform="translate(0,4.5037037)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#snow_b"
+       id="linearGradient9"
+       gradientUnits="userSpaceOnUse"
+       x1="30.12"
+       y1="43.48"
+       x2="31.88"
+       y2="46.52"
+       gradientTransform="translate(0,10.745679)" />
+  </defs>
+  <path
+     d="M46.5,31.5l-.32,0a10.49,10.49,0,0,0-19.11-8,7,7,0,0,0-10.57,6,7.21,7.21,0,0,0,.1,1.14A7.5,7.5,0,0,0,18,45.5a4.19,4.19,0,0,0,.5,0v0h28a7,7,0,0,0,0-14Z"
+     stroke="#e6effc"
+     stroke-miterlimit="10"
+     stroke-width="0.5"
+     fill="url(#snow_a)"
+     id="path6" />
+  <circle
+     cx="31"
+     cy="55.745678"
+     r="1.25"
+     fill="none"
+     stroke-miterlimit="10"
+     stroke="url(#snow_b)"
+     id="circle6"
+     style="stroke:url(#linearGradient9)" />
+  <path
+     d="m 33.17,56.995679 -1.09,-0.63 m -2.16,-1.24 -1.09,-0.63 m 2.17,-1.25 v 1.25 m 0,3.75 v -1.25 m -1.08,-0.63 -1.09,0.63 m 4.34,-2.5 -1.09,0.63"
+     fill="none"
+     stroke-linecap="round"
+     stroke-miterlimit="10"
+     stroke="url(#snow_c)"
+     id="path7"
+     style="stroke:url(#snow_c)" />
+  <circle
+     cx="24"
+     cy="49.503704"
+     r="1.25"
+     fill="none"
+     stroke-miterlimit="10"
+     stroke="url(#snow_d)"
+     id="circle7"
+     style="stroke:url(#snow_d)" />
+  <path
+     d="m 26.17,50.753704 -1.09,-0.63 m -2.16,-1.24 -1.09,-0.63 m 2.17,-1.25 v 1.25 m 0,3.75 v -1.25 m -1.08,-0.63 -1.09,0.63 m 4.34,-2.5 -1.09,0.63"
+     fill="none"
+     stroke-linecap="round"
+     stroke-miterlimit="10"
+     stroke="url(#snow_e)"
+     id="path8"
+     style="stroke:url(#snow_e)" />
+  <circle
+     cx="38"
+     cy="49.503704"
+     r="1.25"
+     fill="none"
+     stroke-miterlimit="10"
+     stroke="url(#snow_f)"
+     id="circle8"
+     style="stroke:url(#snow_f)" />
+  <path
+     d="m 40.17,50.753704 -1.09,-0.63 m -2.16,-1.24 -1.09,-0.63 m 2.17,-1.25 v 1.25 m 0,3.75 v -1.25 m -1.08,-0.63 -1.09,0.63 m 4.34,-2.5 -1.09,0.63"
+     fill="none"
+     stroke-linecap="round"
+     stroke-miterlimit="10"
+     stroke="url(#snow_g)"
+     id="path9"
+     style="stroke:url(#snow_g)" />
+</svg>

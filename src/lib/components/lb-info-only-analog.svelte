@@ -4,6 +4,7 @@
 	import LbControl from '$lib/components/lb-control.svelte';
 	import LbModal from '$lib/components/lb-modal.svelte';
 	import { store } from '$lib/stores/store.svelte';
+	import { Utils } from '$lib/helpers/utils';
 	import { format } from 'date-fns';
 	import { nl } from 'date-fns/locale';
 	import fmt from 'sprintf-js';
@@ -12,11 +13,7 @@
 
 	const loxTimeRef = 1230764400000; // correction to epoch, Loxone calculates from 1-1-2009
 
-	function isDST(d: Date) { // correction for daylight saving time
-    let jan = new Date(d.getFullYear(), 0, 1).getTimezoneOffset();
-    let jul = new Date(d.getFullYear(), 6, 1).getTimezoneOffset();
-    return Math.max(jan, jul) !== d.getTimezoneOffset();    
-	}
+
 
 	function getFormattedString(input: string) {
 		let s: string = input;
@@ -26,7 +23,7 @@
 				case '<v.u>': // date + time, e.g. 6 maart 2025 22:56
 					let date = new Date(value * 1000 + loxTimeRef);
 					if (date && value) {
-						date = isDST(date) ? new Date(value * 1000 + loxTimeRef - 3600000) : date;
+						date = Utils.isDST(date) ? new Date(value * 1000 + loxTimeRef - 3600000) : date;
 						s = format(date, 'PPP p', { locale: nl }); // TODO change locale
 					}
 					break;

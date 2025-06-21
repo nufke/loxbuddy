@@ -1,10 +1,12 @@
 import mqtt from 'mqtt';
 import { store } from '$lib/stores/store.svelte';
+import { weatherStore } from '$lib/stores/weather-store.svelte';
 import { Utils } from '$lib/helpers/utils';
 
 let connected: boolean;
 let serialNr: string;  // TODO support multiple miniservers
 let topicPrefix = 'loxone'; // TODO configure prefix in GUI
+let weatherPrefix = 'weather4lox'; // TODO configure prefix in GUI
 
 export let mqttclient: any = null;
 
@@ -43,29 +45,29 @@ const onConnect = () => {
 	console.log('MQTT: connected\n');
 	connected = true;
 	const registerTopics = [
-		topicPrefix + '/#'
+		topicPrefix + '/#',
+		weatherPrefix + '/#'
 	];
 
-	registerTopics.forEach((topic) => {
-		mqttclient.subscribe(topic, function (err: any) {
-			if (err) {
-				console.error(err);
-			} else {
-				console.log(`MQTT subscribed on topic '${topic}'`);
-			}
-		});
+	mqttclient.subscribe(registerTopics, function (err: any) {
+		if (err) {
+			console.log(err);
+		} else {
+			console.log(`MQTT subscribed to topics '${registerTopics}'`);
+		}
 	});
 };
 
 //TODO check type of arguments
 const onMessage = (topic: string, message: any) => {
-	//console.log('MQTT: message received\n');
+	//console.log('MQTT: message received for topic ', topic);
 	const msg = message.toString();
 	monitorStructure(topic, msg);
 	monitorInitialStates(topic, msg);
 	monitorSecuredDetails(topic, msg);
 	monitorLastBellEventImages(topic, msg);
 	monitorStates(topic, msg);
+	monitorWeatherStates(topic, msg);
 };
 
 export async function reconnect() {
@@ -129,5 +131,14 @@ function monitorStates(topic: string, msg: string) {
 		//console.log('setState: ', found[2], msg);
 		let obj = Utils.isValidJSONObject(msg) ? JSON.parse(msg) : msg;
 		store.setState(found[2], obj);
+	}
+}
+
+function monitorWeatherStates(topic: string, msg: string) {
+	const regex = new RegExp(weatherPrefix + '/(.+)');
+	const found = topic.match(regex);
+	if (found && found[1] && /current|daily|hourly/.test(found[1]) ) {
+		//console.log('setObservation: ', found[1], msg);
+		weatherStore.setObservation(found[1], msg);
 	}
 }

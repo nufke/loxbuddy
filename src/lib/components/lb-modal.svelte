@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { ControlView } from '$lib/types/models';
-	import LucideIcon from './icon-by-name.svelte';
+	import LucideIcon from '$lib/components/icon-by-name.svelte';
 	import { Switch } from '@skeletonlabs/skeleton-svelte';
 	import { inlineSvg } from '@svelte-put/inline-svg';
 	import { Modal } from '@skeletonlabs/skeleton-svelte';

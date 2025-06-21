@@ -1,3 +1,6 @@
+import { format } from 'date-fns';
+import { nl } from 'date-fns/locale';
+
 export class Utils {
 
 	// input: h in [0,360] and s,v in [0-100] - output: r,g,b in [0-255,0-255,0-255]
@@ -77,4 +80,30 @@ export class Utils {
 		let hhmm = t.split(':'); // HH:mm notation
 		return Number((Number(hhmm[0]) + Number(hhmm[1]) / 60).toFixed(2));
 	}
+
+	static dec2hours(i: number) {
+		let hrs = Math.floor(i/3600);
+		let min = Math.round((Number(i/3600)-hrs) * 60);
+		return hrs + ':' + min;
+	}
+
+	static isDST(d: Date) { // correction for daylight saving time
+    let jan = new Date(d.getFullYear(), 0, 1).getTimezoneOffset();
+    let jul = new Date(d.getFullYear(), 6, 1).getTimezoneOffset();
+    return Math.max(jan, jul) !== d.getTimezoneOffset();    
+	}
+
+	static time2epoch(dateEpoch: number, time: string) {
+		let hhmm = time.split(':'); // HH:mm notation
+		let date = new Date(dateEpoch);
+		let dayStart = new Date(date.getFullYear(), date.getMonth(), date.getDate(), Number(hhmm[0]), Number(hhmm[1]));
+		return dayStart.valueOf();
+	}
+
+	static epoch2TimeStr(epoch: number) {
+		const date = new Date(epoch*1000);
+		const time = Utils.isDST(date) ? new Date(epoch*1000 - 3600000) : date;
+		return format(time, "p",{locale: nl});
+	}
+
 }

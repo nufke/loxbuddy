@@ -2,7 +2,7 @@
 	import { inlineSvg } from '@svelte-put/inline-svg';
 	import { Switch } from '@skeletonlabs/skeleton-svelte';
 	import type { ControlView } from '$lib/types/models';
-	import LucideIcon from './icon-by-name.svelte';
+	import LucideIcon from '$lib/components/icon-by-name.svelte';
 	import { _ } from 'svelte-i18n';
 
 	let { controlView = $bindable() }: { controlView: ControlView } = $props();

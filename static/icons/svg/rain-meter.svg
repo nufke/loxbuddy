@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 32 32"
+   version="1.1"
+   id="svg5"
+   width="32"
+   height="32"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1" />
+  <g
+     id="ew">
+    <g
+       id="g6"
+       transform="translate(2.0280369)">
+      <g
+         id="g1"
+         transform="translate(-0.77160496)">
+        <g
+           id="g2"
+           transform="translate(-0.948148,0.15802485)">
+          <path
+             fill="none"
+             stroke="currentColor"
+             stroke-linecap="round"
+             stroke-linejoin="round"
+             stroke-width="0.731707"
+             d="m 23.846311,1.2078255 h 3.90244 V 30.476125 h -3.90244 m 0.97561,-14.63415 h 2.92683 m -1.95122,6.82927 h 1.95122 M 25.797531,8.0370955 h 1.95122"
+             id="path5"
+             style="stroke-width:1.2;stroke-dasharray:none" />
+          <path
+             fill="none"
+             stroke="currentColor"
+             stroke-miterlimit="10"
+             stroke-width="0.959421"
+             d="M 8.5801083,2.4547313 C 5.5087045,7.1252243 3.5346811,10.044282 3.5346811,12.879012 c 0,2.83473 2.2578287,5.14403 5.0454272,5.14403 2.7875987,0 5.0454277,-2.302813 5.0454277,-5.14403 0,-2.841217 -1.974023,-5.7602747 -5.0454277,-10.4242807 z"
+             id="path1-1"
+             style="fill:currentColor;fill-opacity:1;stroke-width:1;stroke-dasharray:none" />
+          <path
+             fill="none"
+             stroke="currentColor"
+             stroke-miterlimit="10"
+             stroke-width="0.736427"
+             d="m 15.604938,16.90955 c -2.35753,3.584948 -3.872738,5.825541 -3.872738,8.001405 0,2.175865 1.73305,3.948424 3.872738,3.948424 2.139688,0 3.872738,-1.767579 3.872738,-3.948424 0,-2.180844 -1.515208,-4.421436 -3.872738,-8.001405 z"
+             id="path1-1-5"
+             style="fill:currentColor;fill-opacity:1;stroke-width:1;stroke-dasharray:none" />
+        </g>
+      </g>
+      <g
+         clip-path="url(#ex)"
+         id="g5" />
+    </g>
+  </g>
+</svg>
