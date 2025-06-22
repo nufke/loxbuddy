@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { _ } from 'svelte-i18n';
+	import { store } from '$lib/stores/store.svelte';
 	import { weatherStore } from '$lib/stores/weather-store.svelte';
-	import { slide } from 'svelte/transition'
+	import { slide, fade } from 'svelte/transition'
 	import LbIcon from '$lib/components/lb-icon-by-name.svelte';
 	import { Sunrise, Sunset, X } from '@lucide/svelte';
 	import type { WeatherCurrentConditions, WeatherDailyForecast, WeatherHourlyForecast } from '$lib/types/weather';
@@ -18,6 +19,7 @@
 	let daily = $derived(weatherStore.daily);
 	let hourly = $derived(weatherStore.hourly);
 	let loaded = $derived(current.time > 0 && daily.length);
+	let time = $derived(store.time);
 
 	function openSlider(i: number) {
 		if (hourly[i]) {
@@ -35,7 +37,8 @@
 	function getDayIcon(day: WeatherDailyForecast) {
 		let sunRise = Utils.time2epoch(day.time, day.sunRise);
 		let sunSet = Utils.time2epoch(day.time, day.sunSet);
-		let dayOrNight = (((day.time > sunRise) && (day.time < sunSet)) || (day.time != current.time)) ? '-day.svg' : '-night.svg';
+		let currentDay = Utils.time2epoch(current.time, '00:00');
+		let dayOrNight = (((day.time > sunRise) && (day.time < sunSet)) || (day.time != currentDay)) ? '-day.svg' : '-night.svg';
 		return '/meteocons/svg/' + day.icon + dayOrNight;
 	}
 
@@ -73,7 +76,7 @@
 	{#if loaded}
 	<div class="justify-center text-center">
 		<p class="h4">{current.location}</p>
-		<p class="text-lg">{format(new Date(), "PPP p", {locale: nl})}</p>
+		<p class="text-lg">{format(time, "PPP p", {locale: nl})}</p>
 		<div class="grid grid-cols-2 mb-5">
 			<div>
 				<p class="text-[120px] font-medium ml-8">{current.airTemperature}<span class="font-normal">°</span></p>
@@ -141,39 +144,41 @@
 			</div>
 		</div> 
 		{#if slider[i]}
-		<div class="text-white max-w-[640px] preset-filled-surface-100-900" transition:slide={{ duration: 400 }}>
-     	<div class="grid grid-cols-2 hr p-1">
-				<div class="flex m-auto">
-					<span class="mr-2"><Sunrise size="22"/></span>
-					<p class="text-lg">{day.sunRise}</p>
-				</div>
-				<div class="flex m-auto">
-					<span class="mr-2"><Sunset size="22"/></span>
-					<p class="text-lg">{day.sunSet}</p>
-				</div>
-			</div>
-			<div class="grid auto-cols-[61px] grid-flow-col overflow-x-auto gap-2 hr h-48"> <!-- -->
-				{#each getHourly(day) as hour, j}
-				<div class="grid-mw pl-2 flex flex-col vr">
-					<div class="flex align-middle m-auto">
-						<p class="text-lg">{format(new Date(hour.time), "H",{locale: nl})}</p>
+		<div class="text-white max-w-[640px] preset-filled-surface-100-900" transition:slide={{ duration: 400 }} >
+     	<div transition:fade={{ duration: 200 }}>
+				<div class="grid grid-cols-2 hr p-1">
+					<div class="flex m-auto">
+						<span class="mr-2"><Sunrise size="22"/></span>
+						<p class="text-lg">{day.sunRise}</p>
 					</div>
 					<div class="flex m-auto">
-						<span class="align-middle m-auto"><LbIcon name={getHourIcon(hour)} width="45" height="45"/></span>
-					</div>
-					<div>
-						<p class="text-lg">{hour.airTemperature}°</p>
-					</div>
-					<div class="flex m-auto mt-1">
-						<span class="align-middle m-auto"><LbIcon class="text-white" name={"/icons/svg/raindrop.svg"} width="16" height="16"/></span>
-						<p class="text-lg">{hour.precipitationProbability}%</p>
-					</div>
-					<div class="flex m-auto mb-2">
-						<span class="align-middle m-auto" style="rotate: {hour.windDirection}deg;"><LbIcon class="text-white" name={"/icons/svg/wind-direction2.svg"} width="18" height="18"/></span>
-						<p class="text-lg">{hour.windAverage}</p>
+						<span class="mr-2"><Sunset size="22"/></span>
+						<p class="text-lg">{day.sunSet}</p>
 					</div>
 				</div>
-				{/each}
+				<div class="grid auto-cols-[61px] grid-flow-col overflow-x-auto gap-2 hr h-48">
+					{#each getHourly(day) as hour, j}
+					<div class="grid-mw pl-2 flex flex-col vr">
+						<div class="flex align-middle m-auto">
+							<p class="text-lg">{format(new Date(hour.time), "H",{locale: nl})}</p>
+						</div>
+						<div class="flex m-auto">
+							<span class="align-middle m-auto"><LbIcon name={getHourIcon(hour)} width="45" height="45"/></span>
+						</div>
+						<div>
+							<p class="text-lg">{hour.airTemperature}°</p>
+						</div>
+						<div class="flex m-auto mt-1">
+							<span class="align-middle m-auto"><LbIcon class="text-white" name={"/icons/svg/raindrop.svg"} width="16" height="16"/></span>
+							<p class="text-lg">{hour.precipitationProbability}%</p>
+						</div>
+						<div class="flex m-auto mb-2">
+							<span class="align-middle m-auto" style="rotate: {hour.windDirection}deg;"><LbIcon class="text-white" name={"/icons/svg/wind-direction2.svg"} width="18" height="18"/></span>
+							<p class="text-lg">{hour.windAverage}</p>
+						</div>
+					</div>
+					{/each}
+				</div>
 			</div>
 		</div>
 		{/if}
