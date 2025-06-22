@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { Modal } from '@skeletonlabs/skeleton-svelte';
 	import type { ControlView, ListItem } from '$lib/types/models';
-	import { inlineSvg } from '@svelte-put/inline-svg';
 	import { store } from '$lib/stores/store.svelte';	
 	import { X, Timer, Leaf, Flame, List } from '@lucide/svelte';
 	import { _ } from 'svelte-i18n';
@@ -9,6 +8,7 @@
 	import { fade200 } from '$lib/helpers/transition';
 	import { publishTopic } from '$lib/communication/mqttclient';
 	import LbCicleSlider from '$lib/components/lb-circle-slider.svelte';
+	import LbIcon from '$lib/components/lb-icon-by-name.svelte';
 
 	let { controlView = $bindable() }: { controlView: ControlView } = $props();
 
@@ -76,10 +76,10 @@
 			<div class="text-center">
 				<div class="flex items-center justify-center ml-2">
 					{#if isAutomatic}
-						<svg class="fill-white mr-2" use:inlineSvg={"/icons/svg/automatic.svg"} width="24" height="24"></svg>
+						<LbIcon class="fill-white mr-2" name={"/icons/svg/automatic.svg"} width="24" height="24"/>
 					{/if}
 					{#if isCooling}
-					<svg class="fill-cyan-400 mr-2" use:inlineSvg={"/icons/svg/mode_cool.svg"} width="24" height="24"></svg>
+					<LbIcon class="fill-cyan-400 mr-2" name={"/icons/svg/mode_cool.svg"} width="24" height="24"/>
 					{/if}
 					{#if isHeating}
 					<Flame class="text-red-500 fill-red-500 mr-2"/>
@@ -120,7 +120,7 @@
 	<div class="sticky bottom-0 left-0 w-full h-16 pt-2">
 		<div class="grid h-full max-w-lg grid-cols-2  mx-auto">
 			<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==0 ? 'text-green-500' : ''} " onclick={() => selectedTab=0}>
-				<svg class={selectedTab==0 ? 'fill-green-500' : 'fill-white'} use:inlineSvg={"/icons/svg/thermostat.svg"} width="24" height="24"></svg>
+				<LbIcon class={selectedTab==0 ? 'fill-green-500' : 'fill-white'} name={"/icons/svg/thermostat.svg"} width="24" height="24"/>
 				<span class="mt-1 text-xs">{$_("Control")}</span>
 			</button>
 			<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==1 ? 'text-green-500' : ''} " onclick={() => selectedTab=1}>

@@ -161,6 +161,8 @@
     "Very hot": "Erg heet",
     "Very cold": "Erg koud",
     "Video": "Video",
+    "Waiting for weather data ...": "Weer ophalen ...",
+    "Weather": "Weer",
     "Windy": "Winderig",
     "You received %s notifications": "U heeft %s meldingen ontvangen"
 }

@@ -161,6 +161,8 @@
     "Very hot": "Sehr heiss",
     "Very cold": "sehr kalt",
     "Video": "Video",
+    "Waiting for weather data ...": "Warten auf Wetterdaten ...",
+    "Weather": "Wetter",
     "Windy": "Windig",
     "You received %s notifications": "Sie haben %s Benachrichtigungen erhalten"
 }

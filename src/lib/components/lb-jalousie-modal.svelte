@@ -1,8 +1,7 @@
 <script lang="ts">
-	import { inlineSvg } from '@svelte-put/inline-svg';
 	import { Modal } from '@skeletonlabs/skeleton-svelte';
   import type { ControlView } from '$lib/types/models';
-	import LucideIcon from '$lib/components/icon-by-name.svelte';
+	import LbIcon from '$lib/components/lb-icon-by-name.svelte';
 	import { X } from '@lucide/svelte';
 	import { _ } from 'svelte-i18n';
 	import { fade200 } from '$lib/helpers/transition';
@@ -29,7 +28,7 @@
 	<header class="relative">
 		<div class="flex justify-center">
 			<div class="relative inline-flex h-18 w-18 items-center justify-center overflow-hidden rounded-full dark:bg-surface-950">
-				<svg class={controlView.iconColor} use:inlineSvg={controlView.iconName} width="36" height="36"></svg>
+				<LbIcon class={controlView.iconColor} name={controlView.iconName} width="36" height="36"/>
 			</div>
 		</div>
 		<div class="absolute right-0 top-0">
@@ -56,7 +55,7 @@
 							{#if button.name}
 								<span class="text-lg">{$_(button.name)}</span>
 							{:else}
-								<LucideIcon name={button.iconName}/>
+								<LbIcon name={button.iconName}/>
 							{/if}
 					</button>
 				{/if}

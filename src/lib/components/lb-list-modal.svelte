@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { inlineSvg } from '@svelte-put/inline-svg';
+	import LbIcon from '$lib/components/lb-icon-by-name.svelte';
 	import { Modal } from '@skeletonlabs/skeleton-svelte';
   import type { Control, ControlView, ListItem } from '$lib/types/models';
 	import LbSwitch from '$lib/components/lb-switch.svelte';
@@ -43,7 +43,7 @@
 	<header class="relative">
 		<div class="flex justify-center">
 			<div class="relative inline-flex h-18 w-18 items-center justify-center overflow-hidden rounded-full dark:bg-surface-950">
-				<svg class={controlView.iconColor} use:inlineSvg={controlView.iconName} width="36" height="36"></svg>
+				<LbIcon class={controlView.iconColor} name={controlView.iconName} width="36" height="36"/>
 			</div>
 		</div>
 		<div class="absolute right-0 top-0">
@@ -135,7 +135,7 @@
 				</button>
 				{#if subControlsColorPicker.length}
 				<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==2 ? 'text-green-500' : ''} " onclick={() => selectedTab=2}>
-					<svg use:inlineSvg={"/icons/svg/streamline--color-palette.svg"} fill="white" width="24" height="24"></svg>
+					<LbIcon name={"/icons/svg/streamline--color-palette.svg"} fill="white" width="24" height="24"/>
 					<span class="mt-1 text-xs">{$_("Colors")}</span>
 				</button>
 				{/if}

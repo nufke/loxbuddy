@@ -1,8 +1,7 @@
 <script lang="ts">
-	import { inlineSvg } from '@svelte-put/inline-svg';
 	import { Switch } from '@skeletonlabs/skeleton-svelte';
 	import type { ControlView } from '$lib/types/models';
-	import LucideIcon from '$lib/components/icon-by-name.svelte';
+	import LbIcon from '$lib/components/lb-icon-by-name.svelte';
 	import { _ } from 'svelte-i18n';
 
 	let { controlView = $bindable() }: { controlView: ControlView } = $props();
@@ -32,7 +31,7 @@
 		<div class="flex items-center truncate">
 			{#if controlView.iconName.length} <!-- only show icon if name is given -->
 				<div class="relative mr-1 inline-flex items-center justify-center w-12 h-12 min-w-12 overflow-hidden rounded-full dark:bg-surface-950">
-					<svg class={controlView.iconColor} use:inlineSvg={controlView.iconName} width="24" height="24"></svg>
+					<LbIcon class={controlView.iconColor} name={controlView.iconName} width="24" height="24"/>
 				</div>
 			{/if}
 			{#if controlView.iconText?.length} <!-- IRC -->
@@ -60,7 +59,7 @@
 						<button type="button" class="btn-icon p-3 preset-tonal-surface rounded-lg border border-black hover:border-white/50" 
 										onclick={(e) => { e.stopPropagation(); e.preventDefault(); button.click(e)}}> <!--|stopPropagation|preventDefault-->
 							<span style="font-size:26px ">
-								<LucideIcon name={button.iconName} />
+								<LbIcon name={button.iconName} />
 							</span>
 						</button>
 					{/if}

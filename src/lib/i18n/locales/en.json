@@ -160,6 +160,8 @@
     "Very hot": "Very hot",
     "Very cold": "Very cold",
     "Video": "Video",
+    "Waiting for weather data ...": "Waiting for weather data ...",
+    "Weather": "Weather",
     "Windy": "Windy",
     "You received %s notifications": "You received %s notifications"
 }
