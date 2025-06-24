@@ -80,6 +80,7 @@ class WeatherStore {
 			lightingStrikeCount1h: 0,
 			lightingStrikeDistance: 25,
 			precipitationToday: Math.round(Number(field[26])),
+			solarRadiation: Math.round(Number(field[22])),
 			sunRise: String(Number(field[34])) + ':' + String(field[35]),
 			sunSet: String(Number(field[36])) + ':' + String(field[37])
 		}
@@ -101,7 +102,7 @@ class WeatherStore {
 				sunSet: String(Number(field[35])) + ':' + String(field[36]),
 				airTemperatureHigh: Math.round(Number(field[11])),
 				airTemperatureLow: Math.round(Number(field[12])),
-				precipitationProbability: Math.round(Number(field[13]))
+				precipitationProbability: Math.round(Number(field[13])),
 			};
 			if (item.time) temp.push(item);
 		});

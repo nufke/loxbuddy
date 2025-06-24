@@ -38,7 +38,7 @@
 		let sunRise = Utils.time2epoch(day.time, day.sunRise);
 		let sunSet = Utils.time2epoch(day.time, day.sunSet);
 		let currentDay = Utils.time2epoch(current.time, '00:00');
-		let dayOrNight = (((day.time > sunRise) && (day.time < sunSet)) || (day.time != currentDay)) ? '-day.svg' : '-night.svg';
+		let dayOrNight = (((time.valueOf() > sunRise) && (time.valueOf() < sunSet)) || (day.time != currentDay)) ? '-day.svg' : '-night.svg';
 		return '/meteocons/svg/' + day.icon + dayOrNight;
 	}
 
@@ -67,14 +67,17 @@
 	transitionsPositionerOut = {fade200}
 	onOpenChange={()=>{}}
 	triggerBase="btn preset-tonal"
-	contentBase="container space-y-3 p-3 mx-auto max-w-[640px] overflow-auto h-full"
-	backdropClasses="backdrop-blur-xl">
+	contentBase="container mx-auto max-w-[768px] overflow-auto h-full"
+	positionerPadding="p-2"
+	backdropBackground="bg-surface-950">
 	{#snippet content()}
-	<header class="absolute right-2 top-2">
-		<button type="button" aria-label="close" class="btn-icon w-auto" onclick={()=> open = false}><X/></button>
+	<header class="sticky top-0 h-[40px] bg-surface-950/50 z-1">
+		<div class="absolute right-1 top-1">
+			<button type="button" aria-label="close" class="btn-icon w-auto" onclick={()=> open = false}><X/></button>
+		</div>
 	</header>
 	{#if loaded}
-	<div class="justify-center text-center">
+	<div class="-mt-2 justify-center text-center">
 		<p class="h4">{current.location}</p>
 		<p class="text-lg">{format(time, "PPP p", {locale: nl})}</p>
 		<div class="grid grid-cols-2 mb-5">
@@ -111,6 +114,7 @@
 				</div>
 				<div class="flex gap-2">
 					<LbIcon name={"/icons/svg/sun-solid.svg"} width="32" height="32"/>
+					<p class="text-lg"><span class="font-medium">{current.solarRadiation}</span> W/m²</p>
 					<p class="text-lg"><span class="font-medium">{current.uv}</span> UV</p>
 				</div>
 				<div class="flex gap-2">
@@ -120,13 +124,13 @@
 			</div>
 		</div>
 		{#each daily as day, i}
-		<div class="mt-2 h-20 max-w-[640px] preset-filled-surface-100-900" onclick={() => openSlider(i)}>
-			<div class="grid grid-cols-7 gap-2 pl-2 pr-3">
-				<div class="col-span-3 p-3 my-auto">
+		<div class="mt-2 h-20 max-w-[768px] preset-filled-surface-100-900" onclick={() => openSlider(i)}>
+			<div class="grid grid-cols-8 pl-2 pr-3">
+				<div class="col-span-3 p-3 pr-0 my-auto">
 					<p class="text-left text-lg font-medium truncate">{format(new Date(day.time), "eeee d",{locale: nl})}</p>
 					<p class="text-left text-lg truncate">{$_(day.conditions)}</p>
 				</div>
-				<div class="col-span-1 align-middle m-auto">
+				<div class="col-span-2 align-middle m-auto">
 					<LbIcon name={getDayIcon(day)} fill="white" width="70" height="70"/>
 				</div>
 				<div class="flex flex-row m-auto justify-center align-center">
@@ -144,7 +148,7 @@
 			</div>
 		</div> 
 		{#if slider[i]}
-		<div class="text-white max-w-[640px] preset-filled-surface-100-900" transition:slide={{ duration: 400 }} >
+		<div class="text-white max-w-[768px] preset-filled-surface-100-900" transition:slide={{ duration: 400 }} >
      	<div transition:fade={{ duration: 200 }}>
 				<div class="grid grid-cols-2 hr p-1">
 					<div class="flex m-auto">
@@ -156,7 +160,7 @@
 						<p class="text-lg">{day.sunSet}</p>
 					</div>
 				</div>
-				<div class="grid auto-cols-[61px] grid-flow-col overflow-x-auto gap-2 hr h-48">
+				<div class="grid auto-cols-[62px] grid-flow-col overflow-x-auto gap-2 hr h-48">
 					{#each getHourly(day) as hour, j}
 					<div class="grid-mw pl-2 flex flex-col vr">
 						<div class="flex align-middle m-auto">

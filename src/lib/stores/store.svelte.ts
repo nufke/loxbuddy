@@ -5,6 +5,7 @@ import { Utils } from '$lib/helpers/utils';
 import { loxiconsPath } from '$lib/helpers/paths';
 
 class Store {
+  controlState = new SvelteMap();
 	structure: Structure = $state(INITIAL_STRUCTURE);
 	controls = $derived(this.structure.controls);
 	rooms = $derived(this.structure.rooms);
@@ -14,13 +15,22 @@ class Store {
 	roomList = $derived(Object.values(this.structure.rooms));
 	securedDetails = new SvelteMap();
 	lastBellEventImages = new SvelteMap();
-  state = new SvelteMap();
+	messageCenter = $derived(Object.values(this.structure.messageCenter));
 	time = $state(new Date());
+	mqttStatus = $state(0); // 0 = unknown (grey), 1=connected (green), 2=disconnected (red)
+	msStatus = $derived(this.controlList.length>0 ? 1 : 2);
+
+	stateUpdate: NodeJS.Timeout;
 
 	constructor() {
 		setInterval(() => {
 	  	this.time = new Date();
 		}, 1000);
+		
+		this.stateUpdate = setTimeout(() => {
+			this.msStatus = 2; // error
+    	console.error("No state update received from Miniserver") 
+  	}, 1000);
   }
 
 	initStructure(data: Structure) {
@@ -37,20 +47,21 @@ class Store {
 	}
 
 	getState(uuid: string) {
-		return this.state.get(uuid);
+		return this.controlState.get(uuid);
 	}
 
 	setState(key: string, data: any) {
 		//console.log('setState', key, data);
 		let item = $state(data);
-		this.state.set(key, item);
+		this.controlState.set(key, item);
+		clearTimeout(this.stateUpdate);
 	}
 
 	setInitialStates(data: any) {
 		Object.keys(data).forEach( (key) => {
 			let item = $state(data[key]);
 			let obj = Utils.isValidJSONObject(item) ? JSON.parse(item) : item;
-			this.state.set(key, obj);
+			this.controlState.set(key, obj);
 		});
 	}
 
@@ -85,6 +96,10 @@ class Store {
 		} else {
 			return ''; // hide icon for subcontrols by returning empty name
 		}
+	}
+	
+	setMqttStatus(s: number) {
+		this.mqttStatus = s;
 	}
 }
 

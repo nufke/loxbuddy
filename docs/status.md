@@ -123,7 +123,7 @@ or submit a [pull request](https://github.com/nufke/loxbuddy/pulls).
 | Alarm sync w mobile alarm   | Not started              |
 | Battery status update       | Not started              |
 | Calendar                    | Not started              |
-| Connection status           | Not started              |
+| Connection status           | Available                |
 | Dark / Light theme          | Not started              |
 | Internationalization        | Available (NL, DE, US)   |
 | Kiosk / room mode (tablet)  | Not started              |
@@ -135,7 +135,7 @@ or submit a [pull request](https://github.com/nufke/loxbuddy/pulls).
 | Settings menu               | Not started              |
 | Splashscreen                | Not started              |
 | Statistics / history        | Not started              |
-| Statusbar (time, temp, etc) | Not started              |
+| Statusbar (time, temp, etc) | Available                |
 | System messages             | Not started              |
 | Voice control               | Not started              |
 | Weather forecast            | Available (Weather4Lox)  |

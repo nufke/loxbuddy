@@ -38,12 +38,14 @@ export const mqttConnect = (env: any) => {
 	mqttclient.on('close', () => {
 		console.log('MQTT disconnected');
 		connected = false;
+		store.setMqttStatus(2);
 	});
 }
 
 const onConnect = () => {
 	console.log('MQTT: connected\n');
 	connected = true;
+	store.setMqttStatus(1);
 	const registerTopics = [
 		topicPrefix + '/#',
 		weatherPrefix + '/#'
@@ -91,8 +93,9 @@ function monitorStructure(topic: string, msg: string) {
 		serialNr = found[1];
 		console.log('Miniserver registered: ', serialNr);
 		console.log('Query all initial states for miniserver: ', serialNr);
-		publishTopic('states', '1');
-	}
+		publishTopic('states', '1'); // get initial states
+		publishTopic('systemStatus', '1'); // get system status
+ 	}
 }
 
 function monitorInitialStates(topic: string, msg: string) {
@@ -128,11 +131,12 @@ function monitorStates(topic: string, msg: string) {
 	const regex = new RegExp(topicPrefix + '/(.+)/(.*)');
 	const found = topic.match(regex);
 	if (found && found[1] && found[2]) {
-		//console.log('setState: ', found[2], msg);
+		//console.log('setState: ', found, msg);
 		let obj = Utils.isValidJSONObject(msg) ? JSON.parse(msg) : msg;
 		store.setState(found[2], obj);
 	}
 }
+
 
 function monitorWeatherStates(topic: string, msg: string) {
 	const regex = new RegExp(weatherPrefix + '/(.+)');

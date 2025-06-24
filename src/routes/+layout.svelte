@@ -3,7 +3,7 @@
 	import '../global.css';
 	import { Navigation } from '@skeletonlabs/skeleton-svelte';
 	import { innerWidth } from 'svelte/reactivity/window';
-  import { Home, List, FileText, Grid2x2, Menu, type Icon as IconType } from '@lucide/svelte';
+  import { Home, FileText, Grid2x2, Menu, Layers, Circle, Square, type Icon as IconType } from '@lucide/svelte';
 	import type { Route } from '$lib/types/models';
 	import { mqttConnect } from '$lib/communication/mqttclient';
 	import { store } from '$lib/stores/store.svelte';
@@ -25,6 +25,8 @@
 	let currentWeather = $derived(weatherStore.current);
 	let showWeatherModal = $state(false);
 	let time = $derived(store.time);
+	let mqttStatus =  $derived(store.mqttStatus);
+	let msStatus =  $derived(store.msStatus);
 
 	function getCurrentIcon(cur: WeatherCurrentConditions) {
 		let sunRise = Utils.time2epoch(cur.time, cur.sunRise);
@@ -33,11 +35,16 @@
 		return '/meteocons/svg/' + cur.icon + dayOrNight;
 	}
 
-	const routes: Route[] = $derived([
+	const routesMobile: Route[] = $derived([
 		{ label: 'Home', href: '/', icon: Home },
 		{ label: 'Rooms', href: '/room', icon: Grid2x2 },
-		{ label: 'Categories', href: '/category', icon: List },
+		{ label: 'Categories', href: '/category', icon: Layers },
 		{ label: 'Messages', href: '/messages', icon: FileText },
+	]);
+
+	const routesTablet: Route[] = $derived([
+		...routesMobile,
+		{ label: 'Menu', href: '/menu', icon: Menu },
 	]);
 
 	function checkUrl(href: string) {
@@ -56,27 +63,37 @@
 	function mainMenu() {
 	}
 
+	function getStatusColor(state: number) {
+		let str = 'text-surface-500 fill-surface-500';
+		switch (state) {
+			case 0: str = 'text-surface-500 fill-surface-500'; break;
+			case 1: str = 'text-green-500 fill-green-500'; break;
+			case 2: str = 'text-red-500 fill-red-500'; break;
+			case 3: str = 'text-orange-500 fill-orange-500'; break;
+			default: /* none */
+		}
+		return str;
+	}
 </script>
 
 <!-- we need to use the innerWidth to avoid we render the children twice -->
 {#if (innerWidth.current != undefined) && innerWidth.current > 768 } <!-- tabled mode -->
 <div class="hidden md:grid grid-cols-[auto_1fr]">
 	<aside class="sticky top-0 col-span-1 h-screen">
-	<Navigation.Rail headerClasses="h-[20%] inline-block align-top" tilesClasses="h-[60%]" footerClasses="h-[20%]">
+	<Navigation.Rail headerClasses="h-[20%] inline-block align-top" tilesClasses="h-[60%]" footerClasses="h-[20%] justify-end">
 		{#snippet header()}
-      <Navigation.Tile labelExpanded="Menu" classes="flex-col justify-center hover:bg-transparent" onclick={mainMenu} title="Toggle Menu Width">
-				<Menu/>
+		<p class="mt-2 mb-4 text-center m-auto text-2xl">{format(time, "p", {locale: nl})}</p>
+		{#if currentWeather.airTemperature}
+			<Navigation.Tile classes="-mt-4 justify-center hover:bg-transparent" onclick={openWeather}>
+				<div>
+					<LbIcon class="-mb-2" name={getCurrentIcon(currentWeather)} width="50" height="50"/>
+					<span class="text-2xl">{currentWeather.airTemperature}°</span>
+				</div>
 			</Navigation.Tile>
-			{#if currentWeather.airTemperature}
-				<Navigation.Tile classes="-mt-4 justify-center hover:bg-transparent" onclick={openWeather}>
-						<LbIcon class="" name={getCurrentIcon(currentWeather)} width="50" height="50"/>
-						<span class="relative -mt-3 text-lg">{currentWeather.airTemperature}°</span>
-						<p class="text-lg">{format(time, "p", {locale: nl})}</p>
-				</Navigation.Tile>
 			{/if}
 		{/snippet}
 		{#snippet tiles()}
-		{#each routes as {label, href, icon}}
+		{#each routesTablet as {label, href, icon}}
 		  {@const Icon = icon}
 			<Navigation.Tile labelClasses={checkUrl(href) ? 'text-green-500' : 'white'} classes="flex-col justify-center hover:bg-transparent scope:bg-transparent" label={$_(label)} {href}>
 				<Icon class={checkUrl(href) ? 'text-green-500' : 'white'} />
@@ -84,6 +101,10 @@
 		{/each}
 		{/snippet}
 		{#snippet footer()}
+			<div class="flex flex-row gap-3 mb-2">
+				<Circle class={getStatusColor(mqttStatus)} size="16"/>
+				<Square class={getStatusColor((mqttStatus==1) ? msStatus : 0)} size="16"/>
+			</div>
 		{/snippet}
 	</Navigation.Rail>
 </aside>
@@ -95,20 +116,24 @@
 <div class="md:hidden grid grid-rows-[auto_1fr_auto]"> <!-- mobile mode -->
 	<header class="preset-filled-surface-100-900 sticky top-0 z-1">
 		<div class="grid grid-cols-3 text-center items-center m-auto h-[60px]">
-			<div class="flex flex-row text-center items-center gap-3">
-				<span class="ml-4 text-left"><Menu/></span>
+			<div class="flex flex-row text-center items-center gap-1">
+				<a class="ml-4 mr-0 text-left" href="/menu"><Menu/></a>
 				{#if currentWeather.airTemperature}
-					<button class="flex flex-row items-center" onclick={openWeather}>
-						<LbIcon name={getCurrentIcon(currentWeather)} width="48" height="48"/>	
-						<span class="text-md truncate">{currentWeather.airTemperature} °C</span>
-				</button>
+					<button class="ml-0 m-auto flex flex-row items-center" onclick={openWeather}>
+						<LbIcon class="-mr-1" name={getCurrentIcon(currentWeather)} width="48" height="48"/>	
+						<span class="text-lg truncate">{currentWeather.airTemperature}°</span>
+					</button>
 				{/if}
 			</div>
 			<div>
 				<span class="text-xl text-green-500 font-medium">LoxBuddy</span>
 			</div>
-			<div>
-				<p class="text-right text-2xl mr-5">{format(new Date(), "p", {locale: nl})}</p>
+			<div class="mr-3 flex flex-row gap-3 justify-end">
+				<p class="text-right text-2xl">{format(new Date(), "p", {locale: nl})}</p>
+				<div class="flex flex-col gap-2">
+					<Circle class={getStatusColor(mqttStatus)} size="16"/>
+					<Square class={getStatusColor((mqttStatus==1) ? msStatus : 0)} size="16"/>
+				</div>
 			</div>
 		</div>
 	</header>
@@ -117,7 +142,7 @@
 	</main>
 	<footer class="sticky bottom-0">
 		<Navigation.Bar>
-			{#each routes as {label, href, icon}}
+			{#each routesMobile as {label, href, icon}}
 				{@const Icon = icon} 
 				<Navigation.Tile labelClasses={checkUrl(href) ? 'text-green-500' : 'text-white'} classes="flex flex-col justify-center hover:bg-transparent" label={$_(label)} {href}>
 					<Icon class={checkUrl(href) ? 'text-green-500' : 'white'} />

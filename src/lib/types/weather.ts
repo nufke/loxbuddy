@@ -13,6 +13,7 @@ export type WeatherCurrentConditions = {
 	lightingStrikeCount1h: number;
 	lightingStrikeDistance: number;
 	precipitationToday: number;
+	solarRadiation: number;
 	sunRise: string;						// hh:mm
 	sunSet: string;							// hh:mm
 };
