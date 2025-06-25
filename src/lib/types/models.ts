@@ -213,16 +213,47 @@ export type Autopilot = {
 	[key: string]: {
 		name: string;
 		uuidAction: string;
-		states: any;
+		states: {
+			 changed: string;
+			 history: string;
+		}
 	}
 }
 
 export type MessageCenter = {
-	[key: string]: {
-		name: string;
-		uuidAction: string;
-		states: any;
+	name: string;
+	uuidAction: string;
+	states: {
+		 changed: string;
 	}
+}
+
+export type SystemStatus = {
+	isLimitedUser: boolean;
+	entries: SystemStatusEntries[];
+	activeEntryUuid: String | null;
+	controlUUID: string;
+}
+
+export type SystemStatusEntries = {
+	entryUuid: string;
+	eventId: number;
+	sourceUuid: string;
+	affectedUuids: string[];
+	severity: number;
+	affectedName: string;
+	title: string;
+	roomUuid: string;
+	installationPlace: string | null;
+	isHistoric: boolean;
+	setHistoricAt: number; // epoch time
+	confirmedAt: string | null; // TODO check
+	timestamps: number[]; // epoch times
+	readAt: number; // epoch
+	isVisuLocked: boolean;
+	actions: any[];
+	desc: string;
+	helpLink: string | null; // TODO check
 }
 
 export type SingleButtonView = {

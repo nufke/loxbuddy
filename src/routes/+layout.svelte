@@ -66,10 +66,10 @@
 	function getStatusColor(state: number) {
 		let str = 'text-surface-500 fill-surface-500';
 		switch (state) {
-			case 0: str = 'text-surface-500 fill-surface-500'; break;
-			case 1: str = 'text-green-500 fill-green-500'; break;
-			case 2: str = 'text-red-500 fill-red-500'; break;
-			case 3: str = 'text-orange-500 fill-orange-500'; break;
+			case 0: str = 'text-surface-500 fill-surface-500'; break; // disconnected / unknown status
+			case 1: str = 'text-green-500 fill-green-500'; break;			// connected / OK / info
+			case 2: str = 'text-yellow-500 fill-yellow-500'; break; 	// warning / issue
+			case 3: str = 'text-red-500 fill-red-500'; break; 				// error
 			default: /* none */
 		}
 		return str;
@@ -116,11 +116,11 @@
 <div class="md:hidden grid grid-rows-[auto_1fr_auto]"> <!-- mobile mode -->
 	<header class="preset-filled-surface-100-900 sticky top-0 z-1">
 		<div class="grid grid-cols-3 text-center items-center m-auto h-[60px]">
-			<div class="flex flex-row text-center items-center gap-1">
+			<div class="flex flex-row text-center items-center gap-3">
 				<a class="ml-4 mr-0 text-left" href="/menu"><Menu/></a>
 				{#if currentWeather.airTemperature}
 					<button class="ml-0 m-auto flex flex-row items-center" onclick={openWeather}>
-						<LbIcon class="-mr-1" name={getCurrentIcon(currentWeather)} width="48" height="48"/>	
+						<LbIcon name={getCurrentIcon(currentWeather)} width="48" height="48"/>	
 						<span class="text-lg truncate">{currentWeather.airTemperature}°</span>
 					</button>
 				{/if}

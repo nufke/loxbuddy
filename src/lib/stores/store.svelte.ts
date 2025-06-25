@@ -1,6 +1,6 @@
 import { SvelteMap } from 'svelte/reactivity';
 import { INITIAL_STRUCTURE } from '$lib/types/models';
-import type { Structure, Control, Category } from '$lib/types/models';
+import type { Structure, Control, Category, SystemStatus } from '$lib/types/models';
 import { Utils } from '$lib/helpers/utils';
 import { loxiconsPath } from '$lib/helpers/paths';
 
@@ -10,15 +10,16 @@ class Store {
 	controls = $derived(this.structure.controls);
 	rooms = $derived(this.structure.rooms);
 	categories= $derived(this.structure.cats);
+	messageCenter = $derived(Object.values(this.structure.messageCenter));
 	controlList = $derived(Object.values(this.structure.controls));
 	categoryList = $derived(Object.values(this.structure.cats));
 	roomList = $derived(Object.values(this.structure.rooms));
 	securedDetails = new SvelteMap();
 	lastBellEventImages = new SvelteMap();
-	messageCenter = $derived(Object.values(this.structure.messageCenter));
 	time = $state(new Date());
-	mqttStatus = $state(0); // 0 = unknown (grey), 1=connected (green), 2=disconnected (red)
-	msStatus = $derived(this.controlList.length>0 ? 1 : 2);
+	mqttStatus = $state(0); // 0=disconnected (grey), 1=connected/ok/info (green), 2=warning/issue (yellow), 3=error (red)
+	msAlive = $derived(false);
+	msStatus = $derived(this.getSystemCode());
 
 	stateUpdate: NodeJS.Timeout;
 
@@ -28,7 +29,7 @@ class Store {
 		}, 1000);
 		
 		this.stateUpdate = setTimeout(() => {
-			this.msStatus = 2; // error
+			this.msAlive = false;
     	console.error("No state update received from Miniserver") 
   	}, 1000);
   }
@@ -46,6 +47,18 @@ class Store {
 		}
 	}
 
+	getMessages() {
+		return this.controlState.get('systemStatus');
+	}
+
+	getSystemCode() { // 0=no status (disconnected), 1=info, 2=warning, 3=error
+		let status = this.controlState.get('systemStatus') as SystemStatus;
+		if (status && status.entries) {
+			return  this.msAlive ? Math.max(...status.entries.filter( item => item.isHistoric == false).map( item => item.severity)) : 0;
+		}
+		return 0;
+	}
+
 	getState(uuid: string) {
 		return this.controlState.get(uuid);
 	}
@@ -55,6 +68,7 @@ class Store {
 		let item = $state(data);
 		this.controlState.set(key, item);
 		clearTimeout(this.stateUpdate);
+		this.msAlive = true;
 	}
 
 	setInitialStates(data: any) {

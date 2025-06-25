@@ -38,14 +38,14 @@ export const mqttConnect = (env: any) => {
 	mqttclient.on('close', () => {
 		console.log('MQTT disconnected');
 		connected = false;
-		store.setMqttStatus(2);
+		store.setMqttStatus(0); // diconnnect=grey
 	});
 }
 
 const onConnect = () => {
 	console.log('MQTT: connected\n');
 	connected = true;
-	store.setMqttStatus(1);
+	store.setMqttStatus(1); // connect=green
 	const registerTopics = [
 		topicPrefix + '/#',
 		weatherPrefix + '/#'
@@ -131,12 +131,11 @@ function monitorStates(topic: string, msg: string) {
 	const regex = new RegExp(topicPrefix + '/(.+)/(.*)');
 	const found = topic.match(regex);
 	if (found && found[1] && found[2]) {
-		//console.log('setState: ', found, msg);
 		let obj = Utils.isValidJSONObject(msg) ? JSON.parse(msg) : msg;
+		//console.log('setState: ', found, obj);
 		store.setState(found[2], obj);
 	}
 }
-
 
 function monitorWeatherStates(topic: string, msg: string) {
 	const regex = new RegExp(weatherPrefix + '/(.+)');
