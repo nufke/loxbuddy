@@ -136,7 +136,7 @@ or submit a [pull request](https://github.com/nufke/loxbuddy/pulls).
 | Splashscreen                | Not started              |
 | Statistics / history        | Not started              |
 | Statusbar (time, temp, etc) | Available                |
-| System messages             | Not started              |
+| System messages             | Available                |
 | Voice control               | Not started              |
 | Weather forecast            | Available (Weather4Lox)  |
 

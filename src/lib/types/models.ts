@@ -248,7 +248,7 @@ export type SystemStatusEntries = {
 	isHistoric: boolean;
 	setHistoricAt: number; // epoch time
 	confirmedAt: string | null; // TODO check
-	timestamps: number[]; // epoch times
+	timestamps: number[]; // epoch time
 	readAt: number; // epoch
 	isVisuLocked: boolean;
 	actions: any[];

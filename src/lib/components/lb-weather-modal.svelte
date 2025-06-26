@@ -51,8 +51,8 @@
 
 	function getHourly(day: WeatherDailyForecast) {
 		let hours = hourly.filter( hours => (hours.time >= day.time) && hours.time <= (day.time + 86400000))
-		if (hours.length < 10) {
-			let cnt = 9-hours.length;
+		if (hours.length < 11) {
+			let cnt = 11-hours.length;
 			hours = hourly.filter( hours => (hours.time >= day.time) && hours.time <= (day.time + 86400000 + cnt * 3600000))
 		}
 		return hours; 

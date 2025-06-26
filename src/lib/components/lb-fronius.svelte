@@ -11,6 +11,8 @@
 
 	const prod = $_('Production');
 	const cons = $_('Consumption');
+	let prodCurr = $derived(Number(store.getState(control.states.prodCurr)));
+	let consCurr = $derived(Number(store.getState(control.states.consCurr)));
 
 	let modal: ModalView = $state({
 		action: (state: boolean) => {modal.state = state},
@@ -21,7 +23,7 @@
 		...DEFAULT_CONTROLVIEW,
 		iconName: store.getCategoryIcon(control, controlOptions.isSubControl),
 		textName: control.name,
-		statusName: fmt.sprintf('%s %.2f kW • %s %.2f kW', prod[0], store.getState(control.states.prodCurr), cons[0], store.getState(control.states.consCurr)),
+		statusName: fmt.sprintf('%s %.2f kW • %s %.2f kW', prod[0], prodCurr, cons[0], consCurr),
 		statusColor: 'text-green-500',
 		modal: modal
 	});

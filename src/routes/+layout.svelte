@@ -3,7 +3,7 @@
 	import '../global.css';
 	import { Navigation } from '@skeletonlabs/skeleton-svelte';
 	import { innerWidth } from 'svelte/reactivity/window';
-  import { Home, FileText, Grid2x2, Menu, Layers, Circle, Square, type Icon as IconType } from '@lucide/svelte';
+  import { Home, FileText, Grid2x2, Menu, LayoutList, Circle, Square, type Icon as IconType } from '@lucide/svelte';
 	import type { Route } from '$lib/types/models';
 	import { mqttConnect } from '$lib/communication/mqttclient';
 	import { store } from '$lib/stores/store.svelte';
@@ -38,7 +38,7 @@
 	const routesMobile: Route[] = $derived([
 		{ label: 'Home', href: '/', icon: Home },
 		{ label: 'Rooms', href: '/room', icon: Grid2x2 },
-		{ label: 'Categories', href: '/category', icon: Layers },
+		{ label: 'Categories', href: '/category', icon: LayoutList },
 		{ label: 'Messages', href: '/messages', icon: FileText },
 	]);
 
@@ -114,7 +114,7 @@
 </div>
 {:else}
 <div class="md:hidden grid grid-rows-[auto_1fr_auto]"> <!-- mobile mode -->
-	<header class="preset-filled-surface-100-900 sticky top-0 z-1">
+	<header class="sticky preset-filled-surface-100-900 top-0 z-1">
 		<div class="grid grid-cols-3 text-center items-center m-auto h-[60px]">
 			<div class="flex flex-row text-center items-center gap-3">
 				<a class="ml-4 mr-0 text-left" href="/menu"><Menu/></a>
@@ -157,6 +157,6 @@
 
 <style>
 .main {
-	min-height: calc(100vh - 80px); /* trick to keep sticky footer at bottom */
+	min-height: calc(100vh - 140px); /* trick to keep sticky footer at bottom */
 }
 </style>
