@@ -44,7 +44,6 @@
 							from-white/[0.095] to-white/5 max-w-9/10 max-h-9/10 overflow-auto w-[380px]"
 	backdropClasses="backdrop-blur-sm">
 	{#snippet content()}
-
 	{#if selectedTab==0} <!-- scenes -->
 	<header class="relative">
 		<div class="flex justify-center">
@@ -58,7 +57,6 @@
 			</button>
 		</div>
 	</header>
-
 	<div class="flex flex-col items-center justify-center m-2">
 		<div>
 			<h2 class="h4 text-center">{controlView.textName}</h2>
@@ -79,7 +77,6 @@
 		</div>
 	</div>
 	{/if}
-
 	{#if selectedTab==1} <!-- control -->
 	<header class="relative">
 		<div class="flex justify-center mb-3">
@@ -94,7 +91,7 @@
 	<div class="overflow-y-scroll" style="max-height: 500px;">
 		{#each subControls as subControl,index}
 			{#if index > 0}
-				<div class="mt-3"></div>
+				<div class="mt-2"></div>
 			{/if}
 			{#if subControl.type=='Switch'}
 				<LbSwitch control={subControl} controlOptions={{isSubControl: true}}/>
@@ -105,10 +102,9 @@
 			{#if subControl.type=='ColorPickerV2'}
 				<LbDimmer control={subControl} controlOptions={{isSubControl: true, action: ()=>{id=index; selectedTab=2}}}/>
 			{/if}
-			{/each}
+		{/each}
 	</div>
 	{/if}
-
 	{#if selectedTab==2 && subControlsColorPicker.length } <!-- colors -->
 	<header class="relative">
 		<div class="flex justify-center mb-3">
@@ -127,7 +123,6 @@
 	{/if}
 	</div>
 	{/if}
-
 	{#if isLightController}
 	<div class="sticky bottom-0 left-0 w-full h-16 pt-2">
 		<div class="grid h-full max-w-lg {subControlsColorPicker.length ? 'grid-cols-3' : 'grid-cols-2'}  mx-auto">

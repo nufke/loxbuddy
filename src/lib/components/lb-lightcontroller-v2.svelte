@@ -43,6 +43,7 @@
 	let controlView: ControlView = $derived({
 		...DEFAULT_CONTROLVIEW,
 		control: control,
+		isSubControl: controlOptions.isSubControl,
 		iconName: store.getCategoryIcon(control, controlOptions.isSubControl),
 		iconColor: activeMoodsNum != 778 ? 'fill-primary-500' : 'fill-surface-950 dark:fill-surface-50',
 		textName: control.name === $_('LightControllerV2') ? store.rooms[control.room].name : control.name,

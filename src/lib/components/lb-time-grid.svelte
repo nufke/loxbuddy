@@ -2,7 +2,6 @@
 	import { Utils } from '$lib/helpers/utils';
 	import { store } from '$lib/stores/store.svelte';
 	import { format } from 'date-fns';
-	import { nl } from 'date-fns/locale';
 
 	let { mode, weekdays, entries } = $props();
 
@@ -11,8 +10,8 @@
 	let o = 8;  // offset
 
 	let time = $derived(store.time)
-	let m = $derived(Utils.hours2dec(format(time, 'p', { locale: nl }))); // TODO change locale
-	
+	let m = $derived(Utils.hours2dec(format(time, 'p', { locale: Utils.getLocale() })));
+
 	let slots = entries.entry.filter((item:any) => Number(item.mode) === mode);
 
 	// calculate width

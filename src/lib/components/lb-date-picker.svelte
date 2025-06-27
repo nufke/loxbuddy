@@ -2,7 +2,7 @@
 	import { SvelteDate } from 'svelte/reactivity';
 	import { ChevronLeft, ChevronRight, Clock3, Undo2 } from '@lucide/svelte';
 	import { format } from 'date-fns';
-	import { nl } from 'date-fns/locale';
+	import { Utils } from '$lib/helpers/utils';
 	import { _ } from 'svelte-i18n';
 
 	let { date = $bindable(), view = $bindable() } = $props();
@@ -26,7 +26,7 @@
   }
 
 	function showDate() {
-		return format(date, 'PPP', { locale: nl }); // TODO change locale
+		return format(date, 'PPP', { locale: Utils.getLocale() });
 	}
 
 	function getTimeStr(date: Date) {

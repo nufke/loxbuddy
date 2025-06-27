@@ -16,7 +16,7 @@
 			type: 'switch',
 			click: (e: any) => {
 				publishTopic(control.uuidAction, e.checked ? '1' : '0');
-			}	
+			}
 		}
 	]);
 
@@ -28,9 +28,11 @@
 	let controlView: ControlView = $derived({
 		...DEFAULT_CONTROLVIEW,
 		control: control,
+		isSubControl: controlOptions.isSubControl,
 		iconName: store.getCategoryIcon(control, controlOptions.isSubControl),
 		iconColor: buttonActive ? 'fill-primary-500' : 'fill-surface-950 dark:fill-surface-50',
 		textName: control.name,
+		textColor: controlOptions.isSubControl && buttonActive ? 'text-primary-500' : 'dark:text-surface-50 text-surface-950',
 		buttonState: buttonActive,
 		buttons: buttons,
 		modal: modal,

@@ -284,6 +284,7 @@ export type SliderBar = {
 
 export type ControlView = {
 	control?: Control,
+	isSubControl?: boolean;
 	iconName: string;
 	iconText?: string;
 	iconColor?: string;
@@ -308,6 +309,7 @@ export type ModalView = {
 }
 
 export const DEFAULT_CONTROLVIEW: ControlView = {
+	isSubControl: false,
 	iconName: '',
 	iconColor: 'dark:fill-surface-50 fill-surface-950',
 	textName: '',
@@ -396,9 +398,3 @@ export type EntriesAndDefaultValue = {
 export type WeekDays = {
 	[key: string]: string;
 };
-
-export type Nav = {
-	label?: string;
-	href?: string;
-	icon?: any;
-}

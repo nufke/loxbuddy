@@ -7,7 +7,6 @@
 	import { Sunrise, Sunset, X } from '@lucide/svelte';
 	import type { WeatherCurrentConditions, WeatherDailyForecast, WeatherHourlyForecast } from '$lib/types/weather';
 	import { format } from 'date-fns';
-	import { nl } from 'date-fns/locale';
 	import { Utils } from '$lib/helpers/utils';
 	import { Modal } from '@skeletonlabs/skeleton-svelte';
 	import { fade200 } from '$lib/helpers/transition';
@@ -79,7 +78,7 @@
 	{#if loaded}
 	<div class="-mt-2 justify-center text-center">
 		<p class="h4">{current.location}</p>
-		<p class="text-lg">{format(time, "PPP p", {locale: nl})}</p>
+		<p class="text-lg">{format(time, "PPP p", {locale: Utils.getLocale() })}</p>
 		<div class="grid grid-cols-2 mb-5">
 			<div>
 				<p class="text-[120px] font-medium ml-8">{current.airTemperature}<span class="font-normal">°</span></p>
@@ -125,9 +124,9 @@
 		</div>
 		{#each daily as day, i}
 		<div class="mt-2 max-w-[768px] bg-surface-100-900" onclick={() => openSlider(i)}>
-			<div class="grid grid-cols-8 p-2 justify-items-start place-items-center">
+			<div class="grid grid-cols-8 p-2"> <!--  justify-items-start place-items-center -->
 				<div class="col-span-3 pl-2 pr-0 ">
-					<p class="text-left text-lg font-medium truncate">{format(new Date(day.time), "eeee d",{locale: nl})}</p>
+					<p class="text-left text-lg font-medium truncate">{format(new Date(day.time), "eeee d",{locale: Utils.getLocale() })}</p>
 					<p class="text-left text-lg truncate">{$_(day.conditions)}</p>
 				</div>
 				<div class="col-span-2 align-middle m-auto">
@@ -164,7 +163,7 @@
 					{#each getHourly(day) as hour, j}
 					<div class="grid-mw pl-2 flex flex-col vr">
 						<div class="flex align-middle m-auto">
-							<p class="text-lg">{format(new Date(hour.time), "H",{locale: nl})}</p>
+							<p class="text-lg">{format(new Date(hour.time), "H",{locale: Utils.getLocale() })}</p>
 						</div>
 						<div class="flex m-auto">
 							<span class="align-middle m-auto"><LbIcon name={getHourIcon(hour)} width="45" height="45"/></span>
@@ -191,7 +190,7 @@
 	{:else}
 	<div class="flex h-screen">
 	  <div class="m-auto">
-    	<p class="text-surface-50 text-xl">{$_("Waiting for weather data ...")}</p>
+    	<p class="dark:text-surface-50 text-surface-950 text-xl">{$_("Waiting for weather data ...")}</p>
   	</div>
 	</div>
 	{/if}

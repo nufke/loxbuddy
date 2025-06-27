@@ -59,6 +59,7 @@
 
 	let controlView: ControlView = $derived({
 		...DEFAULT_CONTROLVIEW,
+		isSubControl: controlOptions.isSubControl,
 		textName: control.name,
 		statusName: position + ' %'
 	});

@@ -15,7 +15,6 @@
 	import LbIcon from '$lib/components/lb-icon-by-name.svelte';
 	import LbWeatherModal from '$lib/components/lb-weather-modal.svelte';
 	import { format } from 'date-fns';
-	import { nl } from 'date-fns/locale';
 	import { goto } from '$app/navigation';
 
 	/* start MQTT client */
@@ -24,6 +23,7 @@
 	let { children } = $props();
 
 	let currentWeather = $derived(weatherStore.current);
+	let dailyForecast = $derived(weatherStore.daily);
 	let showWeatherModal = $state(false);
 	let time = $derived(store.time);
 	let mqttStatus =  $derived(store.mqttStatus);
@@ -31,6 +31,7 @@
 	let nav = $derived(store.nav);
 	let path = $derived(page.url.pathname);
 	let home = { label: 'Menu', href: '/menu', icon: Menu }; // fixed for tablet
+	let weatherAvailable = $derived(currentWeather.time > 0 && dailyForecast.length);
 
 	function getCurrentIcon(cur: WeatherCurrentConditions) {
 		let sunRise = Utils.time2epoch(cur.time, cur.sunRise);
@@ -74,7 +75,7 @@
 		}
 		return str;
 	}
-	
+
 	function navigate(s: string) {
 		goto(s);
 		store.setNav({ label: 'Menu', href: '/menu', icon: Menu });
@@ -103,8 +104,8 @@
 	<aside class="sticky top-0 col-span-1 h-screen">
 	<Navigation.Rail headerClasses="h-[20%] inline-block align-top" tilesClasses="h-[60%]" footerClasses="h-[20%] justify-end">
 		{#snippet header()}
-		<p class="mt-2 mb-4 text-center font-medium m-auto text-2xl">{format(time, "p", {locale: nl})}</p>
-		{#if currentWeather.airTemperature}
+		<p class="mt-2 mb-4 text-center font-medium m-auto text-2xl">{format(time, "p", {locale: Utils.getLocale()})}</p>
+		{#if weatherAvailable}
 			<Navigation.Tile classes="-mt-4 justify-center hover:bg-transparent" onclick={openWeather}>
 				<div>
 					<LbIcon class="-mb-2" name={getCurrentIcon(currentWeather)} width="50" height="50"/>
@@ -141,7 +142,7 @@
 				<button class="ml-4 mr-0 text-left" onclick={() => {navigate(nav.href)}}>
 					<LbIcon name={nav.label}/>
 				</button>
-				{#if currentWeather.airTemperature}
+				{#if weatherAvailable}
 					<button class="ml-0 m-auto flex flex-row items-center" onclick={openWeather}>
 						<LbIcon name={getCurrentIcon(currentWeather)} width="48" height="48"/>	
 						<span class="text-lg truncate">{currentWeather.airTemperature}°</span>
@@ -152,7 +153,7 @@
 				<span class="text-xl text-primary-500 font-medium">LoxBuddy</span>
 			</div>
 			<div class="mr-3 flex flex-row gap-3 justify-end">
-				<p class="text-right text-2xl font-medium">{format(new Date(), "p", {locale: nl})}</p>
+				<p class="text-right text-2xl font-medium">{format(new Date(), "p", {locale: Utils.getLocale()})}</p>
 				<div class="flex flex-col gap-2">
 					<Circle class={getStatusColor(mqttStatus)} size="16"/>
 					<Square class={getStatusColor((mqttStatus==1) ? msStatus : 0)} size="16"/>

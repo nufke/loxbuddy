@@ -33,13 +33,13 @@
 </script>
 
 <div class="sticky container flex max-w-[1280px] flex-col">
-	<button aria-current="true" type="button" class="w-full border-b dark:border-b-stone-800 border-b-stone-300 p-3 pr-5 pl-5 text-left text-lg">
+	<button aria-current="true" type="button" class="w-full border-b dark:border-surface-900 border-surface-200 p-3 pr-5 pl-5 text-left text-lg">
 		<div class="flex w-full justify-between">
 			<p>{$_("Dark mode")}</p>
 			<Switch controlClasses="w-12 h-8" {checked} {onCheckedChange}></Switch>
 		</div>
 	</button>
-	<button aria-current="true" type="button" class="flex w-full justify-between border-b dark:border-b-stone-800 border-b-stone-300 p-3 pr-5 pl-5 text-left text-lg" onclick={() => {openState = true;}}>
+	<button aria-current="true" type="button" class="flex w-full justify-between border-b dark:border-surface-900 border-surface-200 p-3 pr-5 pl-5 text-left text-lg" onclick={() => {openState = true;}}>
 		<p>{$_("Selected theme")}</p>
 		<p>{theme}</p>
 	</button>

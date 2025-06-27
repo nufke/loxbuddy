@@ -1,5 +1,5 @@
 import { format } from 'date-fns';
-import { nl } from 'date-fns/locale';
+import { nl, de, uk } from 'date-fns/locale';
 
 export class Utils {
 
@@ -103,7 +103,15 @@ export class Utils {
 	static epoch2TimeStr(epoch: number) {
 		const date = new Date(epoch*1000);
 		const time = Utils.isDST(date) ? new Date(epoch*1000 - 3600000) : date;
-		return format(time, "p",{locale: nl});
+		return format(time, "p", { locale: Utils.getLocale() });
 	}
 
+	static getLocale() {
+		switch (window.navigator.language) {
+			case 'nl': return nl; break;
+			case 'en': return uk; break;
+			case 'de': return de; break;
+			default: return uk;
+		};
+	}
 }

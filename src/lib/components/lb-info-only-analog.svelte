@@ -6,14 +6,11 @@
 	import { store } from '$lib/stores/store.svelte';
 	import { Utils } from '$lib/helpers/utils';
 	import { format } from 'date-fns';
-	import { nl } from 'date-fns/locale';
 	import fmt from 'sprintf-js';
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
 	const loxTimeRef = 1230764400000; // correction to epoch, Loxone calculates from 1-1-2009
-
-
 
 	function getFormattedString(input: string) {
 		let s: string = input;
@@ -24,7 +21,7 @@
 					let date = new Date(value * 1000 + loxTimeRef);
 					if (date && value) {
 						date = Utils.isDST(date) ? new Date(value * 1000 + loxTimeRef - 3600000) : date;
-						s = format(date, 'PPP p', { locale: nl }); // TODO change locale
+						s = format(date, 'PPP p', { locale: Utils.getLocale() });
 					}
 					break;
 				case '<v.t>': // duration/time
@@ -36,7 +33,7 @@
 					break;
 				case '<v.d>': // EIS4, dd:mm:yyyy
 					const d = new Date(value * 1000 + loxTimeRef);
-					s = format(d, 'dd:MM:yyyy', { locale: nl }); // TODO change locale
+					s = format(d, 'dd:MM:yyyy', { locale: Utils.getLocale() });
 					break;
 				case '<v.x>': // digital value
 					s = value ? '1' : '0'; // TODO check
