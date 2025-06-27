@@ -57,7 +57,7 @@ let temperatureIdsList : ListItem[] = [
 		iconText: tempActual,
 		textName: control.name === $_('IRoomController') ? store.rooms[control.room].name : control.name,
 		statusName: temperatureIdsList[id]?.name,
-		statusColor: 'text-surface-400', // TODO other colors for temperatures
+		statusColor: 'text-surface-500', // TODO other colors for temperatures
 		list: tempList,
 		modal: modal
 	});

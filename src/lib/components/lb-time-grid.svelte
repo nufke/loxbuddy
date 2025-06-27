@@ -25,19 +25,19 @@
 	}
 </script>
 
-<div class="w-full mt-6 flex align-center justify-center">
-	<svg width="330" height="50">
+<div class="w-full h-full mt-6 flex align-center justify-center">
+	<svg width="330" height="60">
 		{#each axis as i}
-			<path d="M{i*dt+o} 60 L {i*dt+o} {(i % 6) ? 20 : 15}" fill="none" stroke="#737373" stroke-width="1"/>
+			<path d="M{i*dt+o} 60 L {i*dt+o} {(i % 6) ? 27 : 22}" fill="none" stroke="#737373" stroke-width="1"/>
 		{/each}
-		<text x="7" y="10" text-anchor="middle" fill="white" font-size="14px">0</text>
-		<text x="86" y="10" text-anchor="middle" fill="white" font-size="14px">6</text>
-		<text x="164" y="10" text-anchor="middle" fill="white" font-size="14px">12</text>
-		<text x="242" y="10" text-anchor="middle" fill="white" font-size="14px">18</text>
-		<text x="320" y="10" text-anchor="middle" fill="white" font-size="14px">24</text>
+		<text x="7" y="15" text-anchor="middle" fill="white" font-size="14px">0</text>
+		<text x="86" y="15" text-anchor="middle" fill="white" font-size="14px">6</text>
+		<text x="164" y="15" text-anchor="middle" fill="white" font-size="14px">12</text>
+		<text x="242" y="15" text-anchor="middle" fill="white" font-size="14px">18</text>
+		<text x="320" y="15" text-anchor="middle" fill="white" font-size="14px">24</text>
 		{#each slots as j}
-			<rect width={cw(j)*dt} height="30" x={o+cx(j)*dt} y="30" fill="#666666" />
+			<rect width={cw(j)*dt} height="25" x={o+cx(j)*dt} y="35" fill="#666666" />
 		{/each}
-		<path d="M{m*dt+o} 60 L {m*dt+o} 20" fill="none" stroke="#FFFFFF" stroke-width="3"/>
+		<path d="M{m*dt+o} 60 L {m*dt+o} 22" fill="none" stroke="#FFFFFF" stroke-width="3"/>
 	</svg>
 </div>

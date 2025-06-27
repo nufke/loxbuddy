@@ -44,6 +44,12 @@
 
 	function updatePosition(e: any) { // TODO
 	}
+
+	function resetTab() {
+    setTimeout(() => {
+      selectedTab = 0;
+    }, 500);
+	}
 </script>
 
 <Modal
@@ -53,7 +59,7 @@
 	transitionsPositionerIn = {fade200}
 	transitionsPositionerOut = {fade200}
 	onOpenChange={()=>controlView.modal.action(false)}
-	triggerBase="btn preset-tonal"
+	triggerBase="btn bg-surface-600"
 	contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-xl rounded-lg border border-white/5
 							from-white/[0.095] to-white/5 max-w-9/10 max-h-9/10 overflow-auto w-[380px]"
 	backdropClasses="backdrop-blur-sm">
@@ -63,7 +69,7 @@
 			<h2 class="h4 text-center">{controlView.textName}</h2>
 		</div>
 		<div class="absolute right-0 top-0">
-			<button type="button" aria-label="close" class="btn-icon w-auto" onclick={()=>{ controlView.modal.action(false); selectedTab = 0;}}>
+			<button type="button" aria-label="close" class="btn-icon w-auto" onclick={()=>{ controlView.modal.action(false); resetTab();}}>
 				<X/>
 			</button>
 		</div>
@@ -76,7 +82,7 @@
 			<div class="text-center">
 				<div class="flex items-center justify-center ml-2">
 					{#if isAutomatic}
-						<LbIcon class="fill-white mr-2" name={"/icons/svg/automatic.svg"} width="24" height="24"/>
+						<LbIcon class="fill-surface-50 mr-2" name={"/icons/svg/automatic.svg"} width="24" height="24"/>
 					{/if}
 					{#if isCooling}
 					<LbIcon class="fill-cyan-400 mr-2" name={"/icons/svg/mode_cool.svg"} width="24" height="24"/>
@@ -107,7 +113,7 @@
 			<div class="container mt-2">
 				{#if controlView.list}
 					{#each controlView.list as listItem, index}
-						<button type="button" class="w-full mt-2 btn btn-lg {(index==selectedItem) ? 'preset-tonal' : 'preset-tonal-primary' }
+						<button type="button" class="w-full mt-2 btn btn-lg {(index==selectedItem) ? 'dark:bg-surface-800 bg-surface-200' : 'dark:bg-surface-950 bg-surface-50' }
 									 shadow-xl rounded-lg border border-white/15 hover:border-white/50" 
 									onclick={(e) => { e.stopPropagation(); e.preventDefault(); setTempPresent(listItem.id)}}>
 							<span class="text-lg">{$_(listItem.name)}</span>
@@ -119,11 +125,11 @@
 	{/if}
 	<div class="sticky bottom-0 left-0 w-full h-16 pt-2">
 		<div class="grid h-full max-w-lg grid-cols-2  mx-auto">
-			<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==0 ? 'text-green-500' : ''} " onclick={() => selectedTab=0}>
-				<LbIcon class={selectedTab==0 ? 'fill-green-500' : 'fill-white'} name={"/icons/svg/thermostat.svg"} width="24" height="24"/>
+			<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==0 ? 'text-primary-500' : ''} " onclick={() => selectedTab=0}>
+				<LbIcon class={selectedTab==0 ? 'fill-primary-500' : 'fill-surface-50'} name={"/icons/svg/thermostat.svg"} width="24" height="24"/>
 				<span class="mt-1 text-xs">{$_("Control")}</span>
 			</button>
-			<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==1 ? 'text-green-500' : ''} " onclick={() => selectedTab=1}>
+			<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==1 ? 'text-primary-500' : ''} " onclick={() => selectedTab=1}>
 				<List/>
 				<span class="mt-1 text-xs">{$_("Preset")}</span>
 			</button>

@@ -1,11 +1,13 @@
 import { SvelteMap } from 'svelte/reactivity';
 import { INITIAL_STRUCTURE } from '$lib/types/models';
-import type { Structure, Control, Category, SystemStatus } from '$lib/types/models';
+import type { Structure, Control, Category, SystemStatus, Route } from '$lib/types/models';
 import { Utils } from '$lib/helpers/utils';
 import { loxiconsPath } from '$lib/helpers/paths';
+import { Menu } from '@lucide/svelte';
 
 class Store {
   controlState = new SvelteMap();
+	nav: Route = $state({ label: 'Menu', href: '/menu', icon: Menu });
 	structure: Structure = $state(INITIAL_STRUCTURE);
 	controls = $derived(this.structure.controls);
 	rooms = $derived(this.structure.rooms);
@@ -33,6 +35,10 @@ class Store {
     	console.error("No state update received from Miniserver") 
   	}, 1000);
   }
+
+	setNav(route: Route) {
+		this.nav = route;
+	}
 
 	initStructure(data: Structure) {
 		Object.assign(this.structure, data);

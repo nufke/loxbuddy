@@ -15,14 +15,14 @@
 <div class="container mx-auto max-w-[1280px] space-y-3 p-3">
 	<Tabs value={group} onValueChange={(e) => (group = e.value)} fluid>
 		{#snippet list()}
-			<Tabs.Control labelBase="text-lg" stateLabelActive="text-green-500" value="1">{$_("Actual")}</Tabs.Control>
-			<Tabs.Control labelBase="text-lg" stateLabelActive="text-green-500" value="2">{$_("History")}</Tabs.Control>
+			<Tabs.Control labelBase="text-lg" stateLabelActive="text-primary-500" value="1">{$_("Actual")}</Tabs.Control>
+			<Tabs.Control labelBase="text-lg" stateLabelActive="text-primary-500" value="2">{$_("History")}</Tabs.Control>
 		{/snippet}
 		{#snippet content()}
 			<Tabs.Panel value="1">
 				{#each activeMessages as entry}
 				<div class="border-b border-b-stone-900 p-3">
-					<p class="text-surface-400">{format(new Date(Number(entry.timestamps[0])*1000), "PPP p", {locale: nl})} {store?.rooms[entry?.roomUuid].name}</p>
+					<p class="text-surface-500">{format(new Date(Number(entry.timestamps[0])*1000), "PPP p", {locale: nl})} {store?.rooms[entry?.roomUuid].name}</p>
 					<p class="text-lg">{@html entry.desc}</p>
 				</div>
 				{/each}
@@ -30,7 +30,7 @@
 			<Tabs.Panel value="2">
 				{#each pastMessages.toReversed() as entry}
 				<div class="border-b border-b-stone-900 p-3">
-					<p class="text-surface-400">{format(new Date(Number(entry.timestamps[0])*1000), "PPP p", {locale: nl})} {entry.roomUuid ? store.rooms[entry.roomUuid].name : ''}</p>
+					<p class="text-surface-500">{format(new Date(Number(entry.timestamps[0])*1000), "PPP p", {locale: nl})} {entry.roomUuid ? store.rooms[entry.roomUuid].name : ''}</p>
 					<p class="text-lg">{@html entry.desc}</p>
 				</div>
 				{/each}

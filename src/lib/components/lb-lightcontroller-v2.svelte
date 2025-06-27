@@ -44,10 +44,10 @@
 		...DEFAULT_CONTROLVIEW,
 		control: control,
 		iconName: store.getCategoryIcon(control, controlOptions.isSubControl),
-		iconColor: activeMoodsNum != 778 ? 'fill-green-500' : 'fill-white',
+		iconColor: activeMoodsNum != 778 ? 'fill-primary-500' : 'fill-surface-950 dark:fill-surface-50',
 		textName: control.name === $_('LightControllerV2') ? store.rooms[control.room].name : control.name,
 		statusName: activeMoodsNum < 0 ? $_('Manual') : moodList?.find((item: MoodList) => item.id == activeMoodsNum)?.name,
-		statusColor: activeMoodsNum != 778 ? 'text-green-500' : 'text-surface-400',
+		statusColor: activeMoodsNum != 778 ? 'text-primary-500' : 'text-surface-500',
 		list: moodList,
 		buttons: buttons,
 		modal: modal

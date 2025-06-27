@@ -16,6 +16,7 @@
 	import LbWeatherModal from '$lib/components/lb-weather-modal.svelte';
 	import { format } from 'date-fns';
 	import { nl } from 'date-fns/locale';
+	import { goto } from '$app/navigation';
 
 	/* start MQTT client */
 	mqttConnect(page.data.mqtt);
@@ -27,6 +28,9 @@
 	let time = $derived(store.time);
 	let mqttStatus =  $derived(store.mqttStatus);
 	let msStatus =  $derived(store.msStatus);
+	let nav = $derived(store.nav);
+	let path = $derived(page.url.pathname);
+	let home = { label: 'Menu', href: '/menu', icon: Menu }; // fixed for tablet
 
 	function getCurrentIcon(cur: WeatherCurrentConditions) {
 		let sunRise = Utils.time2epoch(cur.time, cur.sunRise);
@@ -42,9 +46,8 @@
 		{ label: 'Messages', href: '/messages', icon: FileText },
 	]);
 
-	const routesTablet: Route[] = $derived([
-		...routesMobile,
-		{ label: 'Menu', href: '/menu', icon: Menu },
+	let routesTablet: Route[] = $derived([
+		...routesMobile, home
 	]);
 
 	function checkUrl(href: string) {
@@ -60,9 +63,6 @@
 		}
 	}
 
-	function mainMenu() {
-	}
-
 	function getStatusColor(state: number) {
 		let str = 'text-surface-500 fill-surface-500';
 		switch (state) {
@@ -74,7 +74,28 @@
 		}
 		return str;
 	}
+	
+	function navigate(s: string) {
+		goto(s);
+		store.setNav({ label: 'Menu', href: '/menu', icon: Menu });
+	}
+	
+	$effect( () => {
+		let found = routesMobile.find ( item => item.href == path);
+		if (found) {
+			store.setNav({ label: 'Menu', href: '/menu', icon: Menu });
+		}
+	});
 </script>
+
+<svelte:head>
+  <script>
+    mode = localStorage.getItem('mode') || 'light';
+    document.documentElement.setAttribute('data-mode', mode);
+    theme = localStorage.getItem('theme') || 'Cerebus';
+    document.documentElement.setAttribute('data-theme', theme.toLowerCase());
+  </script>
+</svelte:head>
 
 <!-- we need to use the innerWidth to avoid we render the children twice -->
 {#if (innerWidth.current != undefined) && innerWidth.current > 768 } <!-- tabled mode -->
@@ -82,7 +103,7 @@
 	<aside class="sticky top-0 col-span-1 h-screen">
 	<Navigation.Rail headerClasses="h-[20%] inline-block align-top" tilesClasses="h-[60%]" footerClasses="h-[20%] justify-end">
 		{#snippet header()}
-		<p class="mt-2 mb-4 text-center m-auto text-2xl">{format(time, "p", {locale: nl})}</p>
+		<p class="mt-2 mb-4 text-center font-medium m-auto text-2xl">{format(time, "p", {locale: nl})}</p>
 		{#if currentWeather.airTemperature}
 			<Navigation.Tile classes="-mt-4 justify-center hover:bg-transparent" onclick={openWeather}>
 				<div>
@@ -95,8 +116,8 @@
 		{#snippet tiles()}
 		{#each routesTablet as {label, href, icon}}
 		  {@const Icon = icon}
-			<Navigation.Tile labelClasses={checkUrl(href) ? 'text-green-500' : 'white'} classes="flex-col justify-center hover:bg-transparent scope:bg-transparent" label={$_(label)} {href}>
-				<Icon class={checkUrl(href) ? 'text-green-500' : 'white'} />
+			<Navigation.Tile labelClasses={checkUrl(href) ? 'text-primary-500' : 'white'} classes="flex-col justify-center hover:bg-transparent scope:bg-transparent" label={$_(label)} {href}>
+				<Icon class={checkUrl(href) ? 'text-primary-500' : 'white'} />
 			</Navigation.Tile>
 		{/each}
 		{/snippet}
@@ -117,7 +138,9 @@
 	<header class="sticky preset-filled-surface-100-900 top-0 z-1">
 		<div class="grid grid-cols-3 text-center items-center m-auto h-[60px]">
 			<div class="flex flex-row text-center items-center gap-3">
-				<a class="ml-4 mr-0 text-left" href="/menu"><Menu/></a>
+				<button class="ml-4 mr-0 text-left" onclick={() => {navigate(nav.href)}}>
+					<LbIcon name={nav.label}/>
+				</button>
 				{#if currentWeather.airTemperature}
 					<button class="ml-0 m-auto flex flex-row items-center" onclick={openWeather}>
 						<LbIcon name={getCurrentIcon(currentWeather)} width="48" height="48"/>	
@@ -126,10 +149,10 @@
 				{/if}
 			</div>
 			<div>
-				<span class="text-xl text-green-500 font-medium">LoxBuddy</span>
+				<span class="text-xl text-primary-500 font-medium">LoxBuddy</span>
 			</div>
 			<div class="mr-3 flex flex-row gap-3 justify-end">
-				<p class="text-right text-2xl">{format(new Date(), "p", {locale: nl})}</p>
+				<p class="text-right text-2xl font-medium">{format(new Date(), "p", {locale: nl})}</p>
 				<div class="flex flex-col gap-2">
 					<Circle class={getStatusColor(mqttStatus)} size="16"/>
 					<Square class={getStatusColor((mqttStatus==1) ? msStatus : 0)} size="16"/>
@@ -144,8 +167,8 @@
 		<Navigation.Bar>
 			{#each routesMobile as {label, href, icon}}
 				{@const Icon = icon} 
-				<Navigation.Tile labelClasses={checkUrl(href) ? 'text-green-500' : 'text-white'} classes="flex flex-col justify-center hover:bg-transparent" label={$_(label)} {href}>
-					<Icon class={checkUrl(href) ? 'text-green-500' : 'white'} />
+				<Navigation.Tile labelClasses={checkUrl(href) ? 'text-primary-500' : 'text-surface-950 dark:text-surface-50'} classes="flex flex-col justify-center hover:bg-transparent" label={$_(label)} {href}>
+					<Icon class={checkUrl(href) ? 'text-primary-500' : 'white'} />
 				</Navigation.Tile>
 			{/each}
 		</Navigation.Bar>

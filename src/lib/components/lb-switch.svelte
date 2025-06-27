@@ -29,7 +29,7 @@
 		...DEFAULT_CONTROLVIEW,
 		control: control,
 		iconName: store.getCategoryIcon(control, controlOptions.isSubControl),
-		iconColor: buttonActive ? 'fill-green-500' : 'fill-white',
+		iconColor: buttonActive ? 'fill-primary-500' : 'fill-surface-950 dark:fill-surface-50',
 		textName: control.name,
 		buttonState: buttonActive,
 		buttons: buttons,

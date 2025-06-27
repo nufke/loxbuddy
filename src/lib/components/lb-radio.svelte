@@ -69,7 +69,7 @@
 		iconName: store.getCategoryIcon(control, controlOptions.isSubControl),
 		textName: control.name,
 		statusName: radioIndex ? radioIndex.name : 'unknown',
-		statusColor: selectedRadio ? 'text-green-500' : 'text-surface-400',
+		statusColor: selectedRadio ? 'text-primary-500' : 'text-surface-500',
 		list: radioList,
 		buttons: buttons,
 		modal: modal

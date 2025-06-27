@@ -309,12 +309,12 @@ export type ModalView = {
 
 export const DEFAULT_CONTROLVIEW: ControlView = {
 	iconName: '',
-	iconColor: 'fill-white',
+	iconColor: 'dark:fill-surface-50 fill-surface-950',
 	textName: '',
 	iconText: '',
-	textColor: 'text-white',
+	textColor: 'dark:text-surface-50 text-surface-950',
 	statusName: '',
-	statusColor: 'text-surface-400',
+	statusColor: 'text-surface-500',
 	buttons: [],
 	modal: {
 		action: () => {} // no default action
@@ -396,3 +396,9 @@ export type EntriesAndDefaultValue = {
 export type WeekDays = {
 	[key: string]: string;
 };
+
+export type Nav = {
+	label?: string;
+	href?: string;
+	icon?: any;
+}

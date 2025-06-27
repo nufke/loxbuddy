@@ -66,10 +66,10 @@
 		...DEFAULT_CONTROLVIEW,
 		control: control,
 		iconName: store.getCategoryIcon(control, controlOptions.isSubControl),
-		iconColor: lightsOn ? 'fill-green-500' : 'fill-white',
+		iconColor: lightsOn ? 'fill-primary-500' : 'fill-surface-950 dark:fill-surface-50',
 		textName: control.name,
 		statusName: getActiveLights(),
-		statusColor: lightsOn ? 'text-green-500' : 'text-surface-400',
+		statusColor: lightsOn ? 'text-primary-500' : 'text-surface-500',
 		modal: modal
 	});
 
@@ -85,7 +85,7 @@
 
 	function getStatusColor(control: Control) {
 		let activeMoodsNum = Number(store.getState(control.states.activeMoodsNum));
-		return activeMoodsNum == 778 ? 'white' : 'text-green-500';
+		return activeMoodsNum == 778 ? 'text-surface-950 dark:text-surface-50' : 'text-primary-500';
 	}
 
 	function selectLight(i: number) {
@@ -125,6 +125,7 @@
 
 <div>
 	<LbControl bind:controlView />
+
 	<Modal
 		open={controlView.modal.state}
 		transitionsBackdropIn = {fade200}
@@ -132,7 +133,7 @@
 		transitionsPositionerIn = {fade200}
 		transitionsPositionerOut = {fade200}
 		onOpenChange={() => controlView.modal.action(false)}
-		triggerBase="btn preset-tonal"
+		triggerBase="btn bg-surface-600"
 		contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-xl rounded-lg border border-white/5
 									from-white/[0.095] to-white/5 max-w-9/10 max-h-9/10 overflow-auto w-[380px]"
 		backdropClasses="backdrop-blur-sm">
@@ -141,29 +142,29 @@
 				<div class="mb-2 flex justify-center">
 					<h2 class="h4 text-center ">{controlView.textName}</h2>
 				</div>
-				<h2 class="text-lg text-center {lightsOn ? 'text-green-500' : 'text-surface-400'}">{getActiveLights()}</h2>
+				<h2 class="text-lg text-center {lightsOn ? 'text-primary-500' : 'text-surface-500'}">{getActiveLights()}</h2>
 				<div class="absolute top-0 right-0">
 					<button type="button" aria-label="close" class="btn-icon w-auto" onclick={() => controlView.modal.action(false)}>
 						<X />
 					</button>
 				</div>
 				<div class="container grid grid-cols-3 gap-2 mt-4">
-					<button type="button" class="w-full btn btn-lg preset-tonal-primary shadow-xl
+					<button type="button" class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-xl text-surface-950-50
 																				rounded-lg border border-white/15 hover:border-white/50" onclick={() => changeLight('On')}>{$_('On')}</button>
-					<button type="button" class="w-full btn btn-lg preset-tonal-primary shadow-xl
+					<button type="button" class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-xl text-surface-950-50
 																				rounded-lg border border-white/15 hover:border-white/50" onclick={() => changeLight('Off')}>{$_('Off')}</button>
-					<button type="button" class="w-full btn btn-lg preset-tonal-primary shadow-xl {scenesEnabled ? 'text-primary-800-200' : 'text-primary-200-800'}
+					<button type="button" class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-xl {scenesEnabled ? 'text-surface-800-200' : 'text-surface-200-800'}
 																				rounded-lg border border-white/15 hover:border-white/50" onclick={() => selectScenes()}>{$_('Scenes')}</button>
 				</div>
 			</header>
-			<div class="overflow-y-scroll" style="max-height: 575px"> <!--TODO define flex height-->
+			<div class="overflow-y-scroll" style="max-height: 575px">
 				{#each lightControls as control, index}
 					{#if index > 0}
 						<div class="mt-2"></div>
 					{/if}
 					<button class="w-full m-0 flex min-h-[50px] items-center justify-start rounded-lg border border-white/5
-												{lightList[index].selected ? 'preset-tonal' : 'preset-tonal-primary'}
-												bg-linear-to-r from-white/[0.095] to-white/5 px-2 py-2 hover:border-white/10" onclick={() => selectLight(index)}>
+												{lightList[index].selected ? 'dark:bg-surface-800  bg-surface-200' : 'dark:bg-surface-950  bg-surface-50'}
+												 px-2 py-2 hover:border-white/10" onclick={() => selectLight(index)}>
 						<div class="w-full">
 							<div class="flex items-center truncate">
 								<div class="mt-0 ml-2 mr-2 flex w-full justify-between truncate">
@@ -179,7 +180,7 @@
 	</Modal>
 
 	{#if selectedControl && selectedControlOptions }
-		{#key selectedControlOptions} <!-- reinit component -->
+		{#key selectedControlOptions}  <!-- reinit component -->
 			<LbLightControllerV2 control={selectedControl} controlOptions={selectedControlOptions}/>
 		{/key}
 	{/if}

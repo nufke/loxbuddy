@@ -86,7 +86,7 @@
 				value,
 				class: [
 					mm == M ? '' : (mm > M ? yy >= Y : yy > Y) ? 'future' : 'past',
-					value === selected ? 'bg-green-500 text-black' : '',
+					value === selected ? 'bg-primary-500 text-black' : '',
 				].join(' ')
 			});
 
@@ -113,12 +113,12 @@
 	</button>
 </div>
 <div class="card m-0 flex rounded-lg border border-white/5
-						bg-linear-to-r from-white/[0.095] to-white/5 px-2 py-2 hover:border-white/10 min-h-[300px]">
+						bg-surface-50-950 px-2 py-2 hover:border-white/10 min-h-[300px]">
 	<div class="grid grid-cols-7 gap-1">
 		<div class="btn-icon" onclick={() => setMonth(-1)}><ChevronLeft/></div>
-		<div class="btn-icon text-green-500" onclick={() => reset()}><Undo2/></div>
+		<div class="btn-icon text-primary-500" onclick={() => reset()}><Undo2/></div>
 		<div class="btn col-span-3">{month} {year}</div>
-		<div class="btn-icon text-green-500" onclick={() => {view.isMinuteView = false; view.isDateView = false}}><Clock3/></div>
+		<div class="btn-icon text-primary-500" onclick={() => {view.isMinuteView = false; view.isDateView = false}}><Clock3/></div>
 		<div class="btn-icon" onclick={() => setMonth(+1)}><ChevronRight/></div>
 		{#each days as day}
 			<div class="text-center">{day}</div>

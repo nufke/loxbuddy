@@ -124,7 +124,7 @@ or submit a [pull request](https://github.com/nufke/loxbuddy/pulls).
 | Battery status update       | Not started              |
 | Calendar                    | Not started              |
 | Connection status           | Available                |
-| Dark / Light theme          | Not started              |
+| Dark / Light themes         | Available                |
 | Internationalization        | Available (NL, DE, US)   |
 | Kiosk / room mode (tablet)  | Not started              |
 | LoxBerry plugins            | Not started              |
@@ -132,7 +132,7 @@ or submit a [pull request](https://github.com/nufke/loxbuddy/pulls).
 | Pin protected pages         | Not started              |
 | Push messages (internet)    | Not started              |
 | Screensaver / Lockscreen    | Not started              |
-| Settings menu               | Not started              |
+| Settings menu               | Under development        |
 | Splashscreen                | Not started              |
 | Statistics / history        | Not started              |
 | Statusbar (time, temp, etc) | Available                |

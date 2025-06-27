@@ -95,7 +95,6 @@
 		setKnobValue(targetTemp);
 		setActualValue(actualTemp);
 	});
-
 </script>
 
 <div class="w-full flex align-center justify-center">
@@ -108,11 +107,11 @@
 		<text x="157" y="220" text-anchor="middle" fill="#00c951" font-size="18px">&#9679; <tspan fill="white">{$_('Target')} {targetTempDisplay[0]}<tspan dx="2" dy="-6" font-size="10px">{targetTempDisplay[1]}</tspan></text>
 		<text x="225" y="176" text-anchor="middle" fill="#737373" font-size="24px">{symbol}</text>
 		<svg class="button" x="105" y="260" onmousedown={startDown} onmouseup={endDown}>
-			<circle cx="20" cy="20" r="20" fill="black"/>
+			<circle class="c1" cx="20" cy="20" r="20" />
 			<path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke="currentColor" d="m14 17 6 6 6-6"></path>
 		</svg>
 		<svg class="button" x="175" y="260" onmousedown={startUp} onmouseup={endUp}>
-			<circle cx="20" cy="20" r="20" fill="black"/>
+			<circle cx="20" cy="20" r="20"/>
 			<path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke="currentColor" d="m26 22-6-6-6 6"></path>
 		</svg>
 	</svg>
@@ -146,5 +145,8 @@
 	.button {
 		cursor: pointer;
 		z-index: 14;
+		circle {
+			fill: black;
+		}
 	}
 </style>

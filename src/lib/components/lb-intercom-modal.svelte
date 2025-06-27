@@ -34,6 +34,12 @@
 		return  controlView.details.lastBellEventImages && 
 						controlView.details.lastBellEventImages.hasOwnProperty(image) ? controlView.details.lastBellEventImages[image] : '';
 	}
+
+	function resetTab() {
+    setTimeout(() => {
+      selectedTab = 0;
+    }, 500);
+	}
 </script>
 
 <Modal
@@ -43,7 +49,7 @@
 	transitionsPositionerIn = {fade200}
 	transitionsPositionerOut = {fade200}
 	onOpenChange={()=>controlView.modal.action(false)}
-	triggerBase="btn preset-tonal"
+	triggerBase="btn bg-surface-600"
 	contentBase="card bg-surface-100-900 pt-4 space-y-4 shadow-xl rounded-lg border border-white/5
 							from-white/[0.095] to-white/5 max-w-9/10 max-h-9/10 w-[680px]"
 	backdropClasses="backdrop-blur-sm">
@@ -53,7 +59,7 @@
 			<h2 class="h4 text-center">{controlView.textName}</h2>
 		</div>
 		<div class="absolute right-4 top-0">
-			<button type="button" aria-label="close" class="btn-icon w-auto" onclick={()=>{ controlView.modal.action(false); selectedTab = 0;}}>
+			<button type="button" aria-label="close" class="btn-icon w-auto" onclick={()=>{ controlView.modal.action(false); resetTab();}}>
 				<X/>
 			</button>
 		</div>
@@ -62,7 +68,7 @@
 		{#if selectedTab==0} 
 			<div class="relative" style="height: {img_height}px">
 				<div class="absolute inset-0 flex items-center justify-center z-1">
-					<p class="text-white text-xl">Loading video...</p>
+					<p class="dark:text-surface-50 text-surface-950 text-xl">Loading video...</p>
 				</div>
 				<img class="absolute z-2 w-full" bind:this={img} src={stream} onload={handleImageLoad} alt=""/>
 			</div>
@@ -72,7 +78,7 @@
 		 		<img class="w-full" src={'data:image/jpeg;charset=utf-8;base64,' + getImage(image)} alt="">
 				<div class="absolute inset-0 bg-gray-700 opacity-20"></div>
   			<div class="absolute bottom-4 left-4">
-					<p class="text-white text-xl">{formatDate(image)}</p>
+					<p class="text-surface-50 text-xl">{formatDate(image)}</p>
 				</div>
 			</div>
 		{/if}
@@ -83,7 +89,7 @@
 		  	  	<img class="" src={'data:image/jpeg;charset=utf-8;base64,' + getImage(item)} alt="">
 						<div class="absolute inset-0 bg-gray-700 opacity-20"></div>
    			 		<div class="absolute bottom-2 left-2">
-							<p class="text-white text-xm">{formatDate(item)}</p>
+							<p class="text-surface-50 text-xm">{formatDate(item)}</p>
 						</div>
 					</button>
 				{/each}
@@ -97,24 +103,24 @@
 	<div class="sticky bottom-0 left-0 w-full h-16 pb-2">
 		<div class="grid h-full max-w-lg { history ? 'grid-cols-4' : 'grid-cols-2'} mx-auto">
 			<button type="button" class="inline-flex flex-col items-center justify-center px-5
-							group {selectedTab==0 ? 'text-green-500' : ''} " onclick={() => selectedTab=0}>
+							group {selectedTab==0 ? 'text-primary-500' : ''} " onclick={() => selectedTab=0}>
 				<Video/>
 				<span class="mt-1 text-xs">{$_("Video")}</span>
 			</button>
 			{#if history}
 				<button type="button" class="inline-flex flex-col items-center justify-center px-5
-								group {selectedTab==1 ? 'text-green-500' : ''} " onclick={() => selectedTab=1}>
+								group {selectedTab==1 ? 'text-primary-500' : ''} " onclick={() => selectedTab=1}>
 					<Camera/>
 					<span class="mt-1 text-xs">{$_("Image")}</span>
 				</button>
 				<button type="button" class="inline-flex flex-col items-center justify-center px-5
-								group {selectedTab==2 ? 'text-green-500' : ''} " onclick={() => selectedTab=2}>
+								group {selectedTab==2 ? 'text-primary-500' : ''} " onclick={() => selectedTab=2}>
 					<History/>
 					<span class="mt-1 text-xs">{$_("History")}</span>
 				</button>
 			{/if}
 			<button type="button" class="inline-flex flex-col items-center justify-center px-5
-							group {selectedTab==3 ? 'text-green-500' : ''} " onclick={() => selectedTab=3}>
+							group {selectedTab==3 ? 'text-primary-500' : ''} " onclick={() => selectedTab=3}>
 				<Settings/>
 				<span class="mt-1 text-xs">{$_("Settings")}</span>
 			</button>

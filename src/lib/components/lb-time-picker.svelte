@@ -205,16 +205,16 @@
 			<span class="text-lg">{(isPM ? meridiem[1] : meridiem[0]).toUpperCase()}</span>
 		{/if}
 	</div>
-	<button class="absolute z-10 top-[50px] right-[0px] text-green-500 text-sm" onclick={() => {view.isDateView = true; isMinuteView = false;}}>
+	<button class="absolute z-10 top-[50px] right-[0px] text-primary-500 text-sm" onclick={() => {view.isDateView = true; isMinuteView = false;}}>
 		<Calendar size="18"/>
 	</button>
 	<div class="relative card flex rounded-full m-auto border border-white/5 bg-linear-to-r from-white/[0.095] 
 							to-white/5 hover:border-white/10 overflow-auto" style="width: {size}px; height: {size}px"
 							class:is-minute-view={isMinuteView} bind:this={refClock} onclick={(e) => { e.preventDefault(); onClick(e);}}
 							onmousedown={onToggleMove} onmousemove={(e) => {isMouseDown && onClick(e);}} onmouseup={onToggleMove}>
-		<div class="absolute w-[6px] h-[6px] left-[50%] top-[50%] bg-green-500 rounded-full translate-x-[-50%] translate-y-[-50%]"></div>
-		<div class="lb-hand absolute w-[2px] bg-green-500 bottom-[50%]" style={handCss}>
-			<div class="relative left-[-15px] top-[-29px] w-[4px] h-[4px] bg-transparent rounded-full box-content border-solid border-14 border-green-500"></div>
+		<div class="absolute w-[6px] h-[6px] left-[50%] top-[50%] bg-primary-500 rounded-full translate-x-[-50%] translate-y-[-50%]"></div>
+		<div class="lb-hand absolute w-[2px] bg-primary-500 bottom-[50%]" style={handCss}>
+			<div class="relative left-[-15px] top-[-29px] w-[4px] h-[4px] bg-transparent rounded-full box-content border-solid border-14 border-primary-500"></div>
 		</div>
 		{#each pos as p, i (p.val)}
 			<button type="button" class="lb-ticks absolute text-center rounded-full border-0 cursor-pointer translate-x-[-50%] translate-y-[-50%]"
@@ -256,6 +256,6 @@
 	.lb-ticks.is-selected {
 		animation: tick-selection 0s 0.175s ease-out forwards;
 		color: black;
-		background: #00c951; /* TODO variable */
+		background: var(--color-primary-500);
 	}
 </style>

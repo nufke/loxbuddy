@@ -66,12 +66,12 @@
 	transitionsPositionerIn = {fade200}
 	transitionsPositionerOut = {fade200}
 	onOpenChange={()=>{}}
-	triggerBase="btn preset-tonal"
+	triggerBase="btn bg-surface-600"
 	contentBase="container mx-auto max-w-[768px] overflow-auto h-full"
 	positionerPadding="p-2"
-	backdropBackground="bg-surface-950">
+	backdropBackground="dark:bg-surface-950 bg-surface-50">
 	{#snippet content()}
-	<header class="sticky top-0 h-[40px] bg-surface-950/50 z-1">
+	<header class="sticky top-0 h-[40px] dark:bg-surface-950/50 bg-surface-50/50 z-1">
 		<div class="absolute right-1 top-1">
 			<button type="button" aria-label="close" class="btn-icon w-auto" onclick={()=> open = false}><X/></button>
 		</div>
@@ -118,23 +118,23 @@
 					<p class="text-lg"><span class="font-medium">{current.uv}</span> UV</p>
 				</div>
 				<div class="flex gap-2">
-					<LbIcon class="text-white fill-white" name={"/icons/svg/rain-meter.svg"} fill="white" width="32" height="25"/>
+					<LbIcon class="text-surface-50 fill-surface-50" name={"/icons/svg/rain-meter.svg"} fill="white" width="32" height="25"/>
 					<p class="text-lg"><span class="font-medium">{current.precipitationToday}</span> mm</p>
 				</div>
 			</div>
 		</div>
 		{#each daily as day, i}
-		<div class="mt-2 h-20 max-w-[768px] preset-filled-surface-100-900" onclick={() => openSlider(i)}>
-			<div class="grid grid-cols-8 pl-2 pr-3">
-				<div class="col-span-3 p-3 pr-0 my-auto">
+		<div class="mt-2 max-w-[768px] bg-surface-100-900" onclick={() => openSlider(i)}>
+			<div class="grid grid-cols-8 p-2 justify-items-start place-items-center">
+				<div class="col-span-3 pl-2 pr-0 ">
 					<p class="text-left text-lg font-medium truncate">{format(new Date(day.time), "eeee d",{locale: nl})}</p>
 					<p class="text-left text-lg truncate">{$_(day.conditions)}</p>
 				</div>
 				<div class="col-span-2 align-middle m-auto">
-					<LbIcon name={getDayIcon(day)} fill="white" width="70" height="70"/>
+					<LbIcon name={getDayIcon(day)} width="70"/>
 				</div>
 				<div class="flex flex-row m-auto justify-center align-center">
-					<span class="align-middle m-auto"><LbIcon class="text-white" name={"/icons/svg/raindrop.svg"} width="16" height="16"/></span>
+					<span class="align-middle m-auto"><LbIcon name={"/icons/svg/raindrop.svg"} width="16" height="16"/></span>
 					<p class="text-lg">{day.precipitationProbability}%</p>	
 				</div>
 				<div class="flex flex-row m-auto justify-center align-center">
@@ -148,7 +148,7 @@
 			</div>
 		</div> 
 		{#if slider[i]}
-		<div class="text-white max-w-[768px] preset-filled-surface-100-900" transition:slide={{ duration: 400 }} >
+		<div class="max-w-[768px] bg-surface-100-900" transition:slide={{ duration: 400 }} >
      	<div transition:fade={{ duration: 200 }}>
 				<div class="grid grid-cols-2 hr p-1">
 					<div class="flex m-auto">
@@ -173,11 +173,11 @@
 							<p class="text-lg">{hour.airTemperature}°</p>
 						</div>
 						<div class="flex m-auto mt-1">
-							<span class="align-middle m-auto"><LbIcon class="text-white" name={"/icons/svg/raindrop.svg"} width="16" height="16"/></span>
+							<span class="align-middle m-auto"><LbIcon name={"/icons/svg/raindrop.svg"} width="16" height="16"/></span>
 							<p class="text-lg">{hour.precipitationProbability}%</p>
 						</div>
 						<div class="flex m-auto mb-2">
-							<span class="align-middle m-auto" style="rotate: {hour.windDirection}deg;"><LbIcon class="text-white" name={"/icons/svg/wind-direction2.svg"} width="18" height="18"/></span>
+							<span class="align-middle m-auto" style="rotate: {hour.windDirection}deg;"><LbIcon name={"/icons/svg/wind-direction2.svg"} width="18" height="18"/></span>
 							<p class="text-lg">{hour.windAverage}</p>
 						</div>
 					</div>
@@ -191,12 +191,16 @@
 	{:else}
 	<div class="flex h-screen">
 	  <div class="m-auto">
-    	<p class="text-white text-xl">{$_("Waiting for weather data ...")}</p>
+    	<p class="text-surface-50 text-xl">{$_("Waiting for weather data ...")}</p>
   	</div>
 	</div>
 	{/if}
 	{/snippet}
 </Modal>
+
+<!--
+<iframe width="650" height="450" src="https://embed.windy.com/embed2.html?lat=42.850&lon=-78.959&detailLat=42.890&detailLon=-78.880&width=650&height=450&zoom=7&level=surface&overlay=radar&product=radar&menu=&message=&marker=&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=default&metricTemp=default&radarRange=-1" frameborder="0"></iframe>
+-->
 
 <style>
 /* to resolve css blowout issue with slider  */ 

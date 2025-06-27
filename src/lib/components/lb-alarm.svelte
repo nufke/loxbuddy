@@ -64,10 +64,10 @@
   let controlView: ControlView = $derived({
 		...DEFAULT_CONTROLVIEW,
 		iconName: armed ? '/icons/svg/shield.svg' : '/icons/svg/shield-off.svg',
-		iconColor: armed ? 'fill-green-500' : 'fill-white',
+		iconColor: armed ? 'fill-primary-500' : 'fill-surface-950 dark:fill-surface-50',
 		textName: control.name,
 		statusName: getStatus(),
-		statusColor: armed ? 'text-green-500' : 'text-surface-400',
+		statusColor: armed ? 'text-primary-500' : 'text-surface-500',
 		buttonState: !disabledMove,
 		modal: {
 			...modal,

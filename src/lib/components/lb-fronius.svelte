@@ -24,7 +24,7 @@
 		iconName: store.getCategoryIcon(control, controlOptions.isSubControl),
 		textName: control.name,
 		statusName: fmt.sprintf('%s %.2f kW • %s %.2f kW', prod[0], prodCurr, cons[0], consCurr),
-		statusColor: 'text-green-500',
+		statusColor: 'text-primary-500',
 		modal: modal
 	});
 </script>

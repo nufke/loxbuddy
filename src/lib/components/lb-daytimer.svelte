@@ -135,12 +135,18 @@
 	let controlView: ControlView = $derived({
 		...DEFAULT_CONTROLVIEW,
 		iconName: store.getCategoryIcon(control, controlOptions.isSubControl),
-		iconColor: (value > 0 ) ? 'fill-green-500' : 'fill-white',
+		iconColor: (value > 0 ) ? 'fill-success-500' : 'fill-primary-950 dark:fill-primary-50',
 		textName: control.name,
 		statusName: status + getDuration(),
-		statusColor: (value > 0 ) ? 'text-green-500' : 'text-surface-400',
+		statusColor: (value > 0 ) ? 'text-success-500' : 'text-surface-500',
 		modal: modal
 	});
+
+	function resetTab() {
+    setTimeout(() => {
+      selectedTab = 0;
+    }, 500);
+	}
 </script>
 
 <div>
@@ -152,9 +158,9 @@
 		transitionsPositionerIn = {fade200}
 		transitionsPositionerOut = {fade200}
 		onOpenChange={() => controlView.modal.action(false)}
-		triggerBase="btn preset-tonal"
+		triggerBase="btn bg-surface-600"
 		contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-xl rounded-lg border border-white/5
-									from-white/[0.095] to-white/5 max-w-9/10 max-h-9/10 overflow-auto w-[380px]"
+								 max-w-9/10 max-h-9/10 overflow-auto w-[380px]"
 		backdropClasses="backdrop-blur-sm">
 		{#snippet content()}
 			<header class="relative">
@@ -163,19 +169,19 @@
 				</div>
 				
 				<div class="absolute top-0 right-0">
-					<button type="button" aria-label="close" class="btn-icon w-auto" onclick={() => {controlView.modal.action(false); selectedTab=0;}}>
+					<button type="button" aria-label="close" class="btn-icon w-auto" onclick={() => {controlView.modal.action(false); resetTab();}}>
 						<X />
 					</button>
 				</div>
 			</header>
 			{#if selectedTab==0}
 			<div class="flex flex-col items-center justify-center m-2">
-				<h2 class="text-lg text-center {(value > 0 ) ? 'text-green-500' : 'text-surface-400'}">{status + getDuration()}</h2>
+				<h2 class="text-lg text-center {(value > 0 ) ? 'text-primary-500' : 'text-surface-500'}">{status + getDuration()}</h2>
 				<div>
 					<LbTimeGrid {mode} {weekdays} {entries}/>
 				</div>
 				<div class="container mt-4">
-					<h2 class="text-lg text-center text-white">{weekdays[mode]}</h2>
+					<h2 class="text-lg text-center text-surface-50">{weekdays[mode]}</h2>
 				</div>
 			</div>
 			{/if}
@@ -188,15 +194,15 @@
 						<LbTimePicker bind:date={date} bind:view={dateTimeView}/>
 					{/if}
 					<div class="container mt-2">
-						<button class="w-[300px] btn btn-lg preset-tonal-primary shadow-xl rounded-lg border border-white/15 hover:border-white/50" onclick={(e) => { e.stopPropagation()}}> <!-- workaround wrapper to stop propagation for switch -->
+						<button class="w-[300px] btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-xl rounded-lg border border-white/15 hover:border-white/50" onclick={(e) => { e.stopPropagation()}}> <!-- workaround wrapper to stop propagation for switch -->
 							<div class="flex w-full justify-between">
 								<h1 class="truncate text-lg">{$_("Uitgang")} {$_(outputActive ? "Active" : "Inactive").toLowerCase()}</h1>
-								<Switch controlClasses="w-12 h-8" name="slide" controlActive="bg-green-500" checked={outputActive} onCheckedChange={(e) => (outputActive = e.checked)} />
+								<Switch controlClasses="w-12 h-8" name="slide" controlActive="bg-primary-500" checked={outputActive} onCheckedChange={(e) => (outputActive = e.checked)} />
 							</div>
 						</button>
 					</div>
 					<div class="container mt-2">
-						<button type="button" class="w-[300px] btn btn-lg preset-tonal-primary shadow-xl rounded-lg border border-white/15 hover:border-white/50" 
+						<button type="button" class="w-[300px] btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-xl rounded-lg border border-white/15 hover:border-white/50" 
 										onclick={(e) => {e.stopPropagation(); e.preventDefault(); startStopTimer()}}>
 							<span class="text-lg">{$_( (overrideTime > 0) ? "Stop" : "Start")} {$_("Timer").toLocaleLowerCase()}</span>
 						</button>
@@ -206,11 +212,11 @@
 			{/if}
 			<div class="sticky bottom-0 left-0 w-full h-16 pt-2">
 				<div class="grid h-full max-w-lg grid-cols-2 mx-auto">
-					<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==0 ? 'text-green-500' : ''} " onclick={() => {dateTimeView.isDateView=true; selectedTab=0;}}>
+					<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==0 ? 'text-primary-500' : ''} " onclick={() => {dateTimeView.isDateView=true; selectedTab=0;}}>
 						<Timer/>
 						<span class="mt-1 text-xs">{$_("Schedule")}</span>
 					</button>
-					<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==1 ? 'text-green-500' : ''} " onclick={() => {dateTimeView.isDateView=true; selectedTab=1;}}>
+					<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==1 ? 'text-primary-500' : ''} " onclick={() => {dateTimeView.isDateView=true; selectedTab=1;}}>
 						<CalendarClock/>
 						<span class="mt-1 text-xs">{$_("Timer")}</span>
 					</button>

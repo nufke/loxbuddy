@@ -33,14 +33,14 @@
 	transitionsPositionerIn = {fade200}
 	transitionsPositionerOut = {fade200}
 	onOpenChange={()=>controlView.modal.action(false)}
-	triggerBase="btn preset-tonal"
+	triggerBase="btn bg-surface-600"
 	contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-xl rounded-lg border border-white/5
 							from-white/[0.095] to-white/5 max-w-9/10 max-h-9/10 overflow-auto w-[380px]"
 	backdropClasses="backdrop-blur-sm">
 	{#snippet content()}
 	<header class="relative">
 		<div class="flex justify-center">
-			<div class="relative inline-flex h-18 w-18 items-center justify-center overflow-hidden rounded-full dark:bg-surface-950">
+			<div class="relative inline-flex h-18 w-18 items-center justify-center overflow-hidden rounded-full dark:bg-surface-950 bg-surface-50">
 				<LbIcon class={controlView.iconColor} name={controlView.iconName} width="36" height="36"/>
 			</div>
 		</div>
@@ -66,7 +66,7 @@
 					<div class="ml-2"></div>
 				{/if}
 				{#if button.type === 'button' && button.click}
-					<button type="button" class="w-full btn btn-lg preset-tonal-primary shadow-xl rounded-lg border border-white/15 hover:border-white/50" 
+					<button type="button" class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-xl rounded-lg border border-white/15 hover:border-white/50" 
 							onclick={(e) => {e.stopPropagation(); e.preventDefault(); button.click}}>
 							{#if button.name}
 								<span>{$_(button.name)}</span>
@@ -78,7 +78,7 @@
 					</button>
 				{/if}
 				{#if button.type == 'switch' && button.name }
-					<button type="button" class="w-full btn btn-lg preset-tonal-primary shadow-xl rounded-lg border border-white/15 hover:border-white/50" 
+					<button type="button" class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-xl rounded-lg border border-white/15 hover:border-white/50" 
 							onclick={(e) => {e.stopPropagation(); e.preventDefault(); button.click({checked: !controlView.buttonState})}}>
 						<span style="font-size:18px">{$_(button.name)}</span>
 					</button>
@@ -96,7 +96,7 @@
 		<div class="container grid grid-cols-1 gap-2 m-2">
 			{#each controlView.modal.buttons as button, index}
 				{#if button.type === 'button' && button.click}
-					<button type="button" class="w-full btn btn-lg preset-tonal-primary shadow-xl rounded-lg border border-white/15 hover:border-white/50" 
+					<button type="button" class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-xl rounded-lg border border-white/15 hover:border-white/50" 
 							onclick={button.click}>
 							{#if button.name}
 								<span class="text-lg">{$_(button.name)}</span>
@@ -106,10 +106,10 @@
 					</button>
 				{/if}
 				{#if button.type == 'switch' && button.name}
-					<button class="btn btn-lg preset-tonal-primary shadow-xl rounded-lg border border-white/15 hover:border-white/50" onclick={(e) => { e.stopPropagation()}}> <!-- workaround wrapper to stop propagation for switch -->
+					<button class="btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-xl rounded-lg border border-white/15 hover:border-white/50" onclick={(e) => { e.stopPropagation()}}> <!-- workaround wrapper to stop propagation for switch -->
 						<div class="flex w-full justify-between">
 							<h1 class="truncate text-lg">{$_(button.name)}</h1>
-							<Switch controlClasses="w-12 h-8" name="slide" controlActive="bg-green-500" checked={controlView.buttonState} onCheckedChange={button.click} />
+							<Switch controlClasses="w-12 h-8" name="slide" controlActive="bg-primary-500" checked={controlView.buttonState} onCheckedChange={button.click} />
 						</div>
 					</button>
 				{/if}
