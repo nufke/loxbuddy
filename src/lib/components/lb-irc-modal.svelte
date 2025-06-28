@@ -83,7 +83,7 @@
 	onOpenChange={()=>controlView.modal.action(false)}
 	triggerBase="btn bg-surface-600"
 	contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-xl rounded-lg border border-white/5
-							from-white/[0.095] to-white/5 max-w-9/10 max-h-9/10 overflow-auto w-[380px]"
+							bg-surface-100-900 max-w-9/10 max-h-9/10 overflow-auto w-[380px]"
 	backdropClasses="backdrop-blur-sm">
 	{#snippet content()}
 	<header class="relative">

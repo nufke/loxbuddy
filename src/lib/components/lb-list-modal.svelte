@@ -40,14 +40,14 @@
 	transitionsPositionerOut = {fade200}
 	onOpenChange={()=>{ controlView.modal.action(false)}}
 	triggerBase="btn bg-surface-600"
-	contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-xl rounded-lg border border-white/5
-							from-white/[0.095] to-white/5 max-w-9/10 max-h-9/10 overflow-auto w-[380px]"
+	contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-xl rounded-lg border border-white/5 hover:border-white/10
+							bg-surface-100-900 max-w-9/10 max-h-9/10 overflow-auto w-[380px]"
 	backdropClasses="backdrop-blur-sm">
 	{#snippet content()}
 	{#if selectedTab==0} <!-- scenes -->
 	<header class="relative">
 		<div class="flex justify-center">
-			<div class="relative inline-flex h-18 w-18 items-center justify-center overflow-hidden rounded-full dark:bg-surface-950">
+			<div class="relative inline-flex h-18 w-18 items-center justify-center overflow-hidden rounded-full border border-white/5 dark:bg-surface-950">
 				<LbIcon class={controlView.iconColor} name={controlView.iconName} width="36" height="36"/>
 			</div>
 		</div>
@@ -68,7 +68,7 @@
 		{#if controlView.list}
 			{#each controlView.list as listItem, index}
 				<button type="button" class="w-full mt-2 btn btn-lg {(index==selectedItem) ? 'dark:bg-surface-800 bg-surface-200' : 'dark:bg-surface-950 bg-surface-50' }
-								 shadow-xl rounded-lg border border-white/15 hover:border-white/50" 
+								 shadow-xl rounded-lg border border-white/15 hover:border-white/50"
 					onclick={(e) => { e.stopPropagation(); e.preventDefault(); setItem(index)}}>
 						<span class="text-lg">{$_(listItem.name)}</span>
 				</button>

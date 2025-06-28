@@ -13,7 +13,7 @@
           					 	bg-surface-100-900 px-2 py-2 hover:border-white/10">
 	<div class="w-full">
 		<div class="flex items-center truncate">
-			<div class="relative inline-flex items-center justify-center w-12 h-12 min-w-12 overflow-hidden rounded-full dark:bg-surface-950 bg-surface-50">
+			<div class="relative inline-flex items-center justify-center w-12 h-12 min-w-12 overflow-hidden rounded-full border border-white/10 dark:bg-surface-950 bg-surface-50">
 				<LbIcon class={color} name={loxiconsPath + item.image} width="24" height="24"/>
 			</div>
 			<div class="mt-0 ml-3 truncate">

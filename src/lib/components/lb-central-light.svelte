@@ -135,7 +135,7 @@
 		onOpenChange={() => controlView.modal.action(false)}
 		triggerBase="btn bg-surface-600"
 		contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-xl rounded-lg border border-white/5
-									from-white/[0.095] to-white/5 max-w-9/10 max-h-9/10 overflow-auto w-[380px]"
+									bg-surface-100-900 max-w-9/10 max-h-9/10 overflow-auto w-[380px]"
 		backdropClasses="backdrop-blur-sm">
 		{#snippet content()}
 			<header class="relative">
@@ -162,9 +162,9 @@
 					{#if index > 0}
 						<div class="mt-2"></div>
 					{/if}
-					<button class="w-full m-0 flex min-h-[50px] items-center justify-start rounded-lg border border-white/5
-												{lightList[index].selected ? 'dark:bg-surface-800  bg-surface-200' : 'dark:bg-surface-950  bg-surface-50'}
-												 px-2 py-2 hover:border-white/10" onclick={() => selectLight(index)}>
+					<button class="w-full m-0 flex min-h-[50px] items-center justify-start rounded-lg border border-white/15 hover:border-white/50
+												{lightList[index].selected ? 'dark:bg-surface-800 bg-surface-200' : 'dark:bg-surface-950 bg-surface-50'} px-2 py-2"
+												onclick={() => selectLight(index)}>
 						<div class="w-full">
 							<div class="flex items-center truncate">
 								<div class="mt-0 ml-2 mr-2 flex w-full justify-between truncate">

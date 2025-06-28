@@ -30,12 +30,12 @@
 	<div class="flex w-full justify-between">
 		<div class="flex items-center truncate">
 			{#if controlView.iconName.length && !controlView.isSubControl} <!-- only show icon if name is given -->
-				<div class="relative mr-1 inline-flex items-center justify-center w-12 h-12 min-w-12 overflow-hidden rounded-full dark:bg-surface-950 bg-surface-50">
+				<div class="relative mr-1 inline-flex items-center justify-center w-12 h-12 min-w-12 overflow-hidden rounded-full border border-white/10 dark:bg-surface-950 bg-surface-50">
 					<LbIcon class={controlView.iconColor} name={controlView.iconName} width="24" height="24"/>
 				</div>
 			{/if}
 			{#if controlView.iconText?.length} <!-- IRC -->
-				<div class="relative mr-1 inline-flex items-center justify-center w-12 h-12 min-w-12 overflow-hidden rounded-full dark:bg-surface-950 bg-surface-50">
+				<div class="relative mr-1 inline-flex items-center justify-center w-12 h-12 min-w-12 overflow-hidden rounded-full border border-white/10 dark:bg-surface-950 bg-surface-50">
 					<svg class="{controlView.iconColor}" width="32" height="32">
 						<text text-anchor="middle" x="16" y="22" fill="white" font-size="18">{getT().num}<tspan font-size="14">{getT().frac}</tspan>
 						</text>
@@ -56,7 +56,7 @@
 						<div class="ml-2"></div>
 					{/if}
 					{#if button.type === 'button' && button.iconName}
-						<button type="button" class="btn-icon p-3 dark:bg-surface-950 bg-surface-50 rounded-lg border border-black hover:border-white/50" 
+						<button type="button" class="btn-icon p-3 dark:bg-surface-950 bg-surface-50 rounded-lg border border-white/15 hover:border-white/50" 
 										onclick={(e) => { e.stopPropagation(); e.preventDefault(); button.click(e)}}> <!--|stopPropagation|preventDefault-->
 							<span style="font-size:26px ">
 								<LbIcon name={button.iconName} />

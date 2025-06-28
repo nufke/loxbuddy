@@ -96,7 +96,7 @@
 			></div>
 		</div></button
 	><button
-		data-theme="crimson" onclick={() => {onChangeTheme("crimson")}}
+		data-theme="crimson" onclick={() => {onChangeTheme("Crimson")}}
 		class="bg-surface-50-950 preset-outlined-surface-100-900 hover:preset-outlined-surface-950-50 grid w-full grid-cols-[auto_1fr_auto] items-center gap-4 rounded-md p-3"
 		><span>🔴</span>
 		<h3 class="text-left text-md font-medium capitalize">crimson</h3>

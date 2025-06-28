@@ -129,8 +129,8 @@
 		transitionsPositionerOut = {fade200}
 		onOpenChange={() => controlView.modal.action(false)}
 		triggerBase="btn bg-surface-600"
-		contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-xl rounded-lg border border-white/5
-									from-white/[0.095] to-white/5 max-w-9/10 max-h-9/10 overflow-auto w-[380px]"
+		contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-xl rounded-lg border border-white/5 hover:border-white/10
+									bg-surface-100-900 max-w-9/10 max-h-9/10 overflow-auto w-[380px]"
 		backdropClasses="backdrop-blur-sm">
 		{#snippet content()}
 			<header class="relative">
@@ -145,15 +145,15 @@
 				</div>
 				<div class="container grid grid-cols-5 gap-2 mt-4">
 					<button type="button" class="btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-xl text-surface-950-50
-																				rounded-lg border border-white/15 hover:border-white/50" onclick={() => screenAction("FullDown")}><ChevronDown/></button>
+																				rounded-lg border border-white/10 hover:border-white/50" onclick={() => screenAction("FullDown")}><ChevronDown/></button>
 					<button type="button" class="btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-xl text-surface-950-50
-																				rounded-lg border border-white/15 hover:border-white/50" onclick={() => screenAction("FullUp")}><ChevronUp/></button>
+																				rounded-lg border border-white/10 hover:border-white/50" onclick={() => screenAction("FullUp")}><ChevronUp/></button>
 					<button type="button" class="btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-xl text-surface-950-50
-																				rounded-lg border border-white/15 hover:border-white/50" onclick={() => screenAction("shade")}><Blinds/></button>
+																				rounded-lg border border-white/10 hover:border-white/50" onclick={() => screenAction("shade")}><Blinds/></button>
 					<button type="button" class="btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-xl text-surface-950-50
-																				rounded-lg border border-white/15 hover:border-white/50" onclick={() => screenAction("stop")}><OctagonMinus/></button>
+																				rounded-lg border border-white/10 hover:border-white/50" onclick={() => screenAction("stop")}><OctagonMinus/></button>
 					<button type="button" class="btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-xl {screenSelected ? 'text-surface-800-200' : 'text-surface-200-800'}
-																				rounded-lg border border-white/15 hover:border-white/50" onclick={() => selectScreenOptions()}><Settings/></button>
+																				rounded-lg border border-white/10 hover:border-white/50" onclick={() => selectScreenOptions()}><Settings/></button>
 				</div>
 			</header>
 			<div class="overflow-y-scroll" style="max-height: 575px">
@@ -161,9 +161,9 @@
 					{#if index > 0}
 						<div class="mt-2"></div>
 					{/if}
-					<button class="w-full m-0 flex min-h-[50px] items-center justify-start rounded-lg border border-white/5
-												{screenList[index].selected ? 'dark:bg-surface-800  bg-surface-200' : 'dark:bg-surface-950  bg-surface-50'}
-												 px-2 py-2 hover:border-white/10" onclick={() => selectScreen(index)}>
+					<button class="w-full m-0 flex min-h-[50px] items-center justify-start rounded-lg border border-white/10 hover:border-white/50
+												{screenList[index].selected ? 'dark:bg-surface-800  bg-surface-200' : 'dark:bg-surface-950  bg-surface-50'} px-2 py-2"
+												 onclick={() => selectScreen(index)}>
 						<div class="w-full">
 							<div class="flex items-center truncate">
 								<div class="mt-0 ml-2 mr-2 flex w-full justify-between truncate">

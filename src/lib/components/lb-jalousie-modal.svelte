@@ -21,13 +21,13 @@
 	transitionsPositionerOut = {fade200}
 	onOpenChange={()=>controlView.modal.action(false)}
 	triggerBase="btn bg-surface-600"
-	contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-xl rounded-lg border border-white/5
-							from-white/[0.095] to-white/5 max-w-9/10 max-h-9/10 overflow-auto w-[380px]"
+	contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-xl rounded-lg border border-white/5 hover:border-white/10
+							bg-surface-100-900 max-w-9/10 max-h-9/10 overflow-auto w-[380px]"
 	backdropClasses="backdrop-blur-sm">
 	{#snippet content()}
 	<header class="relative">
 		<div class="flex justify-center">
-			<div class="relative inline-flex h-18 w-18 items-center justify-center overflow-hidden rounded-full dark:bg-surface-950">
+			<div class="relative inline-flex h-18 w-18 items-center justify-center overflow-hidden rounded-full border border-white/10 dark:bg-surface-950">
 				<LbIcon class={controlView.iconColor} name={controlView.iconName} width="36" height="36"/>
 			</div>
 		</div>

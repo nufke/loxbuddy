@@ -15,7 +15,7 @@
 			name: buttonActive ? 'Switch off' : 'Switch on',
 			type: 'switch',
 			click: (e: any) => {
-				publishTopic(control.uuidAction, e.checked ? '1' : '0');
+				publishTopic(control.uuidAction, e.checked ? 'on' : 'off');
 			}
 		}
 	]);
