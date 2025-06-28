@@ -25,7 +25,7 @@ or submit a [pull request](https://github.com/nufke/loxbuddy/pulls).
 | CentralAlarm             | Not started       |
 | CentralAudioZone         | Not started       |
 | CentralGate              | Not started       |
-| CentralJalousie          | Not started       |
+| CentralJalousie          | Available         |
 | CentralLightController   | Available         |
 | CentralWindow            | Not started       |
 | Climate                  | Not started       |
@@ -128,7 +128,7 @@ or submit a [pull request](https://github.com/nufke/loxbuddy/pulls).
 | Internationalization        | Available (NL, DE, US)   |
 | Kiosk / room mode (tablet)  | Not started              |
 | LoxBerry plugins            | Not started              |
-| Notifications (local)       | Not started              |
+| Notifications (local)       | Under development        |
 | Pin protected pages         | Not started              |
 | Push messages (internet)    | Not started              |
 | Screensaver / Lockscreen    | Not started              |

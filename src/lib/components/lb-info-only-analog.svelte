@@ -21,7 +21,7 @@
 					let date = new Date(value * 1000 + loxTimeRef);
 					if (date && value) {
 						date = Utils.isDST(date) ? new Date(value * 1000 + loxTimeRef - 3600000) : date;
-						s = format(date, 'PPP p', { locale: Utils.getLocale() });
+						s = format(date, 'PPP p');
 					}
 					break;
 				case '<v.t>': // duration/time
@@ -33,7 +33,7 @@
 					break;
 				case '<v.d>': // EIS4, dd:mm:yyyy
 					const d = new Date(value * 1000 + loxTimeRef);
-					s = format(d, 'dd:MM:yyyy', { locale: Utils.getLocale() });
+					s = format(d, 'dd:MM:yyyy');
 					break;
 				case '<v.x>': // digital value
 					s = value ? '1' : '0'; // TODO check

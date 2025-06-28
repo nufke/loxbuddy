@@ -4,7 +4,6 @@
 	import { store } from '$lib/stores/store.svelte';
 	import { _ } from 'svelte-i18n';
 	import { format } from 'date-fns';
-	import { Utils } from '$lib/helpers/utils';
 
 	let group = $state('1');
 	let messages = $derived(store.getMessages()) as SystemStatus;
@@ -22,7 +21,7 @@
 			<Tabs.Panel value="1">
 				{#each activeMessages as entry}
 				<div class="border-b dark:border-surface-900 border-surface-200 p-3">
-					<p class="text-md text-surface-500">{format(new Date(Number(entry.timestamps[0])*1000), "PPP p", {locale: Utils.getLocale()})} {store?.rooms[entry?.roomUuid].name}</p>
+					<p class="text-md text-surface-500">{format(new Date(Number(entry.timestamps[0])*1000), "PPP p")} {store?.rooms[entry?.roomUuid].name}</p>
 					<p class="text-lg">{@html entry.title}</p>
 					<p class="text-md">{@html entry.affectedName}</p>
 				</div>
@@ -31,7 +30,7 @@
 			<Tabs.Panel value="2">
 				{#each pastMessages.toReversed() as entry}
 				<div class="border-b dark:border-surface-900 border-surface-200 p-3">
-					<p class="text-md text-surface-500">{format(new Date(Number(entry.timestamps[0])*1000), "PPP p", {locale: Utils.getLocale()})} {entry.roomUuid ? store.rooms[entry.roomUuid].name : ''}</p>
+					<p class="text-md text-surface-500">{format(new Date(Number(entry.timestamps[0])*1000), "PPP p")} {entry.roomUuid ? store.rooms[entry.roomUuid].name : ''}</p>
 					<p class="text-lg">{@html entry.title}</p>
 					<p class="text-md">{@html entry.affectedName}</p>
 				</div>

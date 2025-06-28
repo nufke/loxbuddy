@@ -104,7 +104,7 @@
 	<aside class="sticky top-0 col-span-1 h-screen">
 	<Navigation.Rail headerClasses="h-[20%] inline-block align-top" tilesClasses="h-[60%]" footerClasses="h-[20%] justify-end">
 		{#snippet header()}
-		<p class="mt-2 mb-4 text-center font-medium m-auto text-2xl">{format(time, "p", {locale: Utils.getLocale()})}</p>
+		<p class="mt-2 mb-4 text-center font-medium m-auto text-2xl">{format(time, "p")}</p>
 		{#if weatherAvailable}
 			<Navigation.Tile classes="-mt-4 justify-center hover:bg-transparent" onclick={openWeather}>
 				<div>
@@ -153,7 +153,7 @@
 				<span class="text-xl text-primary-500 font-medium">LoxBuddy</span>
 			</div>
 			<div class="mr-3 flex flex-row gap-3 justify-end">
-				<p class="text-right text-2xl font-medium">{format(new Date(), "p", {locale: Utils.getLocale()})}</p>
+				<p class="text-right text-2xl font-medium">{format(new Date(), "p")}</p>
 				<div class="flex flex-col gap-2">
 					<Circle class={getStatusColor(mqttStatus)} size="16"/>
 					<Square class={getStatusColor((mqttStatus==1) ? msStatus : 0)} size="16"/>

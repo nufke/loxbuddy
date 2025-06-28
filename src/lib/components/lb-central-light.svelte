@@ -15,7 +15,7 @@
 
 	let selectedControl: Control | undefined= $state();
 	let selectedControlOptions: ControlOptions | undefined = $state();
-	
+
 	let lightList = control.details.controls as LightItem[];
 	lightList.forEach( item => item.selected = false ); // default all lights unselected
 

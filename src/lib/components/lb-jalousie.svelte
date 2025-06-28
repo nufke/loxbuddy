@@ -29,7 +29,7 @@
 
 	let modal: ModalView = $state({
 		action: (state: boolean) => {modal.state = state},
-		state: false,
+		state: controlOptions.showModal,
 		buttons: [
 			{
 				iconName: 'ChevronDown',
@@ -87,6 +87,8 @@
 </script>
 
 <div>
-	<LbControl bind:controlView={controlView}/>
+	{#if controlOptions.showControl}
+		<LbControl bind:controlView={controlView}/>
+	{/if}
 	<LbJalousieModal bind:controlView={controlView}/>
 </div>

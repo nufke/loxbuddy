@@ -329,6 +329,12 @@ export type LightItem = {
 	selected?: boolean;
 }
 
+export type ScreenItem = {
+	id: number;
+	uuid: string;
+	selected?: boolean;
+}
+
 export type MoodList = {
 	name: string;
 	id: number;

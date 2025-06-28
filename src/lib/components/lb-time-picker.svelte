@@ -2,7 +2,6 @@
 	import { SvelteDate } from 'svelte/reactivity';
 	import { fade } from 'svelte/transition';
 	import { format } from 'date-fns';
-	import { Utils } from '$lib/helpers/utils';
 	import { _ } from 'svelte-i18n';
 	import { Calendar } from '@lucide/svelte';
 
@@ -180,7 +179,7 @@
 	}
 
 	function showDate() {
-		return format(date, 'PPP', { locale: Utils.getLocale() });
+		return format(date, 'PPP');
 	}
 
 	$effect(() => {

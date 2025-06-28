@@ -10,7 +10,7 @@
 	let o = 8;  // offset
 
 	let time = $derived(store.time)
-	let m = $derived(Utils.hours2dec(format(time, 'p', { locale: Utils.getLocale() })));
+	let m = $derived(Utils.hours2dec(format(time, 'p')));
 
 	let slots = entries.entry.filter((item:any) => Number(item.mode) === mode);
 

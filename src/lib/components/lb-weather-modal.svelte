@@ -78,7 +78,7 @@
 	{#if loaded}
 	<div class="-mt-2 justify-center text-center">
 		<p class="h4">{current.location}</p>
-		<p class="text-lg">{format(time, "PPP p", {locale: Utils.getLocale() })}</p>
+		<p class="text-lg">{format(time, "PPP p")}</p>
 		<div class="grid grid-cols-2 mb-5">
 			<div>
 				<p class="text-[120px] font-medium ml-8">{current.airTemperature}<span class="font-normal">°</span></p>
@@ -117,17 +117,17 @@
 					<p class="text-lg"><span class="font-medium">{current.uv}</span> UV</p>
 				</div>
 				<div class="flex gap-2">
-					<LbIcon class="text-surface-50 fill-surface-50" name={"/icons/svg/rain-meter.svg"} fill="white" width="32" height="25"/>
+					<LbIcon name={"/icons/svg/rain-meter.svg"} fill="white" width="32" height="25"/>
 					<p class="text-lg"><span class="font-medium">{current.precipitationToday}</span> mm</p>
 				</div>
 			</div>
 		</div>
 		{#each daily as day, i}
 		<div class="mt-2 max-w-[768px] bg-surface-100-900" onclick={() => openSlider(i)}>
-			<div class="grid grid-cols-8 p-2"> <!--  justify-items-start place-items-center -->
-				<div class="col-span-3 pl-2 pr-0 ">
-					<p class="text-left text-lg font-medium truncate">{format(new Date(day.time), "eeee d",{locale: Utils.getLocale() })}</p>
-					<p class="text-left text-lg truncate">{$_(day.conditions)}</p>
+			<div class="grid grid-cols-8 p-2 h-[85px]">
+				<div class="col-span-3 pl-2 pr-0 my-auto">
+					<p class="text-left text-lg font-medium truncate">{format(new Date(day.time), "eeee d")}</p>
+					<p class="text-left text-md truncate">{$_(day.conditions)}</p>
 				</div>
 				<div class="col-span-2 align-middle m-auto">
 					<LbIcon name={getDayIcon(day)} width="70"/>
@@ -163,7 +163,7 @@
 					{#each getHourly(day) as hour, j}
 					<div class="grid-mw pl-2 flex flex-col vr">
 						<div class="flex align-middle m-auto">
-							<p class="text-lg">{format(new Date(hour.time), "H",{locale: Utils.getLocale() })}</p>
+							<p class="text-lg">{format(new Date(hour.time), "H")}</p>
 						</div>
 						<div class="flex m-auto">
 							<span class="align-middle m-auto"><LbIcon name={getHourIcon(hour)} width="45" height="45"/></span>

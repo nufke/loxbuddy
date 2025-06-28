@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import { _ } from 'svelte-i18n';
 	import { getComponent } from '$lib/helpers/components';
 	import type { ControlOptions } from '$lib/types/models';
@@ -20,8 +21,8 @@
 <div class="container space-y-3 p-3 mx-auto max-w-[1280px]">
 	<h1 class="h4 ml-2">{$_('Favorites')}</h1>
 	{#each labels as label}
-		<h1 class="h5 ml-2">{label.name}</h1>
-		<div class="grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 lg:flex-wrap">
+		<button class="h5 ml-2" onclick={() => {goto('/category/'+label.uuid)}}>{label.name}</button>
+		<div class="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 lg:flex-wrap">
 			{#each filteredControls.filter( item => item.cat == label.uuid || item.room == label.uuid) as control}
 				{@const Component = getComponent(control.type)}
     		<Component {control} {controlOptions}/>

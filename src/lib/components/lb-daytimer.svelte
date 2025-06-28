@@ -13,7 +13,6 @@
 	import { X, Timer, CalendarClock } from '@lucide/svelte';
 	import fmt from 'sprintf-js';
 	import { _ } from 'svelte-i18n';
-	import { Utils } from '$lib/helpers/utils';
 	import { format, isAfter, isBefore, setHours, setMinutes, setSeconds } from 'date-fns';
 	import { publishTopic } from '$lib/communication/mqttclient';
 
@@ -40,7 +39,7 @@
 		let statusExt = '';
 		const timerEnds = store.time.valueOf() + overrideTime * 1000;
 		if (timerEnds) {
-			const dateStr = format(timerEnds, 'PPP p', { locale: Utils.getLocale() });
+			const dateStr = format(timerEnds, 'PPP p');
 			if (overrideTime>0 || (timer && timer.startTime !== timer.endTime)) {
 				statusExt = ' ' + $_('Till').toLowerCase() + ' ' + (overrideTime>0 ? dateStr : timer?.endTime);
 			}
