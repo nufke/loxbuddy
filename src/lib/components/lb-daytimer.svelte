@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { Modal } from '@skeletonlabs/skeleton-svelte';
 	import { SvelteDate } from 'svelte/reactivity';
+	import { Toaster, createToaster } from '@skeletonlabs/skeleton-svelte';
 	import { Switch } from '@skeletonlabs/skeleton-svelte';
 	import type { Control, ControlOptions, ControlView, ModalView, EntriesAndDefaultValue, WeekDays } from '$lib/types/models';
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
@@ -17,6 +18,8 @@
 	import { publishTopic } from '$lib/communication/mqttclient';
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
+
+	const toaster = createToaster({duration: 1500});
 
 	let isAnalog = Boolean(control.details.analog);
 	let value = $derived(Number(store.getState(control.states.value)));
@@ -109,12 +112,12 @@
 		let coeff = 1000 * 60; // round to minute
 		let overrideTimeSec = Math.round((date.getTime() - Date.now())/coeff)*coeff/1000;
 		let overrideValue = outputActive ? '1' : '0'; // TODO analog values
-		console.log("overrideTimeSec", overrideTimeSec);
     if (overrideTimeSec > 60) {// TODO define minimum time of 1 minute
 	    let cmd = 'startOverride/' + String(overrideValue) + '/' + String(overrideTimeSec);
 			publishTopic(control.uuidAction, cmd);
     } else {
-			console.log('Daytimer override timeperiod to low:', overrideTimeSec);
+			console.error('Daytimer override timeperiod to low:', overrideTimeSec);
+			toaster.info({ title: 'Timer period invalid!'});
 		}
 	}
 
@@ -221,3 +224,5 @@
 		{/snippet}
 	</Modal>
 </div>
+
+<Toaster {toaster}></Toaster>

@@ -25,20 +25,19 @@
 	);
 
 	let screensClosed = $derived(
-		screenControls.filter((control: Control) => Number(store.getState(control.states.position)) > 1)
+		screenControls.filter((control: Control) => Number(store.getState(control.states.position)) * 100 > 1)
 	);
 
-	let activeScreens =  $derived(screenList.length - screensClosed.length);
 	let selectedScreenCount = $derived(screenList.filter( item => item.selected == true).length);
 	
 	function getActiveScreens() {
 		let status = '';
-		switch (activeScreens) {
+		switch (screensClosed.length) {
         case 0:
           status = $_('All open');
           break;
         default:
-          status = String(activeScreens) + ' ' + $_('Closed').toLowerCase();
+          status = String(screensClosed.length) + ' ' + $_('Closed').toLowerCase();
       }
 			return status;
 	}
@@ -69,6 +68,7 @@
 
 	function getScreenPosition(uuid: string) {
 		let position = Math.round(Number(store.getState(store.controls[uuid].states.position)) * 100);
+		console.log('position', position);
 		return position < 1 ? $_('Opened') : (position > 99 ? $_('Closed') : String(position) + ' %');
 	}
 
@@ -78,10 +78,17 @@
 	}
 
 	function resetState() {
+		screenList.forEach( item => item.selected = false ); // clear selected screens
+		selectedControl = undefined;
+		selectedControlOptions = undefined;
 	}
 
 	function screenAction(action: string) {
-		publishTopic(control.uuidAction, action)
+		screenList.forEach( screen => { 
+			if (screen.selected) {
+				publishTopic(screen.uuid, action)
+			}
+		});
 	}
 
 	let buttons: SingleButtonView[] = $state([
@@ -105,11 +112,10 @@
 		iconName: store.getCategoryIcon(control, controlOptions.isSubControl),
 		textName: control.name,
 		statusName: getActiveScreens(),
-		statusColor: activeScreens ? 'text-primary-500' : 'text-surface-500',
+		statusColor: screensClosed.length ? 'text-primary-500' : 'text-surface-500',
 		buttons: buttons,
 		modal: modal
 	});
-
 </script>
 
 <div>
@@ -131,7 +137,7 @@
 				<div class="mb-2 flex justify-center">
 					<h2 class="h4 text-center ">{controlView.textName}</h2>
 				</div>
-				<h2 class="text-lg text-center {activeScreens ? 'text-primary-500' : 'text-surface-500'}">{getActiveScreens()}</h2>
+				<h2 class="text-lg text-center {screensClosed.length ? 'text-primary-500' : 'text-surface-500'}">{getActiveScreens()}</h2>
 				<div class="absolute top-0 right-0">
 					<button type="button" aria-label="close" class="btn-icon w-auto" onclick={() => controlView.modal.action(false)}>
 						<X />

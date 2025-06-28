@@ -206,8 +206,8 @@
 	<button class="absolute z-10 top-[50px] right-[0px] text-primary-500 text-sm" onclick={() => {view.isDateView = true; isMinuteView = false;}}>
 		<Calendar size="18"/>
 	</button>
-	<div class="relative card flex rounded-full m-auto border border-white/5 bg-linear-to-r from-white/[0.095] 
-							to-white/5 hover:border-white/10 overflow-auto" style="width: {size}px; height: {size}px"
+	<div class="relative card flex rounded-full m-auto border border-white/5 bg-surface-50-950
+							hover:border-white/10 overflow-auto" style="width: {size}px; height: {size}px"
 							class:is-minute-view={isMinuteView} bind:this={refClock} onclick={(e) => { e.preventDefault(); onClick(e);}}
 							onmousedown={onToggleMove} onmousemove={(e) => {isMouseDown && onClick(e);}} onmouseup={onToggleMove}>
 		<div class="absolute w-[6px] h-[6px] left-[50%] top-[50%] bg-primary-500 rounded-full translate-x-[-50%] translate-y-[-50%]"></div>
