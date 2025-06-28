@@ -102,10 +102,10 @@
 		<circle class="track" cx={loc.x} cy={loc.y} r={radius} onmousedown={trackMouseDown}/>
 		<circle class="set" cx={set.x} cy={set.y} r="12"/>
 		<circle class="knob" cx={knob.x} cy={knob.y} r="12" onmousedown={knobMouseDown}/>
-		<text x="157" y="90" text-anchor="middle" fill="#737373" font-size="20px">&#9679; <tspan fill="white">{$_('Actual')}</tspan></text>
-		<text x="160" y="175" text-anchor="middle" fill="white" font-size="80px">{actualTempDisplay[0]}<tspan dx="5" dy="-28" font-size="40px">{actualTempDisplay[1]}</tspan></text>
-		<text x="157" y="220" text-anchor="middle" fill="#00c951" font-size="18px">&#9679; <tspan fill="white">{$_('Target')} {targetTempDisplay[0]}<tspan dx="2" dy="-6" font-size="10px">{targetTempDisplay[1]}</tspan></text>
-		<text x="225" y="176" text-anchor="middle" fill="#737373" font-size="24px">{symbol}</text>
+		<text x="157" y="90" text-anchor="middle" fill="#737373" font-size="20px">&#9679; <tspan class="label">{$_('Actual')}</tspan></text>
+		<text class="label" x="160" y="175" text-anchor="middle" font-size="80px">{actualTempDisplay[0]}<tspan class="label" dx="5" dy="-28" font-size="40px">{actualTempDisplay[1]}</tspan></text>
+		<text x="157" y="220" text-anchor="middle" fill="var(--color-primary-500)" font-size="18px">&#9679; <tspan class="label">{$_('Target')} {targetTempDisplay[0]}<tspan dx="2" dy="-6" font-size="10px">{targetTempDisplay[1]}</tspan></text>
+		<text class="label" x="225" y="176" text-anchor="middle" font-size="24px">{symbol}</text>
 		<svg class="button" x="105" y="260" onmousedown={startDown} onmouseup={endDown}>
 			<circle class="c1" cx="20" cy="20" r="20" />
 			<path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke="currentColor" d="m14 17 6 6 6-6"></path>
@@ -118,6 +118,9 @@
 </div>
 
 <style>
+	.label {
+		fill: light-dark(var(--color-surface-950), var(--color-surface-50));
+	}
 	svg {
 		cursor: default;
 		position: relative;
@@ -125,7 +128,7 @@
 	.track {
 		fill: none;
 		cursor: pointer;
-		stroke: rgba(0,0,0,1);
+		stroke: light-dark(var(--color-surface-50), var(--color-surface-950));
 		stroke-width: 15px;
 		stroke-dasharray: 660;
 		transform-origin: center;
@@ -139,14 +142,14 @@
 	}
 	.knob {
 		cursor: pointer;
-		fill: #00c951; /* TODO palette */
+		fill: var(--color-primary-500);
 		z-index: 3;
 	}
 	.button {
 		cursor: pointer;
 		z-index: 14;
 		circle {
-			fill: black;
+			fill: light-dark(var(--color-surface-50), var(--color-surface-950));
 		}
 	}
 </style>

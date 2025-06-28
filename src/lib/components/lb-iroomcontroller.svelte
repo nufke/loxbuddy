@@ -53,8 +53,9 @@ let temperatureIdsList : ListItem[] = [
 	let controlView: ControlView = $derived({
 		...DEFAULT_CONTROLVIEW,
 		control: control,
-		iconName: '',
+		iconName: '', // no icon, render temperature as text
 		iconText: tempActual,
+		iconColor: 'fill-surface-950 dark:fill-surface-50',
 		textName: control.name === $_('IRoomController') ? store.rooms[control.room].name : control.name,
 		statusName: temperatureIdsList[id]?.name,
 		statusColor: 'text-surface-500', // TODO other colors for temperatures

@@ -203,10 +203,12 @@
 			<span class="text-lg">{(isPM ? meridiem[1] : meridiem[0]).toUpperCase()}</span>
 		{/if}
 	</div>
-	<button class="absolute z-10 top-[50px] right-[0px] text-primary-500 text-sm" onclick={() => {view.isDateView = true; isMinuteView = false;}}>
-		<Calendar size="18"/>
+	<button class="absolute flex z-10 top-[50px] right-[0px] text-primary-500 text-sm items-center justify-center 
+								bg-surface-50-950 rounded-full w-[40px] h-[40px]" 
+	        onclick={() => {view.isDateView = true; isMinuteView = false;}}>
+		<Calendar size="20"/>
 	</button>
-	<div class="relative card flex rounded-full m-auto border border-white/5 bg-surface-50-950
+	<div class="relative card flex rounded-full m-auto border border-white/5 bg-surface-50-950 border border-white/5
 							hover:border-white/10 overflow-auto" style="width: {size}px; height: {size}px"
 							class:is-minute-view={isMinuteView} bind:this={refClock} onclick={(e) => { e.preventDefault(); onClick(e);}}
 							onmousedown={onToggleMove} onmousemove={(e) => {isMouseDown && onClick(e);}} onmouseup={onToggleMove}>
@@ -222,7 +224,7 @@
 			</button>
 		{/each}
 		{#each innerHours as p, i}
-			<button type="button" class="lb-ticks absolute text-center rounded-full border-0 cursor-pointer  translate-x-[-50%] translate-y-[-50%]" 
+			<button type="button" class="lb-ticks absolute text-center rounded-full border-0 cursor-pointer translate-x-[-50%] translate-y-[-50%]" 
 			  style={`left:${p.x}px; top:${p.y}px;`} class:outer-tick={showMeridian && !isMinuteView}
 				transition:fade={{ duration: 200 }} data-value={p.val} 
 				class:is-selected={isSelected(isMinuteView ? selectedMinutes : selectedHour, p.val, i)}>

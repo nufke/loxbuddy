@@ -111,9 +111,9 @@
 		{timeStr.split(':')[1]}
 	</button>
 </div>
-<div class="card m-0 flex rounded-lg border border-white/5
-						bg-surface-50-950 px-2 py-2 hover:border-white/10 min-h-[300px]">
-	<div class="grid grid-cols-7">
+<div class="card m-0 flex rounded-lg border border-white/5 hover:border-white/10
+						bg-surface-50-950 px-2 py-2 hover:border-white/10 h-[300px]">
+	<div class="w-full grid grid-cols-7 gap-0">
 		<div class="btn-icon" onclick={() => setMonth(-1)}><ChevronLeft/></div>
 		<div class="btn-icon text-primary-500" onclick={() => reset()}><Undo2/></div>
 		<div class="btn col-span-3">{month} {year}</div>

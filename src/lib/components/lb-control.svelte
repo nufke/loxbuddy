@@ -36,8 +36,8 @@
 			{/if}
 			{#if controlView.iconText?.length} <!-- IRC -->
 				<div class="relative mr-1 inline-flex items-center justify-center w-12 h-12 min-w-12 overflow-hidden rounded-full border border-white/10 dark:bg-surface-950 bg-surface-50">
-					<svg class="{controlView.iconColor}" width="32" height="32">
-						<text text-anchor="middle" x="16" y="22" fill="white" font-size="18">{getT().num}<tspan font-size="14">{getT().frac}</tspan>
+					<svg width="32" height="32">
+						<text class={controlView.iconColor} text-anchor="middle" x="16" y="22" font-size="18">{getT().num}<tspan font-size="14">{getT().frac}</tspan>
 						</text>
 					</svg>
 				</div>
