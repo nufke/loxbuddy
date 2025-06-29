@@ -14,7 +14,7 @@ or submit a [pull request](https://github.com/nufke/loxbuddy/pulls).
 | Alarm                    | Available         |
 | AlarmCentral             | Not started       |
 | AlarmChain               | Not started       |
-| AlarmClock               | Not started       |
+| AlarmClock               | Under development |
 | Athene                   | Not started       |
 | Application              | Not started       |
 | AudioPlayerGroup         | Not started       |
@@ -102,7 +102,7 @@ or submit a [pull request](https://github.com/nufke/loxbuddy/pulls).
 | TextInput                | Not started       |
 | TextState                | Available         |
 | TimedSwitch              | Not started       |
-| Tracker                  | Under development |
+| Tracker                  | Not started       |
 | UpDownAnalog             | Not started       |
 | UpDownDigital            | Available         |
 | UpDownLeftRightAnalog    | Not started       |
@@ -120,6 +120,7 @@ or submit a [pull request](https://github.com/nufke/loxbuddy/pulls).
 
 | Feature                     | Status                   |
 |-----------------------------|--------------------------|
+| 12h clock notation          | Not started              |
 | Alarm sync w mobile alarm   | Not started              |
 | Battery status update       | Not started              |
 | Calendar                    | Not started              |
@@ -131,7 +132,7 @@ or submit a [pull request](https://github.com/nufke/loxbuddy/pulls).
 | Notifications (local)       | Under development        |
 | Pin protected pages         | Not started              |
 | Push messages (internet)    | Not started              |
-| Screensaver / Lockscreen    | Not started              |
+| Screensaver / Lockscreen    | Available                |
 | Settings menu               | Under development        |
 | Splashscreen                | Not started              |
 | Statistics / history        | Not started              |

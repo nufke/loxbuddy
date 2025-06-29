@@ -14,6 +14,7 @@
 	import type { WeatherCurrentConditions } from '$lib/types/weather';
 	import LbIcon from '$lib/components/lb-icon-by-name.svelte';
 	import LbWeatherModal from '$lib/components/lb-weather-modal.svelte';
+	import LbLockScreenModal from '$lib/components/lb-lock-screen-modal.svelte';
 	import { format } from 'date-fns';
 	import { goto } from '$app/navigation';
 
@@ -24,7 +25,6 @@
 
 	let currentWeather = $derived(weatherStore.current);
 	let dailyForecast = $derived(weatherStore.daily);
-	let showWeatherModal = $state(false);
 	let time = $derived(store.time);
 	let mqttStatus =  $derived(store.mqttStatus);
 	let msStatus =  $derived(store.msStatus);
@@ -59,8 +59,9 @@
 	}
 
 	function openWeather() {
-		if (currentWeather.time>0) {
-			showWeatherModal = true;
+		if (currentWeather.time > 0) {
+			store.weatherModal.state = true;
+			store.setWeatherModalTimeout();
 		}
 	}
 
@@ -80,13 +81,15 @@
 		goto(s);
 		store.setNav({ label: 'Menu', href: '/menu', icon: Menu });
 	}
-	
+
 	$effect( () => {
-		let found = routesMobile.find ( item => item.href == path);
+		let found = routesMobile.find ( item => item.href == path );
 		if (found) {
 			store.setNav({ label: 'Menu', href: '/menu', icon: Menu });
 		}
 	});
+
+	store.setLockScreenModalTimeout();
 </script>
 
 <svelte:head>
@@ -100,11 +103,13 @@
 
 <!-- we need to use the innerWidth to avoid we render the children twice -->
 {#if (innerWidth.current != undefined) && innerWidth.current > 768 } <!-- tabled mode -->
-<div class="hidden md:grid grid-cols-[auto_1fr]">
+<div class="hidden md:grid grid-cols-[auto_1fr]" onmousemove={store.lockScreenModal.action}>
 	<aside class="sticky top-0 col-span-1 h-screen">
 	<Navigation.Rail headerClasses="h-[20%] inline-block align-top" tilesClasses="h-[60%]" footerClasses="h-[20%] justify-end">
 		{#snippet header()}
-		<p class="mt-2 mb-4 text-center font-medium m-auto text-2xl">{format(time, "p")}</p>
+		<div onclick={()=>{store.lockScreenModal.state=true}}>
+			<p class="mt-2 mb-4 text-center font-medium m-auto text-2xl">{format(time, "p")}</p>
+		</div>
 		{#if weatherAvailable}
 			<Navigation.Tile classes="-mt-4 justify-center hover:bg-transparent" onclick={openWeather}>
 				<div>
@@ -135,7 +140,7 @@
   </main>
 </div>
 {:else}
-<div class="md:hidden grid grid-rows-[auto_1fr_auto]"> <!-- mobile mode -->
+<div class="md:hidden grid grid-rows-[auto_1fr_auto]" onmousemove={store.lockScreenModal.action}> <!-- mobile mode -->
 	<header class="sticky preset-filled-surface-100-900 top-0 z-1">
 		<div class="grid grid-cols-3 text-center items-center m-auto h-[60px]">
 			<div class="flex flex-row text-center items-center gap-3">
@@ -153,7 +158,9 @@
 				<span class="text-xl text-primary-500 font-medium">LoxBuddy</span>
 			</div>
 			<div class="mr-3 flex flex-row gap-3 justify-end">
-				<p class="text-right text-2xl font-medium">{format(new Date(), "p")}</p>
+				<div onclick={()=>{store.lockScreenModal.state=true}}>
+					<p class="text-right text-2xl font-medium">{format(new Date(), "p")}</p>
+				</div>
 				<div class="flex flex-col gap-2">
 					<Circle class={getStatusColor(mqttStatus)} size="16"/>
 					<Square class={getStatusColor((mqttStatus==1) ? msStatus : 0)} size="16"/>
@@ -177,7 +184,8 @@
 </div>
 {/if}
 
-<LbWeatherModal bind:open={showWeatherModal} />
+<LbWeatherModal />
+<LbLockScreenModal />
 
 <style>
 .main {

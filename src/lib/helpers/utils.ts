@@ -101,7 +101,6 @@ export class Utils {
 
 	static epoch2TimeStr(epoch: number) {
 		const date = new Date(epoch*1000);
-		const time = Utils.isDST(date) ? new Date(epoch*1000 - 3600000) : date;
-		return format(time, "p");
+		return format(date, "p");
 	}
 }

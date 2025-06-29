@@ -1,6 +1,6 @@
 import { SvelteMap } from 'svelte/reactivity';
 import { INITIAL_STRUCTURE } from '$lib/types/models';
-import type { Structure, Control, Category, SystemStatus, Route } from '$lib/types/models';
+import type { Structure, Control, Category, SystemStatus, Route, ModalView } from '$lib/types/models';
 import { Utils } from '$lib/helpers/utils';
 import { loxiconsPath } from '$lib/helpers/paths';
 import { Menu } from '@lucide/svelte';
@@ -22,6 +22,18 @@ class Store {
 	mqttStatus = $state(0); // 0=disconnected (grey), 1=connected/ok/info (green), 2=warning/issue (yellow), 3=error (red)
 	msAlive = $derived(false);
 	msStatus = $derived(this.getSystemCode());
+
+	weatherModal: ModalView = $state({
+		action: () => {clearTimeout(this.weatherModal.timeout); this.setWeatherModalTimeout();},
+		state: false,
+		timeout: undefined
+	});
+
+	lockScreenModal: ModalView = $state({
+		action: () => {this.lockScreenModal.state = false; clearTimeout(this.lockScreenModal.timeout); this.setLockScreenModalTimeout();},
+		state: false,
+		timeout: undefined
+	});
 
 	stateUpdate: NodeJS.Timeout;
 
@@ -117,9 +129,21 @@ class Store {
 			return ''; // hide icon for subcontrols by returning empty name
 		}
 	}
-	
+
 	setMqttStatus(s: number) {
 		this.mqttStatus = s;
+	}
+
+	setWeatherModalTimeout() {
+		this.weatherModal.timeout = setTimeout(() => {
+			this.weatherModal.state = false;
+		}, 10000); // 10s  TODO add to configuration
+	}
+
+	setLockScreenModalTimeout() {
+		this.lockScreenModal.timeout = setTimeout(() => {
+			this.lockScreenModal.state = true;
+		}, 60000); // 60s TODO add to configuration
 	}
 }
 

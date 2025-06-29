@@ -188,7 +188,8 @@
 </script>
 
 <div class="relative">
-	<div class="relative flex flex-row justify-center align-center mb-4">
+	{#if view.label}
+	<div class="relative flex flex-row justify-center align-center mb-4"> <!-- full date and time -->
 		<button type="button" class="text-lg" onclick={() => {view.isDateView = true; isMinuteView = false;}}>
 			{$_("Timer till")}: {showDate()}&#160;
 		</button>
@@ -203,11 +204,27 @@
 			<span class="text-lg">{(isPM ? meridiem[1] : meridiem[0]).toUpperCase()}</span>
 		{/if}
 	</div>
+	{:else}
+	<div class="relative flex flex-row justify-center align-center mb-4"> <!-- only time -->
+		<button type="button" class="text-2xl" class:is-active={!isMinuteView} onclick={() => (isMinuteView = false)}>
+			{showTime(selectedHour, showMeridian)}
+		</button>
+		<span class="text-2xl">&#160;:&#160;</span>
+		<button type="button" class="text-2xl" class:is-active={isMinuteView} onclick={() => (isMinuteView = true)}>
+			{showTime(selectedMinutes, false)}
+		</button>
+		{#if showMeridian}
+			<span class="text-lg">{(isPM ? meridiem[1] : meridiem[0]).toUpperCase()}</span>
+		{/if}
+	</div>
+	{/if}
+	{#if view.label}
 	<button class="absolute flex z-10 top-[50px] right-[0px] text-primary-500 text-sm items-center justify-center 
 								bg-surface-50-950 rounded-full w-[40px] h-[40px]" 
 	        onclick={() => {view.isDateView = true; isMinuteView = false;}}>
 		<Calendar size="20"/>
 	</button>
+	{/if}
 	<div class="relative card flex rounded-full m-auto border border-white/5 bg-surface-50-950 border border-white/5
 							hover:border-white/10 overflow-auto" style="width: {size}px; height: {size}px"
 							class:is-minute-view={isMinuteView} bind:this={refClock} onclick={(e) => { e.preventDefault(); onClick(e);}}
@@ -257,5 +274,8 @@
 		animation: tick-selection 0s 0.175s ease-out forwards;
 		color: black;
 		background: var(--color-primary-500);
+	}
+	.is-active {
+		text-decoration: underline;
 	}
 </style>

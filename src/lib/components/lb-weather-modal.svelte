@@ -11,8 +11,6 @@
 	import { Modal } from '@skeletonlabs/skeleton-svelte';
 	import { fade200 } from '$lib/helpers/transition';
 
-	let { open = $bindable() } = $props();
-
 	let slider = $state(Array.from({length: 10}, i => i = false));
 	let current = $derived(weatherStore.current);
 	let daily = $derived(weatherStore.daily);
@@ -24,6 +22,8 @@
 		if (hourly[i]) {
 			slider[i] = !slider[i];
 		}
+		store.weatherModal.action(); // reset timeout
+		store.lockScreenModal.action(); // reset timeout
 	}
 
 	function getCurrentIcon(cur: WeatherCurrentConditions) {
@@ -59,7 +59,7 @@
 </script>
 
 <Modal
-	open={open}
+	open={store.weatherModal.state}
 	transitionsBackdropIn = {fade200}
 	transitionsBackdropOut = {fade200}
 	transitionsPositionerIn = {fade200}
@@ -72,11 +72,11 @@
 	{#snippet content()}
 	<header class="sticky top-0 h-[40px] dark:bg-surface-950/50 bg-surface-50/50 z-1">
 		<div class="absolute right-1 top-1">
-			<button type="button" aria-label="close" class="btn-icon w-auto" onclick={()=> open = false}><X/></button>
+			<button type="button" aria-label="close" class="btn-icon w-auto" onclick={()=> store.weatherModal.state = false}><X/></button>
 		</div>
 	</header>
 	{#if loaded}
-	<div class="-mt-2 justify-center text-center">
+	<div class="-mt-2 justify-center text-center" onscroll={store.weatherModal.action} onmousemove={store.weatherModal.action}>
 		<p class="h4">{current.location}</p>
 		<p class="text-lg">{format(time, "PPP p")}</p>
 		<div class="grid grid-cols-2 mb-5">
@@ -118,7 +118,7 @@
 				</div>
 				<div class="flex gap-2">
 					<LbIcon name={"/icons/svg/rain-meter.svg"} fill="white" width="32" height="25"/>
-					<p class="text-lg"><span class="font-medium">{current.precipitationToday}</span> mm</p>
+					<p class="text-lg"><span class="font-medium">{current.precipitationToday}</span> mm today</p>
 				</div>
 			</div>
 		</div>

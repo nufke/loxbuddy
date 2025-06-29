@@ -305,7 +305,8 @@ export type ModalView = {
 	action: any,
 	state?: boolean;
 	buttons?: SingleButtonView[];
-	details?:any;
+	details?: any;
+	timeout?: any;
 }
 
 export const DEFAULT_CONTROLVIEW: ControlView = {
@@ -404,3 +405,16 @@ export type EntriesAndDefaultValue = {
 export type WeekDays = {
 	[key: string]: string;
 };
+
+export type AlarmClockEntry = {
+	name: string;
+	isActive: boolean;
+	alarmTime: number; // sec counted from 0:00 26100
+	nightLight: boolean;
+	daily: boolean;
+	modes: number[]; // days based on operating modes
+}
+
+export type AlarmClockEntries = {
+	[key: string]: AlarmClockEntry
+}

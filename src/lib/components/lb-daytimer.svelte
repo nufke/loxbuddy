@@ -123,7 +123,8 @@
 
 	let dateTimeView = $state({
 		isDateView: true,
-		isMinuteView: false
+		isMinuteView: false,
+		label: true
 	});
 
 	let modal: ModalView = $state({
