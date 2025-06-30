@@ -9,7 +9,7 @@
 	const href = key + '/' + item.uuid;
 </script>
 
-<a href={href} class="card m-0 flex min-h-[70px] shadow-xl items-center justify-start rounded-lg border border-white/5
+<a href={href} class="card m-0 flex min-h-[70px] shadow-sm items-center justify-start rounded-lg border border-white/5
           					 	bg-surface-100-900 px-2 py-2 hover:border-white/10">
 	<div class="w-full">
 		<div class="flex items-center truncate">

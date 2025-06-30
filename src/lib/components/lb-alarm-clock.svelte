@@ -1,59 +1,35 @@
 <script lang="ts">
+	import { tick } from 'svelte';
 	import type { Control, ControlOptions, ControlView, ModalView, AlarmClockEntries, AlarmClockEntry } from '$lib/types/models';
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import LbControl from '$lib/components/lb-control.svelte';
 	import { Switch } from '@skeletonlabs/skeleton-svelte';
-	import { X } from '@lucide/svelte';
+	import { X, Trash2 } from '@lucide/svelte';
 	import { store } from '$lib/stores/store.svelte';
 	import { _ } from 'svelte-i18n';
+	import { format } from 'date-fns';
 	import { Modal } from '@skeletonlabs/skeleton-svelte';
 	import { fade200 } from '$lib/helpers/transition';
 	import LbInPlaceEdit from '$lib/helpers/in-place-ediit.svelte';
 	import LbTimePickerModal from '$lib/components/lb-time-picker-modal.svelte';
 	import LbDayPickerModal from '$lib/components/lb-day-picker-modal.svelte';
 	import { publishTopic } from '$lib/communication/mqttclient';
+	import { Utils } from '$lib/helpers/utils';
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
-	let isEnabled = $derived(store.getState(control.states.isEnabled));
-	let entryList = $derived(store.getState(control.states.entryList) as AlarmClockEntries);
-	let entryListIds = $derived(entryList ? Object.keys(entryList) : []);
-	let entryListArray = $derived(entryList ? Object.values(entryList) : []);
+	let viewport: any;
 
+	let entryList = $derived(store.getState(control.states.entryList) as AlarmClockEntries);
+	let entryListIds = $derived(entryList ? Object.keys(entryList).map(n => Number(n)) : []);
+	let entryListArray = $derived(entryList ? Object.values(entryList) : []);
+	let updateScroll: boolean = $state(false);
 	let alarms = $derived(entryList ? Object.values(entryList).filter( entry => entry.isActive) : []); //Utils.dec2hours(entry.alarmTime)
 
 	let modal: ModalView = $state({
 		action: (state: boolean) => {modal.state = state},
 		state: false
 	});
-
-	function updateEntry(i: number) {
-		let cmd = 'entryList/put/' + entryListIds[i] + '/' +
-		    entryListArray[i].name  + '/' + entryListArray[i].alarmTime + '/' + 
-				(entryListArray[i].isActive ? '1' : '0') + '/' + 	entryListArray[i].modes.map(s => s.toString());
-		//console.log('cmd', cmd);
-		publishTopic(control.uuidAction, cmd);
-	}
-
-	function updateName(i: number, e: any) {
-		entryListArray[i].name = e.value;
-		updateEntry(i);
-	}
-
-	function updateAlarmTime(i: number, e: any) {
-		entryListArray[i].alarmTime = e.value;
-		updateEntry(i);
-	}
-
-	function updateIsActive(i: number, e: any) {
-		entryListArray[i].isActive = e.checked;
-		updateEntry(i);
-	}
-
-	function updateModes(i: number, e: any) {
-		entryListArray[i].modes = e.value;
-		updateEntry(i);
-	}
 
 	let controlView: ControlView = $derived({
 		...DEFAULT_CONTROLVIEW,
@@ -64,56 +40,139 @@
 		statusColor: alarms.length ? 'text-primary-500' : 'text-surface-500',
 		modal: modal
 	});
+
+	function newId() {
+		let max = Math.max(...entryListIds);
+		for( let i = 0; i <= max; i++) {
+			if (!entryListIds.includes(i)) return i;
+		}
+		return max + 1; // new ID
+	}
+
+	function publishEntry(entry: AlarmClockEntry, i: number = -1) {
+		let id = (i == -1) ? newId() : entryListIds[i]; /* -1 is new entry */
+		let n = (i == -1) ? id : ''; /* extend name for new entries */
+		let cmd = 'entryList/put/' + String(id) + '/' +
+		    entry.name + n + '/' + entry.alarmTime + '/' + 
+				(entry.isActive ? '1' : '0') + '/' + 	entry.modes.map(s => s.toString());
+		//console.log('cmd', cmd, id, entryListIds);
+		publishTopic(control.uuidAction, cmd);
+	}
+
+	function updateName(i: number, e: any) {
+		entryListArray[i].name = e.value;
+		publishEntry(entryListArray[i], i);
+	}
+
+	function updateAlarmTime(i: number, e: any) {
+		entryListArray[i].alarmTime = e.value;
+		publishEntry(entryListArray[i], i);
+	}
+
+	function updateIsActive(i: number, e: any) {
+		entryListArray[i].isActive = e.checked;
+		publishEntry(entryListArray[i], i);
+	}
+
+	function updateModes(i: number, e: any) {
+		entryListArray[i].modes = e.value;
+		publishEntry(entryListArray[i], i);
+	}
+
+	function addEntry() {
+		if (entryListIds.length > 15) return; // limit to 16 entries
+		let day = format(new Date(), 'eeee');
+		let opModes = store.structure.operatingModes;
+		let idx = Object.keys(opModes).find( (key) => opModes[key].toLowerCase() == day);
+		let entry: AlarmClockEntry = {
+			name: $_('Alarm clock'),
+			alarmTime: Utils.hours2sec(format(new Date(), 'p')),
+			isActive: true,
+			modes: [Number(idx)], 
+			nightLight: false,
+			daily: false
+		};
+		updateScroll = true;
+		publishEntry(entry, -1); /* new entry */
+	}
+
+	function deleteEntry(i: number) {
+		let cmd = 'entryList/delete/' + entryListIds[i];
+		publishTopic(control.uuidAction, cmd);
+	}
+
+	$effect( () => {
+		console.log('entryListIds', entryListIds);
+		if (entryListArray) { /* to trigger the scroll, we need to be sensitive to the entryList */
+			tick().then( () => {
+				if ( viewport && updateScroll) {
+   				viewport.scroll({ top: viewport.scrollHeight, behavior: 'smooth' });
+					updateScroll = false;
+				}
+			});
+		}
+  });
 </script>
 
 <div>
 	<LbControl bind:controlView={controlView}/>
 
-<Modal
-	open={controlView.modal.state}
-	transitionsBackdropIn = {fade200}
-	transitionsBackdropOut = {fade200}
-	transitionsPositionerIn = {fade200}
-	transitionsPositionerOut = {fade200}
-	onOpenChange={()=>controlView.modal.action(false)}
-	triggerBase="btn bg-surface-600"
-	contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-sm rounded-lg border border-white/5 hover:border-white/10
-							max-w-9/10 max-h-9/10 overflow-auto w-[380px]"
-	backdropClasses="backdrop-blur-sm">
-	{#snippet content()}
-	<header class="relative">
-		<div class="flex justify-center">
-			<h2 class="h4 text-center">{controlView.textName}</h2>
-		</div>
-		<div class="absolute top-0 right-0">
-			<button type="button" aria-label="close" class="btn-icon w-auto" onclick={() => controlView.modal.action(false)}>
-				<X />
-			</button>
-		</div>
-	</header>
-	<div class="">
-			{#each entryListArray as entry, i}
-			<div class="container mt-2 p-4 dark:bg-surface-950 bg-surface-50 rounded-lg" > <!-- onclick={(e) => {openSlider(i)}}-->
-				<div class="flex w-full m-auto h-[30] justify-between">
-					<div>
-						<h1 class="text-lg truncate">
-							<LbInPlaceEdit value={entryListArray[i].name} onValueChange={(e:any)=>{ updateName(i, e)}}/>
-						</h1>
-						<h1 class="text-3xl {entryListArray[i].isActive ? 'dark:text-surface-50 text-surface-950' : 'dark:text-surface-700 text-surface-300'}">
-							<LbTimePickerModal alarmTime={entry.alarmTime} onValueChange={(e:any)=>{ updateAlarmTime(i, e)}}/>
-						</h1>
-					</div>
-					<div onclick={(e) => {e.stopPropagation(); }}> <!-- workaround wrapper to stop propagation for switch -->
-						<Switch controlClasses="w-12 h-8" name="slide" controlActive="bg-primary-500" checked={entryListArray[i].isActive} onCheckedChange={(e) => {updateIsActive(i, e)}} />
-					</div>
-				</div>
-				<div>
-					<LbDayPickerModal modes={entry.modes} isActive={entryListArray[i].isActive} onValueChange={(e:any)=>{updateModes(i, e)}}/>
-				</div>
+	<Modal
+		open={controlView.modal.state}
+		transitionsBackdropIn = {fade200}
+		transitionsBackdropOut = {fade200}
+		transitionsPositionerIn = {fade200}
+		transitionsPositionerOut = {fade200}
+		onOpenChange={()=>controlView.modal.action(false)}
+		triggerBase="btn bg-surface-600"
+		contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-sm rounded-lg border border-white/5 hover:border-white/10
+								max-w-9/10 max-h-9/10 overflow-auto w-[380px]"
+		backdropClasses="backdrop-blur-sm">
+		{#snippet content()}
+		<header class="relative" >
+			<div class="flex justify-center">
+				<h2 class="h4 text-center">{controlView.textName}</h2>
 			</div>
+			<div class="absolute top-0 right-0">
+				<button type="button" aria-label="close" class="btn-icon w-auto" onclick={() => controlView.modal.action(false)}>
+					<X />
+				</button>
+			</div>
+		</header>
+		<div bind:this={viewport} class="max-h-[405px] overflow-auto">
+			{#each entryListArray as entry, i}
+				<div class="mt-2 p-4 dark:bg-surface-950 bg-surface-50 rounded-lg">
+					<div class="flex w-full m-auto h-[72px] justify-between">
+						<div>
+							<h1 class="text-lg truncate">
+								<LbInPlaceEdit value={entryListArray[i].name} onValueChange={(e:any)=>{ updateName(i, e)}}/>
+							</h1>
+							<h1 class="text-3xl {entryListArray[i].isActive ? 'dark:text-surface-50 text-surface-950' : 'dark:text-surface-700 text-surface-300'}">
+								<LbTimePickerModal alarmTime={entry.alarmTime} onValueChange={(e:any)=>{ updateAlarmTime(i, e)}}/>
+							</h1>
+						</div>
+						<div onclick={(e) => {e.stopPropagation(); }}> <!-- workaround wrapper to stop propagation for switch -->
+							<Switch controlClasses="w-12 h-8" name="slide" controlActive="bg-primary-500" checked={entryListArray[i].isActive} onCheckedChange={(e) => {updateIsActive(i, e)}} />
+						</div>
+					</div>
+					<div class="flex w-full m-auto justify-between">
+						<LbDayPickerModal modes={entry.modes} isActive={entryListArray[i].isActive} onValueChange={(e:any)=>{updateModes(i, e)}}/>
+						{#if i > 0}
+						<button type="button" class="text-surface-500" aria-label="delete" onclick={() =>deleteEntry(i)}>
+							<Trash2/>
+						</button>
+						{/if}
+					</div>
+				</div>
 			{/each}
-	</div>
-	{/snippet}
-</Modal>
-
+		</div>
+		<footer class="">
+			<button type="button" class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50
+				 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
+					onclick={addEntry}>
+				<span class="text-lg {entryListIds.length > 15 ? 'dark:text-surface-800 text-surface-200' : ''}"s>{$_("Add new alarm time")}</span>
+			</button>
+		</footer>
+		{/snippet}
+	</Modal>
 </div>

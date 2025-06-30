@@ -410,8 +410,8 @@ export type AlarmClockEntry = {
 	name: string;
 	isActive: boolean;
 	alarmTime: number; // sec counted from 0:00 26100
-	nightLight: boolean;
-	daily: boolean;
+	nightLight?: boolean;
+	daily?: boolean;
 	modes: number[]; // days based on operating modes
 }
 

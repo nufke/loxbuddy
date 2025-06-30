@@ -102,7 +102,7 @@
 </svelte:head>
 
 <!-- click activity resets timeout for lockscreen -->
-<svelte:body onclick={() => {console.log('click'); store.resetLockScreenModalTimeout();}}/>
+<svelte:body onclick={() => {store.resetLockScreenModalTimeout()}}/>
 
 <!-- we need to use the innerWidth to avoid we render the children twice -->
 {#if (innerWidth.current != undefined) && innerWidth.current > 768 } <!-- tabled mode -->
