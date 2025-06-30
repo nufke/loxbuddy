@@ -24,13 +24,13 @@ class Store {
 	msStatus = $derived(this.getSystemCode());
 
 	weatherModal: ModalView = $state({
-		action: () => {clearTimeout(this.weatherModal.timeout); this.setWeatherModalTimeout();},
+		action: () => {},
 		state: false,
 		timeout: undefined
 	});
 
 	lockScreenModal: ModalView = $state({
-		action: () => {this.lockScreenModal.state = false; clearTimeout(this.lockScreenModal.timeout); this.setLockScreenModalTimeout();},
+		action: () => {},
 		state: false,
 		timeout: undefined
 	});
@@ -134,10 +134,22 @@ class Store {
 		this.mqttStatus = s;
 	}
 
+	resetLockScreenModalTimeout() {
+		this.lockScreenModal.state = false; 
+		clearTimeout(this.lockScreenModal.timeout); 
+		this.setLockScreenModalTimeout();
+	}
+
+	resetWeatherModalTimeout() {
+		this.weatherModal.state = false; 
+		clearTimeout(this.weatherModal.timeout); 
+		this.setWeatherModalTimeout();
+	}
+
 	setWeatherModalTimeout() {
 		this.weatherModal.timeout = setTimeout(() => {
 			this.weatherModal.state = false;
-		}, 10000); // 10s  TODO add to configuration
+		}, 30000); // 30s TODO add to configuration
 	}
 
 	setLockScreenModalTimeout() {

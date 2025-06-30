@@ -135,10 +135,10 @@
 	let controlView: ControlView = $derived({
 		...DEFAULT_CONTROLVIEW,
 		iconName: store.getCategoryIcon(control, controlOptions.isSubControl),
-		iconColor: (value > 0 ) ? 'fill-success-500' : 'fill-primary-950 dark:fill-primary-50',
+		iconColor: (value > 0 ) ? 'fill-primary-500' : 'fill-surface-950 dark:fill-surface-50',
 		textName: control.name,
 		statusName: status + getDuration(),
-		statusColor: (value > 0 ) ? 'text-success-500' : 'text-surface-500',
+		statusColor: (value > 0 ) ? 'text-primary-500' : 'text-surface-500',
 		modal: modal
 	});
 
@@ -159,7 +159,7 @@
 		transitionsPositionerOut = {fade200}
 		onOpenChange={() => controlView.modal.action(false)}
 		triggerBase="btn bg-surface-600"
-		contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-xl rounded-lg border border-white/5 hover:border-white/10
+		contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-sm rounded-lg border border-white/5 hover:border-white/10
 								max-w-9/10 max-h-9/10 overflow-auto w-[380px]"
 		backdropClasses="backdrop-blur-sm">
 		{#snippet content()}
@@ -194,7 +194,7 @@
 						<LbTimePicker bind:date={date} bind:view={dateTimeView}/>
 					{/if}
 					<div class="container mt-2">
-						<button class="w-[300px] btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-xl rounded-lg border border-white/15 hover:border-white/50" onclick={(e) => { e.stopPropagation()}}> <!-- workaround wrapper to stop propagation for switch -->
+						<button class="w-[300px] btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50" onclick={(e) => { e.stopPropagation()}}> <!-- workaround wrapper to stop propagation for switch -->
 							<div class="flex w-full justify-between">
 								<h1 class="truncate text-lg">{$_("Uitgang")} {$_(outputActive ? "Active" : "Inactive").toLowerCase()}</h1>
 								<Switch controlClasses="w-12 h-8" name="slide" controlActive="bg-primary-500" checked={outputActive} onCheckedChange={(e) => (outputActive = e.checked)} />
@@ -202,7 +202,7 @@
 						</button>
 					</div>
 					<div class="container mt-2">
-						<button type="button" class="w-[300px] btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-xl rounded-lg border border-white/15 hover:border-white/50" 
+						<button type="button" class="w-[300px] btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50" 
 										onclick={(e) => {e.stopPropagation(); e.preventDefault(); startStopTimer()}}>
 							<span class="text-lg">{$_( (overrideTime > 0) ? "Stop" : "Start")} {$_("Timer").toLocaleLowerCase()}</span>
 						</button>

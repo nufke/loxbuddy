@@ -39,6 +39,7 @@
     "Control": "Bedienelement",
     "Controls": "Bedienelemente",
     "Days": "So|Mo|Di|Mi|Do|Fr|Sa",
+    "DaysFull": "Sonntag|Montag|Dienstag|Mittwoch|Donnerstag|Freitag|Samstag",
     "Date & Time": "Datum und Uhrzeit",
     "Dark mode": "Dunkler Modus",
     "Disarm alarm": "Alarm unscharf stellen",

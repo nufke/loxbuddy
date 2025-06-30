@@ -21,7 +21,7 @@
 	transitionsPositionerOut = {fade200}
 	onOpenChange={()=>controlView.modal.action(false)}
 	triggerBase="btn bg-surface-600"
-	contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-xl rounded-lg border border-white/5 hover:border-white/10
+	contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-sm rounded-lg border border-white/5 hover:border-white/10
 							max-w-9/10 max-h-9/10 overflow-auto w-[380px]"
 	backdropClasses="backdrop-blur-sm">
 	{#snippet content()}
@@ -48,7 +48,7 @@
 		{#if controlView.modal && controlView.modal.buttons}
 			{#each controlView.modal.buttons as button, index}
 				{#if button.type === 'button'}
-					<button type="button" class="w-full {getColSpan(index, controlView.modal.buttons.length)} btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-xl rounded-lg border border-white/15 hover:border-white/50" 
+					<button type="button" class="w-full {getColSpan(index, controlView.modal.buttons.length)} btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50" 
 							onclick={(e) => { e.stopPropagation(); e.preventDefault(); button.click()}}
 							onmousedown={(e) => { e.stopPropagation(); e.preventDefault(); button.mousedown()}}
 							onmouseup={(e) => { e.stopPropagation(); e.preventDefault(); button.mouseup()}}>

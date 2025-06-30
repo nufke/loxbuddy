@@ -82,7 +82,7 @@
 	transitionsPositionerOut = {fade200}
 	onOpenChange={()=>controlView.modal.action(false)}
 	triggerBase="btn bg-surface-600"
-	contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-xl rounded-lg border border-white/5 hover:border-white/10
+	contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-sm rounded-lg border border-white/5 hover:border-white/10
 							max-w-9/10 max-h-9/10 overflow-auto w-[380px]"
 	backdropClasses="backdrop-blur-sm">
 	{#snippet content()}
@@ -123,7 +123,7 @@
 				<p class="text-lg truncate mt-3 mb-2 {controlView.statusColor}">{$_(controlView.statusName)}</p>
 				{/if}
 				{#if override > 0}
-					<button type="button" class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-xl rounded-lg border border-white/15 hover:border-white/50"
+					<button type="button" class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
 						onclick={cancelOverride}>Cancel override</button>
 				{/if}
 			</div>
@@ -149,7 +149,7 @@
 				{#if controlView.list}
 					{#each controlView.list as listItem, index}
 						<button type="button" class="w-full mt-2 btn btn-lg {(index==selectedItem) ? 'dark:bg-surface-800 bg-surface-200' : 'dark:bg-surface-950 bg-surface-50' }
-									 shadow-xl rounded-lg border border-white/15 hover:border-white/50" 
+									 shadow-sm rounded-lg border border-white/15 hover:border-white/50" 
 									onclick={(e) => { e.stopPropagation(); e.preventDefault(); setTempPresent(listItem.id)}}>
 							<span class="text-lg">{$_(listItem.name)}</span>
 						</button>

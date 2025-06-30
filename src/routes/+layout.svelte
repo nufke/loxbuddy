@@ -89,7 +89,7 @@
 		}
 	});
 
-	store.setLockScreenModalTimeout();
+	store.resetLockScreenModalTimeout();
 </script>
 
 <svelte:head>
@@ -101,13 +101,16 @@
   </script>
 </svelte:head>
 
+<!-- click activity resets timeout for lockscreen -->
+<svelte:body onclick={() => {console.log('click'); store.resetLockScreenModalTimeout();}}/>
+
 <!-- we need to use the innerWidth to avoid we render the children twice -->
 {#if (innerWidth.current != undefined) && innerWidth.current > 768 } <!-- tabled mode -->
-<div class="hidden md:grid grid-cols-[auto_1fr]" onmousemove={store.lockScreenModal.action}>
+<div class="hidden md:grid grid-cols-[auto_1fr]">
 	<aside class="sticky top-0 col-span-1 h-screen">
 	<Navigation.Rail headerClasses="h-[20%] inline-block align-top" tilesClasses="h-[60%]" footerClasses="h-[20%] justify-end">
 		{#snippet header()}
-		<div onclick={()=>{store.lockScreenModal.state=true}}>
+		<div onclick={(e)=>{ e.stopPropagation(); store.lockScreenModal.state=true;}}>
 			<p class="mt-2 mb-4 text-center font-medium m-auto text-2xl">{format(time, "p")}</p>
 		</div>
 		{#if weatherAvailable}
@@ -140,7 +143,7 @@
   </main>
 </div>
 {:else}
-<div class="md:hidden grid grid-rows-[auto_1fr_auto]" onmousemove={store.lockScreenModal.action}> <!-- mobile mode -->
+<div class="md:hidden grid grid-rows-[auto_1fr_auto]"> <!-- mobile mode -->
 	<header class="sticky preset-filled-surface-100-900 top-0 z-1">
 		<div class="grid grid-cols-3 text-center items-center m-auto h-[60px]">
 			<div class="flex flex-row text-center items-center gap-3">
@@ -158,7 +161,7 @@
 				<span class="text-xl text-primary-500 font-medium">LoxBuddy</span>
 			</div>
 			<div class="mr-3 flex flex-row gap-3 justify-end">
-				<div onclick={()=>{store.lockScreenModal.state=true}}>
+				<div onclick={(e)=>{e.stopPropagation(); store.lockScreenModal.state=true;}}>
 					<p class="text-right text-2xl font-medium">{format(new Date(), "p")}</p>
 				</div>
 				<div class="flex flex-col gap-2">

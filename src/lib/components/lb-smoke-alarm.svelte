@@ -120,7 +120,7 @@
 		transitionsPositionerOut = {fade200}
 		onOpenChange={() => controlView.modal.action(false)}
 		triggerBase="btn bg-surface-600"
-		contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-xl rounded-lg border border-white/5 hover:border-white/10
+		contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-sm rounded-lg border border-white/5 hover:border-white/10
 									bg-surface-100-900 max-w-9/10 max-h-9/10 overflow-auto w-[380px]"
 		backdropClasses="backdrop-blur-sm">
 		{#snippet content()}
@@ -159,7 +159,7 @@
 				</div>
 			</div>
 			<div class="m-3">
-				<button type="button" class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-xl rounded-lg border border-white/15 hover:border-white/50
+				<button type="button" class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50
 								{(serviceTime > 0) || (timeServiceMode > 0) ? 'text-primary-800-200' : 'text-primary-400-600'}" 
 								onclick={(e) => {e.stopPropagation(); e.preventDefault(); serviceButton.click();}}>
 					{#if serviceButton.name}

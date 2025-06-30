@@ -36,9 +36,9 @@
 	positionerBase = 'fixed top-0 left-0 right-0 bottom-0 z-2001'>
 	<!-- we need to increase z-index greather than 999 such that is overlays other modals -->
 	{#snippet content()}
-	<div class="flex h-screen" onclick={store.lockScreenModal.action}>
+	<div class="flex h-screen">
 		<div class="absolute right-2 top-2">
-			<button type="button" aria-label="close" class="btn-icon w-auto" onclick={()=> store.lockScreenModal.action}><X/></button>
+			<button type="button" aria-label="close" class="btn-icon w-auto" onclick={()=> store.resetLockScreenModalTimeout()}><X/></button>
 		</div>
 		<div class="m-auto">
 			{#if currentWeather && currentWeather.airTemperature}

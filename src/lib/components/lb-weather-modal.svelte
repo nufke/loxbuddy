@@ -22,8 +22,6 @@
 		if (hourly[i]) {
 			slider[i] = !slider[i];
 		}
-		store.weatherModal.action(); // reset timeout
-		store.lockScreenModal.action(); // reset timeout
 	}
 
 	function getCurrentIcon(cur: WeatherCurrentConditions) {

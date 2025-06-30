@@ -134,7 +134,7 @@
 		transitionsPositionerOut = {fade200}
 		onOpenChange={() => controlView.modal.action(false)}
 		triggerBase="btn bg-surface-600"
-		contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-xl rounded-lg border border-white/5 hover:border-white/10
+		contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-sm rounded-lg border border-white/5 hover:border-white/10
 									max-w-9/10 max-h-9/10 overflow-auto w-[380px]"
 		backdropClasses="backdrop-blur-sm">
 		{#snippet content()}
@@ -149,11 +149,11 @@
 					</button>
 				</div>
 				<div class="container grid grid-cols-3 gap-2 mt-4">
-					<button type="button" class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-xl text-surface-950-50
+					<button type="button" class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm text-surface-950-50
 																				rounded-lg border border-white/15 hover:border-white/50" onclick={() => changeLight('On')}>{$_('On')}</button>
-					<button type="button" class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-xl text-surface-950-50
+					<button type="button" class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm text-surface-950-50
 																				rounded-lg border border-white/15 hover:border-white/50" onclick={() => changeLight('Off')}>{$_('Off')}</button>
-					<button type="button" class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-xl {scenesEnabled ? 'text-surface-800-200' : 'text-surface-200-800'}
+					<button type="button" class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm {scenesEnabled ? 'text-surface-800-200' : 'text-surface-200-800'}
 																				rounded-lg border border-white/15 hover:border-white/50" onclick={() => selectScenes()}>{$_('Scenes')}</button>
 				</div>
 			</header>

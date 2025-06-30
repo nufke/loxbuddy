@@ -4,7 +4,7 @@
 	https://svelte.dev/playground/29c1026dda3c47a187bd21afa0782df1?version=5.34.9
 */
 
-	let { value = $bindable(), required = true }  = $props();
+	let { value = $bindable(), required = true, onValueChange }  = $props();
 
 	let editing = $state(false);
 
@@ -22,7 +22,7 @@
 </script>
 
 {#if editing}
-	<form onsubmit={submit}>
+	<form onsubmit={() => {editing = false; onValueChange({value: value});}}>
 		<input bind:value onblur={submit} {required} use:focus />
 	</form>
 {:else}

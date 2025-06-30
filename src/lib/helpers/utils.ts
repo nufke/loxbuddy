@@ -80,6 +80,11 @@ export class Utils {
 		return Number((Number(hhmm[0]) + Number(hhmm[1]) / 60).toFixed(2));
 	}
 
+	static hours2sec(t:string) {
+		let hhmm = t.split(':'); // HH:mm notation
+		return Number((Number(hhmm[0]) * 3600 + Number(hhmm[1]) * 60));
+	}
+
 	static dec2hours(i: number) {
 		let hrs = Math.floor(i/3600);
 		let min = Math.round((Number(i/3600)-hrs) * 60);

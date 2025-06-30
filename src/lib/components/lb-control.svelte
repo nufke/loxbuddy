@@ -25,7 +25,7 @@
 </script>
 
 <div role="button" tabindex="0" onkeydown={()=>{}} aria-label="card" onclick={openModal}
-     class="card m-0 flex items-center justify-start rounded-lg border border-white/5
+     class="card m-0 flex items-center justify-start rounded-lg shadow-sm border border-white/5
 						{ controlView.isSubControl ? 'bg-surface-50-950 min-h-[64px]' : 'bg-surface-100-900 min-h-[76px]' }  px-2 py-2 hover:border-white/10">
 	<div class="flex w-full justify-between">
 		<div class="flex items-center truncate">
