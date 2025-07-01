@@ -19,11 +19,10 @@
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
 	let viewport: any;
-
 	let entryList = $derived(store.getState(control.states.entryList) as AlarmClockEntries);
 	let entryListIds = $derived(entryList ? Object.keys(entryList).map(n => Number(n)) : []);
 	let entryListArray = $derived(entryList ? Object.values(entryList) : []);
-	let updateScroll: boolean = $state(false);
+	let prevEntryListLength: number = $state(0);
 	let alarms = $derived(entryList ? Object.values(entryList).filter( entry => entry.isActive) : []); //Utils.dec2hours(entry.alarmTime)
 
 	let modal: ModalView = $state({
@@ -52,9 +51,10 @@
 	function publishEntry(entry: AlarmClockEntry, i: number = -1) {
 		let id = (i == -1) ? newId() : entryListIds[i]; /* -1 is new entry */
 		let n = (i == -1) ? id : ''; /* extend name for new entries */
+		let setting = entry.nightLight ? (entry.daily ? '1' : '0') : entry.modes.map(s => s.toString());
 		let cmd = 'entryList/put/' + String(id) + '/' +
 		    entry.name + n + '/' + entry.alarmTime + '/' + 
-				(entry.isActive ? '1' : '0') + '/' + 	entry.modes.map(s => s.toString());
+				(entry.isActive ? '1' : '0') + '/' + setting;
 		//console.log('cmd', cmd, id, entryListIds);
 		publishTopic(control.uuidAction, cmd);
 	}
@@ -74,8 +74,12 @@
 		publishEntry(entryListArray[i], i);
 	}
 
-	function updateModes(i: number, e: any) {
-		entryListArray[i].modes = e.value;
+	function updateSettings(i: number, e: any) {
+		if (entryListArray[i].nightLight) {
+			entryListArray[i].daily = e.value;
+		} else {
+			entryListArray[i].modes = e.value;
+		}
 		publishEntry(entryListArray[i], i);
 	}
 
@@ -92,7 +96,6 @@
 			nightLight: false,
 			daily: false
 		};
-		updateScroll = true;
 		publishEntry(entry, -1); /* new entry */
 	}
 
@@ -105,9 +108,9 @@
 		console.log('entryListIds', entryListIds);
 		if (entryListArray) { /* to trigger the scroll, we need to be sensitive to the entryList */
 			tick().then( () => {
-				if ( viewport && updateScroll) {
+				if ( viewport && prevEntryListLength != entryListIds.length ) {
    				viewport.scroll({ top: viewport.scrollHeight, behavior: 'smooth' });
-					updateScroll = false;
+					prevEntryListLength = entryListIds.length;
 				}
 			});
 		}
@@ -145,18 +148,18 @@
 					<div class="flex w-full m-auto h-[72px] justify-between">
 						<div>
 							<h1 class="text-lg truncate">
-								<LbInPlaceEdit value={entryListArray[i].name} onValueChange={(e:any)=>{ updateName(i, e)}}/>
+								<LbInPlaceEdit value={entry.name} onValueChange={(e:any)=>{ updateName(i, e)}}/>
 							</h1>
-							<h1 class="text-3xl {entryListArray[i].isActive ? 'dark:text-surface-50 text-surface-950' : 'dark:text-surface-700 text-surface-300'}">
+							<h1 class="text-3xl {entry.isActive ? 'dark:text-surface-50 text-surface-950' : 'dark:text-surface-700 text-surface-300'}">
 								<LbTimePickerModal alarmTime={entry.alarmTime} onValueChange={(e:any)=>{ updateAlarmTime(i, e)}}/>
 							</h1>
 						</div>
 						<div onclick={(e) => {e.stopPropagation(); }}> <!-- workaround wrapper to stop propagation for switch -->
-							<Switch controlClasses="w-12 h-8" name="slide" controlActive="bg-primary-500" checked={entryListArray[i].isActive} onCheckedChange={(e) => {updateIsActive(i, e)}} />
+							<Switch controlClasses="w-12 h-8" name="slide" controlActive="bg-primary-500" checked={entry.isActive} onCheckedChange={(e) => {updateIsActive(i, e)}} />
 						</div>
 					</div>
 					<div class="flex w-full m-auto justify-between">
-						<LbDayPickerModal modes={entry.modes} isActive={entryListArray[i].isActive} onValueChange={(e:any)=>{updateModes(i, e)}}/>
+						<LbDayPickerModal {entry} onValueChange={(e:any)=>{updateSettings(i, e)}}/>
 						{#if i > 0}
 						<button type="button" class="text-surface-500" aria-label="delete" onclick={() =>deleteEntry(i)}>
 							<Trash2/>
@@ -170,7 +173,7 @@
 			<button type="button" class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50
 				 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
 					onclick={addEntry}>
-				<span class="text-lg {entryListIds.length > 15 ? 'dark:text-surface-800 text-surface-200' : ''}"s>{$_("Add new alarm time")}</span>
+				<span class="text-lg {entryListIds.length > 15 ? 'dark:text-surface-800 text-surface-200' : ''}">{$_("Add new alarm time")}</span>
 			</button>
 		</footer>
 		{/snippet}

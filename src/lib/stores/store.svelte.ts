@@ -23,6 +23,8 @@ class Store {
 	msAlive = $derived(false);
 	msStatus = $derived(this.getSystemCode());
 
+	notifications = $derived(this.getState(this.structure.globalStates.notifications));
+
 	weatherModal: ModalView = $state({
 		action: () => {},
 		state: false,
@@ -41,7 +43,7 @@ class Store {
 		setInterval(() => {
 	  	this.time = new Date();
 		}, 1000);
-		
+
 		this.stateUpdate = setTimeout(() => {
 			this.msAlive = false;
     	console.error("No state update received from Miniserver") 

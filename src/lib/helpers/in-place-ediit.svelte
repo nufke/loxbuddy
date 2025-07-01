@@ -19,10 +19,14 @@
 	function focus(element: any) {
 		element.focus();
 	}
+
+	function strip(s: string) {
+		return value.replace(/\s+/g, '_').substring(0, 20);
+	}
 </script>
 
 {#if editing}
-	<form onsubmit={() => {editing = false; onValueChange({value: value});}}>
+	<form onsubmit={() => {editing = false; onValueChange({value: strip(value)});}}>
 		<input bind:value onblur={submit} {required} use:focus />
 	</form>
 {:else}
