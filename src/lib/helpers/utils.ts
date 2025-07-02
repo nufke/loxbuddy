@@ -108,4 +108,12 @@ export class Utils {
 		const date = new Date(epoch*1000);
 		return format(date, "p");
 	}
+
+	static serialize(value: any): string {
+    return  JSON.stringify(value);
+  }
+
+  static deserialize(item: string | null): any {
+    return item ? JSON.parse(item) : null;
+  }
 }

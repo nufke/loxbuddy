@@ -41,10 +41,10 @@
 	}
 
 	const routesMobile: Route[] = $derived([
-		{ label: 'Home', href: '/', icon: Home },
-		{ label: 'Rooms', href: '/room', icon: Grid2x2 },
-		{ label: 'Categories', href: '/category', icon: LayoutList },
-		{ label: 'Messages', href: '/messages', icon: FileText },
+		{ label: 'Home', href: '/', icon: Home, badge: false },
+		{ label: 'Rooms', href: '/room', icon: Grid2x2, badge: false },
+		{ label: 'Categories', href: '/category', icon: LayoutList, badge: false },
+		{ label: 'Messages', href: '/messages', icon: FileText, badge: true },
 	]);
 
 	let routesTablet: Route[] = $derived([
@@ -123,10 +123,19 @@
 			{/if}
 		{/snippet}
 		{#snippet tiles()}
-		{#each routesTablet as {label, href, icon}}
+		{#each routesTablet as {label, href, icon, badge}}
 		  {@const Icon = icon}
 			<Navigation.Tile labelClasses={checkUrl(href) ? 'text-primary-500' : 'white'} classes="flex-col justify-center hover:bg-transparent scope:bg-transparent" label={$_(label)} {href}>
-				<Icon class={checkUrl(href) ? 'text-primary-500' : 'white'} />
+				<div class="relative inline-block">
+					{#if badge}
+					<span class="absolute -right-1 -top-1">
+					 <svg height="10" width="10" xmlns="http://www.w3.org/2000/svg">
+					  <circle r="5" cx="5" cy="5" fill="green" />
+					</svg> 
+					</span>
+					{/if}
+					<Icon class={checkUrl(href) ? 'text-primary-500' : 'white'} />
+				</div>
 			</Navigation.Tile>
 		{/each}
 		{/snippet}
@@ -176,10 +185,19 @@
 	</main>
 	<footer class="sticky bottom-0">
 		<Navigation.Bar>
-			{#each routesMobile as {label, href, icon}}
+			{#each routesMobile as {label, href, icon, badge}}
 				{@const Icon = icon} 
 				<Navigation.Tile labelClasses={checkUrl(href) ? 'text-primary-500' : 'text-surface-950 dark:text-surface-50'} classes="flex flex-col justify-center hover:bg-transparent" label={$_(label)} {href}>
-					<Icon class={checkUrl(href) ? 'text-primary-500' : 'white'} />
+					<div class="relative inline-block">
+						{#if badge}
+						<span class="absolute -right-1 -top-1">
+						 <svg height="10" width="10" xmlns="http://www.w3.org/2000/svg">
+						  <circle r="5" cx="5" cy="5" fill="green" />
+						</svg> 
+						</span>
+						{/if}
+						<Icon class={checkUrl(href) ? 'text-primary-500' : 'white'} />
+					</div>
 				</Navigation.Tile>
 			{/each}
 		</Navigation.Bar>

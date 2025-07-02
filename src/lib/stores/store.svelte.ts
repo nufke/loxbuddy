@@ -1,29 +1,30 @@
 import { SvelteMap } from 'svelte/reactivity';
 import { INITIAL_STRUCTURE } from '$lib/types/models';
-import type { Structure, Control, Category, SystemStatus, Route, ModalView } from '$lib/types/models';
+import type { Structure, Control, Category, Room, SystemStatus, Route, ModalView, NotificationMap,
+							ControlsMap, CategoriesMap, RoomsMap, MessageCenter, NotificationMessage } from '$lib/types/models';
 import { Utils } from '$lib/helpers/utils';
 import { loxiconsPath } from '$lib/helpers/paths';
 import { Menu } from '@lucide/svelte';
 
 class Store {
-  controlState = new SvelteMap();
+  controlState: SvelteMap<string, any> = new SvelteMap();
 	nav: Route = $state({ label: 'Menu', href: '/menu', icon: Menu });
 	structure: Structure = $state(INITIAL_STRUCTURE);
-	controls = $derived(this.structure.controls);
-	rooms = $derived(this.structure.rooms);
-	categories= $derived(this.structure.cats);
-	messageCenter = $derived(Object.values(this.structure.messageCenter));
-	controlList = $derived(Object.values(this.structure.controls));
-	categoryList = $derived(Object.values(this.structure.cats));
-	roomList = $derived(Object.values(this.structure.rooms));
-	securedDetails = new SvelteMap();
-	lastBellEventImages = new SvelteMap();
-	time = $state(new Date());
-	mqttStatus = $state(0); // 0=disconnected (grey), 1=connected/ok/info (green), 2=warning/issue (yellow), 3=error (red)
-	msAlive = $derived(false);
-	msStatus = $derived(this.getSystemCode());
-
-	notifications = $derived(this.getState(this.structure.globalStates.notifications));
+	controls: ControlsMap = $derived(this.structure.controls);
+	rooms: RoomsMap = $derived(this.structure.rooms);
+	categories: CategoriesMap = $derived(this.structure.cats);
+	messageCenterList: MessageCenter[] = $derived(Object.values(this.structure.messageCenter));
+	controlList: Control[] = $derived(Object.values(this.structure.controls));
+	categoryList: Category[] = $derived(Object.values(this.structure.cats));
+	roomList: Room[] = $derived(Object.values(this.structure.rooms));
+	securedDetails: SvelteMap<string, any> = new SvelteMap();
+	lastBellEventImages: SvelteMap<string, any> = new SvelteMap();
+	time: Date = $state(new Date());
+	mqttStatus: number = $state(0); // 0=disconnected (grey), 1=connected/ok/info (green), 2=warning/issue (yellow), 3=error (red)
+	msAlive: boolean = $derived(false);
+	msStatus: number = $derived(this.getSystemCode());
+	notifications: NotificationMessage = $derived(this.getState(this.structure.globalStates.notifications) as NotificationMessage);
+	notificationsMap: NotificationMap = $state({});
 
 	weatherModal: ModalView = $state({
 		action: () => {},
@@ -37,18 +38,37 @@ class Store {
 		timeout: undefined
 	});
 
-	stateUpdate: NodeJS.Timeout;
+	_stateUpdate: NodeJS.Timeout;
 
 	constructor() {
 		setInterval(() => {
 	  	this.time = new Date();
 		}, 1000);
 
-		this.stateUpdate = setTimeout(() => {
+		this._stateUpdate = setTimeout(() => {
 			this.msAlive = false;
     	console.error("No state update received from Miniserver") 
   	}, 1000);
+
+		this.notificationsMap = Utils.deserialize(localStorage.getItem('notifications'));
+
+		if ($effect.tracking()) { // TODO check coreect use of method, see https://webjose.hashnode.dev/svelte-reactivity-lets-talk-about-effects
+			$effect(() => {
+				this.updateNotificationStorage();
+			});
+		} else {
+			console.log('Not tracking.');
+		}
   }
+
+	updateNotificationStorage() {
+		if (this.notifications) {
+			this.notificationsMap = Utils.deserialize(localStorage.getItem('notifications'));
+			this.notificationsMap[this.notifications.uid] = this.notifications;
+ 	  	console.log('add item to notificationMap', this.notifications.uid, this.notificationsMap);
+			localStorage.setItem('notifications', Utils.serialize(this.notificationsMap));
+		}
+	}
 
 	setNav(route: Route) {
 		this.nav = route;
@@ -87,7 +107,7 @@ class Store {
 		//console.log('setState', key, data);
 		let item = $state(data);
 		this.controlState.set(key, item);
-		clearTimeout(this.stateUpdate);
+		clearTimeout(this._stateUpdate);
 		this.msAlive = true;
 	}
 

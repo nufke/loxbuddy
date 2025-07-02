@@ -21,17 +21,57 @@ export type Structure = {
 	lastModified: string;
 	msInfo: MsInfo;
 	globalStates: GlobalStates;
-	operatingModes: { [key: string]: String };
-	rooms: { [key: string]: Room };
-	cats: { [key: string]: Category };
-	modes: { [key: string]: Mode };
-	controls: { [key: string]: Control };
+	operatingModes: operatingModesMap;
+	rooms: RoomsMap;
+	cats: CategoriesMap;
+	modes: ModesMap;
+	controls: ControlsMap;
 	weatherServer: WeatherServer;
-	times: { [key: string]: Time };
-	caller: { [key: string]: Caller };
-	mailer: { [key: string]: Mailer };
-	autopilot: { [key: string]: Autopilot };
-	messageCenter: { [key: string]: MessageCenter };
+	times: TimesMap;
+	caller: CallerMap;
+	mailer: MailerMap;
+	autopilot: AutopilotMap;
+	messageCenter: MessageCenterMap;
+}
+
+export type ControlsMap ={
+	[key: string]: Control;
+}
+
+export type CategoriesMap ={
+	[key: string]: Category;
+}
+
+export type operatingModesMap ={
+	[key: string]: String;
+}
+
+export type RoomsMap ={
+	[key: string]: Room;
+}
+
+export type ModesMap ={
+	[key: string]: Mode;
+}
+
+export type TimesMap ={
+	[key: string]: Time;
+}
+
+export type CallerMap ={
+	[key: string]: Caller;
+}
+
+export type MailerMap ={
+	[key: string]: Mailer;
+}
+
+export type AutopilotMap ={
+	[key: string]: Autopilot;
+}
+
+export type MessageCenterMap ={
+	[key: string]: MessageCenter;
 }
 
 export type GlobalStates = {
@@ -306,6 +346,24 @@ export type SystemStatusEntries = {
 	helpLink: string | null; // TODO check
 }
 
+export type NotificationMessage = {
+  uid: string;						// unique message id
+  ts: number;							// unix timestamp in seconds
+	sound: number;					// sound
+  title: string;					// title
+  message: string;				// message, could be value, e.g. "1"
+  type: number;						// 10 = normal message, 11 = message summary
+	data: {
+  	mac: string;					// mac or serial ID of miniserver
+  	lvl: number;					// level: 1 = Info, 2 = Error, 3 = SystemError, 0 = undefined
+  	uuid: string;					// UUID of Control (or empty)
+	}
+}
+
+export type NotificationMap = {
+	[key: string]: NotificationMessage;
+}
+
 export type SingleButtonView = {
 	name?: string;
 	iconName?: string;
@@ -397,6 +455,7 @@ export type Route = {
 	label: string;
 	href: string;
 	icon: typeof IconType;
+	badge?: boolean;
 };
 
 export type ColorType = { 

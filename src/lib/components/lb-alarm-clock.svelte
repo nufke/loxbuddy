@@ -23,7 +23,8 @@
 	let entryListIds = $derived(entryList ? Object.keys(entryList).map(n => Number(n)) : []);
 	let entryListArray = $derived(entryList ? Object.values(entryList) : []);
 	let prevEntryListLength: number = $state(0);
-	let alarms = $derived(entryList ? Object.values(entryList).filter( entry => entry.isActive) : []); //Utils.dec2hours(entry.alarmTime)
+	let alarms = $derived(entryList ? Object.values(entryList).filter( entry => entry.isActive) : []);
+	let nextEntryTime = $derived(Number(store.getState(control.states.nextEntryTime)));
 
 	let modal: ModalView = $state({
 		action: (state: boolean) => {modal.state = state},
@@ -35,7 +36,7 @@
 		iconName: store.getCategoryIcon(control, controlOptions.isSubControl),
 		iconColor: alarms.length ? 'fill-primary-500' : 'fill-surface-950 dark:fill-surface-50',
 		textName: control.name,
-		statusName: alarms.length ? 'Active' : $_('No alarm time active'),
+		statusName: alarms.length ? getAlarmTime() : $_('No alarm time active'),
 		statusColor: alarms.length ? 'text-primary-500' : 'text-surface-500',
 		modal: modal
 	});
@@ -102,6 +103,13 @@
 	function deleteEntry(i: number) {
 		let cmd = 'entryList/delete/' + entryListIds[i];
 		publishTopic(control.uuidAction, cmd);
+	}
+
+	function getAlarmTime() {
+		const loxTimeRef = 1230764400000;
+		let date = new Date(nextEntryTime * 1000 + loxTimeRef);
+		date = Utils.isDST(date) ? new Date(nextEntryTime * 1000 + loxTimeRef - 3600000) : date;
+		return format(date, 'PPP p');
 	}
 
 	$effect( () => {

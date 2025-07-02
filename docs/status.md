@@ -129,7 +129,7 @@ or submit a [pull request](https://github.com/nufke/loxbuddy/pulls).
 | Internationalization        | Available (NL, DE, US)   |
 | Kiosk / room mode (tablet)  | Not started              |
 | LoxBerry plugins            | Not started              |
-| Notifications (local)       | Under development        |
+| Notifications (local)       | Available                |
 | Pin protected pages         | Not started              |
 | Push messages (internet)    | Not started              |
 | Screensaver / Lockscreen    | Available                |
