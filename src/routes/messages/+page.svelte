@@ -9,15 +9,15 @@
 	let messages = $derived(store.getMessages()) as SystemStatus;
 	let activeMessages = $derived(messages && messages.entries ? messages.entries.filter( entry => entry.isHistoric == false) : []);
 	let pastMessages = $derived(messages && messages.entries ? messages.entries.filter( entry => entry.isHistoric == true) : []);
-	let notificationList = $derived(Object.values(store.notificationsMap).sort((a, b) => b.ts - a.ts));
-	let visited: any = $state({});
+	let notificationList = $derived(Object.values(store.notificationsMap).sort((a, b) => b.message.ts - a.message.ts));
+	let activeNotifications = $derived(notificationList.filter( items => items.status < 3)); // new or read
+	let archivedNotifications = $derived(notificationList.filter( items => items.status == 3)); // new or read
 
 	store.updateNotificationStorage();
-	
-	function didVisit(s: string) {
-		visited[s] = true;
+
+	function didRead(uid: string) {
+		store.updateNotificationReadStatus(uid);
 	}
-	
 </script>
 
 <div class="container mx-auto max-w-[1280px] space-y-3 p-3">
@@ -29,16 +29,16 @@
 		{/snippet}
 		{#snippet content()}
 			<Tabs.Panel value="1">
-				{#each notificationList as notification}
-				<div class="{visited[notification.uid] ? 'pl-[13px]' : 'pl-2 border-l-5 dark:border-l-primary-500'} border-b dark:border-surface-900 border-surface-200 cursor-pointer pt-3 pb-3 pr-3" onclick={()=>{didVisit(notification.uid)}}>
-					<p class="text-md text-surface-500">{format(new Date(notification.ts*1000), "PPP p")}</p>
-					<p class="text-lg">{notification.title}</p>
-					<p class="text-md">{notification.message}</p>
+				{#each activeNotifications as notification}
+				<div class="{notification.status == 2 ? 'pl-[13px]' : 'pl-2 border-l-5 dark:border-l-primary-500'} border-b dark:border-surface-900 border-surface-200 cursor-pointer pt-3 pb-3 pr-3" onclick={()=>{didRead(notification.message.uid)}}>
+					<p class="text-md text-surface-500">{format(new Date(notification.message.ts*1000), "PPP p")}</p>
+					<p class="text-lg">{notification.message.title}</p>
+					<p class="text-md">{notification.message.message}</p>
 				</div>
 				{/each}
 			</Tabs.Panel>
 			<Tabs.Panel value="2">
-				{#each activeMessages as entry}
+				{#each activeMessages.toReversed() as entry}
 				<div class="border-b dark:border-surface-900 border-surface-200 p-3">
 					<p class="text-md text-surface-500">{format(new Date(Number(entry.timestamps[0])*1000), "PPP p")} {store?.rooms[entry?.roomUuid].name}</p>
 					<p class="text-lg">{@html entry.title}</p>

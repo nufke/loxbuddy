@@ -68,7 +68,6 @@
 
 	function getScreenPosition(uuid: string) {
 		let position = Math.round(Number(store.getState(store.controls[uuid].states.position)) * 100);
-		console.log('position', position);
 		return position < 1 ? $_('Opened') : (position > 99 ? $_('Closed') : String(position) + ' %');
 	}
 

@@ -113,7 +113,6 @@
 	}
 
 	$effect( () => {
-		console.log('entryListIds', entryListIds);
 		if (entryListArray) { /* to trigger the scroll, we need to be sensitive to the entryList */
 			tick().then( () => {
 				if ( viewport && prevEntryListLength != entryListIds.length ) {

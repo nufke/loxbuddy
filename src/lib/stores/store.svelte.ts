@@ -23,7 +23,7 @@ class Store {
 	mqttStatus: number = $state(0); // 0=disconnected (grey), 1=connected/ok/info (green), 2=warning/issue (yellow), 3=error (red)
 	msAlive: boolean = $derived(false);
 	msStatus: number = $derived(this.getSystemCode());
-	notifications: NotificationMessage = $derived(this.getState(this.structure.globalStates.notifications) as NotificationMessage);
+	notifications: NotificationMessage = $derived(this.getState(this.structure.globalStates.notifications));
 	notificationsMap: NotificationMap = $state({});
 
 	weatherModal: ModalView = $state({
@@ -56,18 +56,23 @@ class Store {
 			$effect(() => {
 				this.updateNotificationStorage();
 			});
-		} else {
-			console.log('Not tracking.');
 		}
   }
 
 	updateNotificationStorage() {
 		if (this.notifications) {
 			this.notificationsMap = Utils.deserialize(localStorage.getItem('notifications'));
-			this.notificationsMap[this.notifications.uid] = this.notifications;
- 	  	console.log('add item to notificationMap', this.notifications.uid, this.notificationsMap);
+			this.notificationsMap[this.notifications.uid] = {
+				status: (this.notificationsMap[this.notifications.uid] && this.notificationsMap[this.notifications.uid].status) ? this.notificationsMap[this.notifications.uid].status : 1,
+			  message: this.notifications
+			};
 			localStorage.setItem('notifications', Utils.serialize(this.notificationsMap));
 		}
+	}
+
+	updateNotificationReadStatus(uid: string) {
+		this.notificationsMap[uid].status = 2;
+		localStorage.setItem('notifications', Utils.serialize(this.notificationsMap));
 	}
 
 	setNav(route: Route) {

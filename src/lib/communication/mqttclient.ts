@@ -29,7 +29,7 @@ export const mqttConnect = (env: any) => {
 	mqttclient.on('message', onMessage);
 
 	mqttclient.on('error', (error: any) => {
-		console.log('error.name', error.name);
+		console.error('MQTT error ', error);
 		mqttclient.end();
 		connected = false;
 		//throw error
@@ -51,9 +51,9 @@ const onConnect = () => {
 		weatherPrefix + '/#'
 	];
 
-	mqttclient.subscribe(registerTopics, function (err: any) {
-		if (err) {
-			console.log(err);
+	mqttclient.subscribe(registerTopics, function (error: any) {
+		if (error) {
+			console.error(error);
 		} else {
 			console.log(`MQTT subscribed to topics '${registerTopics}'`);
 		}

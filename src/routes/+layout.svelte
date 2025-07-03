@@ -3,6 +3,7 @@
 	import '../global.css';
 	import { Navigation } from '@skeletonlabs/skeleton-svelte';
 	import { innerWidth } from 'svelte/reactivity/window';
+	import { fade } from 'svelte/transition'
   import { Home, FileText, Grid2x2, Menu, LayoutList, Circle, Square, type Icon as IconType } from '@lucide/svelte';
 	import type { Route } from '$lib/types/models';
 	import { mqttConnect } from '$lib/communication/mqttclient';
@@ -32,6 +33,7 @@
 	let path = $derived(page.url.pathname);
 	let home = { label: 'Menu', href: '/menu', icon: Menu }; // fixed for tablet
 	let weatherAvailable = $derived(currentWeather.time > 0 && dailyForecast.length);
+	let activeNotifications = $derived(Object.values(store.notificationsMap).filter( items => items.status == 1));
 
 	function getCurrentIcon(cur: WeatherCurrentConditions) {
 		let sunRise = Utils.time2epoch(cur.time, cur.sunRise);
@@ -127,12 +129,9 @@
 		  {@const Icon = icon}
 			<Navigation.Tile labelClasses={checkUrl(href) ? 'text-primary-500' : 'white'} classes="flex-col justify-center hover:bg-transparent scope:bg-transparent" label={$_(label)} {href}>
 				<div class="relative inline-block">
-					{#if badge}
-					<span class="absolute -right-1 -top-1">
-					 <svg height="10" width="10" xmlns="http://www.w3.org/2000/svg">
-					  <circle r="5" cx="5" cy="5" fill="green" />
-					</svg> 
-					</span>
+					{#if badge && activeNotifications.length}
+						<span class="absolute w-[16px] h-[16px] rounded-full bg-red-500 -right-2 -top-2 text-xs flex justify-center items-center text-align"
+									transition:fade={{ duration: 300 }}>{activeNotifications.length}</span>
 					{/if}
 					<Icon class={checkUrl(href) ? 'text-primary-500' : 'white'} />
 				</div>
@@ -189,12 +188,9 @@
 				{@const Icon = icon} 
 				<Navigation.Tile labelClasses={checkUrl(href) ? 'text-primary-500' : 'text-surface-950 dark:text-surface-50'} classes="flex flex-col justify-center hover:bg-transparent" label={$_(label)} {href}>
 					<div class="relative inline-block">
-						{#if badge}
-						<span class="absolute -right-1 -top-1">
-						 <svg height="10" width="10" xmlns="http://www.w3.org/2000/svg">
-						  <circle r="5" cx="5" cy="5" fill="green" />
-						</svg> 
-						</span>
+						{#if badge && activeNotifications.length}
+						<span class="absolute w-[16px] h-[16px] rounded-full bg-red-500 -right-2 -top-2 text-xs flex justify-center items-center text-align"
+									transition:fade={{ duration: 300 }}>{activeNotifications.length}</span>
 						{/if}
 						<Icon class={checkUrl(href) ? 'text-primary-500' : 'white'} />
 					</div>
