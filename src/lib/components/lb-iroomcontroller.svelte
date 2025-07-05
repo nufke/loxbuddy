@@ -53,6 +53,7 @@ let temperatureIdsList : ListItem[] = [
 	let controlView: ControlView = $derived({
 		...DEFAULT_CONTROLVIEW,
 		control: control,
+		isFavorite: controlOptions.isFavorite,
 		iconName: '', // no icon, render temperature as text
 		iconText: tempActual,
 		iconColor: 'fill-surface-950 dark:fill-surface-50',

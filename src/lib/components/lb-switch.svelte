@@ -28,6 +28,7 @@
 	let controlView: ControlView = $derived({
 		...DEFAULT_CONTROLVIEW,
 		control: control,
+		isFavorite: controlOptions.isFavorite,
 		isSubControl: controlOptions.isSubControl,
 		iconName: store.getCategoryIcon(control, controlOptions.isSubControl),
 		iconColor: buttonActive ? 'fill-primary-500' : 'fill-surface-950 dark:fill-surface-50',

@@ -63,6 +63,8 @@
 
   let controlView: ControlView = $derived({
 		...DEFAULT_CONTROLVIEW,
+		control: control,
+		isFavorite: controlOptions.isFavorite,
 		iconName: armed ? '/icons/svg/shield.svg' : '/icons/svg/shield-off.svg',
 		iconColor: armed ? 'fill-primary-500' : 'fill-surface-950 dark:fill-surface-50',
 		textName: control.name,

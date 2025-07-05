@@ -94,6 +94,8 @@
 	
 	let controlView: ControlView = $derived({
 		...DEFAULT_CONTROLVIEW,
+		control: control,
+		isFavorite: controlOptions.isFavorite,
 		iconName: '/icons/svg/flame.svg',
 		iconColor: statusColor,
 		textName: control.name,

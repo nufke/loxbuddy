@@ -43,7 +43,9 @@
 	let controlView: ControlView = $derived({
 		...DEFAULT_CONTROLVIEW,
 		control: control,
+		showControl: controlOptions.showControl,
 		isSubControl: controlOptions.isSubControl,
+		isFavorite: controlOptions.isFavorite,
 		iconName: store.getCategoryIcon(control, controlOptions.isSubControl),
 		iconColor: activeMoodsNum != 778 ? 'fill-primary-500' : 'fill-surface-950 dark:fill-surface-50',
 		textName: control.name === $_('LightControllerV2') ? store.rooms[control.room].name : control.name,
@@ -56,8 +58,6 @@
 </script>
 
 <div>
-	{#if controlOptions.showControl}
-		<LbControl bind:controlView={controlView}/>
-	{/if}
+	<LbControl bind:controlView={controlView}/>
 	<LbListModal bind:controlView={controlView}/>
 </div>

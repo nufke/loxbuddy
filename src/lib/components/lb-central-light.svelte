@@ -65,6 +65,7 @@
 	let controlView: ControlView = $derived({
 		...DEFAULT_CONTROLVIEW,
 		control: control,
+		isFavorite: controlOptions.isFavorite,
 		iconName: store.getCategoryIcon(control, controlOptions.isSubControl),
 		iconColor: lightsOn ? 'fill-primary-500' : 'fill-surface-950 dark:fill-surface-50',
 		textName: control.name,
@@ -144,7 +145,7 @@
 				</div>
 				<h2 class="text-lg text-center {lightsOn ? 'text-primary-500' : 'text-surface-500'}">{getActiveLights()}</h2>
 				<div class="absolute top-0 right-0">
-					<button type="button" aria-label="close" class="btn-icon w-auto" onclick={() => controlView.modal.action(false)}>
+					<button type="button" aria-label="close" class="btn-icon w-auto" onclick={() => {scenesEnabled=false; controlView.modal.action(false)}}>
 						<X />
 					</button>
 				</div>

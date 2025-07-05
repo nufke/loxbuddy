@@ -224,6 +224,22 @@ export type Control = {
 	}
 }
 
+export const DEFAULT_CONTROL: Control = {
+	name: '',
+	type: '',
+	uuidAction: '',
+	room: '',
+	cat: '',
+	defaultRating: 0,
+	isFavorite: false,
+	isSecured: false,
+	defaultIcon: '',
+	restrictions: 0,
+	details: {},
+	states: {},
+	subControls: {},
+}
+
 export type Room = {
 	uuid: string;									// unique identifier to identify the room as MQTT topic (device-uuid)
 	name: string;									// GUI name of the room
@@ -394,8 +410,10 @@ export type SliderBar = {
 }
 
 export type ControlView = {
-	control?: Control,
+	control: Control,
 	isSubControl?: boolean;
+	showControl?: boolean;
+	isFavorite?: boolean;
 	iconName: string;
 	iconText?: string;
 	iconColor?: string;
@@ -421,7 +439,10 @@ export type ModalView = {
 }
 
 export const DEFAULT_CONTROLVIEW: ControlView = {
+	control: DEFAULT_CONTROL,
 	isSubControl: false,
+	showControl: true,
+	isFavorite: false,
 	iconName: '',
 	iconColor: 'dark:fill-surface-50 fill-surface-950',
 	textName: '',
@@ -475,29 +496,15 @@ export type ControlOptions = {
 	action?: any;
 	showControl?: boolean;
   showModal?: boolean;
+	isFavorite?: boolean;
 }
 
 export const DEFAULT_CONTROLOPTIONS: ControlOptions = {
 	isSubControl: false,
 	action: undefined,
 	showControl: true,
-  showModal: false
-}
-
-export const DEFAULT_CONTROL = {
-	name: '',
-	type: '',
-	uuidAction: '',
-	room: '',
-	cat: '',
-	defaultRating: 0,
-	isFavorite: false,
-	isSecured: false,
-	defaultIcon: '',
-	restrictions: 0,
-	details: {},
-	states: {},
-	subControls: {}
+  showModal: false,
+	isFavorite: false
 }
 
 export type Entry = {

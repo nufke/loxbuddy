@@ -108,6 +108,7 @@
 	let controlView: ControlView = $derived({
 		...DEFAULT_CONTROLVIEW,
 		control: control,
+		isFavorite: controlOptions.isFavorite,
 		iconName: store.getCategoryIcon(control, controlOptions.isSubControl),
 		textName: control.name,
 		statusName: getActiveScreens(),
