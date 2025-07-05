@@ -2,6 +2,7 @@
 	import type { Control, ControlOptions, ControlView, SingleButtonView, ModalView } from '$lib/types/models';
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import LbControl from '$lib/components/lb-control.svelte';
+	import LbWidget from '$lib/components/lb-widget.svelte';
 	import LbJalousieModal from '$lib/components/lb-jalousie-modal.svelte';
 	import fmt from 'sprintf-js';
 	import { _ } from 'svelte-i18n';
@@ -89,8 +90,7 @@
 </script>
 
 <div>
-	{#if controlOptions.showControl}
-		<LbControl bind:controlView={controlView}/>
-	{/if}
-	<LbJalousieModal bind:controlView={controlView}/>
+	<LbControl bind:controlView />
+	<LbWidget bind:controlView />
+	<LbJalousieModal bind:controlView />
 </div>

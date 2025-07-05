@@ -3,6 +3,7 @@
 	import type { Control, ControlOptions, ControlView, ModalView, AlarmClockEntries, AlarmClockEntry } from '$lib/types/models';
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import LbControl from '$lib/components/lb-control.svelte';
+	import LbWidget from '$lib/components/lb-widget.svelte';
 	import { Switch } from '@skeletonlabs/skeleton-svelte';
 	import { X, Trash2 } from '@lucide/svelte';
 	import { store } from '$lib/stores/store.svelte';
@@ -126,8 +127,8 @@
 </script>
 
 <div>
-	<LbControl bind:controlView={controlView}/>
-
+	<LbControl bind:controlView />
+	<LbWidget bind:controlView />
 	<Modal
 		open={controlView.modal.state}
 		transitionsBackdropIn = {fade200}

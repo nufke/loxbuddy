@@ -1,5 +1,6 @@
 <script lang="ts">
 	import LbControl from '$lib/components/lb-control.svelte';
+	import LbWidget from '$lib/components/lb-widget.svelte';
 	import type { Control, ControlOptions, ControlView, ModalView } from '$lib/types/models';
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import LbModal from '$lib/components/lb-modal.svelte';
@@ -24,6 +25,7 @@
 </script>
 
 <div>
-	<LbControl bind:controlView={controlView} />
-	<LbModal bind:controlView={controlView} />
+	<LbControl bind:controlView />
+	<LbWidget bind:controlView />
+	<LbModal bind:controlView />
 </div>

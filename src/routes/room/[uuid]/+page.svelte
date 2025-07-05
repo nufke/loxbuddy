@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import type { PageProps } from './$types';
-	import type { ControlOptions } from '$lib/types/models';
+	import type { Control, ControlOptions, Category, Room } from '$lib/types/models';
 	import { DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import { _ } from 'svelte-i18n';
 	import { getComponent } from '$lib/helpers/components';
@@ -12,26 +12,26 @@
 
 	let tabGroup = $state('1');
 
-	let filteredControls = $derived(
+	let filteredControls: Control[] = $derived(
 		store.controlList.filter((control) => control.room === data.uuid)
 			.sort((a, b) => a.name.localeCompare(b.name)));
 
-	let favorites = $derived(
+	let favorites: Control[] = $derived(
 		filteredControls.filter((control) => control.defaultRating > 0));
 
-	let labels = $derived(
+	let labels: Category[] = $derived(
 		store.categoryList.filter((item) => filteredControls.map((control) => control.cat)
 			.indexOf(item.uuid) > -1)
 			.sort((a, b) => a.name.localeCompare(b.name)));
 
-	let pageTitle =  $derived(
+	let pageTitle: Room | undefined =  $derived(
 		store.roomList.find((item) => filteredControls[0].room == item.uuid)
 	);
 
 	let controlOptions: ControlOptions = $derived(DEFAULT_CONTROLOPTIONS);
 </script>
 
-<div class="container mx-auto max-w-[1280px] p-3">
+<div class="container mx-auto max-w-[1280px] p-3 lb-page-center">
 	<Tabs value={tabGroup} listBorder='' onValueChange={(e) => (tabGroup = e.value)} >
 		{#snippet list()}
 			<Tabs.Control value="1" labelBase="h4" base='border-b-[2px] border-transparent' padding='ml-2 pb-0'>{pageTitle?.name}</Tabs.Control>

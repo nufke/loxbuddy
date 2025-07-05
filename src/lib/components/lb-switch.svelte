@@ -1,5 +1,6 @@
 <script lang="ts">
 	import LbControl from '$lib/components/lb-control.svelte';
+	import LbWidget from '$lib/components/lb-widget.svelte';
 	import type { Control, ControlOptions, ControlView, SingleButtonView } from '$lib/types/models';
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import LbModal from '$lib/components/lb-modal.svelte';
@@ -41,8 +42,9 @@
 </script>
 
 <div>
-	<LbControl bind:controlView={controlView}/>
-	{#if !controlOptions.action} <!-- disable modal popup for controls with action -->
+	<LbControl bind:controlView />
+	<LbWidget bind:controlView />
+	{#if !controlOptions.action} <!-- TODO disable modal popup for controls with action -->
 		<LbModal bind:controlView={controlView}/>
 	{/if}
 </div>

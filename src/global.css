@@ -8,3 +8,11 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* TODO center on page */
+@media (width >= 48rem ) { /* >= 768px */ 
+.lb-page-centerX {
+  margin: auto;
+  margin-top: calc(50vh - 200px);
+  }
+}

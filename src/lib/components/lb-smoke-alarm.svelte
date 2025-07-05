@@ -3,6 +3,7 @@
 	import type { Control, ControlOptions, ControlView, ModalView, SingleButtonView } from '$lib/types/models';
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import LbControl from '$lib/components/lb-control.svelte';
+	import LbWidget from '$lib/components/lb-widget.svelte';
 	import { store } from '$lib/stores/store.svelte';
 	import { publishTopic } from '$lib/communication/mqttclient';
 	import { fade200 } from '$lib/helpers/transition';
@@ -113,7 +114,7 @@
 
 <div>
 	<LbControl bind:controlView />
-
+	<LbWidget bind:controlView />
 	<Modal
 		open={controlView.modal.state}
 		transitionsBackdropIn = {fade200}

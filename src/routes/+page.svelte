@@ -12,7 +12,7 @@
 		store.controlList.filter((control) => control.isFavorite === true)
 			.sort((a, b) => a.name.localeCompare(b.name)));
 
-	let room = store.roomList.find( (room) => room.name == $_('General'));
+	let room = $derived(store.roomList.find( (room) => room.name == $_('General')));
 
 	let centralControls = $derived(
 		store.controlList.filter((control) => (control.room === room?.uuid && control.defaultRating > 0) )
@@ -21,7 +21,7 @@
 	let controlOptions: ControlOptions = $derived(DEFAULT_CONTROLOPTIONS);
 </script>
 
-<div class="container mx-auto max-w-[1280px] p-3">
+<div class="container mx-auto max-w-[1280px] p-3 lb-page-center">
 	<Tabs value={tabGroup} listBorder='' onValueChange={(e) => (tabGroup = e.value)} >
 		{#snippet list()}
 			<Tabs.Control value="1" labelBase="h4" base='border-b-[2px] border-transparent' padding='ml-2 pb-0'>{$_('Favorites')}</Tabs.Control>

@@ -2,6 +2,7 @@
 	import type { Control, ControlOptions, ControlView, MoodList, SingleButtonView, ModalView } from '$lib/types/models';
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import LbControl from '$lib/components/lb-control.svelte';
+	import LbWidget from '$lib/components/lb-widget.svelte';
 	import { publishTopic } from '$lib/communication/mqttclient';
 	import LbListModal from '$lib/components/lb-list-modal.svelte';
 	import { _ } from 'svelte-i18n';
@@ -58,6 +59,7 @@
 </script>
 
 <div>
-	<LbControl bind:controlView={controlView}/>
-	<LbListModal bind:controlView={controlView}/>
+	<LbControl bind:controlView />
+	<LbWidget bind:controlView />
+	<LbListModal bind:controlView />
 </div>

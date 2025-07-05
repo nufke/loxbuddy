@@ -2,6 +2,7 @@
 	import type { Control, ControlOptions, ControlView, ModalView, ListItem } from '$lib/types/models';
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import LbControl from '$lib/components/lb-control.svelte';
+	import LbWidget from '$lib/components/lb-widget.svelte';
 	import LbIrcModal from '$lib/components/lb-irc-modal.svelte';
 	import { store } from '$lib/stores/store.svelte';
 	import fmt from 'sprintf-js';
@@ -67,5 +68,6 @@ let temperatureIdsList : ListItem[] = [
 
 <div>
 	<LbControl bind:controlView />
+	<LbWidget bind:controlView />
 	<LbIrcModal bind:controlView />
 </div>

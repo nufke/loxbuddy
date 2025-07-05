@@ -1,11 +1,12 @@
 <script lang="ts">
+	import LbControl from '$lib/components/lb-control.svelte';
+	import LbWidget from '$lib/components/lb-widget.svelte';
 	import { Modal } from '@skeletonlabs/skeleton-svelte';
 	import { SvelteDate } from 'svelte/reactivity';
 	import { Toaster, createToaster } from '@skeletonlabs/skeleton-svelte';
 	import { Switch } from '@skeletonlabs/skeleton-svelte';
 	import type { Control, ControlOptions, ControlView, ModalView, EntriesAndDefaultValue, WeekDays } from '$lib/types/models';
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
-	import LbControl from '$lib/components/lb-control.svelte';
 	import LbTimeGrid from '$lib/components/lb-time-grid.svelte';
 	import LbDatePicker from '$lib/components/lb-date-picker.svelte';
 	import LbTimePicker from '$lib/components/lb-time-picker.svelte';
@@ -152,7 +153,8 @@
 </script>
 
 <div>
-	<LbControl bind:controlView={controlView}/>
+	<LbControl bind:controlView />
+	<LbWidget bind:controlView />
 	<Modal
 		open={controlView.modal.state}
 		transitionsBackdropIn = {fade200}

@@ -29,18 +29,17 @@
 	transitionsPositionerOut = {fade200}
 	onOpenChange={()=>{}}
 	triggerBase="btn bg-surface-600"
-	contentBase="container mx-auto max-w-[768px] overflow-auto h-full"
+	contentBase="container mx-auto max-w-[768px]"
 	positionerPadding="p-5"
 	backdropBackground="dark:bg-surface-950 bg-surface-50"
 	backdropBase = 'fixed top-0 left-0 right-0 bottom-0 z-2000'
 	positionerBase = 'fixed top-0 left-0 right-0 bottom-0 z-2001'>
 	<!-- we need to increase z-index greather than 999 such that is overlays other modals -->
 	{#snippet content()}
-	<div class="flex h-screen">
 		<div class="absolute right-2 top-2">
 			<button type="button" aria-label="close" class="btn-icon w-auto" onclick={()=> store.resetLockScreenModalTimeout()}><X/></button>
 		</div>
-		<div class="m-auto">
+		<div class="lb-page-center">
 			{#if currentWeather && currentWeather.airTemperature}
 			<div class="flex flex-row items-center m-auto">
 				<LbIcon name={getCurrentIcon(currentWeather)} width="80" height="80"/>	
@@ -52,6 +51,5 @@
 				<p class="mt-2 pl-3 text-4xl font-bold">{format(time, "eeee PPP")}</p>
 	  	</div>
 		</div>
-	</div>
 	{/snippet}
 </Modal>

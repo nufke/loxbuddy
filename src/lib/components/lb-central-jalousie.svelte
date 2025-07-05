@@ -1,5 +1,6 @@
 <script lang="ts">
 	import LbControl from '$lib/components/lb-control.svelte';
+	import LbWidget from '$lib/components/lb-widget.svelte';
 	import LbJalousie from '$lib/components/lb-jalousie.svelte';
 	import type { Control, ControlOptions, ControlView, ModalView, ScreenItem, SingleButtonView } from '$lib/types/models';
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
@@ -120,7 +121,7 @@
 
 <div>
 	<LbControl bind:controlView />
-
+	<LbWidget bind:controlView />
 	<Modal
 		open={controlView.modal.state}
 		transitionsBackdropIn = {fade200}

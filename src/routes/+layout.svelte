@@ -130,8 +130,8 @@
 			<Navigation.Tile labelClasses={checkUrl(href) ? 'text-primary-500' : 'white'} classes="flex-col justify-center hover:bg-transparent scope:bg-transparent" label={$_(label)} {href}>
 				<div class="relative inline-block">
 					{#if badge && activeNotifications.length}
-						<span class="absolute w-[16px] h-[16px] rounded-full bg-red-500 -right-2 -top-2 text-xs flex justify-center items-center text-align"
-									transition:fade={{ duration: 300 }}>{activeNotifications.length}</span>
+						<span class="absolute w-[17px] h-[17px] rounded-full bg-red-500 dark:text-white text-white -right-2 -top-2 text-xs flex justify-center items-center"
+									transition:fade={{ duration: 300 }}><span class="-mb-[2px]">{activeNotifications.length}</span></span>
 					{/if}
 					<Icon class={checkUrl(href) ? 'text-primary-500' : 'white'} />
 				</div>
@@ -189,8 +189,8 @@
 				<Navigation.Tile labelClasses={checkUrl(href) ? 'text-primary-500' : 'text-surface-950 dark:text-surface-50'} classes="flex flex-col justify-center hover:bg-transparent" label={$_(label)} {href}>
 					<div class="relative inline-block">
 						{#if badge && activeNotifications.length}
-						<span class="absolute w-[16px] h-[16px] rounded-full bg-red-500 -right-2 -top-2 text-xs flex justify-center items-center text-align"
-									transition:fade={{ duration: 300 }}>{activeNotifications.length}</span>
+						<span class="absolute w-[17px] h-[17px] rounded-full bg-red-500 dark:text-white text-white -right-2 -top-2 text-xs flex justify-center items-center"
+									transition:fade={{ duration: 300 }}><span class="-mb-[2px]">{activeNotifications.length}</span></span>
 						{/if}
 						<Icon class={checkUrl(href) ? 'text-primary-500' : 'white'} />
 					</div>
