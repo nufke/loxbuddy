@@ -35,6 +35,7 @@
 	let controlView: ControlView = $derived({
 		...DEFAULT_CONTROLVIEW,
 		control: control,
+		isFavorite: controlOptions.isFavorite,
 		iconName: store.getCategoryIcon(control, controlOptions.isSubControl),
 		iconColor: alarms.length ? 'fill-primary-500' : 'fill-surface-950 dark:fill-surface-50',
 		textName: control.name,
