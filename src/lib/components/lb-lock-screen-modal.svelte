@@ -51,5 +51,7 @@
 				<p class="mt-2 pl-3 text-4xl font-bold">{format(time, "eeee PPP")}</p>
 	  	</div>
 		</div>
+		<!-- TODO better method to close full-screen modal? -->
+		<div class="fixed w-full h-full top-0 left-0 right-0 bottom-0 bg-transparent" onclick={()=>console.log('click')}></div>
 	{/snippet}
 </Modal>

@@ -38,7 +38,7 @@
 {#if controlView.isFavorite}
 <div role="button" tabindex="0" onkeydown={()=>{}} aria-label="card" onclick={openModal}
      class="card m-0 flex items-center justify-start rounded-lg shadow-sm border border-white/5
-						bg-surface-100-900 min-h-[76px] px-2 py-2 hover:border-white/10">
+						bg-surface-100-900 min-h-[150px] px-2 py-2 hover:border-white/10">
 	<div class="flex w-full flex-col">
 		<div class="flex w-full justify-between">
 			{#if controlView.iconName.length}
@@ -80,8 +80,7 @@
 		<div class="pl-1 pt-2 truncate">
 			<p class="truncate text-xs text-surface-500">{label(controlView.control)}</p>
 			<p class="truncate text-lg {controlView.textColor}">{controlView.textName}</p>
-			<p class="text-md truncate {controlView.statusColor}" style={getStatusColorHex(controlView.statusColor)}>
-					{controlView.statusName ? $_(controlView.statusName) : String.fromCharCode(160)}</p>
+			<p class="text-md truncate {controlView.statusColor}" style={getStatusColorHex(controlView.statusColor)}>{controlView.statusName}</p>
 		</div>
 	</div>
 </div>
