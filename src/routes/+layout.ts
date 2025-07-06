@@ -2,7 +2,7 @@ import { browser } from '$app/environment';
 import '$lib/i18n'; // Import to initialize.
 import { locale, waitLocale } from 'svelte-i18n';
 import type { LayoutLoad } from './$types';
-import { nl, uk, de } from 'date-fns/locale'
+import { nl, enGB, de } from 'date-fns/locale'
 import { setDefaultOptions } from 'date-fns'
 
 export const load: LayoutLoad = async () => {
@@ -16,9 +16,9 @@ export const load: LayoutLoad = async () => {
 function getDateLocale(s: string) {
 	switch (window.navigator.language) {
 		case 'nl': return nl;
-		case 'en': return uk;
+		case 'en': return enGB;
 		case 'de': return de;
-		default: return uk;
+		default: return enGB;
 	};
 }
 

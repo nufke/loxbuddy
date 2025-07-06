@@ -22,8 +22,9 @@ npm install
 cp .env.example .env.local
 code .env.local
 
-# copy icons to static folder 
-cp <path to loxicons> ./static/loxicons
+# Unzip the `IconLibrary.zip` in the static folder 
+cd static/loxicons
+unzip IconLibrary.zip
 
 # launch development server
 npm run dev
@@ -31,6 +32,17 @@ npm run dev
 # launch the browser 
 firefox http://localhost:5173/
 ```
+
+## Install the Lox2MQTT plugin
+
+It is recommended to use the [Lox2MQTT](https://github.com/nufke/LoxBerry-Plugin-Lox2MQTT) plugin for LoxBerry for a seamless integration into your Loxone system. Lox2MQTT version 0.8.1 or later is required.
+
+Make sure you enable the following options in Lox2MQTT:
+
+* Publish structure: this is required to load the controls in LoxBuddy
+* Publish control state changes: this is required to get control updates
+* Retain published control states: this is required to capture the latest published states
+* Subscribe to MQTT to control the Miniserver: this is required to control your Miniserver using LoxBuddy
 
 ## Deployment to a webserver
 

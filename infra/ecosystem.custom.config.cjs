@@ -8,10 +8,11 @@ module.exports = {
       exec_mode: "cluster",
       env: {
         "PORT": "4004",
-        "MQTT_HOSTNAME": "IP_address",
+        "MQTT_HOSTNAME": "IP_address_in_format_xxx.xxx.xxx.xxx",
         "MQTT_PORT": "websocket_port",
         "MQTT_USERNAME": "username",
-        "MQTT_PASSWORD": "password"
+        "MQTT_PASSWORD": "password",
+        "MQTT_TOPIC": "topic-prefix"
       }
     }
   ],
