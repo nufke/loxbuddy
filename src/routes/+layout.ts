@@ -14,10 +14,16 @@ export const load: LayoutLoad = async () => {
 }
 
 function getDateLocale(s: string) {
+	console.log('Looking for locale:', window.navigator.language);
 	switch (window.navigator.language) {
-		case 'nl': return nl;
-		case 'en': return enGB;
-		case 'de': return de;
+		case 'nl':
+		case 'nl-BE':
+		case 'nl-NL': return nl;
+		case 'en':
+		case 'en-GB': return enGB;
+		case 'de':
+		case 'de-AT':
+		case 'de-DE': return de;
 		default: return enGB;
 	};
 }
