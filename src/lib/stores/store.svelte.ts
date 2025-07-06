@@ -50,7 +50,7 @@ class Store {
     	console.error("No state update received from Miniserver") 
   	}, 1000);
 
-		this.notificationsMap = Utils.deserialize(localStorage.getItem('notifications'));
+		this.notificationsMap = Utils.deserialize(localStorage.getItem('notifications')) || {};
 
 		if ($effect.tracking()) { // TODO check coreect use of method, see https://webjose.hashnode.dev/svelte-reactivity-lets-talk-about-effects
 			$effect(() => {
@@ -61,7 +61,7 @@ class Store {
 
 	updateNotificationStorage() {
 		if (this.notifications) {
-			this.notificationsMap = Utils.deserialize(localStorage.getItem('notifications'));
+			this.notificationsMap = Utils.deserialize(localStorage.getItem('notifications')) || {};
 			this.notificationsMap[this.notifications.uid] = {
 				status: (this.notificationsMap[this.notifications.uid] && this.notificationsMap[this.notifications.uid].status) ? this.notificationsMap[this.notifications.uid].status : 1,
 			  message: this.notifications
