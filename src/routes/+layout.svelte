@@ -81,7 +81,7 @@
 
 	function navigate(s: string) {
 		goto(s);
-		store.setNav({ label: 'Menu', href: '/menu', icon: Menu });
+		store.setNav({ label: 'Menu', href: '/menu', icon: Menu });  // TODO change navigation concept
 	}
 
 	$effect( () => {

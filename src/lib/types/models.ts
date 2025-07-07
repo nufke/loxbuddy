@@ -376,6 +376,11 @@ export type NotificationMessage = {
 	}
 }
 
+export type NotificationList = {
+ uids: string[];					// list of messages
+ type: number;
+}
+
 export type NotificationMap = {
 	[key: string]: {				// uid of message
 		status: number;				// status of message: 1=new, 2=unread, 3=archived, 4=deleted

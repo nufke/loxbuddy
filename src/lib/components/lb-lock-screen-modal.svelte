@@ -36,6 +36,8 @@
 	positionerBase = 'fixed top-0 left-0 right-0 bottom-0 z-2001'>
 	<!-- we need to increase z-index greather than 999 such that is overlays other modals -->
 	{#snippet content()}
+		<!-- TODO better method to close full-screen modal? -->
+		<div class="fixed w-full h-full top-0 left-0 right-0 bottom-0 bg-transparent"></div>
 		<div class="absolute right-2 top-2">
 			<button type="button" aria-label="close" class="btn-icon w-auto" onclick={()=> store.resetLockScreenModalTimeout()}><X/></button>
 		</div>
@@ -51,7 +53,5 @@
 				<p class="mt-2 pl-3 text-4xl font-bold">{format(time, "eeee PPP")}</p>
 	  	</div>
 		</div>
-		<!-- TODO better method to close full-screen modal? -->
-		<div class="fixed w-full h-full top-0 left-0 right-0 bottom-0 bg-transparent" onclick={()=>console.log('click')}></div>
 	{/snippet}
 </Modal>

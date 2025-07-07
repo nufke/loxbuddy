@@ -1,6 +1,6 @@
 import { SvelteMap } from 'svelte/reactivity';
 import { INITIAL_STRUCTURE } from '$lib/types/models';
-import type { Structure, Control, Category, Room, SystemStatus, Route, ModalView, NotificationMap,
+import type { Structure, Control, Category, Room, SystemStatus, Route, ModalView, NotificationMap, NotificationList,
 							ControlsMap, CategoriesMap, RoomsMap, MessageCenter, NotificationMessage } from '$lib/types/models';
 import { Utils } from '$lib/helpers/utils';
 import { loxiconsPath } from '$lib/helpers/paths';
@@ -23,7 +23,7 @@ class Store {
 	mqttStatus: number = $state(0); // 0=disconnected (grey), 1=connected/ok/info (green), 2=warning/issue (yellow), 3=error (red)
 	msAlive: boolean = $derived(false);
 	msStatus: number = $derived(this.getSystemCode());
-	notifications: NotificationMessage = $derived(this.getState(this.structure.globalStates.notifications));
+	notifications: NotificationMessage | NotificationList = $derived(this.getState(this.structure.globalStates.notifications));
 	notificationsMap: NotificationMap = $state({});
 
 	weatherModal: ModalView = $state({
@@ -62,11 +62,18 @@ class Store {
 	updateNotificationStorage() {
 		if (this.notifications) {
 			this.notificationsMap = Utils.deserialize(localStorage.getItem('notifications')) || {};
-			this.notificationsMap[this.notifications.uid] = {
-				status: (this.notificationsMap[this.notifications.uid] && this.notificationsMap[this.notifications.uid].status) ? this.notificationsMap[this.notifications.uid].status : 1,
-			  message: this.notifications
-			};
-			localStorage.setItem('notifications', Utils.serialize(this.notificationsMap));
+			let msg = this.notifications as NotificationMessage;
+			if (msg.uid) {
+				this.notificationsMap[msg.uid] = {
+					status: (this.notificationsMap[msg.uid] && this.notificationsMap[msg.uid].status) ? this.notificationsMap[msg.uid].status : 1,
+			  	message: msg
+				};
+				localStorage.setItem('notifications', Utils.serialize(this.notificationsMap));
+			}
+			let msgList= this.notifications as NotificationList;
+			if (msgList.uids) {
+				msgList.uids.forEach( (uid) => console.log('uid:', this.controlState.get(uid))); // TODO check what to do with uids
+			}
 		}
 	}
 
@@ -99,7 +106,7 @@ class Store {
 	getSystemCode() { // 0=no status (disconnected), 1=info, 2=warning, 3=error
 		let status = this.controlState.get('systemStatus') as SystemStatus;
 		if (status && status.entries) {
-			return  this.msAlive ? Math.max(...status.entries.filter( item => item.isHistoric == false).map( item => item.severity)) : 0;
+			return Math.max(...status.entries.filter( item => item.isHistoric == false).map( item => item.severity));
 		}
 		return 0;
 	}

@@ -12,7 +12,7 @@
 
 	let subControls = $derived(Object.values(control.subControls));
 
-let temperatureIdsList : ListItem[] = [
+	let temperatureIdsList : ListItem[] = [
 		{ id: 0, name: 'Economy', value: 0, abs: 0, corr: 1, visible: true },
 		{ id: 1, name: 'Comfort heating', value: 0, abs: 0, corr: 0, visible: true },
 		{ id: 2, name: 'Comfort cooling', value: 0, abs: 0, corr: 0, visible: true },
