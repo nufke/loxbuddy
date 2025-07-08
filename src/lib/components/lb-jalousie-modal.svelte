@@ -5,6 +5,7 @@
 	import { X } from '@lucide/svelte';
 	import { _ } from 'svelte-i18n';
 	import { fade200 } from '$lib/helpers/transition';
+	import Info from '$lib/components/lb-info.svelte';
 
 	let { controlView = $bindable() }: { controlView: ControlView } = $props();
 
@@ -25,6 +26,7 @@
 							max-w-9/10 max-h-9/10 overflow-auto w-[380px]"
 	backdropClasses="backdrop-blur-sm">
 	{#snippet content()}
+	<Info control={controlView.control}/>
 	<header class="relative">
 		<div class="flex justify-center">
 			<div class="relative inline-flex h-18 w-18 items-center justify-center overflow-hidden rounded-full border border-white/10 dark:bg-surface-950">

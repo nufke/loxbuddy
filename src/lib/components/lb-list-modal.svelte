@@ -8,6 +8,7 @@
 	import { X, Lightbulb, SlidersHorizontal } from '@lucide/svelte';
 	import { _ } from 'svelte-i18n';
 	import { fade200 } from '$lib/helpers/transition';
+	import Info from '$lib/components/lb-info.svelte';
 
 	let { controlView = $bindable() }: { controlView: ControlView } = $props();
 
@@ -44,6 +45,7 @@
 							max-w-9/10 max-h-9/10 overflow-auto w-[380px]"
 	backdropClasses="backdrop-blur-sm">
 	{#snippet content()}
+	<Info control={controlView.control}/>
 	{#if selectedTab==0} <!-- scenes -->
 	<header class="relative">
 		<div class="flex justify-center">

@@ -9,6 +9,7 @@
 	import { fade200 } from '$lib/helpers/transition';
 	import { _ } from 'svelte-i18n';
 	import { X, Wrench, Info, ChevronUp, ChevronDown } from '@lucide/svelte';
+	import Info2 from '$lib/components/lb-info.svelte';
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS}: { control: Control, controlOptions: ControlOptions } = $props();
 
@@ -127,6 +128,7 @@
 									bg-surface-100-900 max-w-9/10 max-h-9/10 overflow-auto w-[380px]"
 		backdropClasses="backdrop-blur-sm">
 		{#snippet content()}
+			<Info2 control={controlView.control}/>
 			<header class="relative flex">
 				<div class="flex justify-center text-center w-[300px]">
 					<h2 class="h4 truncate">{controlView.textName}</h2>

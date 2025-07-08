@@ -16,6 +16,7 @@
 	import LbDayPickerModal from '$lib/components/lb-day-picker-modal.svelte';
 	import { publishTopic } from '$lib/communication/mqttclient';
 	import { Utils } from '$lib/helpers/utils';
+	import Info from '$lib/components/lb-info.svelte';
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
@@ -142,6 +143,7 @@
 								max-w-9/10 max-h-9/10 overflow-auto w-[380px]"
 		backdropClasses="backdrop-blur-sm">
 		{#snippet content()}
+		<Info control={controlView.control}/>
 		<header class="relative" >
 			<div class="flex justify-center">
 				<h2 class="h4 text-center">{controlView.textName}</h2>

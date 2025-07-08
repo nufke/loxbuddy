@@ -10,6 +10,7 @@
 	import { _ } from 'svelte-i18n';
 	import { publishTopic } from '$lib/communication/mqttclient';
 	import { fade200 } from '$lib/helpers/transition';
+	import Info from '$lib/components/lb-info.svelte';
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
@@ -134,6 +135,7 @@
 									max-w-9/10 max-h-9/10 overflow-auto w-[380px]"
 		backdropClasses="backdrop-blur-sm">
 		{#snippet content()}
+		<Info control={controlView.control}/>
 			<header class="relative">
 				<div class="mb-2 flex justify-center">
 					<h2 class="h4 text-center ">{controlView.textName}</h2>

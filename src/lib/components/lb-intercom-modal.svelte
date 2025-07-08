@@ -4,6 +4,7 @@
 	import { X, Video, Camera, History, Settings } from '@lucide/svelte';
 	import { _ } from 'svelte-i18n';
 	import { fade200 } from '$lib/helpers/transition';
+	import Info from '$lib/components/lb-info.svelte';
 
 	let { controlView = $bindable() }: { controlView: ControlView } = $props();
 
@@ -58,6 +59,7 @@
 							max-w-9/10 max-h-9/10 w-[680px] lg:w-[860px]"
 	backdropClasses="backdrop-blur-sm">
 	{#snippet content()}
+	<Info control={controlView.control}/>
 	<header class="relative">
 		<div class="flex justify-center">
 			<h2 class="h4 text-center">{controlView.textName}</h2>

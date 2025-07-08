@@ -11,6 +11,7 @@
 	import { publishTopic } from '$lib/communication/mqttclient';
 	import fmt from 'sprintf-js';
 	import { fade200 } from '$lib/helpers/transition';
+	import Info from '$lib/components/lb-info.svelte';
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
@@ -140,6 +141,7 @@
 									md:max-w-9/10 md:max-h-9/10 overflow-auto w-[600px]"
 		backdropClasses="backdrop-blur-sm">
 		{#snippet content()}
+			<Info control={controlView.control}/>
 			<header class="relative">
 				<div class="mb-2 flex justify-center">
 					<h2 class="h4 text-center ">{controlView.textName}</h2>

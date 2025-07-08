@@ -13,6 +13,7 @@
 	import LbIcon from '$lib/components/lb-icon-by-name.svelte';
 	import LbDatePicker from '$lib/components/lb-date-picker.svelte';
 	import LbTimePicker from '$lib/components/lb-time-picker.svelte';
+	import Info from '$lib/components/lb-info.svelte';
 
 	let { controlView = $bindable() }: { controlView: ControlView } = $props();
 
@@ -86,6 +87,7 @@
 							max-w-9/10 max-h-9/10 overflow-auto w-[380px]"
 	backdropClasses="backdrop-blur-sm">
 	{#snippet content()}
+	<Info control={controlView.control}/>
 	<header class="relative">
 		<div class="flex justify-center">
 			<h2 class="h4 text-center">{controlView.textName}</h2>
