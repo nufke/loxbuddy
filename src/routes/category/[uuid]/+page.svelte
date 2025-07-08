@@ -11,7 +11,7 @@
 
 	let { data }: PageProps = $props();
 
-	store.setNav({ label: 'ArrowLeft', href: '/room', icon: ArrowLeft }); // TODO change navigation concept
+	store.setNav({ label: 'ArrowLeft', href: '/category', icon: ArrowLeft }); // TODO change navigation concept
 
 	let tabGroup = $state('1');
 

@@ -8,6 +8,9 @@
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
+	let textAndIcon = $derived(Number(store.getState(control.states.textAndIcon)));
+	let iconAndColor = $derived(Number(store.getState(control.states.iconAndColor)));
+
 	let modal: ModalView = $state({
 		action: (state: boolean) => {modal.state = state},
 		state: false

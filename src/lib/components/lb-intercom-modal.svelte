@@ -15,11 +15,15 @@
 	let dates = $derived(controlView.details.lastBellEvents);
 	let history = $derived(controlView.details.hasLastBellEventImages && dates.length);
 	let stream = $derived(controlView.securedDetails && controlView.securedDetails.videoInfo ? controlView.securedDetails.videoInfo.streamUrl : null);
+	let streamReload = $derived(stream);
 
 	function handleImageLoad() {
 		image = image ? image : dates[dates.length-1];
 		img_height = img && img.height ? img.height : 400;
-	}
+		setTimeout(function() {
+			streamReload = stream + '?' + Date.now();
+    }, 1000);
+  }
 
 	function sortDates(i: number[]) {
 		return i.sort( (a, b) => b-a);
@@ -51,7 +55,7 @@
 	onOpenChange={()=>controlView.modal.action(false)}
 	triggerBase="btn bg-surface-600"
 	contentBase="card bg-surface-100-900 pt-4 space-y-4 shadow-sm rounded-lg border border-white/5
-							max-w-9/10 max-h-9/10 w-[680px]"
+							max-w-9/10 max-h-9/10 w-[680px] lg:w-[860px]"
 	backdropClasses="backdrop-blur-sm">
 	{#snippet content()}
 	<header class="relative">
@@ -70,7 +74,7 @@
 				<div class="absolute inset-0 flex items-center justify-center z-1">
 					<p class="dark:text-surface-50 text-surface-950 text-xl">Loading video...</p>
 				</div>
-				<img class="absolute z-2 w-full" bind:this={img} src={stream} onload={handleImageLoad} alt=""/>
+				<img class="absolute z-2 w-full" bind:this={img} src={streamReload} onload={handleImageLoad} alt=""/>
 			</div>
 		{/if}
 		{#if selectedTab==1}
@@ -101,7 +105,7 @@
 		{/if}
 	</div>
 	<div class="sticky bottom-0 left-0 w-full h-16 pb-2">
-		<div class="grid h-full max-w-lg { history ? 'grid-cols-4' : 'grid-cols-2'} mx-auto">
+		<div class="grid h-full max-w-lg { history ? 'grid-cols-3' : 'grid-cols-2'} mx-auto">
 			<button type="button" class="inline-flex flex-col items-center justify-center px-5
 							group {selectedTab==0 ? 'text-primary-500' : ''} " onclick={() => selectedTab=0}>
 				<Video/>
@@ -119,11 +123,11 @@
 					<span class="mt-1 text-xs">{$_("History")}</span>
 				</button>
 			{/if}
-			<button type="button" class="inline-flex flex-col items-center justify-center px-5
+			<!--<button type="button" class="inline-flex flex-col items-center justify-center px-5
 							group {selectedTab==3 ? 'text-primary-500' : ''} " onclick={() => selectedTab=3}>
 				<Settings/>
 				<span class="mt-1 text-xs">{$_("Settings")}</span>
-			</button>
+			</button>-->
 		</div>
 	</div>
 	{/snippet}

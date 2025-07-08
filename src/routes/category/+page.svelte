@@ -12,7 +12,7 @@
 </script>
 
 <div class="container p-3 mx-auto max-w-[640px] lg:max-w-[960px] lb-page-center">
-	<h2 class="h4">{$_('Categories')}</h2>
+	<h2 class="pl-2 h4">{$_('Categories')}</h2>
 	<div class="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3 lg:flex-wrap">
 		{#each items as item}
 			<LbCard {key} {item}/>
