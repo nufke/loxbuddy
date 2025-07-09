@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Tabs } from '@skeletonlabs/skeleton-svelte';
-	import type { SystemStatus } from '$lib/types/models';
+	import type { SystemStatus, SystemStatusEntry } from '$lib/types/models';
 	import { store } from '$lib/stores/store.svelte';
 	import { _ } from 'svelte-i18n';
 	import { format } from 'date-fns';
@@ -17,6 +17,10 @@
 
 	function didRead(uid: string) {
 		store.updateNotificationReadStatus(uid);
+	}
+
+	function getRoomName(entry: SystemStatusEntry) {
+		return entry && entry.roomUuid && store.rooms[entry.roomUuid] ? store.rooms[entry.roomUuid].name : '';
 	}
 </script>
 
@@ -40,7 +44,7 @@
 			<Tabs.Panel value="2">
 				{#each activeMessages.toReversed() as entry}
 				<div class="border-b dark:border-surface-900 border-surface-200 p-3">
-					<p class="text-md text-surface-500">{format(new Date(Number(entry.timestamps[0])*1000), "PPP p")} {store?.rooms[entry?.roomUuid].name}</p>
+					<p class="text-md text-surface-500">{format(new Date(Number(entry.timestamps[0])*1000), "PPP p")} {getRoomName(entry)}</p>
 					<p class="text-lg">{@html entry.title}</p>
 					<p class="text-md">{@html entry.affectedName}</p>
 				</div>
@@ -49,7 +53,7 @@
 			<Tabs.Panel value="3">
 				{#each pastMessages.toReversed() as entry}
 				<div class="border-b dark:border-surface-900 border-surface-200 p-3">
-					<p class="text-md text-surface-500">{format(new Date(Number(entry.timestamps[0])*1000), "PPP p")} {entry.roomUuid ? store.rooms[entry.roomUuid].name : ''}</p>
+					<p class="text-md text-surface-500">{format(new Date(Number(entry.timestamps[0])*1000), "PPP p")} {getRoomName(entry)}</p>
 					<p class="text-lg">{@html entry.title}</p>
 					<p class="text-md">{@html entry.affectedName}</p>
 				</div>

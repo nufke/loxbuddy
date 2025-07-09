@@ -14,6 +14,7 @@
 	import LbDatePicker from '$lib/components/lb-date-picker.svelte';
 	import LbTimePicker from '$lib/components/lb-time-picker.svelte';
 	import Info from '$lib/components/lb-info.svelte';
+	import { Utils } from '$lib/helpers/utils';
 
 	let { controlView = $bindable() }: { controlView: ControlView } = $props();
 
@@ -29,19 +30,37 @@
 		{ id: 6, name: 'Manual cooling', visible: false }
 	];
 
+	let isV1 = controlView.control.type !== 'IRoomControllerV2'; 
+
 	let selectedItem = $derived(controlView.list ? controlView.list.findIndex( (item: ListItem) => { return item.name === controlView.statusName }) : 0);
 	let selectedTab = $state(0);
 	let tempActual = $derived(fmt.sprintf('%.1f', Number(store.getState(controlView.control?.states.tempActual))));
 	let tempTarget = $derived(fmt.sprintf('%.1f', Number(store.getState(controlView.control?.states.tempTarget))));
-	let override = $derived(Number(store.getState(controlView.control?.states.override)));
-	let mode = $derived(Number(store.getState(controlView.control?.states.mode)));
 	let date: SvelteDate = $state(new SvelteDate());
-	let modeId = $derived(temperatureModeList[mode].id);
-	let isAutomatic = $derived(modeId<5);
-	let isHeating = $derived(modeId==1 || modeId==3 || modeId==5);
-	let isCooling = $derived(modeId==2 || modeId==4 || modeId==6);
-	let isEco = $derived(selectedItem==0);
 
+	let overrideV1 = $derived(Number(store.getState(controlView.control.states.override)));
+	let overrideEntriesV2 = store.getState(controlView.control.states.overrideEntries);
+	let overrideV2 = $derived(overrideEntriesV2 && overrideEntriesV2[0] ? (overrideEntriesV2[0].isTimer ?  1: 0 ) : 0);
+
+	let modeV1 = $derived(Number(store.getState(controlView.control.states.mode)));
+	let modeIdV1 = $derived(temperatureModeList[modeV1].id);
+	let isAutomaticV1 = $derived(modeIdV1<5);
+	let isHeatingV1 = $derived(modeIdV1==1 || modeIdV1==3 || modeIdV1==5);
+	let isCoolingV1 = $derived(modeIdV1==2 || modeIdV1==4 || modeIdV1==6);
+	let isEcoV1 = $derived(selectedItem==0);
+
+	let modeV2 = $derived(Number(store.getState(controlView.control.states.currentMode)));
+	let isAutomaticV2 = $derived(Number(store.getState(controlView.control.states.operatingMode))<3);
+	let isHeatingV2 = $derived(modeV2==1 || modeV2 == 4);
+	let isCoolingV2 = $derived(modeV2==2 || modeV2 == 5);
+	let isEcoV2 = $derived(Number(store.getState(controlView.control.states.activeMode))==0);
+
+	let override = $derived(isV1 ? overrideV1 : overrideV2);
+	let isAutomatic = $derived(isV1 ? isAutomaticV1 : isAutomaticV2);
+	let isHeating = $derived(isV1 ? isHeatingV1 : isHeatingV2);
+	let isCooling = $derived(isV1 ? isCoolingV1 : isCoolingV2);
+	let isEco = $derived(isV1 ? isEcoV1 : isEcoV2);
+	
 	let dateTimeView = $state({
 		isDateView: true,
 		isMinuteView: false
@@ -51,7 +70,10 @@
 		let coeff = 1000 * 60; // round to minute
 		let overrideTimeSec = Math.round((date.getTime() - Date.now())/coeff)*coeff/1000;
     if (overrideTimeSec > 60 && controlView.control) {// TODO define minimum time of 1 minute
-	    let cmd = 'starttimer/' + i + '/' + String(overrideTimeSec);
+	    let cmd = isV1 ? 'starttimer/' : 'override/';
+			overrideTimeSec += isV1 ? 0 : Math.round((Date.now()-1230764400000)/1000); // V2 starts to count from 1-1-2009
+			overrideTimeSec += Utils.isDST(date) ? -3600 : 0; // DST correction
+			cmd += i + '/' + String(overrideTimeSec);
 			publishTopic(controlView.control.uuidAction, cmd);
     } else {
 			console.error('IRC: timer period to low:', overrideTimeSec);
@@ -61,7 +83,7 @@
 
 	function cancelOverride() {
 		if (controlView.control) {
-			publishTopic(controlView.control.uuidAction, 'stoptimer');
+			publishTopic(controlView.control.uuidAction, isV1 ? 'stoptimer' : 'stopOverride');
 		}
 	}
 
@@ -74,7 +96,7 @@
     }, 500);
 	}
 </script>
-
+{JSON.stringify(overrideEntriesV2)}
 <Modal
 	open={controlView.modal.state}
 	transitionsBackdropIn = {fade200}

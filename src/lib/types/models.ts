@@ -336,12 +336,12 @@ export type MessageCenter = {
 
 export type SystemStatus = {
 	isLimitedUser: boolean;
-	entries: SystemStatusEntries[];
+	entries: SystemStatusEntry[];
 	activeEntryUuid: String | null;
 	controlUUID: string;
 }
 
-export type SystemStatusEntries = {
+export type SystemStatusEntry = {
 	entryUuid: string;
 	eventId: number;
 	sourceUuid: string;

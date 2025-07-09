@@ -11,7 +11,7 @@
 	import { Modal } from '@skeletonlabs/skeleton-svelte';
 	import { fade200 } from '$lib/helpers/transition';
 
-	let slider = $state(Array.from({length: 10}, i => i = false));
+	let slider = $state(Array.from({length: 10}, (v,i) => v = (i==0))); // open first slider at start
 	let current = $derived(weatherStore.current);
 	let daily = $derived(weatherStore.daily);
 	let hourly = $derived(weatherStore.hourly);
@@ -22,6 +22,10 @@
 		if (hourly[i]) {
 			slider[i] = !slider[i];
 		}
+	}
+
+	function resetSlider() {
+		slider = Array.from({length: 10}, (v,i) => v = (i==0));
 	}
 
 	function getCurrentIcon(cur: WeatherCurrentConditions) {
@@ -55,7 +59,7 @@
 		return hours; 
 	}
 </script>
-
+{slider}
 <Modal
 	open={store.weatherModal.state}
 	transitionsBackdropIn = {fade200}
@@ -70,7 +74,7 @@
 	{#snippet content()}
 	<header class="sticky top-0 h-[40px] dark:bg-surface-950/50 bg-surface-50/50 z-1">
 		<div class="absolute right-1 top-1">
-			<button type="button" aria-label="close" class="btn-icon w-auto" onclick={()=> store.weatherModal.state = false}><X/></button>
+			<button type="button" aria-label="close" class="btn-icon w-auto" onclick={()=> {store.weatherModal.state = false; resetSlider();}}><X/></button>
 		</div>
 	</header>
 	{#if loaded}
@@ -106,7 +110,7 @@
 			</div>
 			<div class="flex flex-col gap-4 mt-8 m-auto">
 				<div class="flex gap-2">
-					<span style="rotate: {current.windDirection}deg;"><LbIcon name={"/icons/svg/wind-direction.svg"} width="32" height="32"/></span>
+					<span style="rotate: {current.windDirection}deg;"><LbIcon name={"/icons/svg/wind-direction2.svg"} width="24" height="24"/></span>
 					<p class="text-lg"><span class="font-medium">{current.windAverage}</span> km/h</p>
 				</div>
 				<div class="flex gap-2">

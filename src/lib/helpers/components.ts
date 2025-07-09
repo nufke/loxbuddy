@@ -15,6 +15,7 @@ import LbIntercom from '$lib/components/lb-intercom.svelte';
 import LbCentralLight from '$lib/components/lb-central-light.svelte';
 import LbAlarm from '$lib/components/lb-alarm.svelte';
 import LbIRoomController from '$lib/components/lb-iroomcontroller.svelte';
+import LbIRoomControllerV2 from '$lib/components/lb-iroomcontroller-v2.svelte';
 import LbDaytimer from '$lib/components/lb-daytimer.svelte';
 import LbSmokeAlarm from '$lib/components/lb-smoke-alarm.svelte';
 import LbCentralJalousie from '$lib/components/lb-central-jalousie.svelte';
@@ -39,6 +40,7 @@ let componentList = [
 	{ format: 'CentralLightController', component: LbCentralLight },
 	{ format: 'Alarm', component: LbAlarm },
 	{ format: 'IRoomController', component: LbIRoomController },
+	{ format: 'IRoomControllerV2', component: LbIRoomControllerV2 },
 	{ format: 'Daytimer', component: LbDaytimer },
 	{ format: 'SmokeAlarm', component: LbSmokeAlarm },
 	{ format: 'CentralJalousie', component: LbCentralJalousie },

@@ -107,7 +107,7 @@
 <svelte:body onclick={() => {store.resetLockScreenModalTimeout()}}/>
 
 <!-- we need to use the innerWidth to avoid we render the children twice -->
-{#if (innerWidth.current != undefined) && innerWidth.current > 768 } <!-- tabled mode -->
+{#if (innerWidth.current != undefined) && innerWidth.current > 768 } <!-- tabled / landscape mode -->
 <div class="hidden md:grid grid-cols-[auto_1fr]">
 	<aside class="sticky top-0 col-span-1 h-screen">
 	<Navigation.Rail headerClasses="h-[20%] inline-block align-top" tilesClasses="h-[60%]" footerClasses="h-[20%] justify-end">
@@ -151,7 +151,7 @@
   </main>
 </div>
 {:else}
-<div class="md:hidden grid grid-rows-[auto_1fr_auto]"> <!-- mobile mode -->
+<div class="md:hidden grid grid-rows-[auto_1fr_auto]"> <!-- mobile / portait mode -->
 	<header class="sticky preset-filled-surface-100-900 top-0 z-1">
 		<div class="grid grid-cols-3 text-center items-center m-auto h-[60px]">
 			<div class="flex flex-row text-center items-center gap-3">

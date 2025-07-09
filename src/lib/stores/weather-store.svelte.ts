@@ -77,8 +77,8 @@ class WeatherStore {
 			windDirection: Math.round(Number(field[15]))+180,
 			uv: Math.round(Number(field[24])),
 			feelsLike: Math.round(Number(field[12])),
-			lightingStrikeCount1h: 0,
-			lightingStrikeDistance: 25,
+			lightingStrikeCount1h: 0, // TODO not in weather forecast?
+			lightingStrikeDistance: 25, // TODO not in weather forecast?
 			precipitationToday: Math.round(Number(field[26])),
 			solarRadiation: Math.round(Number(field[22])),
 			sunRise: String(Number(field[34])) + ':' + String(field[35]),
