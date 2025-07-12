@@ -10,14 +10,10 @@
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS}: { control: Control, controlOptions: ControlOptions } = $props();
 
-	let subControls = $derived(Object.values(control.subControls));
-
 	let tempActual = $derived(fmt.sprintf('%.1f', Number(store.getState(control.states.tempActual))));
+	let activeMode = $derived(Number(store.getState(control.states.activeMode)));
 
-	// grab temperature ID from first subcontrol
-	let id = $derived(Number(store.getState(control.subControls[subControls[0].uuidAction].states.value))); // TODO check
-
-	let activeModes : ListItem[] = [
+	let activeModes : ListItem[] = [ /* active modes for V2 */
 		{ id: 0, name: 'Economy', value: 0, abs: 0, corr: 1, visible: true },
 		{ id: 1, name: 'Comfort temperature', value: 0, abs: 0, corr: 0, visible: true },
 		{ id: 2, name: 'Building protection', value: 0, abs: 0, corr: 0, visible: true },
@@ -38,7 +34,7 @@
 		iconText: tempActual,
 		iconColor: 'fill-surface-950 dark:fill-surface-50',
 		textName: control.name === $_('IRoomControllerV2') ? store.rooms[control.room].name : control.name,
-		statusName: activeModes[id]?.name,
+		statusName: activeModes[activeMode]?.name,
 		statusColor: 'text-surface-500', // TODO other colors for temperatures
 		list: activeModes,
 		modal: modal
@@ -48,5 +44,5 @@
 <div>
 	<LbControl bind:controlView />
 	<LbWidget bind:controlView />
-	<LbIrcModal bind:controlView />
+	<LbIrcModal bind:controlView /> <!-- we reuse the V1 modal -->
 </div>

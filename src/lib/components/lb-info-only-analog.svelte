@@ -5,13 +5,11 @@
 	import LbWidget from '$lib/components/lb-widget.svelte';
 	import LbModal from '$lib/components/lb-modal.svelte';
 	import { store } from '$lib/stores/store.svelte';
-	import { Utils } from '$lib/helpers/utils';
+	import { utils } from '$lib/helpers/utils';
 	import { format } from 'date-fns';
 	import fmt from 'sprintf-js';
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
-
-	const loxTimeRef = 1230764400000; // correction to epoch, Loxone calculates from 1-1-2009
 
 	function getFormattedString(input: string) {
 		let s: string = input;
@@ -19,9 +17,9 @@
 		if (control.details.format) {
 			switch (control.details.format) {
 				case '<v.u>': // date + time, e.g. 6 maart 2025 22:56
-					let date = new Date(value * 1000 + loxTimeRef);
+					let date = new Date(value * 1000 + utils.loxTimeRef);
 					if (date && value) {
-						date = Utils.isDST(date) ? new Date(value * 1000 + loxTimeRef - 3600000) : date;
+						date = utils.isDST(date) ? new Date(value * 1000 + utils.loxTimeRef - 3600000) : date;
 						s = format(date, 'PPP p');
 					}
 					break;
@@ -33,7 +31,7 @@
 					s = days + 'd ' + hours + 'h ' + minutes + 'm';
 					break;
 				case '<v.d>': // EIS4, dd:mm:yyyy
-					const d = new Date(value * 1000 + loxTimeRef);
+					const d = new Date(value * 1000 + utils.loxTimeRef);
 					s = format(d, 'dd:MM:yyyy');
 					break;
 				case '<v.x>': // digital value

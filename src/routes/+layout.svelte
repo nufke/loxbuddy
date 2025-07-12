@@ -11,7 +11,7 @@
 	import { weatherStore } from '$lib/stores/weather-store.svelte';
 	import { _ } from 'svelte-i18n';
 	import { page } from '$app/state';
-	import { Utils } from '$lib/helpers/utils';
+	import { utils } from '$lib/helpers/utils';
 	import type { WeatherCurrentConditions } from '$lib/types/weather';
 	import LbIcon from '$lib/components/lb-icon-by-name.svelte';
 	import LbWeatherModal from '$lib/components/lb-weather-modal.svelte';
@@ -36,8 +36,8 @@
 	let activeNotifications = $derived(Object.values(store.notificationsMap).filter( items => items.status == 1));
 
 	function getCurrentIcon(cur: WeatherCurrentConditions) {
-		let sunRise = Utils.time2epoch(cur.time, cur.sunRise);
-		let sunSet = Utils.time2epoch(cur.time, cur.sunSet);
+		let sunRise = utils.time2epoch(cur.time, cur.sunRise);
+		let sunSet = utils.time2epoch(cur.time, cur.sunSet);
 		let dayOrNight = (cur.time > sunRise) && (cur.time < sunSet) ? '-day.svg' : '-night.svg';
 		return '/meteocons/svg/' + cur.icon + dayOrNight;
 	}

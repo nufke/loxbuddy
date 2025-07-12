@@ -2,7 +2,7 @@ import { SvelteMap } from 'svelte/reactivity';
 import { INITIAL_STRUCTURE } from '$lib/types/models';
 import type { Structure, Control, Category, Room, SystemStatus, Route, ModalView, NotificationMap, NotificationList,
 							ControlsMap, CategoriesMap, RoomsMap, MessageCenter, NotificationMessage } from '$lib/types/models';
-import { Utils } from '$lib/helpers/utils';
+import { utils } from '$lib/helpers/utils';
 import { loxiconsPath } from '$lib/helpers/paths';
 import { Menu } from '@lucide/svelte';
 
@@ -50,7 +50,7 @@ class Store {
     	console.error("No state update received from Miniserver") 
   	}, 1000);
 
-		this.notificationsMap = Utils.deserialize(localStorage.getItem('notifications')) || {};
+		this.notificationsMap = utils.deserialize(localStorage.getItem('notifications')) || {};
 
 		if ($effect.tracking()) { // TODO check coreect use of method, see https://webjose.hashnode.dev/svelte-reactivity-lets-talk-about-effects
 			$effect(() => {
@@ -61,14 +61,14 @@ class Store {
 
 	updateNotificationStorage() {
 		if (this.notifications) {
-			this.notificationsMap = Utils.deserialize(localStorage.getItem('notifications')) || {};
+			this.notificationsMap = utils.deserialize(localStorage.getItem('notifications')) || {};
 			let msg = this.notifications as NotificationMessage;
 			if (msg.uid) {
 				this.notificationsMap[msg.uid] = {
 					status: (this.notificationsMap[msg.uid] && this.notificationsMap[msg.uid].status) ? this.notificationsMap[msg.uid].status : 1,
 			  	message: msg
 				};
-				localStorage.setItem('notifications', Utils.serialize(this.notificationsMap));
+				localStorage.setItem('notifications', utils.serialize(this.notificationsMap));
 			}
 			let msgList= this.notifications as NotificationList;
 			if (msgList.uids) {
@@ -79,7 +79,7 @@ class Store {
 
 	updateNotificationReadStatus(uid: string) {
 		this.notificationsMap[uid].status = 2;
-		localStorage.setItem('notifications', Utils.serialize(this.notificationsMap));
+		localStorage.setItem('notifications', utils.serialize(this.notificationsMap));
 	}
 
 	setNav(route: Route) {
@@ -126,7 +126,7 @@ class Store {
 	setInitialStates(data: any) {
 		Object.keys(data).forEach( (key) => {
 			let item = $state(data[key]);
-			let obj = Utils.isValidJSONObject(item) ? JSON.parse(item) : item;
+			let obj = utils.isValidJSONObject(item) ? JSON.parse(item) : item;
 			this.controlState.set(key, obj);
 		});
 	}

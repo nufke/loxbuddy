@@ -20,8 +20,8 @@
   let weeks = $derived(weeksFrom(viewDate, start));
 
 	function getDateStr(date: Date) {
-    const pad = (n:number) => n < 10 ? "0" + n : n;
-    return date.getFullYear() + "-" + pad(date.getMonth()+1) + "-" + pad(date.getDate());
+    const pad = (n:number) => n < 10 ? '0' + n : n;
+    return date.getFullYear() + "-" + pad(date.getMonth()+1) + '-' + pad(date.getDate());
   }
 
 	function showDate() {

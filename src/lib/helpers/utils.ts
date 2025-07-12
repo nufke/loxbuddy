@@ -1,9 +1,11 @@
 import { format } from 'date-fns';
 
-export class Utils {
+class Utils {
+
+	loxTimeRef = 1230764400000; // correction to epoch, Loxone calculates from 1-1-2009
 
 	// input: h in [0,360] and s,v in [0-100] - output: r,g,b in [0-255,0-255,0-255]
-	static hsv2rgb(h_: number, s_: number, v_: number): number[] {
+	hsv2rgb(h_: number, s_: number, v_: number): number[] {
 		const h = h_;
 		const s = s_ / 100;
 		const v = v_ / 100;
@@ -17,7 +19,7 @@ export class Utils {
 	}
 
 	// input: r,g,b in [0-255,0-255,0-255], output: h in [0,360] and s,v in [0-100]
-	static rgb2hsv(r: number, g: number, b: number) {
+	rgb2hsv(r: number, g: number, b: number) {
 		let rabs: number;
 		let gabs: number;
 		let babs: number;
@@ -64,7 +66,7 @@ export class Utils {
 		};
 	}
 
-	static isValidJSONObject(str: string) {
+	isValidJSONObject(str: string) {
 		let obj;
 		try {
 			obj = JSON.parse(str);
@@ -75,45 +77,55 @@ export class Utils {
 		else false;
 	}
 
-	static hours2dec(t:string) {
+	hours2dec(t:string) {
 		let hhmm = t.split(':'); // HH:mm notation
 		return Number((Number(hhmm[0]) + Number(hhmm[1]) / 60).toFixed(2));
 	}
 
-	static hours2sec(t:string) {
+	hours2sec(t:string) {
 		let hhmm = t.split(':'); // HH:mm notation
 		return Number((Number(hhmm[0]) * 3600 + Number(hhmm[1]) * 60));
 	}
 
-	static dec2hours(i: number) {
+
+	dec2hours(i: number) {
 		let hrs = Math.floor(i/3600);
 		let min = Math.round((Number(i/3600)-hrs) * 60);
-		return hrs + ':' + min;
+		return hrs + ':' + (min < 10 ? '0' + min : min);
 	}
 
-	static isDST(d: Date) { // correction for daylight saving time
+	isDST(d: Date) { // correction for daylight saving time
     let jan = new Date(d.getFullYear(), 0, 1).getTimezoneOffset();
     let jul = new Date(d.getFullYear(), 6, 1).getTimezoneOffset();
     return Math.max(jan, jul) !== d.getTimezoneOffset();    
 	}
 
-	static time2epoch(dateEpoch: number, time: string) {
+	decTime2date(t: number) {
+		let hrs = Math.floor(t/3600);
+		let min = Math.round((Number(t/3600)-hrs) * 60);
+		let date = new Date();
+		return new Date(date.getFullYear(), date.getMonth(), date.getDate(), hrs, min);
+	}
+
+	time2epoch(dateEpoch: number, time: string) {
 		let hhmm = time.split(':'); // HH:mm notation
 		let date = new Date(dateEpoch);
 		let dayStart = new Date(date.getFullYear(), date.getMonth(), date.getDate(), Number(hhmm[0]), Number(hhmm[1]));
 		return dayStart.valueOf();
 	}
 
-	static epoch2TimeStr(epoch: number) {
+	epoch2TimeStr(epoch: number) {
 		const date = new Date(epoch*1000);
 		return format(date, "p");
 	}
 
-	static serialize(value: any): string {
+	serialize(value: any): string {
     return  JSON.stringify(value);
   }
 
-  static deserialize(item: string | null): any {
+  deserialize(item: string | null): any {
     return item ? JSON.parse(item) : null;
   }
 }
+
+export const utils = new Utils();
