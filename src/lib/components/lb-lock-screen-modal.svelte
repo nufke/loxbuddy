@@ -6,7 +6,7 @@
 	import { X } from '@lucide/svelte';
 	import type { WeatherCurrentConditions } from '$lib/types/weather';
 	import { format } from 'date-fns';
-	import { Utils } from '$lib/helpers/utils';
+	import { utils } from '$lib/helpers/utils';
 	import { Modal } from '@skeletonlabs/skeleton-svelte';
 	import { fade200 } from '$lib/helpers/transition';
 
@@ -14,8 +14,8 @@
 	let time = $derived(store.time);
 
 	function getCurrentIcon(cur: WeatherCurrentConditions) {
-		let sunRise = Utils.time2epoch(cur.time, cur.sunRise);
-		let sunSet = Utils.time2epoch(cur.time, cur.sunSet);
+		let sunRise = utils.time2epoch(cur.time, cur.sunRise);
+		let sunSet = utils.time2epoch(cur.time, cur.sunSet);
 		let dayOrNight = (cur.time > sunRise) && (cur.time < sunSet) ? '-day.svg' : '-night.svg';
 		return '/meteocons/svg/' + cur.icon + dayOrNight;
 	}

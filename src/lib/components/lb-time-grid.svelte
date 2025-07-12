@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Utils } from '$lib/helpers/utils';
+	import { utils } from '$lib/helpers/utils';
 	import { store } from '$lib/stores/store.svelte';
 	import { format } from 'date-fns';
 
@@ -10,17 +10,17 @@
 	let o = 8;  // offset
 
 	let time = $derived(store.time)
-	let m = $derived(Utils.hours2dec(format(time, 'p')));
+	let m = $derived(utils.hours2dec(format(time, 'p')));
 
 	let slots = entries.entry.filter((item:any) => Number(item.mode) === mode);
 
 	// calculate width
 	function cw(t: any) { 
-		return Utils.hours2dec(t.to) - Utils.hours2dec(t.from);
+		return utils.hours2dec(t.to) - utils.hours2dec(t.from);
 	}
 
 	function cx(t: any) { 
-		return Utils.hours2dec(t.from);
+		return utils.hours2dec(t.from);
 	}
 </script>
 

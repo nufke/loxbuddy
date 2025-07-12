@@ -103,7 +103,7 @@
 		<circle class="set" cx={set.x} cy={set.y} r="12"/>
 		<circle class="knob" cx={knob.x} cy={knob.y} r="12" onmousedown={knobMouseDown}/>
 		<text x="157" y="90" text-anchor="middle" fill="#737373" font-size="20px">&#9679; <tspan class="label">{$_('Actual')}</tspan></text>
-		<text class="label" x="160" y="175" text-anchor="middle" font-size="80px">{actualTempDisplay[0]}<tspan class="label" dx="5" dy="0" font-size="50px">.{actualTempDisplay[1]}</tspan></text>
+		<text class="label" x="160" y="175" text-anchor="middle" font-size="80px">{actualTempDisplay[0]}<tspan class="label" dx="0" dy="0" font-size="50px">.{actualTempDisplay[1]}</tspan></text>
 		<text x="157" y="220" text-anchor="middle" fill="var(--color-primary-500)" font-size="18px">&#9679; <tspan class="label">{$_('Target')} {targetTempDisplay[0]}<tspan dx="2" dy="-6" font-size="10px">{targetTempDisplay[1]}</tspan></text>
 		<svg class="button" x="105" y="260" onmousedown={startDown} onmouseup={endDown}>
 			<circle class="c1" cx="20" cy="20" r="20" />

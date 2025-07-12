@@ -7,7 +7,7 @@
 	import { Sunrise, Sunset, X } from '@lucide/svelte';
 	import type { WeatherCurrentConditions, WeatherDailyForecast, WeatherHourlyForecast } from '$lib/types/weather';
 	import { format } from 'date-fns';
-	import { Utils } from '$lib/helpers/utils';
+	import { utils } from '$lib/helpers/utils';
 	import { Modal } from '@skeletonlabs/skeleton-svelte';
 	import { fade200 } from '$lib/helpers/transition';
 
@@ -29,23 +29,23 @@
 	}
 
 	function getCurrentIcon(cur: WeatherCurrentConditions) {
-		let sunRise = Utils.time2epoch(cur.time, cur.sunRise);
-		let sunSet = Utils.time2epoch(cur.time, cur.sunSet);
+		let sunRise = utils.time2epoch(cur.time, cur.sunRise);
+		let sunSet = utils.time2epoch(cur.time, cur.sunSet);
 		let dayOrNight = (cur.time > sunRise) && (cur.time < sunSet) ? '-day.svg' : '-night.svg';
 		return '/meteocons/svg/' + cur.icon + dayOrNight;
 	}
 
 	function getDayIcon(day: WeatherDailyForecast) {
-		let sunRise = Utils.time2epoch(day.time, day.sunRise);
-		let sunSet = Utils.time2epoch(day.time, day.sunSet);
-		let currentDay = Utils.time2epoch(current.time, '00:00');
+		let sunRise = utils.time2epoch(day.time, day.sunRise);
+		let sunSet = utils.time2epoch(day.time, day.sunSet);
+		let currentDay = utils.time2epoch(current.time, '00:00');
 		let dayOrNight = (((time.valueOf() > sunRise) && (time.valueOf() < sunSet)) || (day.time != currentDay)) ? '-day.svg' : '-night.svg';
 		return '/meteocons/svg/' + day.icon + dayOrNight;
 	}
 
 	function getHourIcon(hour: WeatherHourlyForecast) {
-		let sunRise = Utils.time2epoch(hour.time, current.sunRise);
-		let sunSet = Utils.time2epoch(hour.time, current.sunSet);
+		let sunRise = utils.time2epoch(hour.time, current.sunRise);
+		let sunSet = utils.time2epoch(hour.time, current.sunSet);
 		let dayOrNight = (hour.time > sunRise) && (hour.time < sunSet) ? '-day.svg' : '-night.svg';
 		return '/meteocons/svg/' + hour.icon + dayOrNight;
 	}

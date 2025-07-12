@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Control, ControlOptions, ControlView } from '$lib/types/models';
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
-	import { Utils } from '$lib/helpers/utils';
+	import { utils } from '$lib/helpers/utils';
 	import { store } from '$lib/stores/store.svelte';
 	import { publishTopic } from '$lib/communication/mqttclient';
 	import { _ } from 'svelte-i18n';
@@ -23,7 +23,7 @@
 		let temp = color.match(/temp\(([0-9]*),([0-9]*)\)/);
 		let rgb, brightness;
 		if (hsv && hsv.length > 3) {
-			rgb = Utils.hsv2rgb(Number(hsv[1]), Number(hsv[2]), 100);
+			rgb = utils.hsv2rgb(Number(hsv[1]), Number(hsv[2]), 100);
 			brightness = Number(hsv[3]);
 		} else if (temp && temp.length > 2) {
 			brightness = Number(temp[1]);

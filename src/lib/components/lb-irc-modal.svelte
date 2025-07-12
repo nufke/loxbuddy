@@ -11,10 +11,10 @@
 	import { publishTopic } from '$lib/communication/mqttclient';
 	import LbCicleSlider from '$lib/components/lb-circle-slider.svelte';
 	import LbIcon from '$lib/components/lb-icon-by-name.svelte';
-	import LbDatePicker from '$lib/components/lb-date-picker.svelte';
-	import LbTimePicker from '$lib/components/lb-time-picker.svelte';
+	import LbTimePickerModal from '$lib/components/lb-time-picker-modal.svelte';
 	import Info from '$lib/components/lb-info.svelte';
-	import { Utils } from '$lib/helpers/utils';
+	import { utils } from '$lib/helpers/utils';
+	import { format } from 'date-fns';
 
 	let { controlView = $bindable() }: { controlView: ControlView } = $props();
 
@@ -37,7 +37,7 @@
 	let selectedTab = $state(0);
 	let tempActual = $derived(fmt.sprintf('%.1f', Number(store.getState(controlView.control?.states.tempActual))));
 	let tempTarget = $derived(fmt.sprintf('%.1f', Number(store.getState(controlView.control?.states.tempTarget))));
-	let date: SvelteDate = $state(new SvelteDate());
+	let date: SvelteDate = $state(new SvelteDate(Date.now() + 3600000));
 
 	let overrideV1 = $derived(Number(store.getState(controlView.control.states.override)));
 	let overrideEntriesV2 = store.getState(controlView.control.states.overrideEntries);
@@ -61,10 +61,15 @@
 	let isHeating = $derived(isV1 ? isHeatingV1 : isHeatingV2);
 	let isCooling = $derived(isV1 ? isCoolingV1 : isCoolingV2);
 	let isEco = $derived(isV1 ? isEcoV1 : isEcoV2);
-	
+
+	let timerEndsV1 = $state(new SvelteDate());
+	let timerEndsV2 = $state(new SvelteDate());
+
 	let dateTimeView = $state({
 		isDateView: true,
-		isMinuteView: false
+		isMinuteView: false,
+		label: true,
+		openModal: false
 	});
 
 	function setTempPresent(i: number) {
@@ -72,9 +77,10 @@
 		let overrideTimeSec = Math.round((date.getTime() - Date.now())/coeff)*coeff/1000;
     if (overrideTimeSec > 60 && controlView.control) {// TODO define minimum time of 1 minute
 	    let cmd = isV1 ? 'starttimer/' : 'override/';
-			overrideTimeSec += isV1 ? 0 : Math.round((Date.now()-1230764400000)/1000); // V2 starts to count from 1-1-2009
-			overrideTimeSec += Utils.isDST(date) ? -3600 : 0; // DST correction
-			cmd += i + '/' + String(overrideTimeSec);
+			overrideTimeSec += (isV1 ? 0 : Math.round((Date.now() - utils.loxTimeRef)/1000)); // V2 starts to count from 1-1-2009
+			overrideTimeSec += (!isV1 && utils.isDST(date) ? -3600 : 0); // DST correction for V2
+			overrideTimeSec = (isV1 ? Math.round(overrideTimeSec/60) : overrideTimeSec); // V1 in minutes!!
+			cmd += String(i) + '/' + String(overrideTimeSec);
 			publishTopic(controlView.control.uuidAction, cmd);
     } else {
 			console.error('IRC: timer period to low:', overrideTimeSec);
@@ -88,11 +94,18 @@
 		}
 	}
 
-	function getRemainingOverride() {
-		
+	function updatePosition(e: any) { // TODO
 	}
 
-	function updatePosition(e: any) { // TODO
+	function updateTimer(e: any) {
+		date = e.value;
+	}
+
+	function getTimerEpoch(entries: any) {
+		console.log('entries', entries);
+		if (!entries) return;
+		let timerDate = entries[0].end * 1000 + utils.loxTimeRef;
+		return utils.isDST(new Date(timerDate)) ? timerDate+3600000 : timerDate;
 	}
 
 	function resetTab() {
@@ -100,8 +113,16 @@
       selectedTab = 0;
     }, 500);
 	}
+	
+	$effect( () => {
+		timerEndsV1 = new SvelteDate(store.time.valueOf() + overrideV1*1000);
+	});
+
+	$effect( () => {
+		timerEndsV2 = new SvelteDate(getTimerEpoch(overrideEntriesV2));
+	});
 </script>
-{JSON.stringify(overrideEntriesV2)}
+
 <Modal
 	open={controlView.modal.state}
 	transitionsBackdropIn = {fade200}
@@ -152,23 +173,16 @@
 				<p class="text-lg truncate mt-3 mb-2 {controlView.statusColor}">{$_(controlView.statusName)}</p>
 				{/if}
 				{#if override > 0}
-					<p class="text-lg">Timer ends at: </p>
+					<p class="mt-2 mb-2 text-lg">{$_("Timer till")} { isV1 ? format(timerEndsV1, 'PPP p') : format(timerEndsV2, 'PPP p')} </p>
 					<button type="button" class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
-						onclick={cancelOverride}>Cancel override</button>
+						onclick={cancelOverride}>
+						<p class="text-lg">{$_("Cancel timer")}</p>
+					</button>
 				{/if}
 			</div>
 		</div>
 	{/if} 
 	{#if selectedTab==1}
-	<div class="flex flex-col items-center justify-center m-2">
-		{#if dateTimeView.isDateView}
-			<LbDatePicker bind:date={date} bind:view={dateTimeView}/>
-		{:else}
-			<LbTimePicker bind:date={date} bind:view={dateTimeView}/>
-		{/if}
-	</div>
-	{/if}
-	{#if selectedTab==2}
 		<div class="flex flex-col items-center justify-center m-2">
 			{#if controlView.statusName}
 				<div class="mb-2 truncate">
@@ -185,20 +199,26 @@
 						</button>
 					{/each}
 				{/if}
+				<button class="w-full m-0 mt-4 flex min-h-[50px] items-center justify-start rounded-lg border border-white/15 hover:border-white/50
+								dark:bg-surface-950 bg-surface-50 px-2 py-2"
+								onclick={() => {dateTimeView.openModal=true}}>
+					<div class="w-full flex items-center truncate">
+						<div class="mt-0 ml-2 mr-2 flex w-full justify-between truncate">
+							<p class="truncate text-lg">{$_("Set timer")}</p>
+							<p class="text-lg">{format(date, 'PPP p')}</p>
+						</div>
+					</div>
+				</button>
 			</div>
 		</div>
 	{/if}
 	<div class="sticky bottom-0 left-0 w-full h-16 pt-2">
-		<div class="grid h-full max-w-lg grid-cols-3 mx-auto">
+		<div class="grid h-full max-w-lg grid-cols-2 mx-auto">
 			<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==0 ? 'text-primary-500' : ''} " onclick={() => selectedTab=0}>
 				<LbIcon class={selectedTab==0 ? 'fill-primary-500' : 'fill-surface-50'} name={"/icons/svg/thermostat.svg"} width="24" height="24"/>
 				<span class="mt-1 text-xs">{$_("Control")}</span>
 			</button>
-			<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==1 ? 'text-primary-500' : ''} " onclick={() => {dateTimeView.isDateView=true; selectedTab=1;}}>
-				<CalendarClock/>
-				<span class="mt-1 text-xs">{$_("Timer")}</span>
-			</button>
-			<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==2 ? 'text-primary-500' : ''} " onclick={() => selectedTab=2}>
+			<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==1 ? 'text-primary-500' : ''} " onclick={() => selectedTab=1}>
 				<List/>
 				<span class="mt-1 text-xs">{$_("Preset")}</span>
 			</button>
@@ -207,4 +227,6 @@
 	{/snippet}
 </Modal>
 
+<LbTimePickerModal date={date} bind:view={dateTimeView} onValueChange={(e:any)=>{ updateTimer(e)}}/>
+	
 <Toaster {toaster}></Toaster>

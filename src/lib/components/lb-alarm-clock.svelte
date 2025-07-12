@@ -15,7 +15,7 @@
 	import LbTimePickerModal from '$lib/components/lb-time-picker-modal.svelte';
 	import LbDayPickerModal from '$lib/components/lb-day-picker-modal.svelte';
 	import { publishTopic } from '$lib/communication/mqttclient';
-	import { Utils } from '$lib/helpers/utils';
+	import { utils } from '$lib/helpers/utils';
 	import Info from '$lib/components/lb-info.svelte';
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
@@ -27,6 +27,14 @@
 	let prevEntryListLength: number = $state(0);
 	let alarms = $derived(entryList ? Object.values(entryList).filter( entry => entry.isActive) : []);
 	let nextEntryTime = $derived(Number(store.getState(control.states.nextEntryTime)));
+	let selectedEntry = $state(0);
+	
+	let dateTimeView = $state({
+		isDateView: false,
+		isMinuteView: false,
+		label: false,
+		openModal: false
+	});
 
 	let modal: ModalView = $state({
 		action: (state: boolean) => {modal.state = state},
@@ -69,9 +77,10 @@
 		publishEntry(entryListArray[i], i);
 	}
 
-	function updateAlarmTime(i: number, e: any) {
-		entryListArray[i].alarmTime = e.value;
-		publishEntry(entryListArray[i], i);
+	function updateAlarmTime(e: any) {
+		let time = utils.hours2sec(utils.epoch2TimeStr(e.value.valueOf()/1000));
+		entryListArray[selectedEntry].alarmTime = time;
+		publishEntry(entryListArray[selectedEntry], selectedEntry);
 	}
 
 	function updateIsActive(i: number, e: any) {
@@ -95,7 +104,7 @@
 		let idx = Object.keys(opModes).find( (key) => opModes[key].toLowerCase() == day);
 		let entry: AlarmClockEntry = {
 			name: $_('Alarm clock'),
-			alarmTime: Utils.hours2sec(format(new Date(), 'p')),
+			alarmTime: utils.hours2sec(format(new Date(), 'p')),
 			isActive: true,
 			modes: [Number(idx)], 
 			nightLight: false,
@@ -112,8 +121,13 @@
 	function getAlarmTime() {
 		const loxTimeRef = 1230764400000;
 		let date = new Date(nextEntryTime * 1000 + loxTimeRef);
-		date = Utils.isDST(date) ? new Date(nextEntryTime * 1000 + loxTimeRef - 3600000) : date;
+		date = utils.isDST(date) ? new Date(nextEntryTime * 1000 + loxTimeRef - 3600000) : date;
 		return format(date, 'PPP p');
+	}
+
+	function getTimerDate() {
+		return entryListArray && entryListArray[selectedEntry] ? 
+			utils.decTime2date(entryListArray[selectedEntry].alarmTime) : null;
 	}
 
 	$effect( () => {
@@ -162,9 +176,10 @@
 							<h1 class="text-lg truncate">
 								<LbInPlaceEdit value={entry.name} onValueChange={(e:any)=>{ updateName(i, e)}}/>
 							</h1>
-							<h1 class="text-3xl {entry.isActive ? 'dark:text-surface-50 text-surface-950' : 'dark:text-surface-700 text-surface-300'}">
-								<LbTimePickerModal alarmTime={entry.alarmTime} onValueChange={(e:any)=>{ updateAlarmTime(i, e)}}/>
-							</h1>
+							<button class="text-3xl {entry.isActive ? 'dark:text-surface-50 text-surface-950' : 'dark:text-surface-700 text-surface-300'}"
+										onclick={() => {selectedEntry = i; dateTimeView.openModal=true;}}>
+								<h1>{utils.dec2hours(entryListArray[i].alarmTime)}</h1>
+						</button>
 						</div>
 						<div onclick={(e) => {e.stopPropagation(); }}> <!-- workaround wrapper to stop propagation for switch -->
 							<Switch controlClasses="w-12 h-8" name="slide" controlActive="bg-primary-500" checked={entry.isActive} onCheckedChange={(e) => {updateIsActive(i, e)}} />
@@ -190,4 +205,6 @@
 		</footer>
 		{/snippet}
 	</Modal>
+
+	<LbTimePickerModal date={getTimerDate()} bind:view={dateTimeView} onValueChange={(e:any)=>{ updateAlarmTime(e)}}/>
 </div>

@@ -3,7 +3,7 @@
 	import iro from '@jaames/iro';
 	import type { Control, ColorType } from '$lib/types/models';
 	import { store } from '$lib/stores/store.svelte';
-	import { Utils } from '$lib/helpers/utils';
+	import { utils } from '$lib/helpers/utils';
 	import { publishTopic } from '$lib/communication/mqttclient';
 	import { _ } from 'svelte-i18n';
 
@@ -73,7 +73,7 @@
 		let temp = color.match(/temp\(([0-9]*),([0-9]*)\)/);
 		let rgb, kelvin, brightness, isTempColor;
 		if (hsv && hsv.length > 3) {
-			rgb = Utils.hsv2rgb(Number(hsv[1]), Number(hsv[2]), 100);
+			rgb = utils.hsv2rgb(Number(hsv[1]), Number(hsv[2]), 100);
 			brightness = Number(hsv[3]);
 			isTempColor = false; // rgb
 		} else if (temp && temp.length > 2) {
@@ -141,7 +141,7 @@
 		if (type === 'kelvin') { 
 			newColor = 'temp(' + brightness + ',' + Math.round(color.kelvin) + ')';
 		} else if (!type) {
-			let hsv = Utils.rgb2hsv(color.rgb.r, color.rgb.g, color.rgb.b);
+			let hsv = utils.rgb2hsv(color.rgb.r, color.rgb.g, color.rgb.b);
 			newColor = 'hsv(' + hsv.h + ',' + hsv.s + ',' + brightness + ')';
 		}
 
