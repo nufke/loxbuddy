@@ -30,6 +30,7 @@
 		{ id: 6, name: 'Manual cooling', visible: false }
 	];
 
+	/* this modal is used for V1 and V2, so we need to select the proper attributes */
 	let isV1 = controlView.control.type !== 'IRoomControllerV2'; 
 
 	let selectedItem = $derived(controlView.list ? controlView.list.findIndex( (item: ListItem) => { return item.name === controlView.statusName }) : 0);
@@ -85,6 +86,10 @@
 		if (controlView.control) {
 			publishTopic(controlView.control.uuidAction, isV1 ? 'stoptimer' : 'stopOverride');
 		}
+	}
+
+	function getRemainingOverride() {
+		
 	}
 
 	function updatePosition(e: any) { // TODO
@@ -147,6 +152,7 @@
 				<p class="text-lg truncate mt-3 mb-2 {controlView.statusColor}">{$_(controlView.statusName)}</p>
 				{/if}
 				{#if override > 0}
+					<p class="text-lg">Timer ends at: </p>
 					<button type="button" class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
 						onclick={cancelOverride}>Cancel override</button>
 				{/if}
