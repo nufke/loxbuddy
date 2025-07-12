@@ -13,7 +13,7 @@
 
 	store.setNav({ label: 'ArrowLeft', href: '/room', icon: ArrowLeft }); // TODO change navigation concept
 
-	let tabGroup = $state('1');
+//	let tabGroup = $state('1');
 
 	let filteredControls: Control[] = $derived(
 		store.controlList.filter((control) => control.room === data.uuid)
@@ -35,6 +35,31 @@
 </script>
 
 <div class="container mx-auto max-w-[1280px] p-3 lb-page-center">
+	<div>
+		<p class="ml-2 mb-2 h4">{pageTitle?.name}</p>
+	</div>
+	{#if favorites.length}
+	<div class="mt-4 mb-2 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 lg:flex-wrap">
+		{#each favorites as control}
+			{@const Component = getComponent(control.type)}
+			<Component control={control} controlOptions={{...controlOptions, isFavorite: true}}/>
+		{/each}
+	</div>
+	{/if}
+	<div class="space-y-2">
+		{#each labels as label}
+			<button class="h5 ml-2" onclick={() => {goto('/category/'+label.uuid)}}>{label.name}</button>
+			<div class="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 lg:flex-wrap">
+				{#each filteredControls.filter( item => item.cat == label.uuid ) as control}
+					{@const Component = getComponent(control.type)}
+ 						<Component control={control} {controlOptions}/>
+				{/each}
+			</div>
+		{/each}
+	</div>
+</div>
+
+<!-- TODO Kiosk mode
 	<Tabs value={tabGroup} listBorder='' onValueChange={(e) => (tabGroup = e.value)} >
 		{#snippet list()}
 			<Tabs.Control value="1" labelBase="h4" base='border-b-[2px] border-transparent' padding='ml-2 pb-0'>{pageTitle?.name}</Tabs.Control>
@@ -42,26 +67,11 @@
   	{/snippet}
 		{#snippet content()}
 			<Tabs.Panel value="1">
-				<div class="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 lg:flex-wrap">
-					{#each favorites as control}
-						{@const Component = getComponent(control.type)}
-						<Component control={control} controlOptions={{...controlOptions, isFavorite: true}}/>
-					{/each}
-				</div>
+
 			</Tabs.Panel>
 			<Tabs.Panel value="2">
-				<div class="space-y-2">
-					{#each labels as label}
-						<button class="h5 ml-2" onclick={() => {goto('/category/'+label.uuid)}}>{label.name}</button>
-						<div class="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 lg:flex-wrap">
-							{#each filteredControls.filter( item => item.cat == label.uuid ) as control}
-								{@const Component = getComponent(control.type)}
-    						<Component control={control} {controlOptions}/>
-							{/each}
-						</div>
-					{/each}
-				</div>
+
 			</Tabs.Panel>
 	  {/snippet}
 	</Tabs>
-</div>
+-->

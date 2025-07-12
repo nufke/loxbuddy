@@ -96,7 +96,7 @@
     }, 500);
 	}
 </script>
-{JSON.stringify(overrideEntriesV2)}
+
 <Modal
 	open={controlView.modal.state}
 	transitionsBackdropIn = {fade200}

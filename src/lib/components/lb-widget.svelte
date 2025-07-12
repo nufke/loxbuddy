@@ -37,7 +37,7 @@
 
 {#if controlView.isFavorite}
 <div role="button" tabindex="0" onkeydown={()=>{}} aria-label="card" onclick={openModal}
-     class="card m-0 flex items-center justify-start rounded-lg shadow-sm border border-white/5
+     class="card m-0 flex justify-start rounded-lg shadow-sm border border-white/5
 						bg-surface-100-900 min-h-[150px] px-2 py-2 hover:border-white/10">
 	<div class="flex w-full flex-col">
 		<div class="flex w-full justify-between">
