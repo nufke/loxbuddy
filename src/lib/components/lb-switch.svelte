@@ -42,7 +42,7 @@
 </script>
 
 <div>
-	<LbControl bind:controlView />
+	<LbControl bind:controlView {controlOptions}/>
 	<LbWidget bind:controlView />
 	{#if !controlOptions.action} <!-- TODO disable modal popup for controls with action -->
 		<LbModal bind:controlView={controlView}/>

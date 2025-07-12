@@ -42,7 +42,7 @@
 </script>
 
 <div>
-	<LbControl bind:controlView />
+	<LbControl bind:controlView {controlOptions}/>
 	<LbWidget bind:controlView />
 	<LbIrcModal bind:controlView /> <!-- we reuse the V1 modal -->
 </div>

@@ -8,11 +8,12 @@
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
-	let textAndIcon = $derived(Number(store.getState(control.states.textAndIcon)));
-	let iconAndColor = $derived(Number(store.getState(control.states.iconAndColor)));
+	let textAndIcon = $derived(String(store.getState(control.states.textAndIcon)));
+	let iconAndColor = $derived(store.getState(control.states.iconAndColor));
 
 	let modal: ModalView = $state({
 		action: (state: boolean) => {modal.state = state},
+		blur: !controlOptions.isLink,
 		state: false
 	});
 
@@ -20,15 +21,17 @@
 		...DEFAULT_CONTROLVIEW,
 		control: control,
 		isFavorite: controlOptions.isFavorite,
-		iconName: store.getCategoryIcon(control, controlOptions.isSubControl),
+		iconName: store.getCategoryIcon(control, controlOptions.isSubControl, iconAndColor),
+		iconColor: iconAndColor?.color || 'dark:fill-surface-50 fill-surface-950',
 		textName: control.name,
-		statusName: String(store.getState(control.states.textAndIcon)),
-		modal: modal
+		statusName: textAndIcon,
+		links: control.links,
+		modal: modal,
 	});
 </script>
 
 <div>
-	<LbControl bind:controlView />
+	<LbControl bind:controlView {controlOptions}/>
 	<LbWidget bind:controlView />
 	<LbModal bind:controlView />
 </div>

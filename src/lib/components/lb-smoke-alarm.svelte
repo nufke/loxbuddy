@@ -114,8 +114,9 @@
 </script>
 
 <div>
-	<LbControl bind:controlView />
+	<LbControl bind:controlView {controlOptions}/>
 	<LbWidget bind:controlView />
+
 	<Modal
 		open={controlView.modal.state}
 		transitionsBackdropIn = {fade200}

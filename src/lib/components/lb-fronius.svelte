@@ -33,7 +33,7 @@
 </script>
 
 <div>
-	<LbControl bind:controlView />
+	<LbControl bind:controlView {controlOptions}/>
 	<LbWidget bind:controlView />
 	<LbModal bind:controlView />
 </div>

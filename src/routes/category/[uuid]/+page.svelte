@@ -16,7 +16,7 @@
 //	let tabGroup = $state('1');
 
 	let filteredControls: Control[] = $derived(
-		store.controlList.filter((control) => control.cat === data.uuid)
+		store.controlList.filter((control) => (control.cat === data.uuid) && ((control.restrictions & 1) != 1))
 			.sort((a, b) => a.name.localeCompare(b.name)));
 
 	let favorites: Control[] = $derived(

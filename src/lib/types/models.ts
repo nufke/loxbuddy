@@ -218,6 +218,7 @@ export type Control = {
 	restrictions: number;
 	details: any;									// control details
 	states: any;									// control states
+	links?: string[];							// UUID links for TextState control
 	securedDetails?: any;					// secured details (optional)
 	subControls: {
 		[key: string]: Control;			// subControls
@@ -430,6 +431,7 @@ export type ControlView = {
 	buttons: SingleButtonView[];
 	slider?: SliderBar;
 	list?: ListItem[];
+	links?: string[];
 	securedDetails?: any;
 	details?: any;
 	modal: ModalView;
@@ -441,6 +443,7 @@ export type ModalView = {
 	buttons?: SingleButtonView[];
 	details?: any;
 	timeout?: any;
+	blur?: boolean;
 }
 
 export const DEFAULT_CONTROLVIEW: ControlView = {
@@ -502,6 +505,8 @@ export type ControlOptions = {
 	showControl?: boolean;
   showModal?: boolean;
 	isFavorite?: boolean;
+	isLink?: boolean;
+	level: number;
 }
 
 export const DEFAULT_CONTROLOPTIONS: ControlOptions = {
@@ -509,7 +514,9 @@ export const DEFAULT_CONTROLOPTIONS: ControlOptions = {
 	action: undefined,
 	showControl: true,
   showModal: false,
-	isFavorite: false
+	isFavorite: false,
+	isLink: false,
+	level: 0
 }
 
 export type Entry = {

@@ -1,6 +1,9 @@
 <script lang="ts">
-	import type { ControlView } from '$lib/types/models';
+	import type { Control, ControlView, ControlOptions } from '$lib/types/models';
 	import LbIcon from '$lib/components/lb-icon-by-name.svelte';
+	import { store } from '$lib/stores/store.svelte';
+	import { getComponent } from '$lib/helpers/components';
+	import { DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import { Switch } from '@skeletonlabs/skeleton-svelte';
 	import { Modal } from '@skeletonlabs/skeleton-svelte';
 	import { X } from '@lucide/svelte';
@@ -25,6 +28,16 @@
 	function getStatusColorHex(hexColor: string|undefined) {
 		return (hexColor && hexColor[0] == '#') ? 'color: ' + hexColor : '';
 	}
+
+	function getIconColorHex(hexColor: string | undefined) {
+		return (hexColor && hexColor[0] == '#') ? 'fill: ' + hexColor : '';
+	}
+	
+	let linkedControls: Control[] = $derived(
+		store.controlList.filter((control) => controlView.links ? controlView.links.includes(control.uuidAction) : null)
+			.sort((a, b) => a.name.localeCompare(b.name)));
+
+	let controlOptions: ControlOptions = $derived({...DEFAULT_CONTROLOPTIONS, isLink: true});
 </script>
 
 <Modal
@@ -37,13 +50,15 @@
 	triggerBase="btn bg-surface-600"
 	contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-sm rounded-lg border border-white/5 hover:border-white/10
 							max-w-9/10 max-h-9/10 overflow-auto w-[380px]"
-	backdropClasses="backdrop-blur-sm">
+	backdropClasses={ controlView.modal.blur ? "backdrop-blur-sm" : ""}
+	backdropBackground={ controlView.modal.blur ? "bg-surface-50/75 dark:bg-surface-950/75" : ""}>
 	{#snippet content()}
 	<Info control={controlView.control}/>
 	<header class="relative">
 		<div class="flex justify-center">
 			<div class="relative inline-flex h-18 w-18 items-center justify-center overflow-hidden rounded-full border border-white/10 dark:bg-surface-950 bg-surface-50">
-				<LbIcon class={controlView.iconColor} name={controlView.iconName} width="36" height="36"/>
+				<LbIcon class={controlView.iconColor} name={controlView.iconName} width="36" height="36"
+								style={getIconColorHex(controlView.iconColor)}/>
 			</div>
 		</div>
 		<div class="absolute right-0 top-0">
@@ -116,6 +131,14 @@
 					</button>
 				{/if}
 			{/each}
+		</div>
+		{/if}
+		{#if linkedControls}
+		<div class="container w-full p-1">
+				{#each linkedControls as control}
+					{@const Component = getComponent(control.type)}
+					<Component {control} controlOptions={controlOptions}/>
+				{/each}
 		</div>
 		{/if}
 	</div>

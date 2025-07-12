@@ -154,7 +154,8 @@ class Store {
 		return images || [];
 	}
 
-	getCategoryIcon(control: Control, isSubControl: boolean | undefined) {
+	getCategoryIcon(control: Control, isSubControl: boolean | undefined, textState: any = null) {
+		if (textState && textState.icon) return  loxiconsPath + textState.icon; /* used for TextState icon*/
 		if (control.defaultIcon) return  loxiconsPath + control.defaultIcon;
 		if (!isSubControl) { 
 			const cat = this.categoryList.find((cat: Category) => cat.uuid == control.cat);
