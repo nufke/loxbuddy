@@ -2,17 +2,21 @@
 
 /* disable scollbar */
 *::-webkit-scrollbar {
-  display: none;
+	display: none;
 }
+
 * {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+	-ms-overflow-style: none;
+	scrollbar-width: none;
+
+	/* remove button tap color */
+	-webkit-tap-highlight-color: transparent;
 }
 
 /* TODO center on page */
-@media (width >= 48rem ) { /* >= 768px */ 
-.lb-page-centerX {
-  margin: auto;
-  margin-top: calc(50vh - 200px);
-  }
+@media (width >=48rem) { /* >= 768px */
+	.lb-page-centerX {
+		margin: auto;
+		margin-top: calc(50vh - 200px);
+	}
 }

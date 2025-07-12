@@ -14,7 +14,7 @@ or submit a [pull request](https://github.com/nufke/loxbuddy/pulls).
 | Alarm                    | Available         |                             |
 | AlarmCentral             | Not started       |                             |
 | AlarmChain               | Not started       |                             |
-| AlarmClock               | Under development |                             |
+| AlarmClock               | Available         |                             |
 | Athene                   | Not started       |                             |
 | Application              | Not started       |                             |
 | AudioPlayerGroup         | Not started       |                             |
@@ -55,8 +55,8 @@ or submit a [pull request](https://github.com/nufke/loxbuddy/pulls).
 | IRCDaytimer              | Not started       |                             |
 | IRCV2Daytimer            | Not started       |                             |
 | IRoom                    | Not started       |                             |
-| IRoomController          | Under development | Timer invokation will change|
-| IRoomControllerV2        | Under development | Timer invokation will change|
+| IRoomController          | Under development |                             |
+| IRoomControllerV2        | Under development |                             |
 | IRoomControllerV2021     | Not started       |                             |
 | Irrigation               | Not started       |                             |
 | Jalousie                 | Available         |                             |
@@ -90,7 +90,7 @@ or submit a [pull request](https://github.com/nufke/loxbuddy/pulls).
 | Sauna                    | Not started       |                             |
 | Sequential               | Not started       |                             |
 | Slider                   | Available         |                             |
-| SmokeAlarm               | Under development |                             |
+| SmokeAlarm               | Available         |                             |
 | SolarPump                | Not started       |                             |
 | SolarPumpController      | Not started       |                             |
 | SpotPriceOptimizer       | Not started       |                             |
@@ -100,7 +100,7 @@ or submit a [pull request](https://github.com/nufke/loxbuddy/pulls).
 | Switch                   | Available         |                             |
 | SystemScheme             | Not started       |                             |
 | TextInput                | Not started       |                             |
-| TextState                | Available         | No links to subcontrols yet |
+| TextState                | Available         |                             |
 | TimedSwitch              | Not started       |                             |
 | Tracker                  | Not started       |                             |
 | UpDownAnalog             | Not started       |                             |

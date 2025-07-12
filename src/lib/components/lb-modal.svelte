@@ -50,8 +50,8 @@
 	triggerBase="btn bg-surface-600"
 	contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-sm rounded-lg border border-white/5 hover:border-white/10
 							max-w-9/10 max-h-9/10 overflow-auto w-[380px]"
-	backdropClasses={ controlView.modal.blur ? "backdrop-blur-sm" : ""}
-	backdropBackground={ controlView.modal.blur ? "bg-surface-50/75 dark:bg-surface-950/75" : ""}>
+	backdropClasses={ controlView.modal.noBlur ? "" : "backdrop-blur-sm"}
+	backdropBackground={ controlView.modal.noBlur ? "" : "bg-surface-50/75 dark:bg-surface-950/75"}>
 	{#snippet content()}
 	<Info control={controlView.control}/>
 	<header class="relative">
@@ -134,7 +134,7 @@
 		</div>
 		{/if}
 		{#if linkedControls}
-		<div class="container w-full p-1">
+		<div class="container w-full space-y-2 max-h-[415px] overflow-y-auto">
 				{#each linkedControls as control}
 					{@const Component = getComponent(control.type)}
 					<Component {control} controlOptions={controlOptions}/>

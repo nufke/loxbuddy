@@ -13,7 +13,7 @@
 
 	let modal: ModalView = $state({
 		action: (state: boolean) => {modal.state = state},
-		blur: !controlOptions.isLink,
+		noBlur: controlOptions.isLink,
 		state: false
 	});
 

@@ -443,7 +443,7 @@ export type ModalView = {
 	buttons?: SingleButtonView[];
 	details?: any;
 	timeout?: any;
-	blur?: boolean;
+	noBlur?: boolean;
 }
 
 export const DEFAULT_CONTROLVIEW: ControlView = {

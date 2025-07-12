@@ -19,6 +19,10 @@
 		return (hexColor && hexColor[0] == '#') ? 'color: ' + hexColor : '';
 	}
 
+	function getIconColorHex(hexColor: string | undefined) {
+		return (hexColor && hexColor[0] == '#') ? 'fill: ' + hexColor : '';
+	}
+
 	function openModal() {
 		if (!controlView.iconName.length && !controlView.iconText?.length) return; // no modal if we are at subcontrol level (we have no icon at this level)
 		controlView.modal.action(true);
@@ -43,7 +47,8 @@
 		<div class="flex w-full justify-between">
 			{#if controlView.iconName.length}
 			<div class="relative mr-1 inline-flex items-center justify-center w-12 h-12 min-w-12 overflow-hidden rounded-full border border-white/10 dark:bg-surface-950 bg-surface-50">
-				<LbIcon class={controlView.iconColor} name={controlView.iconName} width="24" height="24"/>
+				<LbIcon class={controlView.iconColor} name={controlView.iconName} width="24" height="24"
+								style={getIconColorHex(controlView.iconColor)}/>
 			</div>
 			{/if}
 			{#if controlView.iconText?.length} 
