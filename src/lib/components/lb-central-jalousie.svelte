@@ -41,7 +41,7 @@
 	function parseScroll() {
 		hasScroll = viewport?.scrollHeight > viewport?.clientHeight;
     showScrollTop = hasScroll && (viewport?.scrollTop > 20);
-		showScrollBottom = hasScroll && (viewport?.scrollTop < (viewport?.scrollHeight/2 - 20));
+		showScrollBottom = hasScroll && (viewport.scrollTop + viewport?.clientHeight < (viewport?.scrollHeight - 20));
   }
 
 	$effect( () => {
