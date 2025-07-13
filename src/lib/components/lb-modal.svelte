@@ -6,10 +6,11 @@
 	import { DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import { Switch } from '@skeletonlabs/skeleton-svelte';
 	import { Modal } from '@skeletonlabs/skeleton-svelte';
-	import { X } from '@lucide/svelte';
+	import { X, ChevronUp, ChevronDown } from '@lucide/svelte';
 	import { Slider } from '@skeletonlabs/skeleton-svelte';
 	import { _ } from 'svelte-i18n';
 	import { fade200 } from '$lib/helpers/transition';
+	import { fade } from 'svelte/transition'
 	import Info from '$lib/components/lb-info.svelte';
 
 	let { controlView = $bindable() }: { controlView: ControlView } = $props();
@@ -38,6 +39,21 @@
 			.sort((a, b) => a.name.localeCompare(b.name)));
 
 	let controlOptions: ControlOptions = $derived({...DEFAULT_CONTROLOPTIONS, isLink: true});
+
+	let viewport: any = $state(); // TODO make HTMLDivElement
+	let hasScroll = $state(true);
+  let showScrollTop = $state(false);
+	let showScrollBottom = $state(true);
+
+	function parseScroll() {
+		hasScroll = viewport?.scrollHeight > viewport?.clientHeight;
+    showScrollTop = hasScroll && (viewport?.scrollTop > 20);
+		showScrollBottom = hasScroll && (viewport?.scrollTop < (viewport?.scrollHeight/2 - 20));
+  }
+
+	$effect( () => {
+		parseScroll();
+	});
 </script>
 
 <Modal
@@ -49,10 +65,12 @@
 	onOpenChange={()=>controlView.modal.action(false)}
 	triggerBase="btn bg-surface-600"
 	contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-sm rounded-lg border border-white/5 hover:border-white/10
-							max-w-9/10 max-h-9/10 overflow-auto w-[380px]"
+							max-w-9/10 max-h-9/10 overflow-auto w-[380px] {linkedControls.length ? 'lg:w-[760px]': ''}"
 	backdropClasses={ controlView.modal.noBlur ? "" : "backdrop-blur-sm"}
-	backdropBackground={ controlView.modal.noBlur ? "" : "bg-surface-50/75 dark:bg-surface-950/75"}>
+	backdropBackground="">
 	{#snippet content()}
+	<!-- TODO better method to create multiple modal overlays with backdrop? -->
+	<div class="fixed w-full h-full top-0 left-0 right-0 bottom-0 -z-10 bg-surface-50/75 dark:bg-surface-950/75"></div>
 	<Info control={controlView.control}/>
 	<header class="relative">
 		<div class="flex justify-center">
@@ -134,13 +152,27 @@
 		</div>
 		{/if}
 		{#if linkedControls}
-		<div class="container w-full space-y-2 max-h-[415px] overflow-y-auto">
+		<div class="container relative w-full">
+			{#if showScrollTop}
+				<div class="absolute z-10 left-[50%] lb-center top-3 text-surface-500" transition:fade={{ duration: 300 }}><ChevronUp size="30"/></div>
+			{/if}
+			{#if showScrollBottom}
+				<div class="absolute z-10 left-[50%] lb-center -mb-4 bottom-0 text-surface-500" transition:fade={{ duration: 300 }}><ChevronDown size="30"/></div>
+			{/if}
+			<div bind:this={viewport} onscroll={parseScroll} class="relative grid grid-cols-1 lg:grid-cols-2 gap-2 max-h-[415px] overflow-y-auto">
 				{#each linkedControls as control}
 					{@const Component = getComponent(control.type)}
 					<Component {control} controlOptions={controlOptions}/>
 				{/each}
+			</div>
 		</div>
 		{/if}
 	</div>
 	{/snippet}
 </Modal>
+
+<style>
+	.lb-center {
+		transform: translate(-50%, -50%);
+	}
+</style>

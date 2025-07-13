@@ -102,7 +102,6 @@
 	}
 
 	function getTimerEpoch(entries: any) {
-		console.log('entries', entries);
 		if (!entries) return;
 		let timerDate = entries[0].end * 1000 + utils.loxTimeRef;
 		return utils.isDST(new Date(timerDate)) ? timerDate+3600000 : timerDate;
@@ -133,15 +132,18 @@
 	triggerBase="btn bg-surface-600"
 	contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-sm rounded-lg border border-white/5 hover:border-white/10
 							max-w-9/10 max-h-9/10 overflow-auto w-[380px]"
-	backdropClasses="backdrop-blur-sm">
+	backdropClasses="backdrop-blur-sm"
+	backdropBackground="">
 	{#snippet content()}
+	<!-- TODO better method to create multiple modal overlays with backdrop? -->
+	<div class="fixed w-full h-full top-0 left-0 right-0 bottom-0 -z-10 bg-surface-50/75 dark:bg-surface-950/75"></div>
 	<Info control={controlView.control}/>
-	<header class="relative">
-		<div class="flex justify-center">
-			<h2 class="h4 text-center">{controlView.textName}</h2>
+	<header class="relative flex">
+		<div class="flex justify-center m-auto w-[80%]">
+			<p class="h4 truncate">{controlView.textName}</p>
 		</div>
-		<div class="absolute right-0 top-0">
-			<button type="button" aria-label="close" class="btn-icon w-auto" onclick={()=>{ controlView.modal.action(false); resetTab();}}>
+		<div class="absolute top-0 right-0">
+			<button type="button" aria-label="close" class="btn-icon w-auto" onclick={() => {controlView.modal.action(false); resetTab();}}>
 				<X/>
 			</button>
 		</div>

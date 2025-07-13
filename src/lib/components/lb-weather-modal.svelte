@@ -59,7 +59,7 @@
 		return hours; 
 	}
 </script>
-{slider}
+
 <Modal
 	open={store.weatherModal.state}
 	transitionsBackdropIn = {fade200}

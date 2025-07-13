@@ -506,7 +506,6 @@ export type ControlOptions = {
   showModal?: boolean;
 	isFavorite?: boolean;
 	isLink?: boolean;
-	level: number;
 }
 
 export const DEFAULT_CONTROLOPTIONS: ControlOptions = {
@@ -515,8 +514,7 @@ export const DEFAULT_CONTROLOPTIONS: ControlOptions = {
 	showControl: true,
   showModal: false,
 	isFavorite: false,
-	isLink: false,
-	level: 0
+	isLink: false
 }
 
 export type Entry = {

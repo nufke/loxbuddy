@@ -10,8 +10,8 @@
 
 	let img: any = $state();
 	let selectedTab = $state(0);
-	let img_height = $state(400);
 	let image: number = $state(0);
+	let imageHeight = $state(400);
 
 	let dates = $derived(controlView.details.lastBellEvents);
 	let history = $derived(controlView.details.hasLastBellEventImages && dates.length);
@@ -20,7 +20,7 @@
 
 	function handleImageLoad() {
 		image = image ? image : dates[dates.length-1];
-		img_height = img && img.height ? img.height : 400;
+		imageHeight = img && img.height ? img.height : 400;
 		setTimeout(function() {
 			streamReload = stream + '?' + Date.now();
     }, 1000);
@@ -56,32 +56,35 @@
 	onOpenChange={()=>controlView.modal.action(false)}
 	triggerBase="btn bg-surface-600"
 	contentBase="card bg-surface-100-900 pt-4 space-y-4 shadow-sm rounded-lg border border-white/5
-							max-w-9/10 max-h-9/10 w-[680px] lg:w-[860px]"
-	backdropClasses="backdrop-blur-sm">
+							max-w-9/10 max-h-9/10 w-[680px] lg:w-[800px]"
+	backdropClasses="backdrop-blur-sm"
+	backdropBackground="">
 	{#snippet content()}
+	<!-- TODO better method to create multiple modal overlays with backdrop? -->
+	<div class="fixed w-full h-full top-0 left-0 right-0 bottom-0 -z-10 bg-surface-50/75 dark:bg-surface-950/75"></div>
 	<Info control={controlView.control}/>
-	<header class="relative">
-		<div class="flex justify-center">
-			<h2 class="h4 text-center">{controlView.textName}</h2>
+	<header class="relative flex">
+		<div class="flex justify-center m-auto w-[80%]">
+			<p class="h4 truncate">{controlView.textName}</p>
 		</div>
-		<div class="absolute right-4 top-0">
-			<button type="button" aria-label="close" class="btn-icon w-auto" onclick={()=>{ controlView.modal.action(false); resetTab();}}>
+		<div class="absolute top-0 right-3">
+			<button type="button" aria-label="close" class="btn-icon w-auto" onclick={() => {controlView.modal.action(false); resetTab();}}>
 				<X/>
 			</button>
 		</div>
 	</header>
-	<div class="">
+	<div class="relative w-full">
 		{#if selectedTab==0} 
-			<div class="relative" style="height: {img_height}px">
+			<div class="relative" style="height: {imageHeight}px;">
 				<div class="absolute inset-0 flex items-center justify-center z-1">
 					<p class="dark:text-surface-50 text-surface-950 text-xl">Loading video...</p>
 				</div>
-				<img class="absolute z-2 w-full" bind:this={img} src={streamReload} onload={handleImageLoad} alt=""/>
+				<img class="absolute z-2" style="max-height: 560px;" bind:this={img} src={streamReload} width="100%" onload={handleImageLoad} alt=""/>
 			</div>
 		{/if}
 		{#if selectedTab==1}
-			<div class="relative" style="height: {img_height}px">
-		 		<img class="w-full" src={'data:image/jpeg;charset=utf-8;base64,' + getImage(image)} alt="">
+			<div class="relative" style="height: {imageHeight}px">
+		 		<img class="w-full" style="max-height: 560px;" height={imageHeight} src={'data:image/jpeg;charset=utf-8;base64,' + getImage(image)} alt="">
 				<div class="absolute inset-0 bg-gray-700 opacity-20"></div>
   			<div class="absolute bottom-4 left-4">
 					<p class="text-surface-50 text-xl">{formatDate(image)}</p>
@@ -89,7 +92,7 @@
 			</div>
 		{/if}
 		{#if selectedTab==2}
-			<div class="overflow-auto pl-2 pr-2 grid gap-5 grid-cols-2" style="height: {img_height}px">
+			<div class="overflow-auto pl-2 pr-2 grid gap-5 grid-cols-2" style="height: {imageHeight}px">
 				{#each sortDates(dates) as item}
 					<button class="relative" onclick={() => {image=item; selectedTab=1;}}>
 		  	  	<img class="" src={'data:image/jpeg;charset=utf-8;base64,' + getImage(item)} alt="">
@@ -101,13 +104,13 @@
 				{/each}
 			</div>
 		{/if}
-		{#if selectedTab==3}
-			<div class="" style="height: {img_height}px">
+		<!--{#if selectedTab==3}
+			<div class="" style="height: {imageHeight}px">
 			</div>
-		{/if}
+		{/if}-->
 	</div>
 	<div class="sticky bottom-0 left-0 w-full h-16 pb-2">
-		<div class="grid h-full max-w-lg { history ? 'grid-cols-3' : 'grid-cols-2'} mx-auto">
+		<div class="grid h-full max-w-lg lg:max-w-xl { history ? 'grid-cols-3' : 'grid-cols-2'} mx-auto">
 			<button type="button" class="inline-flex flex-col items-center justify-center px-5
 							group {selectedTab==0 ? 'text-primary-500' : ''} " onclick={() => selectedTab=0}>
 				<Video/>

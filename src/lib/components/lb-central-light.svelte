@@ -6,8 +6,9 @@
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import { store } from '$lib/stores/store.svelte';
 	import { Modal } from '@skeletonlabs/skeleton-svelte';
-	import { X } from '@lucide/svelte';
+	import { X, ChevronUp, ChevronDown } from '@lucide/svelte';
 	import { _ } from 'svelte-i18n';
+	import { fade } from 'svelte/transition'
 	import { publishTopic } from '$lib/communication/mqttclient';
 	import fmt from 'sprintf-js';
 	import { fade200 } from '$lib/helpers/transition';
@@ -34,6 +35,21 @@
 	let selectedLightCount = $derived(lightList.filter( item => item.selected == true).length);
 
 	let scenesEnabled = $state(false);
+
+	let viewport: any = $state(); // TODO make HTMLDivElement
+	let hasScroll = $state(true);
+  let showScrollTop = $state(false);
+	let showScrollBottom = $state(true);
+
+	function parseScroll() {
+		hasScroll = viewport?.scrollHeight > viewport?.clientHeight;
+    showScrollTop = hasScroll && (viewport?.scrollTop > 20);
+		showScrollBottom = hasScroll && (viewport?.scrollTop < (viewport?.scrollHeight/2 - 20));
+  }
+
+	$effect( () => {
+		parseScroll();
+	});
 
 	function getActiveLights() {
 		let status = '';
@@ -138,9 +154,12 @@
 		onOpenChange={() => controlView.modal.action(false)}
 		triggerBase="btn bg-surface-600"
 		contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-sm rounded-lg border border-white/5 hover:border-white/10
-									md:max-w-9/10 md:max-h-9/10 overflow-auto w-[600px]"
-		backdropClasses="backdrop-blur-sm">
+									md:max-w-9/10 md:max-h-9/10 w-[600px]"
+		backdropClasses="backdrop-blur-sm"
+		backdropBackground="">
 		{#snippet content()}
+		<!-- TODO better method to create multiple modal overlays with backdrop? -->
+		<div class="fixed w-full h-full top-0 left-0 right-0 bottom-0 -z-10 bg-surface-50/75 dark:bg-surface-950/75"></div>
 			<Info control={controlView.control}/>
 			<header class="relative">
 				<div class="mb-2 flex justify-center">
@@ -161,24 +180,29 @@
 																				rounded-lg border border-white/15 hover:border-white/50" onclick={() => selectScenes()}>{$_('Scenes')}</button>
 				</div>
 			</header>
-			<div class="overflow-y-scroll" style="max-height: 575px">
-				{#each lightControls as control, index}
-					{#if index > 0}
-						<div class="mt-2"></div>
-					{/if}
-					<button class="w-full m-0 flex min-h-[50px] items-center justify-start rounded-lg border border-white/15 hover:border-white/50
-												{lightList[index].selected ? 'dark:bg-surface-800 bg-surface-200' : 'dark:bg-surface-950 bg-surface-50'} px-2 py-2"
-												onclick={() => selectLight(index)}>
-						<div class="w-full">
-							<div class="flex items-center truncate">
-								<div class="mt-0 ml-2 mr-2 flex w-full justify-between truncate">
-									<p class="truncate text-lg {getStatusColor(control)}">{getControlName(control)}</p>
-									<p class="text-lg {getStatusColor(control)}">{getStatusName(control)}</p>
+			<div class="container relative w-full">
+				{#if showScrollTop}
+					<div class="absolute z-10 left-[50%] lb-center top-3 text-surface-500" transition:fade={{ duration: 300 }}><ChevronUp size="30"/></div>
+				{/if}
+				{#if showScrollBottom}
+					<div class="absolute z-10 left-[50%] lb-center -mb-4 bottom-0 text-surface-500" transition:fade={{ duration: 300 }}><ChevronDown size="30"/></div>
+				{/if}
+				<div class="overflow-y-auto space-y-2 max-h-[460px]" bind:this={viewport} onscroll={parseScroll}>
+					{#each lightControls as control, index}
+						<button class="w-full flex min-h-[50px] items-center justify-start rounded-lg border border-white/15 hover:border-white/50
+													{lightList[index].selected ? 'dark:bg-surface-800 bg-surface-200' : 'dark:bg-surface-950 bg-surface-50'} px-2 py-2"
+													onclick={() => selectLight(index)}>
+							<div class="w-full">
+								<div class="flex items-center truncate">
+									<div class="mt-0 ml-2 mr-2 flex w-full justify-between truncate">
+										<p class="truncate text-lg {getStatusColor(control)}">{getControlName(control)}</p>
+										<p class="text-lg {getStatusColor(control)}">{getStatusName(control)}</p>
+									</div>
 								</div>
 							</div>
-						</div>
-					</button>
-				{/each}
+						</button>
+					{/each}
+				</div>
 			</div>
 		{/snippet}
 	</Modal>
@@ -189,3 +213,9 @@
 		{/key}
 	{/if}
 </div>
+
+<style>
+	.lb-center {
+		transform: translate(-50%, -50%);
+	}
+</style>

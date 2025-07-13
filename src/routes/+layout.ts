@@ -14,7 +14,7 @@ export const load: LayoutLoad = async () => {
 }
 
 function getDateLocale(s: string) {
-	console.log('Looking for locale:', window.navigator.language);
+	console.log('Webkit Locale:', window.navigator.language);
 	switch (window.navigator.language) {
 		case 'nl':
 		case 'nl-BE':
