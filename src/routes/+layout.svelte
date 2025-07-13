@@ -140,10 +140,15 @@
 		{/each}
 		{/snippet}
 		{#snippet footer()}
-			<div class="flex flex-row gap-3 mb-2">
-				<Circle class={getStatusColor(mqttStatus)} size="16"/>
-				<Square class={getStatusColor((mqttStatus==1) ? msStatus : 0)} size="16"/>
-			</div>
+			<a class={store.showStatus ? "mb-1" : "mb-4"} href="/about">
+				<img src="/icons/svg/loxbuddy.svg" width="50" alt="about"/>
+			</a>
+			{#if store.showStatus}
+				<div class="flex flex-row gap-3 mb-2">
+					<Circle class={getStatusColor(mqttStatus)} size="16"/>
+					<Square class={getStatusColor((mqttStatus==1) ? msStatus : 0)} size="16"/>
+				</div>
+			{/if}
 		{/snippet}
 	</Navigation.Rail>
 </aside>
@@ -166,17 +171,19 @@
 					</button>
 				{/if}
 			</div>
-			<div>
+			<a href="/about">
 				<span class="text-xl dark:text-primary-500 text-primary-700 font-medium">LoxBuddy</span>
-			</div>
+			</a>
 			<div class="mr-3 flex flex-row gap-3 justify-end">
 				<div onclick={(e)=>{e.stopPropagation(); store.lockScreenModal.state=true;}}>
 					<p class="text-right text-2xl font-medium">{format(new Date(), "p")}</p>
 				</div>
+				{#if store.showStatus}
 				<div class="flex flex-col gap-2">
 					<Circle class={getStatusColor(mqttStatus)} size="16"/>
 					<Square class={getStatusColor((mqttStatus==1) ? msStatus : 0)} size="16"/>
 				</div>
+				{/if}
 			</div>
 		</div>
 	</header>

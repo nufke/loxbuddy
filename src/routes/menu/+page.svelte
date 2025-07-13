@@ -7,6 +7,7 @@
 
 	let checked = $state(true); // true = default dark mode
   let openState = $state(false);
+	let showStatus = $state(false);
 	let theme = $state(localStorage.getItem('theme') || 'LoxBuddy');
 	let mode = $state(localStorage.getItem('mode') || 'dark');
 
@@ -15,9 +16,10 @@
 	$effect(() => {
 		mode = localStorage.getItem('mode') || 'light';
 		checked = mode === 'dark';
+		showStatus = localStorage.getItem('showStatus') == '1' ? true : false;
 	});
 
-	const onCheckedChange = (event: { checked: boolean }) => {
+	const onDarkModeChange = (event: { checked: boolean }) => {
 		const mode = event.checked ? 'dark' : 'light';
 		document.documentElement.setAttribute('data-mode', mode);
 		localStorage.setItem('mode', mode);
@@ -25,24 +27,43 @@
 	};
 
 	function onChangeTheme(s: string) {
-		theme = s || 'Cerebus';
+		theme = s || 'LoxBuddy';
 		document.documentElement.setAttribute('data-theme', theme.toLowerCase());
 		localStorage.setItem('theme', theme);
 		openState = false;
 	};
+
+	const onShowStatusChange = (event: { checked: boolean }) => {
+		const s = event.checked ? '1' : '0';
+		localStorage.setItem('showStatus', s);
+		store.showStatus = event.checked;
+		showStatus = event.checked;
+	};
+
 </script>
 
 <div class="sticky container flex max-w-[1280px] flex-col">
 	<button aria-current="true" type="button" class="w-full border-b dark:border-surface-900 border-surface-200 p-3 pr-5 pl-5 text-left text-lg">
 		<div class="flex w-full justify-between">
 			<p>{$_("Dark mode")}</p>
-			<Switch controlClasses="w-12 h-8" {checked} {onCheckedChange}></Switch>
+			<Switch controlClasses="w-12 h-8" checked={checked} onCheckedChange={onDarkModeChange}></Switch>
 		</div>
 	</button>
-	<button aria-current="true" type="button" class="flex w-full justify-between border-b dark:border-surface-900 border-surface-200 p-3 pr-5 pl-5 text-left text-lg" onclick={() => {openState = true;}}>
+	<button aria-current="true" type="button" class="w-full border-b dark:border-surface-900 border-surface-200 p-3 pr-5 pl-5 text-left text-lg">
+		<div class="flex w-full justify-between">
+			<p>{$_("Show connection status")}</p>
+			<Switch controlClasses="w-12 h-8" checked={showStatus} onCheckedChange={onShowStatusChange}></Switch>
+		</div>
+	</button>
+	<button aria-current="true" type="button" class="flex w-full justify-between border-b dark:border-surface-900 border-surface-200 p-3 pr-5 pl-5 text-left text-lg"
+					onclick={() => {openState = true;}}>
 		<p>{$_("Selected theme")}</p>
 		<p>{theme}</p>
 	</button>
+		<a aria-current="true" type="button" class="flex w-full justify-between border-b dark:border-surface-900 border-surface-200 p-3 pr-5 pl-5 text-left text-lg" 
+						href="/about">
+		<p>{$_("About")}</p>
+		</a>
 </div>
 
 <Modal

@@ -71,7 +71,7 @@
 	backdropBackground="">
 	{#snippet content()}
 	<!-- TODO better method to create multiple modal overlays with backdrop? -->
-	<div class="fixed w-full h-full top-0 left-0 right-0 bottom-0 -z-10 bg-surface-50/75 dark:bg-surface-950/75"></div>
+	<div class="fixed w-full h-full top-0 left-0 right-0 bottom-0 -z-10 bg-surface-50/75 dark:bg-surface-950/75" onclick={cancel}></div> 
 		<div class="m-2 flex flex-col items-center justify-center">
 			{#if setEntry.nightLight}
 				<form class="space-y-2">

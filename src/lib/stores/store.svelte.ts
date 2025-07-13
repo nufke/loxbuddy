@@ -21,10 +21,11 @@ class Store {
 	lastBellEventImages: SvelteMap<string, any> = new SvelteMap();
 	time: Date = $state(new Date());
 	mqttStatus: number = $state(0); // 0=disconnected (grey), 1=connected/ok/info (green), 2=warning/issue (yellow), 3=error (red)
-	msAlive: boolean = $derived(false);
+	msAlive: boolean = $state(false);
 	msStatus: number = $derived(this.getSystemCode());
 	notifications: NotificationMessage | NotificationList = $derived(this.getState(this.structure.globalStates.notifications));
 	notificationsMap: NotificationMap = $state({});
+	showStatus: boolean = $state(true);
 
 	weatherModal: ModalView = $state({
 		action: () => {},
@@ -51,6 +52,8 @@ class Store {
   	}, 1000);
 
 		this.notificationsMap = utils.deserialize(localStorage.getItem('notifications')) || {};
+		
+		this.showStatus = localStorage.getItem('showStatus') == '1' ? true : false;
 
 		if ($effect.tracking()) { // TODO check coreect use of method, see https://webjose.hashnode.dev/svelte-reactivity-lets-talk-about-effects
 			$effect(() => {

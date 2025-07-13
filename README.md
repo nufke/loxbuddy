@@ -6,7 +6,7 @@ LoxBuddy is a modern and fast (Web)App to control your [Loxone](https://www.loxo
 
 LoxBuddy uses MQTT for monitoring and control. All devices available via MQTT can be controlled using LoxBuddy. The [Lox2MQTT](https://github.com/nufke/LoxBerry-Plugin-Lox2MQTT) plugin for LoxBerry is recommended for a seamless integration of your Loxone Miniserver using MQTT.
 
-**NOTE: The LoxBuddy App is in early developement, thus unstable and incomplete. Use it at your own risk.**
+**WARNING: The LoxBuddy App is in early developement, thus unstable and incomplete, and may impact the stability of your Smart Home. Use it at your own risk.**
 
 ## Development environment
 
