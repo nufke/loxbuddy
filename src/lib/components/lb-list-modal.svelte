@@ -131,16 +131,16 @@
 	{#if isLightController}
 	<div class="sticky bottom-0 left-0 w-full h-16 pt-2">
 		<div class="grid h-full max-w-lg {subControlsColorPicker.length ? 'grid-cols-3' : 'grid-cols-2'}  mx-auto">
-				<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==0 ? 'text-primary-500' : ''} " onclick={() => selectedTab=0}>
+				<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==0 ? 'dark:text-primary-500 text-primary-700' : ''} " onclick={() => selectedTab=0}>
 					<Lightbulb/>
 					<span class="mt-1 text-xs">{$_("Scenes")}</span>
 				</button>
-				<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==1 ? 'text-primary-500' : ''} " onclick={() => selectedTab=1}>
+				<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==1 ? 'dark:text-primary-500 text-primary-700' : ''} " onclick={() => selectedTab=1}>
 					<SlidersHorizontal/>
 					<span class="mt-1 text-xs">{$_("Controls")}</span>
 				</button>
 				{#if subControlsColorPicker.length}
-				<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==2 ? 'text-primary-500' : ''} " onclick={() => selectedTab=2}>
+				<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==2 ? 'dark:text-primary-500 text-primary-700' : ''} " onclick={() => selectedTab=2}>
 					<LbIcon name={"/icons/svg/streamline--color-palette.svg"} fill="white" width="24" height="24"/>
 					<span class="mt-1 text-xs">{$_("Colors")}</span>
 				</button>

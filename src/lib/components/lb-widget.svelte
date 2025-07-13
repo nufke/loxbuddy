@@ -75,7 +75,7 @@
 						{/if}
 						{#if button.type == 'switch'}
 							<button class="mt-2" onclick={(e) => { e.stopPropagation()}}> <!-- workaround wrapper to stop propagation for switch -->
-								<Switch controlClasses="w-12 h-8 mr-1" name="slide" controlActive="bg-primary-500" checked={controlView.buttonState} onCheckedChange={button.click} />
+								<Switch controlClasses="w-12 h-8 mr-1" name="slide" controlActive="dark:bg-primary-500 bg-primary-700" checked={controlView.buttonState} onCheckedChange={button.click} />
 							</button>
 						{/if}
 					{/each}
@@ -83,7 +83,7 @@
 			</div>
 		</div>
 		<div class="pl-1 pt-2 truncate">
-			<p class="truncate text-xs text-surface-500">{label(controlView.control)}</p>
+			<p class="truncate text-xs dark:text-surface-300 text-surface-700">{label(controlView.control)}</p>
 			<p class="truncate text-lg {controlView.textColor}">{controlView.textName}</p>
 			<p class="text-md truncate {controlView.statusColor}" style={getStatusColorHex(controlView.statusColor)}>{controlView.statusName}</p>
 		</div>

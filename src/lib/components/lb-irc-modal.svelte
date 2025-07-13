@@ -216,11 +216,11 @@
 	{/if}
 	<div class="sticky bottom-0 left-0 w-full h-16 pt-2">
 		<div class="grid h-full max-w-lg grid-cols-2 mx-auto">
-			<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==0 ? 'text-primary-500' : ''} " onclick={() => selectedTab=0}>
-				<LbIcon class={selectedTab==0 ? 'fill-primary-500' : 'fill-surface-50'} name={"/icons/svg/thermostat.svg"} width="24" height="24"/>
+			<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==0 ? 'dark:text-primary-500 text-primary-700' : ''} " onclick={() => selectedTab=0}>
+				<LbIcon class={selectedTab==0 ? 'dark:fill-primary-500 fill-primary-700' : 'fill-surface-50'} name={"/icons/svg/thermostat.svg"} width="24" height="24"/>
 				<span class="mt-1 text-xs">{$_("Control")}</span>
 			</button>
-			<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==1 ? 'text-primary-500' : ''} " onclick={() => selectedTab=1}>
+			<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==1 ? 'dark:text-primary-500 text-primary-700' : ''} " onclick={() => selectedTab=1}>
 				<List/>
 				<span class="mt-1 text-xs">{$_("Preset")}</span>
 			</button>

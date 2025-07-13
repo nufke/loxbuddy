@@ -139,10 +139,10 @@
 		control: control,
 		isFavorite: controlOptions.isFavorite,
 		iconName: store.getCategoryIcon(control, controlOptions.isSubControl),
-		iconColor: (value > 0 ) ? 'fill-primary-500' : 'fill-surface-950 dark:fill-surface-50',
+		iconColor: (value > 0 ) ? 'dark:fill-primary-500 fill-primary-700' : 'fill-surface-950 dark:fill-surface-50',
 		textName: control.name,
 		statusName: status + getDuration(),
-		statusColor: (value > 0 ) ? 'text-primary-500' : 'text-surface-500',
+		statusColor: (value > 0 ) ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700',
 		modal: modal
 	});
 
@@ -186,7 +186,7 @@
 			</header>
 			{#if selectedTab==0}
 			<div class="flex flex-col items-center justify-center m-2">
-				<h2 class="text-lg text-center {(value > 0 ) ? 'text-primary-500' : 'text-surface-500'}">{status + getDuration()}</h2>
+				<h2 class="text-lg text-center {(value > 0 ) ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700'}">{status + getDuration()}</h2>
 				<div>
 					<LbTimeGrid {mode} {weekdays} {entries}/>
 				</div>
@@ -207,7 +207,7 @@
 						<button class="w-[300px] btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50" onclick={(e) => { e.stopPropagation()}}> <!-- workaround wrapper to stop propagation for switch -->
 							<div class="flex w-full justify-between">
 								<h1 class="truncate text-lg">{$_("Uitgang")} {$_(outputActive ? "Active" : "Inactive").toLowerCase()}</h1>
-								<Switch controlClasses="w-12 h-8" name="slide" controlActive="bg-primary-500" checked={outputActive} onCheckedChange={(e) => (outputActive = e.checked)} />
+								<Switch controlClasses="w-12 h-8" name="slide" controlActive="dark:bg-primary-500 bg-primary-700" checked={outputActive} onCheckedChange={(e) => (outputActive = e.checked)} />
 							</div>
 						</button>
 					</div>
@@ -222,11 +222,11 @@
 			{/if}
 			<div class="sticky bottom-0 left-0 w-full h-16 pt-2">
 				<div class="grid h-full max-w-lg grid-cols-2 mx-auto">
-					<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==0 ? 'text-primary-500' : ''} " onclick={() => {dateTimeView.isDateView=true; selectedTab=0;}}>
+					<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==0 ? 'dark:text-primary-500 text-primary-700' : ''} " onclick={() => {dateTimeView.isDateView=true; selectedTab=0;}}>
 						<Timer/>
 						<span class="mt-1 text-xs">{$_("Schedule")}</span>
 					</button>
-					<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==1 ? 'text-primary-500' : ''} " onclick={() => {dateTimeView.isDateView=true; selectedTab=1;}}>
+					<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==1 ? 'dark:text-primary-500 text-primary-700' : ''} " onclick={() => {dateTimeView.isDateView=true; selectedTab=1;}}>
 						<CalendarClock/>
 						<span class="mt-1 text-xs">{$_("Timer")}</span>
 					</button>

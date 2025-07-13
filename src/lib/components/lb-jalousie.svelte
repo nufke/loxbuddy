@@ -80,10 +80,10 @@
 		control: control,
 		isFavorite: controlOptions.isFavorite,
 		iconName: store.getCategoryIcon(control, controlOptions.isSubControl),
-		iconColor: (position > 0) ? 'fill-primary-500' : 'fill-surface-950 dark:fill-surface-50',
+		iconColor: (position > 0) ? 'dark:fill-primary-500 fill-primary-700' : 'fill-surface-950 dark:fill-surface-50',
 		textName: control.name,
 		statusName: position < 1 ? $_('Opened') : position > 99 ? $_('Closed') : fmt.sprintf('%1.0f%% ', position),
-		statusColor: (position > 0) ? 'text-primary-500' : 'text-surface-500',
+		statusColor: (position > 0) ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700',
 		buttons: buttons,
 		modal: modal
 	});

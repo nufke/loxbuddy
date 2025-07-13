@@ -26,13 +26,14 @@
 
 	let currentWeather = $derived(weatherStore.current);
 	let dailyForecast = $derived(weatherStore.daily);
+	let hourlyForecast = $derived(weatherStore.hourly);
 	let time = $derived(store.time);
 	let mqttStatus =  $derived(store.mqttStatus);
 	let msStatus =  $derived(store.msStatus);
 	let nav = $derived(store.nav);
 	let path = $derived(page.url.pathname);
 	let home = { label: 'Menu', href: '/menu', icon: Menu }; // fixed for tablet
-	let weatherAvailable = $derived(currentWeather.time > 0 && dailyForecast.length);
+	let weatherAvailable = $derived(currentWeather.time > 0 && dailyForecast.length && hourlyForecast[0]);
 	let activeNotifications = $derived(Object.values(store.notificationsMap).filter( items => items.status == 1));
 
 	function getCurrentIcon(cur: WeatherCurrentConditions) {
@@ -127,13 +128,13 @@
 		{#snippet tiles()}
 		{#each routesTablet as {label, href, icon, badge}}
 		  {@const Icon = icon}
-			<Navigation.Tile labelClasses={checkUrl(href) ? 'text-primary-500' : 'white'} classes="flex-col justify-center hover:bg-transparent scope:bg-transparent" label={$_(label)} {href}>
+			<Navigation.Tile labelClasses={checkUrl(href) ? 'dark:text-primary-500 text-primary-700' : 'white'} classes="flex-col justify-center hover:bg-transparent scope:bg-transparent" label={$_(label)} {href}>
 				<div class="relative inline-block">
 					{#if badge && activeNotifications.length}
 						<span class="absolute w-[17px] h-[17px] rounded-full bg-red-500 dark:text-white text-white -right-2 -top-2 text-xs flex justify-center items-center"
 									transition:fade={{ duration: 300 }}><span class="-mb-[2px]">{activeNotifications.length}</span></span>
 					{/if}
-					<Icon class={checkUrl(href) ? 'text-primary-500' : 'white'} />
+					<Icon class={checkUrl(href) ? 'dark:text-primary-500 text-primary-700' : 'white'} />
 				</div>
 			</Navigation.Tile>
 		{/each}
@@ -166,7 +167,7 @@
 				{/if}
 			</div>
 			<div>
-				<span class="text-xl text-primary-500 font-medium">LoxBuddy</span>
+				<span class="text-xl dark:text-primary-500 text-primary-700 font-medium">LoxBuddy</span>
 			</div>
 			<div class="mr-3 flex flex-row gap-3 justify-end">
 				<div onclick={(e)=>{e.stopPropagation(); store.lockScreenModal.state=true;}}>
@@ -186,13 +187,13 @@
 		<Navigation.Bar>
 			{#each routesMobile as {label, href, icon, badge}}
 				{@const Icon = icon} 
-				<Navigation.Tile labelClasses={checkUrl(href) ? 'text-primary-500' : 'text-surface-950 dark:text-surface-50'} classes="flex flex-col justify-center hover:bg-transparent" label={$_(label)} {href}>
+				<Navigation.Tile labelClasses={checkUrl(href) ? 'dark:text-primary-500 text-primary-700' : 'text-surface-950 dark:text-surface-50'} classes="flex flex-col justify-center hover:bg-transparent" label={$_(label)} {href}>
 					<div class="relative inline-block">
 						{#if badge && activeNotifications.length}
 						<span class="absolute w-[17px] h-[17px] rounded-full bg-red-500 dark:text-white text-white -right-2 -top-2 text-xs flex justify-center items-center"
 									transition:fade={{ duration: 300 }}><span class="-mb-[2px]">{activeNotifications.length}</span></span>
 						{/if}
-						<Icon class={checkUrl(href) ? 'text-primary-500' : 'white'} />
+						<Icon class={checkUrl(href) ? 'dark:text-primary-500 text-primary-700' : 'white'} />
 					</div>
 				</Navigation.Tile>
 			{/each}

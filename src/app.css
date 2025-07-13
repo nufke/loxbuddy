@@ -29,6 +29,9 @@
 @import '@skeletonlabs/skeleton/themes/vox';
 @import '@skeletonlabs/skeleton/themes/wintry';
 
+/* custom themes */
+@import './themes/loxbuddy.css';
+
 /* Light / dask mode */
 @custom-variant dark (&:where([data-mode="dark"], [data-mode="dark"] *));
 

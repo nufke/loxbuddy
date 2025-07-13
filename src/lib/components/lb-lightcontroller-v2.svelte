@@ -48,10 +48,10 @@
 		isSubControl: controlOptions.isSubControl,
 		isFavorite: controlOptions.isFavorite,
 		iconName: store.getCategoryIcon(control, controlOptions.isSubControl),
-		iconColor: activeMoodsNum != 778 ? 'fill-primary-500' : 'fill-surface-950 dark:fill-surface-50',
+		iconColor: activeMoodsNum != 778 ? 'dark:fill-primary-500 fill-primary-700' : 'fill-surface-950 dark:fill-surface-50',
 		textName: control.name === $_('LightControllerV2') ? store.rooms[control.room].name : control.name,
 		statusName: activeMoodsNum < 0 ? $_('Manual') : moodList?.find((item: MoodList) => item.id == activeMoodsNum)?.name,
-		statusColor: activeMoodsNum != 778 ? 'text-primary-500' : 'text-surface-500',
+		statusColor: activeMoodsNum != 778 ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700',
 		list: moodList,
 		buttons: buttons,
 		modal: modal

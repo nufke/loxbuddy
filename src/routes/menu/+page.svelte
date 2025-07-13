@@ -7,8 +7,8 @@
 
 	let checked = $state(true); // true = default dark mode
   let openState = $state(false);
-	let theme = $state(localStorage.getItem('theme') || 'Cerebus');
-	let mode = $state(localStorage.getItem('mode') || 'light');
+	let theme = $state(localStorage.getItem('theme') || 'LoxBuddy');
+	let mode = $state(localStorage.getItem('mode') || 'dark');
 
 	store.setNav({ label: 'ArrowLeft', href: '/', icon: ArrowLeft });
 
@@ -142,6 +142,20 @@
 		class="bg-surface-50-950 preset-outlined-surface-100-900 hover:preset-outlined-surface-950-50 grid w-full grid-cols-[auto_1fr_auto] items-center gap-4 rounded-md p-3"
 		><span>💀</span>
 		<h3 class="text-left text-md font-medium capitalize">legacy</h3>
+		<div class="flex items-center justify-center -space-x-1.5">
+			<div class="bg-primary-500 aspect-square w-4 rounded-full border-[1px] border-black/10"></div>
+			<div
+				class="bg-secondary-500 aspect-square w-4 rounded-full border-[1px] border-black/10"
+			></div>
+			<div
+				class="bg-tertiary-500 aspect-square w-4 rounded-full border-[1px] border-black/10"
+			></div>
+		</div></button
+	>	<button
+		data-theme="loxbuddy" onclick={() => {onChangeTheme("LoxBuddy")}}
+		class="bg-surface-50-950 preset-outlined-surface-100-900 hover:preset-outlined-surface-950-50 grid w-full grid-cols-[auto_1fr_auto] items-center gap-4 rounded-md p-3"
+		><span>🏠</span>
+		<h3 class="text-left text-md font-medium capitalize">loxbuddy</h3>
 		<div class="flex items-center justify-center -space-x-1.5">
 			<div class="bg-primary-500 aspect-square w-4 rounded-full border-[1px] border-black/10"></div>
 			<div

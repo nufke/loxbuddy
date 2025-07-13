@@ -59,7 +59,7 @@
 		iconColor: 'fill-surface-950 dark:fill-surface-50',
 		textName: control.name === $_('IRoomController') ? store.rooms[control.room].name : control.name,
 		statusName: temperatureIdsList[id]?.name,
-		statusColor: 'text-surface-500', // TODO other colors for temperatures
+		statusColor: 'dark:text-surface-300 text-surface-700', // TODO other colors for temperatures
 		list: tempList,
 		modal: modal
 	});

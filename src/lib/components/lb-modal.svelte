@@ -144,7 +144,7 @@
 					<button class="btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50" onclick={(e) => { e.stopPropagation()}}> <!-- workaround wrapper to stop propagation for switch -->
 						<div class="flex w-full justify-between">
 							<h1 class="truncate text-lg">{$_(button.name)}</h1>
-							<Switch controlClasses="w-12 h-8" name="slide" controlActive="bg-primary-500" checked={controlView.buttonState} onCheckedChange={button.click} />
+							<Switch controlClasses="w-12 h-8" name="slide" controlActive="dark:bg-primary-500 bg-primary-700" checked={controlView.buttonState} onCheckedChange={button.click} />
 						</div>
 					</button>
 				{/if}

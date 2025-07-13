@@ -91,7 +91,7 @@
 
 	function getStatusColor(uuid: string) {
 		let position = Math.round(Number(store.getState(store.controls[uuid].states.position)) * 100);
-		return position > 1 ? 'text-primary-500' : 'text-surface-950 dark:text-surface-50';
+		return position > 1 ? 'dark:text-primary-500 text-primary-700' : 'text-surface-950 dark:text-surface-50';
 	}
 
 	function resetState() {
@@ -130,7 +130,7 @@
 		iconName: store.getCategoryIcon(control, controlOptions.isSubControl),
 		textName: control.name,
 		statusName: getActiveScreens(),
-		statusColor: screensClosed.length ? 'text-primary-500' : 'text-surface-500',
+		statusColor: screensClosed.length ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700',
 		buttons: buttons,
 		modal: modal
 	});
@@ -159,7 +159,7 @@
 				<div class="mb-2 flex justify-center">
 					<h2 class="h4 text-center ">{controlView.textName}</h2>
 				</div>
-				<h2 class="text-lg text-center {screensClosed.length ? 'text-primary-500' : 'text-surface-500'}">{getActiveScreens()}</h2>
+				<h2 class="text-lg text-center {screensClosed.length ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700'}">{getActiveScreens()}</h2>
 				<div class="absolute top-0 right-0">
 					<button type="button" aria-label="close" class="btn-icon w-auto" onclick={() => controlView.modal.action(false)}>
 						<X />

@@ -85,10 +85,10 @@
 		control: control,
 		isFavorite: controlOptions.isFavorite,
 		iconName: store.getCategoryIcon(control, controlOptions.isSubControl),
-		iconColor: lightsOn ? 'fill-primary-500' : 'fill-surface-950 dark:fill-surface-50',
+		iconColor: lightsOn ? 'dark:fill-primary-500 fill-primary-700' : 'fill-surface-950 dark:fill-surface-50',
 		textName: control.name,
 		statusName: getActiveLights(),
-		statusColor: lightsOn ? 'text-primary-500' : 'text-surface-500',
+		statusColor: lightsOn ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700', 
 		modal: modal
 	});
 
@@ -104,7 +104,7 @@
 
 	function getStatusColor(control: Control) {
 		let activeMoodsNum = Number(store.getState(control.states.activeMoodsNum));
-		return activeMoodsNum == 778 ? 'text-surface-950 dark:text-surface-50' : 'text-primary-500';
+		return activeMoodsNum == 778 ? 'text-surface-950 dark:text-surface-50' : 'dark:text-primary-500 text-primary-700';
 	}
 
 	function selectLight(i: number) {
@@ -160,12 +160,12 @@
 		{#snippet content()}
 		<!-- TODO better method to create multiple modal overlays with backdrop? -->
 		<div class="fixed w-full h-full top-0 left-0 right-0 bottom-0 -z-10 bg-surface-50/75 dark:bg-surface-950/75"></div>
-			<!--<Info control={controlView.control}/>-->
+			<Info control={controlView.control}/>
 			<header class="relative">
 				<div class="mb-2 flex justify-center">
 					<h2 class="h4 text-center ">{controlView.textName}</h2>
 				</div>
-				<h2 class="text-lg text-center {lightsOn ? 'text-primary-500' : 'text-surface-500'}">{getActiveLights()}</h2>
+				<h2 class="text-lg text-center {lightsOn ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700'}">{getActiveLights()}</h2>
 				<div class="absolute top-0 right-0">
 					<button type="button" aria-label="close" class="btn-icon w-auto" onclick={() => {scenesEnabled=false; controlView.modal.action(false)}}>
 						<X />

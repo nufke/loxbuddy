@@ -85,7 +85,7 @@
 				value,
 				class: [
 					mm == M ? '' : (mm > M ? yy >= Y : yy > Y) ? 'future' : 'past',
-					value === selected ? 'bg-primary-500 text-black' : '',
+					value === selected ? 'dark:bg-primary-500 bg-primary-700 text-black' : '',
 				].join(' ')
 			});
 
@@ -115,9 +115,9 @@
 						bg-surface-50-950 px-2 py-2 hover:border-white/10 h-[300px]">
 	<div class="w-full grid grid-cols-7 gap-0">
 		<div class="btn-icon" onclick={() => setMonth(-1)}><ChevronLeft/></div>
-		<div class="btn-icon text-primary-500" onclick={() => reset()}><Undo2/></div>
+		<div class="btn-icon dark:text-primary-500 text-primary-700" onclick={() => reset()}><Undo2/></div>
 		<div class="btn col-span-3">{month} {year}</div>
-		<div class="btn-icon text-primary-500" onclick={() => {view.isMinuteView = false; view.isDateView = false}}><Clock3/></div>
+		<div class="btn-icon dark:text-primary-500 text-primary-700" onclick={() => {view.isMinuteView = false; view.isDateView = false}}><Clock3/></div>
 		<div class="btn-icon" onclick={() => setMonth(+1)}><ChevronRight/></div>
 		{#each days as day}
 			<div class="text-center">{day}</div>

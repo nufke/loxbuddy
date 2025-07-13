@@ -73,7 +73,7 @@
 					{/if}
 					{#if button.type == 'switch'}
 						<button class="mt-2" onclick={(e) => { e.stopPropagation()}}> <!-- workaround wrapper to stop propagation for switch -->
-							<Switch controlClasses="w-12 h-8 mr-1" name="slide" controlActive="bg-primary-500" checked={controlView.buttonState} onCheckedChange={button.click} />
+							<Switch controlClasses="w-12 h-8 mr-1" name="slide" controlActive="dark:bg-primary-500 bg-primary-700" checked={controlView.buttonState} onCheckedChange={button.click} />
 						</button>
 					{/if}
 				{/each}

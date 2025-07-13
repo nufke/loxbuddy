@@ -219,7 +219,7 @@
 	</div>
 	{/if}
 	{#if view.label}
-	<button class="absolute flex z-10 top-[50px] right-[0px] text-primary-500 text-sm items-center justify-center 
+	<button class="absolute flex z-10 top-[50px] right-[0px] dark:text-primary-500 text-primary-700 text-sm items-center justify-center 
 								bg-surface-50-950 rounded-full w-[40px] h-[40px]" 
 	        onclick={() => {view.isDateView = true; isMinuteView = false;}}>
 		<Calendar size="20"/>
@@ -229,8 +229,8 @@
 							hover:border-white/10 overflow-auto" style="width: {size}px; height: {size}px"
 							class:is-minute-view={isMinuteView} bind:this={refClock} onclick={(e) => { e.preventDefault(); onClick(e);}}
 							onmousedown={onToggleMove} onmousemove={(e) => {isMouseDown && onClick(e);}} onmouseup={onToggleMove}>
-		<div class="absolute w-[6px] h-[6px] left-[50%] top-[50%] bg-primary-500 rounded-full translate-x-[-50%] translate-y-[-50%]"></div>
-		<div class="lb-hand absolute w-[2px] bg-primary-500 bottom-[50%]" style={handCss}>
+		<div class="absolute w-[6px] h-[6px] left-[50%] top-[50%] dark:bg-primary-500 bg-primary-700 rounded-full translate-x-[-50%] translate-y-[-50%]"></div>
+		<div class="lb-hand absolute w-[2px] dark:bg-primary-500 bg-primary-700 bottom-[50%]" style={handCss}>
 			<div class="relative left-[-15px] top-[-29px] w-[4px] h-[4px] bg-transparent rounded-full box-content border-solid border-14 border-primary-500"></div>
 		</div>
 		{#each pos as p, i (p.val)}

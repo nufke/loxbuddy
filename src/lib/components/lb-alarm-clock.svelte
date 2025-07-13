@@ -46,10 +46,10 @@
 		control: control,
 		isFavorite: controlOptions.isFavorite,
 		iconName: store.getCategoryIcon(control, controlOptions.isSubControl),
-		iconColor: alarms.length ? 'fill-primary-500' : 'fill-surface-950 dark:fill-surface-50',
+		iconColor: alarms.length ? 'dark:fill-primary-500 fill-primary-700' : 'fill-surface-950 dark:fill-surface-50',
 		textName: control.name,
 		statusName: alarms.length ? getAlarmTime() : $_('No alarm time active'),
-		statusColor: alarms.length ? 'text-primary-500' : 'text-surface-500',
+		statusColor: alarms.length ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700',
 		modal: modal
 	});
 
@@ -185,13 +185,13 @@
 						</button>
 						</div>
 						<div onclick={(e) => {e.stopPropagation(); }}> <!-- workaround wrapper to stop propagation for switch -->
-							<Switch controlClasses="w-12 h-8" name="slide" controlActive="bg-primary-500" checked={entry.isActive} onCheckedChange={(e) => {updateIsActive(i, e)}} />
+							<Switch controlClasses="w-12 h-8" name="slide" controlActive="dark:bg-primary-500 bg-primary-700" checked={entry.isActive} onCheckedChange={(e) => {updateIsActive(i, e)}} />
 						</div>
 					</div>
 					<div class="flex w-full m-auto justify-between">
 						<LbDayPickerModal {entry} onValueChange={(e:any)=>{updateSettings(i, e)}}/>
 						{#if i > 0}
-						<button type="button" class="text-surface-500" aria-label="delete" onclick={() =>deleteEntry(i)}>
+						<button type="button" class="dark:text-surface-300 text-surface-700" aria-label="delete" onclick={() =>deleteEntry(i)}>
 							<Trash2/>
 						</button>
 						{/if}
