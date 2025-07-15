@@ -5,10 +5,12 @@
 	import LbDatePicker from '$lib/components/lb-date-picker.svelte';
 	import { fade200 } from '$lib/helpers/transition';
 	import { _ } from 'svelte-i18n';
+	import { innerWidth } from 'svelte/reactivity/window';
 
 	let { date, onValueChange, view = $bindable() } = $props();
 
 	let setDate = $derived(new SvelteDate(date));
+	let width = $derived(innerWidth.current && innerWidth.current < 500 ? 'w-[340px]' : 'w-[400px]');
 
 	function valueChanged() {
 		view.openModal = false;
@@ -28,7 +30,7 @@
 	onOpenChange={() => view.openModal = false}
 	triggerBase="btn bg-surface-600"
 	contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-sm rounded-lg border border-white/5 hover:border-white/10
-							max-w-9/10 max-h-9/10 overflow-auto w-[340px]"
+							max-w-9/10 max-h-9/10 overflow-auto {width}"
 	backdropClasses=""
 	backdropBackground="">
 	{#snippet content()}

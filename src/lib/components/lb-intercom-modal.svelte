@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Modal } from '@skeletonlabs/skeleton-svelte';
   import { type ControlView } from '$lib/types/models';
-	import { X, Video, Camera, History, Settings } from '@lucide/svelte';
+	import { X, Video, Camera, History } from '@lucide/svelte';
 	import { _ } from 'svelte-i18n';
 	import { fade200 } from '$lib/helpers/transition';
 	import Info from '$lib/components/lb-info.svelte';
@@ -19,8 +19,8 @@
 	let streamReload = $derived(stream);
 
 	function handleImageLoad() {
-		image = image ? image : dates[dates.length-1];
-		imageHeight = img && img.height ? img.height : 400;
+		image = image || dates[dates.length-1];
+		imageHeight = img?.height || 400;
 		setTimeout(function() {
 			streamReload = stream + '?' + Date.now();
     }, 1000);

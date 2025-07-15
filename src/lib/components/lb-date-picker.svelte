@@ -2,6 +2,7 @@
 	import { SvelteDate } from 'svelte/reactivity';
 	import { ChevronLeft, ChevronRight, Clock3, Undo2 } from '@lucide/svelte';
 	import { format } from 'date-fns';
+	import { innerWidth } from 'svelte/reactivity/window';
 	import { _ } from 'svelte-i18n';
 
 	let { date = $bindable(), view = $bindable() } = $props();
@@ -18,6 +19,10 @@
 	let month = $derived(months[viewDate.getMonth()]);
 	let year = $derived(viewDate.getFullYear());
   let weeks = $derived(weeksFrom(viewDate, start));
+
+	let calenderHeight = $derived(innerWidth.current && innerWidth.current < 500 ? '300' : '360');
+	let cw = $derived(innerWidth.current && innerWidth.current < 500 ? 'w-9' : 'w-12');
+	let ts = $derived(innerWidth.current && innerWidth.current < 500 ? 'text-md' : 'text-lg');
 
 	function getDateStr(date: Date) {
     const pad = (n:number) => n < 10 ? '0' + n : n;
@@ -112,19 +117,19 @@
 	</button>
 </div>
 <div class="card m-0 flex rounded-lg border border-white/5 hover:border-white/10
-						bg-surface-50-950 px-2 py-2 hover:border-white/10 h-[300px]">
+						bg-surface-50-950 px-2 py-2 hover:border-white/10" style="width: {calenderHeight}px; height: {calenderHeight}px;">
 	<div class="w-full grid grid-cols-7 gap-0">
-		<div class="btn-icon" onclick={() => setMonth(-1)}><ChevronLeft/></div>
-		<div class="btn-icon dark:text-primary-500 text-primary-700" onclick={() => reset()}><Undo2/></div>
-		<div class="btn col-span-3">{month} {year}</div>
-		<div class="btn-icon dark:text-primary-500 text-primary-700" onclick={() => {view.isMinuteView = false; view.isDateView = false}}><Clock3/></div>
-		<div class="btn-icon" onclick={() => setMonth(+1)}><ChevronRight/></div>
+		<div class="btn-icon {cw} justify-start m-auto" onclick={() => setMonth(-1)}><ChevronLeft size="26"/></div>
+		<div class="btn-icon {cw} justify-start m-auto dark:text-primary-500 text-primary-700" onclick={() => reset()}><Undo2/></div>
+		<div class="btn col-span-3 {ts}">{month} {year}</div>
+		<div class="btn-icon {cw} justify-start m-auto dark:text-primary-500 text-primary-700" onclick={() => {view.isMinuteView = false; view.isDateView = false}}><Clock3/></div>
+		<div class="btn-icon {cw} justify-start start m-auto" onclick={() => setMonth(+1)}><ChevronRight size="26"/></div>
 		{#each days as day}
-			<div class="text-center">{day}</div>
+			<div class="text-center {ts}">{day}</div>
 		{/each}
 		{#each weeks as week}
 			{#each week as day}
-				<div class="btn w-9 {day.class}" onclick={() => selectDate(day.value)}>{day.date}</div>
+				<div class="btn {ts} {cw} {day.class}" onclick={() => selectDate(day.value)}>{day.date}</div>
 			{/each}
 		{/each}
 	</div>

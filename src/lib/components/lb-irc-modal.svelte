@@ -103,6 +103,7 @@
 
 	function getTimerEpoch(entries: any) {
 		if (!entries) return;
+		if (entries.length ==0) return;
 		let timerDate = entries[0].end * 1000 + utils.loxTimeRef;
 		return utils.isDST(new Date(timerDate)) ? timerDate+3600000 : timerDate;
 	}
@@ -131,7 +132,7 @@
 	onOpenChange={()=>controlView.modal.action(false)}
 	triggerBase="btn bg-surface-600"
 	contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-sm rounded-lg border border-white/5 hover:border-white/10
-							max-w-9/10 max-h-9/10 overflow-auto w-[380px]"
+							max-w-9/10 max-h-9/10 overflow-auto w-[450px]"
 	backdropClasses="backdrop-blur-sm"
 	backdropBackground="">
 	{#snippet content()}

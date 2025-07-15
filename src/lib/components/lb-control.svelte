@@ -32,7 +32,7 @@
 {#if controlView.showControl && !controlView.isFavorite}
 <div role="button" tabindex="0" onkeydown={()=>{}} aria-label="card" onclick={openModal}
      class="card m-0 flex items-center justify-start rounded-lg shadow-sm border border-white/5
-						{ controlView.isSubControl ? 'bg-surface-100-900 min-h-[64px]' : 
+						{ controlView.isSubControl ? 'bg-surface-200-800 min-h-[64px]' :
 						( controlOptions.isLink ? 'bg-surface-200-800 min-h-[76px]' : 'bg-surface-100-900 min-h-[76px]') }  px-2 py-2 hover:border-white/10">
 	<div class="flex w-full justify-between">
 		<div class="flex items-center truncate">
@@ -73,7 +73,7 @@
 					{/if}
 					{#if button.type == 'switch'}
 						<button class="mt-2" onclick={(e) => { e.stopPropagation()}}> <!-- workaround wrapper to stop propagation for switch -->
-							<Switch controlClasses="w-12 h-8 mr-1" name="slide" controlActive="dark:bg-primary-500 bg-primary-700" checked={controlView.buttonState} onCheckedChange={button.click} />
+							<Switch controlClasses="w-12 h-8 mr-1" name="slide" controlActive="dark:bg-primary-500 bg-primary-700" controlInactive="preset-filled-surface-300-700" thumbInactive="bg-white" checked={controlView.buttonState} onCheckedChange={button.click} />
 						</button>
 					{/if}
 				{/each}

@@ -4,6 +4,7 @@
 	import { format } from 'date-fns';
 	import { _ } from 'svelte-i18n';
 	import { Calendar } from '@lucide/svelte';
+	import { innerWidth } from 'svelte/reactivity/window';
 
 	let { date = $bindable(), view = $bindable() } = $props();
 
@@ -11,7 +12,9 @@
 	let showMeridian: boolean = false;
 	let meridiem: string[] = ['am', 'pm'];
 	let refClock: HTMLElement
-	let size = 300;
+
+	let size = $derived(innerWidth.current && innerWidth.current < 500 ? 300 : 360);
+	let ts = $derived(innerWidth.current && innerWidth.current < 500 ? 'text-md' : 'text-lg');
 
 	let isMinuteView: boolean = $state(view.isMinuteView);
 	let selectedHour = $derived(date.getHours() || 0);
@@ -234,18 +237,17 @@
 			<div class="relative left-[-15px] top-[-29px] w-[4px] h-[4px] bg-transparent rounded-full box-content border-solid border-14 border-primary-500"></div>
 		</div>
 		{#each pos as p, i (p.val)}
-			<button type="button" class="lb-ticks absolute text-center rounded-full border-0 cursor-pointer translate-x-[-50%] translate-y-[-50%]"
+			<button type="button" class="lb-ticks {ts} absolute text-center rounded-full border-0 cursor-pointer translate-x-[-50%] translate-y-[-50%]"
 			        style={`left:${p.x}px; top:${p.y}px;`} class:outer-tick={isMinuteView}
 				transition:fade={{ duration: 200 }} data-value={p.val} 
 				class:is-selected={isSelected(selectedHour, p.val, i)}>{p.val}
 			</button>
 		{/each}
 		{#each innerHours as p, i}
-			<button type="button" class="lb-ticks absolute text-center rounded-full border-0 cursor-pointer translate-x-[-50%] translate-y-[-50%]" 
+			<button type="button" class="lb-ticks {ts} absolute text-center rounded-full border-0 cursor-pointer translate-x-[-50%] translate-y-[-50%]" 
 			  style={`left:${p.x}px; top:${p.y}px;`} class:outer-tick={showMeridian && !isMinuteView}
 				transition:fade={{ duration: 200 }} data-value={p.val} 
-				class:is-selected={isSelected(isMinuteView ? selectedMinutes : selectedHour, p.val, i)}>
-					{p.val}
+				class:is-selected={isSelected(isMinuteView ? selectedMinutes : selectedHour, p.val, i)}>{p.val}
 			</button>
 		{/each}
 	</div>

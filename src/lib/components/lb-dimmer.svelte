@@ -69,7 +69,7 @@
 
 <div role="button" tabindex="0" onkeydown={()=>{}} aria-label="card" onclick={() => {controlOptions.action ? controlOptions.action() : controlView.modal.action(true)}}
      class="card m-0 flex min-h-[70px] items-center justify-start rounded-lg border border-white/5
-						bg-surface-100-900 px-2 py-2 hover:border-white/10">
+						{controlOptions.isSubControl ? 'bg-surface-200-800' : 'bg-surface-100-900'} px-2 py-2 hover:border-white/10">
 	<div class="w-full ">
 		<div class="flex justify-between mt-0 mb-3 ml-2 mr-2">
 			<div class="flex">

@@ -185,7 +185,7 @@
 						</button>
 						</div>
 						<div onclick={(e) => {e.stopPropagation(); }}> <!-- workaround wrapper to stop propagation for switch -->
-							<Switch controlClasses="w-12 h-8" name="slide" controlActive="dark:bg-primary-500 bg-primary-700" checked={entry.isActive} onCheckedChange={(e) => {updateIsActive(i, e)}} />
+							<Switch controlClasses="w-12 h-8" name="slide" controlActive="dark:bg-primary-500 bg-primary-700" controlInactive="preset-filled-surface-300-700" thumbInactive="bg-white" checked={entry.isActive} onCheckedChange={(e) => {updateIsActive(i, e)}} />
 						</div>
 					</div>
 					<div class="flex w-full m-auto justify-between">

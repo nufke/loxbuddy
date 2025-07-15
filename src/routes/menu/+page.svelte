@@ -46,13 +46,13 @@
 	<button aria-current="true" type="button" class="w-full border-b dark:border-surface-900 border-surface-200 p-3 pr-5 pl-5 text-left text-lg">
 		<div class="flex w-full justify-between">
 			<p>{$_("Dark mode")}</p>
-			<Switch controlClasses="w-12 h-8" checked={checked} onCheckedChange={onDarkModeChange}></Switch>
+			<Switch controlClasses="w-12 h-8" checked={checked} thumbInactive="bg-white" controlInactive="preset-filled-surface-300-700" onCheckedChange={onDarkModeChange}></Switch>
 		</div>
 	</button>
 	<button aria-current="true" type="button" class="w-full border-b dark:border-surface-900 border-surface-200 p-3 pr-5 pl-5 text-left text-lg">
 		<div class="flex w-full justify-between">
 			<p>{$_("Show connection status")}</p>
-			<Switch controlClasses="w-12 h-8" checked={showStatus} onCheckedChange={onShowStatusChange}></Switch>
+			<Switch controlClasses="w-12 h-8" checked={showStatus} thumbInactive="bg-white" controlInactive="preset-filled-surface-300-700" onCheckedChange={onShowStatusChange}></Switch>
 		</div>
 	</button>
 	<button aria-current="true" type="button" class="flex w-full justify-between border-b dark:border-surface-900 border-surface-200 p-3 pr-5 pl-5 text-left text-lg"

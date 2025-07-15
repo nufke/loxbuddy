@@ -65,7 +65,7 @@
 	onOpenChange={()=>{}}
 	triggerBase="btn bg-surface-600"
 	contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-sm rounded-lg border border-white/5 hover:border-white/10
-							max-w-9/10 max-h-9/10 overflow-auto w-[380px] {linkedControls.length ? 'lg:w-[760px]': ''}"
+							max-w-9/10 max-h-9/10 overflow-auto w-[380px] {linkedControls.length > 1 ? 'lg:w-[760px]': ''}"
 	backdropClasses={ controlView.modal.noBlur ? "" : "backdrop-blur-sm"}
 	backdropBackground="">
 	{#snippet content()}
@@ -144,7 +144,7 @@
 					<button class="btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50" onclick={(e) => { e.stopPropagation()}}> <!-- workaround wrapper to stop propagation for switch -->
 						<div class="flex w-full justify-between">
 							<h1 class="truncate text-lg">{$_(button.name)}</h1>
-							<Switch controlClasses="w-12 h-8" name="slide" controlActive="dark:bg-primary-500 bg-primary-700" checked={controlView.buttonState} onCheckedChange={button.click} />
+							<Switch controlClasses="w-12 h-8" name="slide" controlActive="dark:bg-primary-500 bg-primary-700" controlInactive="preset-filled-surface-300-700" thumbInactive="bg-white" checked={controlView.buttonState} onCheckedChange={button.click} />
 						</div>
 					</button>
 				{/if}
@@ -159,7 +159,7 @@
 			{#if showScrollBottom}
 				<div class="absolute z-10 left-[50%] lb-center -mb-4 bottom-0 text-surface-500" transition:fade={{ duration: 300 }}><ChevronDown size="30"/></div>
 			{/if}
-			<div bind:this={viewport} onscroll={parseScroll} class="relative grid grid-cols-1 lg:grid-cols-2 gap-2 max-h-[415px] overflow-y-auto">
+			<div bind:this={viewport} onscroll={parseScroll} class="relative grid grid-cols-1 { linkedControls.length > 1 ? 'lg:grid-cols-2' : ''} gap-2 max-h-[415px] overflow-y-auto">
 				{#each linkedControls as control}
 					{@const Component = getComponent(control.type)}
 					<Component {control} controlOptions={controlOptions}/>
