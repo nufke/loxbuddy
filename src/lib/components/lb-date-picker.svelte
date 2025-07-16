@@ -107,7 +107,7 @@
 
 <div class="relative flex flex-row justify-center align-center mb-4">
 	<button type="button" class="text-lg">
-		{$_("Timer till")}: {showDate()}&#160;
+		{$_("Duration")}: {showDate()}&#160;
 	</button>
 	<button type="button" class="text-lg" onclick={() => {view.isMinuteView = false; view.isDateView = false;}}>
 		{timeStr.split(':')[0]}:

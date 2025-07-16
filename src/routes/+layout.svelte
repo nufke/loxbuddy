@@ -161,7 +161,7 @@
 </div>
 {:else}
 <div class="md:hidden grid grid-rows-[auto_1fr_auto]"> <!-- mobile / portait mode -->
-	<header class="sticky preset-filled-surface-100-900 top-0 z-1">
+	<header class="sticky preset-filled-surface-100-900 top-0 z-1 shadow-md">
 		<div class="grid grid-cols-3 text-center items-center m-auto h-[60px]">
 			<div class="flex flex-row text-center items-center gap-3">
 				<button class="ml-4 mr-0 text-left" onclick={() => {navigate(nav.href)}}>
@@ -193,7 +193,7 @@
 	<main class="main">
 		{@render children()}
 	</main>
-	<footer class="sticky bottom-0">
+	<footer class="sticky bottom-0 shadow-inner">
 		<Navigation.Bar>
 			{#each routesMobile as {label, href, icon, badge}}
 				{@const Icon = icon} 

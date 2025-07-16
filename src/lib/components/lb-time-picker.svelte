@@ -194,7 +194,7 @@
 	{#if view.label}
 	<div class="relative flex flex-row justify-center align-center mb-4"> <!-- full date and time -->
 		<button type="button" class="text-lg" onclick={() => {view.isDateView = true; isMinuteView = false;}}>
-			{$_("Timer till")}: {showDate()}&#160;
+			{$_("Duration")}: {showDate()}&#160;
 		</button>
 		<button type="button" class="text-lg" class:is-active={!isMinuteView} onclick={() => (isMinuteView = false)}>
 			{showTime(selectedHour, showMeridian)}
@@ -229,7 +229,7 @@
 	</button>
 	{/if}
 	<div class="relative card flex rounded-full m-auto border border-white/5 bg-surface-50-950 border border-white/5
-							hover:border-white/10 overflow-auto" style="width: {size}px; height: {size}px"
+							hover:border-white/10" style="width: {size}px; height: {size}px"
 							class:is-minute-view={isMinuteView} bind:this={refClock} onclick={(e) => { e.preventDefault(); onClick(e);}}
 							onmousedown={onToggleMove} onmousemove={(e) => {isMouseDown && onClick(e);}} onmouseup={onToggleMove}>
 		<div class="absolute w-[6px] h-[6px] left-[50%] top-[50%] dark:bg-primary-500 bg-primary-700 rounded-full translate-x-[-50%] translate-y-[-50%]"></div>

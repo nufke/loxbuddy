@@ -176,7 +176,7 @@
 				<p class="text-lg truncate mt-3 mb-2 {controlView.statusColor}">{$_(controlView.statusName)}</p>
 				{/if}
 				{#if override > 0}
-					<p class="mt-2 mb-2 text-lg">{$_("Timer till")} { isV1 ? format(timerEndsV1, 'PPP p') : format(timerEndsV2, 'PPP p')} </p>
+					<p class="mt-2 mb-2 text-lg">{$_("Duration")} { isV1 ? format(timerEndsV1, 'PPP p') : format(timerEndsV2, 'PPP p')} </p>
 					<button type="button" class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
 						onclick={cancelOverride}>
 						<p class="text-lg">{$_("Cancel timer")}</p>
@@ -207,7 +207,7 @@
 								onclick={() => {dateTimeView.openModal=true}}>
 					<div class="w-full flex items-center truncate">
 						<div class="mt-0 ml-2 mr-2 flex w-full justify-between truncate">
-							<p class="truncate text-lg">{$_("Set timer")}</p>
+							<p class="truncate text-lg">{$_("Duration")}</p>
 							<p class="text-lg">{format(date, 'PPP p')}</p>
 						</div>
 					</div>
@@ -231,5 +231,5 @@
 </Modal>
 
 <LbTimePickerModal date={date} bind:view={dateTimeView} onValueChange={(e:any)=>{ updateTimer(e)}}/>
-	
+
 <Toaster {toaster}></Toaster>
