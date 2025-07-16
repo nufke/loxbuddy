@@ -93,6 +93,9 @@
 	});
 
 	store.resetLockScreenModalTimeout();
+
+	let startPage = localStorage.getItem('startPage') || '/';
+	goto(startPage);
 </script>
 
 <svelte:head>
@@ -176,7 +179,7 @@
 			</a>
 			<div class="mr-3 flex flex-row gap-3 justify-end">
 				<div onclick={(e)=>{e.stopPropagation(); store.lockScreenModal.state=true;}}>
-					<p class="text-right text-2xl font-medium">{format(new Date(), "p")}</p>
+					<p class="text-right text-2xl font-medium">{format(time, "p")}</p>
 				</div>
 				{#if store.showStatus}
 				<div class="flex flex-col gap-2">

@@ -6,14 +6,11 @@
 	import { _ } from 'svelte-i18n';
 	import { getComponent } from '$lib/helpers/components';
 	import { store } from '$lib/stores/store.svelte';
-	import { Tabs } from '@skeletonlabs/skeleton-svelte';
 	import { ArrowLeft } from '@lucide/svelte';
 
 	let { data }: PageProps = $props();
 
 	store.setNav({ label: 'ArrowLeft', href: '/category', icon: ArrowLeft }); // TODO change navigation concept
-
-//	let tabGroup = $state('1');
 
 	let filteredControls: Control[] = $derived(
 		store.controlList.filter((control) => (control.cat === data.uuid) && ((control.restrictions & 1) != 1))
@@ -58,19 +55,3 @@
 		{/each}
 	</div>
 </div>
-
-<!-- TODO kios mode 
-	<Tabs value={tabGroup} listBorder='' onValueChange={(e) => (tabGroup = e.value)} >
-		{#snippet list()}
-			<Tabs.Control value="1" labelBase="h4" base='border-b-[2px] border-transparent' padding='ml-2 pb-0'>{pageTitle?.name}</Tabs.Control>
-			<Tabs.Control value="2" labelBase="h4" base='border-b-[2px] border-transparent' padding='ml-2 pb-0'>{$_('All')}</Tabs.Control>
-  	{/snippet}
-		{#snippet content()}
-			<Tabs.Panel value="1">
-			</Tabs.Panel>
-			<Tabs.Panel value="2">
-			</Tabs.Panel>
-	  {/snippet}
-	</Tabs>
--->
-

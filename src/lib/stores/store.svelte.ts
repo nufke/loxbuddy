@@ -26,6 +26,7 @@ class Store {
 	notifications: NotificationMessage | NotificationList = $derived(this.getState(this.structure.globalStates.notifications));
 	notificationsMap: NotificationMap = $state({});
 	showStatus: boolean = $state(true);
+	startPage: string = $state('/');
 
 	weatherModal: ModalView = $state({
 		action: () => {},

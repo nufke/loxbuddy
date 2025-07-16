@@ -1,43 +1,71 @@
 <script lang="ts">
 	import { Switch } from '@skeletonlabs/skeleton-svelte';
+	import { Tabs } from '@skeletonlabs/skeleton-svelte';
   import { Modal } from '@skeletonlabs/skeleton-svelte';
+	import type { Room, Category } from '$lib/types/models';
 	import { _ } from 'svelte-i18n';
 	import { store } from '$lib/stores/store.svelte';
-  import { ArrowLeft } from '@lucide/svelte';
+  import { ArrowLeft, X } from '@lucide/svelte';
 
-	let checked = $state(true); // true = default dark mode
-  let openState = $state(false);
-	let showStatus = $state(false);
+  let openThemeModal = $state(false);
+	let openStartpageModal = $state(false);
+	let showStatus = $state(localStorage.getItem('showStatus') || '1');
 	let theme = $state(localStorage.getItem('theme') || 'LoxBuddy');
 	let mode = $state(localStorage.getItem('mode') || 'dark');
+	let startPage = $state(localStorage.getItem('startPage') || '/');
+
+	let group = $state('room');
 
 	store.setNav({ label: 'ArrowLeft', href: '/', icon: ArrowLeft });
 
-	$effect(() => {
-		mode = localStorage.getItem('mode') || 'light';
-		checked = mode === 'dark';
-		showStatus = localStorage.getItem('showStatus') == '1' ? true : false;
-	});
+	let other = [
+		{ name: 'Home', uuid: '/'}
+	];
+
+	let rooms: Room[] = $derived(
+		store.roomList.filter((item) => store.controlList.map((control) => control.room)
+			.indexOf(item.uuid) > -1)
+			.sort((a, b) => a.name.localeCompare(b.name)));
+
+	let categories: Category[] = $derived(
+		store.categoryList.filter((item) => store.controlList.map((control) => control.cat)
+			.indexOf(item.uuid) > -1)
+			.sort((a, b) => a.name.localeCompare(b.name)));
 
 	const onDarkModeChange = (event: { checked: boolean }) => {
-		const mode = event.checked ? 'dark' : 'light';
+		mode = event.checked ? 'dark' : 'light';
 		document.documentElement.setAttribute('data-mode', mode);
 		localStorage.setItem('mode', mode);
-		checked = event.checked;
 	};
 
 	function onChangeTheme(s: string) {
 		theme = s || 'LoxBuddy';
 		document.documentElement.setAttribute('data-theme', theme.toLowerCase());
 		localStorage.setItem('theme', theme);
-		openState = false;
+		openThemeModal = false;
 	};
 
+	function getStartpageName(startpageUrl: string) {
+		if (startPage == '/' || startPage.length < 3) return 'Home';
+		let p = startpageUrl.split('/');
+		let room: any = rooms.find( room => room.uuid == p[2]);
+		if (room && room.name) return room.name;
+		let category: any = categories.find( cat => cat.uuid == p[2]);
+		if (category && category.name) return category.name;
+		return 'Home'; // fallback
+	}
+
+	function onChangeStartpage(cat: string, uuid: string) {
+		startPage = cat.length ? ('/' + cat + '/' + uuid) : uuid;
+		localStorage.setItem('startPage', startPage);
+		store.startPage = startPage;
+		openStartpageModal = false;
+	}
+
 	const onShowStatusChange = (event: { checked: boolean }) => {
-		const s = event.checked ? '1' : '0';
-		localStorage.setItem('showStatus', s);
+		showStatus = event.checked ? '1' : '0';
+		localStorage.setItem('showStatus', showStatus);
 		store.showStatus = event.checked;
-		showStatus = event.checked;
 	};
 
 </script>
@@ -46,19 +74,24 @@
 	<button aria-current="true" type="button" class="w-full border-b dark:border-surface-900 border-surface-200 p-3 pr-5 pl-5 text-left text-lg">
 		<div class="flex w-full justify-between">
 			<p>{$_("Dark mode")}</p>
-			<Switch controlClasses="w-12 h-8" checked={checked} thumbInactive="bg-white" controlInactive="preset-filled-surface-300-700" onCheckedChange={onDarkModeChange}></Switch>
+			<Switch controlClasses="w-12 h-8" checked={mode == "dark"} thumbInactive="bg-white" controlInactive="preset-filled-surface-300-700" onCheckedChange={onDarkModeChange}></Switch>
 		</div>
 	</button>
 	<button aria-current="true" type="button" class="w-full border-b dark:border-surface-900 border-surface-200 p-3 pr-5 pl-5 text-left text-lg">
 		<div class="flex w-full justify-between">
 			<p>{$_("Show connection status")}</p>
-			<Switch controlClasses="w-12 h-8" checked={showStatus} thumbInactive="bg-white" controlInactive="preset-filled-surface-300-700" onCheckedChange={onShowStatusChange}></Switch>
+			<Switch controlClasses="w-12 h-8" checked={showStatus == "1"} thumbInactive="bg-white" controlInactive="preset-filled-surface-300-700" onCheckedChange={onShowStatusChange}></Switch>
 		</div>
 	</button>
 	<button aria-current="true" type="button" class="flex w-full justify-between border-b dark:border-surface-900 border-surface-200 p-3 pr-5 pl-5 text-left text-lg"
-					onclick={() => {openState = true;}}>
-		<p>{$_("Selected theme")}</p>
+					onclick={() => {openThemeModal = true;}}>
+		<p>{$_("Theme")}</p>
 		<p>{theme}</p>
+	</button>
+	<button aria-current="true" type="button" class="flex w-full justify-between border-b dark:border-surface-900 border-surface-200 p-3 pr-5 pl-5 text-left text-lg"
+					onclick={() => {openStartpageModal = true;}}>
+		<p>{$_("Startpage")}</p>
+		<p>{getStartpageName(startPage)}</p>
 	</button>
 		<a aria-current="true" type="button" class="flex w-full justify-between border-b dark:border-surface-900 border-surface-200 p-3 pr-5 pl-5 text-left text-lg" 
 						href="/about">
@@ -67,8 +100,8 @@
 </div>
 
 <Modal
-	open={openState}
-	onOpenChange={(e) => (openState = e.open)}
+	open={openThemeModal}
+	onOpenChange={(e) => (openThemeModal = e.open)}
 	triggerBase="btn bg-surface-600"
 	contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-sm max-w-9/10 max-h-9/10 overflow-auto md:w-[380px] lg:w-[680px]"
 	backdropClasses="backdrop-blur-sm">
@@ -176,7 +209,7 @@
 		data-theme="loxbuddy" onclick={() => {onChangeTheme("LoxBuddy")}}
 		class="bg-surface-50-950 preset-outlined-surface-100-900 hover:preset-outlined-surface-950-50 grid w-full grid-cols-[auto_1fr_auto] items-center gap-4 rounded-md p-3"
 		><span>🏠</span>
-		<h3 class="text-left text-md font-medium capitalize">loxbuddy</h3>
+		<h3 class="text-left text-md font-medium capitalize">LoxBuddy</h3>
 		<div class="flex items-center justify-center -space-x-1.5">
 			<div class="bg-primary-500 aspect-square w-4 rounded-full border-[1px] border-black/10"></div>
 			<div
@@ -397,7 +430,70 @@
 			></div>
 		</div></button
 	>
-</div>
+	</div>
+	{/snippet}
+</Modal>
 
+<Modal
+	open={openStartpageModal}
+	onOpenChange={(e) => (openStartpageModal = e.open)}
+	triggerBase="btn bg-surface-600"
+	contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-sm max-w-9/10 max-h-9/10 overflow-auto w-[450px]"
+	backdropClasses="backdrop-blur-sm">
+	{#snippet content()}
+	<header class="relative">
+		<div class="flex justify-center mb-3">
+			<h2 class="h4 text-center">{$_("Startpage")}</h2>
+		</div>
+		<div class="absolute right-0 top-0">
+			<button type="button" aria-label="close" class="btn-icon w-auto" onclick={() => { openStartpageModal = false; }}>
+				<X/>
+			</button>
+		</div>
+	</header>
+	<div class="">
+		<Tabs value={group} onValueChange={(e) => (group = e.value)} fluid>
+			{#snippet list()}
+				<Tabs.Control labelBase="text-lg" stateLabelActive="dark:text-primary-500 text-primary-700" value="room">{$_("Rooms")}</Tabs.Control>
+				<Tabs.Control labelBase="text-lg" stateLabelActive="dark:text-primary-500 text-primary-700" value="category">{$_("Categories")}</Tabs.Control>
+				<Tabs.Control labelBase="text-lg" stateLabelActive="dark:text-primary-500 text-primary-700" value="other">{$_("Other")}</Tabs.Control>
+			{/snippet}
+			{#snippet content()}
+			<Tabs.Panel value="room">
+				<div class="h-[580px] overflow-y-auto">
+					{#each rooms as room}
+						<button type="button" class="w-full mt-2 btn btn-lg {(room.name == getStartpageName(startPage)) ? 'dark:bg-surface-800 bg-surface-200' : 'dark:bg-surface-950 bg-surface-50' }
+									 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
+							onclick={(e) => { onChangeStartpage(group, room.uuid)}}>
+							<p class="text-lg">{room.name}</p>
+						</button>
+					{/each}
+				</div>
+			</Tabs.Panel>
+			<Tabs.Panel value="category">
+				<div class="h-[580px] overflow-y-auto">
+					{#each categories as category}
+						<button type="button" class="w-full mt-2 btn btn-lg {(category.name == getStartpageName(startPage)) ? 'dark:bg-surface-800 bg-surface-200' : 'dark:bg-surface-950 bg-surface-50' }
+									 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
+							onclick={(e) => { onChangeStartpage(group, category.uuid)}}>
+							<p class="text-lg">{category.name}</p>
+						</button>
+					{/each}
+				</div>
+			</Tabs.Panel>
+			<Tabs.Panel value="other">
+				<div class="h-[580px] overflow-y-auto">
+					{#each other as item}
+						<button type="button" class="w-full mt-2 btn btn-lg {(item.name == getStartpageName(startPage)) ? 'dark:bg-surface-800 bg-surface-200' : 'dark:bg-surface-950 bg-surface-50' }
+									 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
+							onclick={(e) => { onChangeStartpage('', item.uuid)}}>
+							<p class="text-lg">{item.name}</p>
+						</button>
+					{/each}
+				</div>
+			</Tabs.Panel>
+		{/snippet}
+	</Tabs>
+	</div>
 	{/snippet}
 </Modal>
