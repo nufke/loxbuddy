@@ -150,7 +150,6 @@
 	});
 
 	function resetTab() {
-		console.log( 'reset tab');
     setTimeout(() => {
       selectedTab = 0;
     }, 500);

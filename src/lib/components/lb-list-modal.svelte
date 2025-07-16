@@ -2,10 +2,11 @@
 	import LbIcon from '$lib/components/lb-icon-by-name.svelte';
 	import { Modal } from '@skeletonlabs/skeleton-svelte';
   import type { Control, ControlView, ListItem } from '$lib/types/models';
+	import { fade } from 'svelte/transition'
 	import LbSwitch from '$lib/components/lb-switch.svelte';
 	import LbDimmer from '$lib/components/lb-dimmer.svelte';
 	import LbColorPickerV2 from '$lib/components/lb-colorpicker-v2.svelte';
-	import { X, Lightbulb, SlidersHorizontal } from '@lucide/svelte';
+	import { X, Lightbulb, SlidersHorizontal, ChevronUp, ChevronDown } from '@lucide/svelte';
 	import { _ } from 'svelte-i18n';
 	import { fade200 } from '$lib/helpers/transition';
 	import Info from '$lib/components/lb-info.svelte';
@@ -20,11 +21,39 @@
 	let isLightController = $derived(controlView.control?.type=='LightControllerV2' || controlView.control?.type=='LightController');
   let id = $state(0); // selected subControl, default is first
 
+	let viewportTab0: any = $state(); // TODO make HTMLDivElement
+	let hasScrollTab0 = $state(true);
+  let showScrollTopTab0 = $state(false);
+	let showScrollBottomTab0 = $state(true);
+
+	let viewportTab1: any = $state(); // TODO make HTMLDivElement
+	let hasScrollTab1 = $state(true);
+  let showScrollTopTab1 = $state(false);
+	let showScrollBottomTab1 = $state(true);
+	
 	function setItem(i: number) {
 		if (controlView && controlView.buttons && controlView.buttons[0]) {
 			controlView.buttons[0].click({checked: i});
 		}
 	}
+
+	function parseScrollTab0() {
+		hasScrollTab0 = viewportTab0?.scrollHeight > viewportTab0?.clientHeight;
+    showScrollTopTab0 = hasScrollTab0 && (viewportTab0?.scrollTop > 20);
+		showScrollBottomTab0 = hasScrollTab0 && (viewportTab0.scrollTop + viewportTab0?.clientHeight < (viewportTab0?.scrollHeight - 20));
+  }
+
+		function parseScrollTab1() {
+		hasScrollTab1 = viewportTab1?.scrollHeight > viewportTab1?.clientHeight;
+    showScrollTopTab1 = hasScrollTab1 && (viewportTab1?.scrollTop > 20);
+		showScrollBottomTab1 = hasScrollTab1 && (viewportTab1.scrollTop + viewportTab1?.clientHeight < (viewportTab1?.scrollHeight - 20));
+  }
+
+	
+	$effect( () => {
+		parseScrollTab0();
+		parseScrollTab1();
+	});
 
 	function resetTab() {
     setTimeout(() => {
@@ -42,7 +71,7 @@
 	onOpenChange={()=>{ controlView.modal.action(false)}}
 	triggerBase="btn bg-surface-600"
 	contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-sm rounded-lg border border-white/5 hover:border-white/10
-							max-w-9/10 max-h-9/10 overflow-auto w-[380px]"
+							max-w-9/10 max-h-9/10 w-[450px]"
 	backdropClasses="backdrop-blur-sm"
 	backdropBackground="">
 	{#snippet content()}
@@ -69,16 +98,24 @@
 		<div class="mt-4 mb-2 truncate">
 			<p class="text-lg truncate {controlView.statusColor}">{controlView.statusName}</p>
 		</div>
-		<div class="container mt-2">
-		{#if controlView.list}
-			{#each controlView.list as listItem, index}
-				<button type="button" class="w-full mt-2 btn btn-lg {(index==selectedItem) ? 'dark:bg-surface-800 bg-surface-200' : 'dark:bg-surface-950 bg-surface-50' }
+		<div class="container relative w-full">
+			<div class="overflow-y-scroll w-full max-h-[405px]" bind:this={viewportTab0} onscroll={parseScrollTab0}>
+				{#if showScrollTopTab0}
+					<div class="absolute z-10 left-[50%] lb-center top-3 text-surface-500" transition:fade={{ duration: 300 }}><ChevronUp size="30"/></div>
+				{/if}
+				{#if showScrollBottomTab0}
+					<div class="absolute z-10 left-[50%] lb-center -mb-4 bottom-0 text-surface-500" transition:fade={{ duration: 300 }}><ChevronDown size="30"/></div>
+				{/if}
+				{#if controlView.list}
+					{#each controlView.list as listItem, index}
+					<button type="button" class="w-full mt-2 btn btn-lg {(index==selectedItem) ? 'dark:bg-surface-800 bg-surface-200' : 'dark:bg-surface-950 bg-surface-50' }
 								 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
-					onclick={(e) => { e.stopPropagation(); e.preventDefault(); setItem(index)}}>
+									onclick={(e) => { e.stopPropagation(); e.preventDefault(); setItem(index)}}>
 						<span class="text-lg">{$_(listItem.name)}</span>
-				</button>
-				{/each}
-		{/if}
+					</button>
+					{/each}
+				{/if}
+			</div>
 		</div>
 	</div>
 	{/if}
@@ -93,21 +130,29 @@
 			</button>
 		</div>
 	</header>
-	<div class="overflow-y-scroll" style="max-height: 500px;">
-		{#each subControls as subControl,index}
-			{#if index > 0}
-				<div class="mt-2"></div>
+	<div class="container relative w-full">
+		<div class="overflow-y-scroll max-h-[495px]" bind:this={viewportTab1} onscroll={parseScrollTab1}>
+			{#if showScrollTopTab1}
+				<div class="absolute z-10 left-[50%] lb-center top-3 text-surface-500" transition:fade={{ duration: 300 }}><ChevronUp size="30"/></div>
 			{/if}
-			{#if subControl.type=='Switch'}
-				<LbSwitch control={subControl} controlOptions={{isSubControl: true}}/>
+			{#if showScrollBottomTab1}
+				<div class="absolute z-10 left-[50%] lb-center -mb-4 bottom-0 text-surface-500" transition:fade={{ duration: 300 }}><ChevronDown size="30"/></div>
 			{/if}
-			{#if subControl.type=='Dimmer'}
-				<LbDimmer control={subControl} controlOptions={{isSubControl: true}}/>
-			{/if}
-			{#if subControl.type=='ColorPickerV2'}
-				<LbDimmer control={subControl} controlOptions={{isSubControl: true, action: ()=>{id=index; selectedTab=2}}}/>
-			{/if}
-		{/each}
+			{#each subControls as subControl,index}
+				{#if index > 0}
+					<div class="mt-2"></div>
+				{/if}
+				{#if subControl.type=='Switch'}
+					<LbSwitch control={subControl} controlOptions={{isSubControl: true}}/>
+				{/if}
+				{#if subControl.type=='Dimmer'}
+					<LbDimmer control={subControl} controlOptions={{isSubControl: true}}/>
+				{/if}
+				{#if subControl.type=='ColorPickerV2'}
+					<LbDimmer control={subControl} controlOptions={{isSubControl: true, action: ()=>{id=index; selectedTab=2}}}/>
+				{/if}
+			{/each}
+		</div>
 	</div>
 	{/if}
 	{#if selectedTab==2 && subControlsColorPicker.length } <!-- colors -->
@@ -150,3 +195,9 @@
 	{/if}
 	{/snippet}
 </Modal>
+
+<style>
+	.lb-center {
+		transform: translate(-50%, -50%);
+	}
+</style>
