@@ -16,14 +16,10 @@
 	let dates = $derived(controlView.details.lastBellEvents);
 	let history = $derived(controlView.details.hasLastBellEventImages && dates.length);
 	let stream = $derived(controlView.securedDetails && controlView.securedDetails.videoInfo ? controlView.securedDetails.videoInfo.streamUrl : null);
-	let streamReload = $derived(stream);
 
 	function handleImageLoad() {
 		image = image || dates[dates.length-1];
 		imageHeight = img?.height || 400;
-		setTimeout(function() {
-			streamReload = stream + '?' + Date.now();
-    }, 1000);
   }
 
 	function sortDates(i: number[]) {
@@ -79,7 +75,7 @@
 				<div class="absolute inset-0 flex items-center justify-center z-1">
 					<p class="dark:text-surface-50 text-surface-950 text-xl">Loading video...</p>
 				</div>
-				<img class="absolute z-2" style="max-height: 560px;" bind:this={img} src={streamReload} width="100%" onload={handleImageLoad} alt=""/>
+				<img class="absolute z-2" style="max-height: 560px;" bind:this={img} src={stream} width="100%" onload={handleImageLoad} alt=""/>
 			</div>
 		{/if}
 		{#if selectedTab==1}
