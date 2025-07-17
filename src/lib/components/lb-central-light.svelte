@@ -93,7 +93,7 @@
 	});
 
 	function getControlName(control: Control) {
-		return control.name === $_('LightControllerV2') ? store.rooms[control.room].name : control.name;
+		return $_('LightControllerV2').split(',').includes(control.name) ? store.rooms[control.room].name : control.name;
 	}
 
 	function getStatusName(control: Control) {

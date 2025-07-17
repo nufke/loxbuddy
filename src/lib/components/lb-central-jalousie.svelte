@@ -108,6 +108,10 @@
 		});
 	}
 
+	function getControlName(control: Control) {
+		return $_('Jalousie').split(',').includes(control.name) ? store.rooms[control.room].name : control.name;
+	}
+
 	let buttons: SingleButtonView[] = $state([
 		{
 			iconName: 'ChevronDown',
@@ -193,7 +197,7 @@
 						<div class="w-full">
 							<div class="flex items-center truncate">
 								<div class="mt-0 ml-2 mr-2 flex w-full justify-between truncate">
-									<p class="truncate text-lg {getStatusColor(screenList[index].uuid)}">{control.name}</p>
+									<p class="truncate text-lg {getStatusColor(screenList[index].uuid)}">{getControlName(control)}</p>
 									<p class="text-lg {getStatusColor(screenList[index].uuid)}">{getScreenPosition(screenList[index].uuid)}</p>
 								</div>
 							</div>

@@ -57,7 +57,7 @@
 		iconName: '', // no icon, render temperature as text
 		iconText: tempActual,
 		iconColor: 'fill-surface-950 dark:fill-surface-50',
-		textName: control.name === $_('IRoomController') ? store.rooms[control.room].name : control.name,
+		textName: $_('IRoomController').split(',').includes(control.name) ? store.rooms[control.room].name : control.name,
 		statusName: temperatureIdsList[id]?.name,
 		statusColor: 'dark:text-surface-300 text-surface-700', // TODO other colors for temperatures
 		list: tempList,
