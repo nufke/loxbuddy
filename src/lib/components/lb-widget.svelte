@@ -4,8 +4,11 @@
 	import LbIcon from '$lib/components/lb-icon-by-name.svelte';
 	import { store } from '$lib/stores/store.svelte';
 	import { _ } from 'svelte-i18n';
+	import { page } from '$app/state';
 
 	let { controlView = $bindable() }: { controlView: ControlView } = $props();
+
+	let isCategory = page.url.pathname.includes('/category');
 
 	function getT() {
 		let temp = controlView.iconText?.split('.') || '';
@@ -29,13 +32,16 @@
 	}
 
 	function label(control: Control) {
-		let label : Category | Room | undefined = store.categoryList.find((cat) => cat.uuid === control.cat);
-		if (!label) {
+		let label : Category | Room | undefined;
+		if (isCategory) {
 			label = store.roomList.find((room) => room.uuid === control.room);
+		} else {
+			label = store.categoryList.find((cat) => cat.uuid === control.cat);
 		}
 		if (label && label.name) {
 		 return label.name;
 		}
+		return '';
 	}
 </script>
 
