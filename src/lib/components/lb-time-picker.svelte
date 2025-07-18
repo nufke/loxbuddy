@@ -1,10 +1,7 @@
 <script lang="ts">
 	import { SvelteDate } from 'svelte/reactivity';
 	import { fade } from 'svelte/transition';
-	import { format } from 'date-fns';
 	import { _ } from 'svelte-i18n';
-	import { Calendar } from '@lucide/svelte';
-	import { innerWidth } from 'svelte/reactivity/window';
 
 	let { date = $bindable(), view = $bindable() } = $props();
 
@@ -12,9 +9,8 @@
 	let showMeridian: boolean = false;
 	let meridiem: string[] = ['am', 'pm'];
 	let refClock: HTMLElement
-
-	let size = $derived(innerWidth.current && innerWidth.current < 500 ? 300 : 360);
-	let ts = $derived(innerWidth.current && innerWidth.current < 500 ? 'text-md' : 'text-lg');
+	let size = 300;
+	let ts = 'text-md';
 
 	let isMinuteView: boolean = $state(view.isMinuteView);
 	let selectedHour = $derived(date.getHours() || 0);
@@ -181,53 +177,24 @@
 		isMouseDown = (e.type === 'mousedown');
 	}
 
-	function showDate() {
-		return format(date, 'PPP');
-	}
-
 	$effect(() => {
 		updateView(date);
 	});
 </script>
 
 <div class="relative">
-	{#if view.label}
-	<div class="relative flex flex-row justify-center align-center mb-4"> <!-- full date and time -->
-		<button type="button" class="text-lg" onclick={() => {view.isDateView = true; isMinuteView = false;}}>
-			{$_("Duration")}: {showDate()}&#160;
-		</button>
-		<button type="button" class="text-lg" class:is-active={!isMinuteView} onclick={() => (isMinuteView = false)}>
+	<div class="relative flex flex-row justify-center align-center mb-2">
+		<button type="button" class="text-xl" class:is-active={!isMinuteView} onclick={() => (isMinuteView = false)}>
 			{showTime(selectedHour, showMeridian)}
 		</button>
-		<span class="text-lg"> : </span>
-		<button type="button" class="text-lg" class:is-active={isMinuteView} onclick={() => (isMinuteView = true)}>
+		<span class="text-xl">&#160;:&#160;</span>
+		<button type="button" class="text-xl" class:is-active={isMinuteView} onclick={() => (isMinuteView = true)}>
 			{showTime(selectedMinutes, false)}
 		</button>
 		{#if showMeridian}
 			<span class="text-lg">{(isPM ? meridiem[1] : meridiem[0]).toUpperCase()}</span>
 		{/if}
 	</div>
-	{:else}
-	<div class="relative flex flex-row justify-center align-center mb-4"> <!-- only time -->
-		<button type="button" class="text-2xl" class:is-active={!isMinuteView} onclick={() => (isMinuteView = false)}>
-			{showTime(selectedHour, showMeridian)}
-		</button>
-		<span class="text-2xl">&#160;:&#160;</span>
-		<button type="button" class="text-2xl" class:is-active={isMinuteView} onclick={() => (isMinuteView = true)}>
-			{showTime(selectedMinutes, false)}
-		</button>
-		{#if showMeridian}
-			<span class="text-lg">{(isPM ? meridiem[1] : meridiem[0]).toUpperCase()}</span>
-		{/if}
-	</div>
-	{/if}
-	{#if view.label}
-	<button class="absolute flex z-10 top-[50px] right-[0px] dark:text-primary-500 text-primary-700 text-sm items-center justify-center 
-								bg-surface-50-950 rounded-full w-[40px] h-[40px]" 
-	        onclick={() => {view.isDateView = true; isMinuteView = false;}}>
-		<Calendar size="20"/>
-	</button>
-	{/if}
 	<div class="relative card flex rounded-full m-auto border border-white/5 bg-surface-50-950 border border-white/5
 							hover:border-white/10" style="width: {size}px; height: {size}px"
 							class:is-minute-view={isMinuteView} bind:this={refClock} onclick={(e) => { e.preventDefault(); onClick(e);}}

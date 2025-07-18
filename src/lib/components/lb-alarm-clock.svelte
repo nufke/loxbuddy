@@ -32,7 +32,7 @@
 	let dateTimeView = $state({
 		isDateView: false,
 		isMinuteView: false,
-		label: false,
+		label: $_('Wake-up time'),
 		openModal: false
 	});
 

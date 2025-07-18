@@ -2,7 +2,6 @@
 	import { SvelteDate } from 'svelte/reactivity';
 	import { ChevronLeft, ChevronRight, Clock3, Undo2 } from '@lucide/svelte';
 	import { format } from 'date-fns';
-	import { innerWidth } from 'svelte/reactivity/window';
 	import { _ } from 'svelte-i18n';
 
 	let { date = $bindable(), view = $bindable() } = $props();
@@ -14,24 +13,20 @@
 	let offset = $state(0); // offset in months from currently selected date
 	let dateStr = $derived(getDateStr(date));
 	let selected: string = $derived(dateStr);
-	let timeStr: string = $state(getTimeStr(date));
+	let timeStr: string = $derived(getTimeStr(date));
 	let viewDate = $derived(viewDateFrom(dateStr, offset));
 	let month = $derived(months[viewDate.getMonth()]);
 	let year = $derived(viewDate.getFullYear());
   let weeks = $derived(weeksFrom(viewDate, start));
 
-	let calenderHeight = $derived(innerWidth.current && innerWidth.current < 500 ? '300' : '360');
-	let cw = $derived(innerWidth.current && innerWidth.current < 500 ? 'w-9' : 'w-12');
-	let ts = $derived(innerWidth.current && innerWidth.current < 500 ? 'text-md' : 'text-lg');
+	let calenderHeight = 300;
+	let cw = 'w-9';
+	let ts = 'text-md';
 
 	function getDateStr(date: Date) {
     const pad = (n:number) => n < 10 ? '0' + n : n;
     return date.getFullYear() + "-" + pad(date.getMonth()+1) + '-' + pad(date.getDate());
   }
-
-	function showDate() {
-		return format(date, 'PPP');
-	}
 
 	function getTimeStr(date: Date) {
 		const hours = date.getHours() 
@@ -44,7 +39,7 @@
 	}
 
 	function reset() {
-		date = new Date();
+		date = new SvelteDate();
 		dateStr = getDateStr(date);
 		timeStr = getTimeStr(date);
 		offset = 0;
@@ -105,33 +100,25 @@
 	}
 </script>
 
-<div class="relative flex flex-row justify-center align-center mb-4">
-	<button type="button" class="text-lg">
-		{$_("Duration")}: {showDate()}&#160;
-	</button>
-	<button type="button" class="text-lg" onclick={() => {view.isMinuteView = false; view.isDateView = false;}}>
-		{timeStr.split(':')[0]}:
-	</button>
-	<button type="button" class="text-lg" onclick={() => {view.isMinuteView = true; view.isDateView = false;}}>
-		{timeStr.split(':')[1]}
-	</button>
-</div>
-<div class="card m-0 flex rounded-lg border border-white/5 hover:border-white/10
-						bg-surface-50-950 px-2 py-2 hover:border-white/10" style="width: {calenderHeight}px; height: {calenderHeight}px;">
-	<div class="w-full grid grid-cols-7 gap-0">
-		<div class="btn-icon {cw} justify-start m-auto" onclick={() => setMonth(-1)}><ChevronLeft size="26"/></div>
-		<div class="btn-icon {cw} justify-start m-auto dark:text-primary-500 text-primary-700" onclick={() => reset()}><Undo2/></div>
-		<div class="btn col-span-3 {ts}">{month} {year}</div>
-		<div class="btn-icon {cw} justify-start m-auto dark:text-primary-500 text-primary-700" onclick={() => {view.isMinuteView = false; view.isDateView = false}}><Clock3/></div>
-		<div class="btn-icon {cw} justify-start start m-auto" onclick={() => setMonth(+1)}><ChevronRight size="26"/></div>
-		{#each days as day}
-			<div class="text-center {ts}">{day}</div>
-		{/each}
-		{#each weeks as week}
-			{#each week as day}
-				<div class="btn {ts} {cw} {day.class}" onclick={() => selectDate(day.value)}>{day.date}</div>
+<div class="relative flex flex-col justify-center items-center">
+	<p class="text-xl mb-1">{format(date, 'PPP')}</p>
+	<div class="card m-0 flex rounded-lg border border-white/5 hover:border-white/10
+							bg-surface-50-950 px-2 py-2 hover:border-white/10" style="width: {calenderHeight}px; height: {calenderHeight}px;">
+		<div class="w-full grid grid-cols-7 gap-0">
+			<div class="btn-icon {cw} justify-start m-auto" onclick={() => setMonth(-1)}><ChevronLeft size="26"/></div>
+			<div class="btn-icon {cw} justify-start m-auto dark:text-primary-500 text-primary-700" onclick={() => reset()}><Undo2/></div>
+			<div class="btn col-span-3 {ts}">{month} {year}</div>
+			<div></div>
+			<div class="btn-icon {cw} justify-start start m-auto" onclick={() => setMonth(+1)}><ChevronRight size="26"/></div>
+			{#each days as day}
+				<div class="text-center {ts}">{day}</div>
 			{/each}
-		{/each}
+			{#each weeks as week}
+				{#each week as day}
+					<div class="btn {ts} {cw} {day.class}" onclick={() => selectDate(day.value)}>{day.date}</div>
+				{/each}
+			{/each}
+		</div>
 	</div>
 </div>
 

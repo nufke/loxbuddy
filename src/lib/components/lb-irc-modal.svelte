@@ -68,7 +68,7 @@
 	let dateTimeView = $state({
 		isDateView: true,
 		isMinuteView: false,
-		label: true,
+		label: $_('Duration'),
 		openModal: false
 	});
 
