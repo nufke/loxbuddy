@@ -113,7 +113,7 @@
 	}
 
 	function getRoomName(control: Control) {
-		return store.rooms[control.room].name;
+		return $_('LightControllerV2').split(',').includes(control.name) ? '' : store.rooms[control.room].name;
 	}
 
 	let buttons: SingleButtonView[] = $state([
@@ -188,20 +188,20 @@
 			</header>
 			<div class="container relative w-full">
 				{#if showScrollTop}
-					<div class="absolute z-10 left-[50%] lb-center top-3 text-surface-500" transition:fade={{ duration: 300 }}><ChevronUp size="30"/></div>
+					<div class="absolute z-10 left-[50%] lb-center top-[16px] text-surface-500" transition:fade={{ duration: 300 }}><ChevronUp size="30"/></div>
 				{/if}
 				{#if showScrollBottom}
-					<div class="absolute z-10 left-[50%] lb-center -mb-4 bottom-0 text-surface-500" transition:fade={{ duration: 300 }}><ChevronDown size="30"/></div>
+					<div class="absolute z-10 left-[50%] lb-center -bottom-[16px] text-surface-500" transition:fade={{ duration: 300 }}><ChevronDown size="30"/></div>
 				{/if}
-				<div class="overflow-y-auto space-y-2 max-h-[495px]" bind:this={viewport} onscroll={parseScroll}>
+				<div class="overflow-y-auto space-y-2 max-h-[474px]" bind:this={viewport} onscroll={parseScroll}>
 					{#each screenControls as control, index}
-					<button class="w-full flex min-h-[50px] items-center justify-start rounded-lg border border-white/10 hover:border-white/50
+					<button class="w-full flex h-[60px] items-center justify-start rounded-lg border border-white/10 hover:border-white/50
 												{screenList[index].selected ? 'dark:bg-surface-800  bg-surface-200' : 'dark:bg-surface-950  bg-surface-50'} px-2 py-2"
 												 onclick={() => selectScreen(index)}>
 						<div class="flex truncate w-full">
 							<div class="mt-0 ml-2 mr-2 flex flex-row w-full justify-between truncate items-center">
 								<div class="flex flex-col">
-									<p class="leading-none truncate text-lg {getStatusColor(screenList[index].uuid)}">{getControlName(control)}</p>
+									<p class="leading-6 truncate text-lg {getStatusColor(screenList[index].uuid)}">{getControlName(control)}</p>
 									<p class="truncate text-left text-xs dark:text-surface-300 text-surface-700">{getRoomName(control)}</p>
 								</div>
 								<p class="text-lg {getStatusColor(screenList[index].uuid)}">{getScreenPosition(screenList[index].uuid)}</p>
