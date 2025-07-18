@@ -392,6 +392,7 @@ export type NotificationMap = {
 export type SingleButtonView = {
 	name?: string;
 	iconName?: string;
+	iconColor?: string;
 	type: string;
 	state?: boolean;
 	click?: any;

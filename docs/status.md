@@ -101,7 +101,7 @@ or submit a [pull request](https://github.com/nufke/loxbuddy/pulls).
 | SystemScheme             | Not started       |                             |
 | TextInput                | Not started       |                             |
 | TextState                | Available         |                             |
-| TimedSwitch              | Not started       |                             |
+| TimedSwitch              | Under development |                             |
 | Tracker                  | Not started       |                             |
 | UpDownAnalog             | Not started       |                             |
 | UpDownDigital            | Available         |                             |
