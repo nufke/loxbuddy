@@ -22,6 +22,7 @@ import LbCentralJalousie from '$lib/components/lb-central-jalousie.svelte';
 import LbAlarmClock from '$lib/components/lb-alarm-clock.svelte';
 import LbTimedSwitch from '$lib/components/lb-timed-switch.svelte';
 import LbPresenceDetector from '$lib/components/lb-presence-detector.svelte';
+import LbWindowMonitor from '$lib/components/lb-window-monitor.svelte';
 import LbUnknown from '$lib/components/lb-unknown.svelte';
 import { loxiconsPath } from '$lib/helpers/paths';
 
@@ -49,7 +50,8 @@ let componentList = [
 	{ type: 'CentralJalousie', component: LbCentralJalousie, defaultIcon: '' },
 	{ type: 'AlarmClock', component: LbAlarmClock, defaultIcon: loxiconsPath + 'IconsFilled/alarm-clock.svg' },
 	{ type: 'TimedSwitch', component: LbTimedSwitch, defaultIcon: '' },
-	{ type: 'PresenceDetector', component: LbPresenceDetector, defaultIcon: loxiconsPath + 'IconsFilled/presence.svg' }
+	{ type: 'PresenceDetector', component: LbPresenceDetector, defaultIcon: loxiconsPath + 'IconsFilled/presence.svg' },
+	{ type: 'WindowMonitor', component: LbWindowMonitor, defaultIcon: '/icons/svg/pull-door.svg' },
 ];
 
 export function getComponent(type: string) {

@@ -59,7 +59,7 @@
 			<div class="m-0 ml-2 truncate">
 				<p class="truncate text-lg {controlView.textColor}">{controlView.textName}</p>
 				{#if controlView.statusName}
-				<p class="text-md truncate {controlView.statusColor}" style={getStatusColorHex(controlView.statusColor)}>{$_(controlView.statusName)}</p>
+					<p class="text-md truncate {controlView.statusColor}" style={getStatusColorHex(controlView.statusColor)}>{controlView.statusName}</p>
 				{/if}
 			</div>
 		</div>

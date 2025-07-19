@@ -550,3 +550,10 @@ export type AlarmClockEntry = {
 export type AlarmClockEntries = {
 	[key: string]: AlarmClockEntry
 }
+
+export type WindowListItem = {
+	name: string;
+	installPlace: string;
+	uuid: string;
+	room: string;
+}

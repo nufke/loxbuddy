@@ -82,7 +82,7 @@ or submit a [pull request](https://github.com/nufke/loxbuddy/pulls).
 | PowerUnit                | Not started       |                             |
 | Presence                 | Not started       |                             |
 | PresenceController       | Not started       |                             |
-| PresenceDetector         | Not started       |                             |
+| PresenceDetector         | Under development |                             |
 | PulseAt                  | Not started       |                             |
 | Pushbutton               | Available         |                             |
 | Radio                    | Available         |                             |
@@ -113,7 +113,7 @@ or submit a [pull request](https://github.com/nufke/loxbuddy/pulls).
 | Webpage                  | Available         |                             |
 | Weather                  | Not started       |                             |
 | Window                   | Not started       |                             |
-| WindowMonitor            | Not started       |                             |
+| WindowMonitor            | Under development |                             |
 | Universal                | Not started       |                             |
 
 ## Feature list under development
