@@ -417,7 +417,7 @@ export type SliderBar = {
 }
 
 export type ControlView = {
-	control: Control,
+	control: Control;
 	isSubControl?: boolean;
 	showControl?: boolean;
 	isFavorite?: boolean;
@@ -447,6 +447,10 @@ export type ModalView = {
 	details?: any;
 	timeout?: any;
 	noBlur?: boolean;
+	size?: {
+		width?: string; // tailwindcss notation
+		height?: string; // tailwindcss notation
+	}
 }
 
 export const DEFAULT_CONTROLVIEW: ControlView = {

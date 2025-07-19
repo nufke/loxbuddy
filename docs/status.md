@@ -107,7 +107,7 @@ or submit a [pull request](https://github.com/nufke/loxbuddy/pulls).
 | UpDownDigital            | Available         |                             |
 | UpDownLeftRightAnalog    | Not started       |                             |
 | UpDownLeftRightDigital   | Not started       |                             |
-| ValueSelector            | Not started       |                             |
+| ValueSelector            | Under development |                             |
 | Ventilation              | Not started       |                             |
 | Wallbox2                 | Not started       |                             |
 | Webpage                  | Available         |                             |

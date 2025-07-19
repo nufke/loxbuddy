@@ -95,7 +95,7 @@
 		modal: modal
 	});
 </script>
-{allClosed}
+
 <div>
 	<LbControl bind:controlView {controlOptions}/>
 	<LbWidget bind:controlView />
