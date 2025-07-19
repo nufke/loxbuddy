@@ -98,7 +98,7 @@
 		...DEFAULT_CONTROLVIEW,
 		control: control,
 		isFavorite: controlOptions.isFavorite,
-		iconName: '/icons/svg/flame.svg',
+		iconName: store.getIcon(control, controlOptions.isSubControl),
 		iconColor: statusColor,
 		textName: control.name,
 		statusName: statusName,

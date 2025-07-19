@@ -24,7 +24,7 @@
 		...DEFAULT_CONTROLVIEW,
 		control: control,
 		isFavorite: controlOptions.isFavorite,
-		iconName: store.getCategoryIcon(control, controlOptions.isSubControl),
+		iconName: store.getIcon(control, controlOptions.isSubControl),
 		textName: control.name,
 		statusName: fmt.sprintf('%s %.2f kW • %s %.2f kW', prod[0], prodCurr, cons[0], consCurr),
 		statusColor: 'dark:text-primary-500 text-primary-700',

@@ -50,12 +50,18 @@
      class="card m-0 flex justify-start rounded-lg shadow-sm border border-white/5
 						bg-surface-100-900 min-h-[150px] px-2 py-2 hover:border-white/10">
 	<div class="flex w-full flex-col">
-		<div class="flex w-full justify-between">
+		<div class="relative flex w-full justify-between">
 			{#if controlView.iconName.length}
-			<div class="relative mr-1 inline-flex items-center justify-center w-12 h-12 min-w-12 overflow-hidden rounded-full border border-white/10 dark:bg-surface-950 bg-surface-50">
-				<LbIcon class={controlView.iconColor} name={controlView.iconName} width="24" height="24"
+				<div class="relative mr-1 inline-flex items-center justify-center w-12 h-12 min-w-12 overflow-hidden rounded-full border border-white/10 dark:bg-surface-950 bg-surface-50">
+					<LbIcon class={controlView.iconColor} name={controlView.iconName} width="24" height="24"
 								style={getIconColorHex(controlView.iconColor)}/>
-			</div>
+					{#if controlView.badgeIconName?.length}
+						<div class="absolute top-[4px] left-[6px] inline-flex items-center justify-center w-[14px] h-[14px] {controlView.badgeIconColor} rounded-full
+												border border-1 dark:border-surface-950 border-surface-50">
+							<LbIcon class='dark:text-surface-950 text-surface-50' name={controlView.badgeIconName} size="8"/>
+						</div>
+					{/if}
+				</div>
 			{/if}
 			{#if controlView.iconText?.length} 
 				<div class="relative mr-1 inline-flex items-center justify-center w-12 h-12 min-w-12 overflow-hidden rounded-full border border-white/10 dark:bg-surface-950 bg-surface-50">

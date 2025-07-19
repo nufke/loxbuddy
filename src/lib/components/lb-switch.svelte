@@ -31,7 +31,7 @@
 		control: control,
 		isFavorite: controlOptions.isFavorite,
 		isSubControl: controlOptions.isSubControl,
-		iconName: store.getCategoryIcon(control, controlOptions.isSubControl),
+		iconName: store.getIcon(control, controlOptions.isSubControl),
 		iconColor: buttonActive ? 'dark:fill-primary-500 fill-primary-700' : 'fill-surface-950 dark:fill-surface-50',
 		textName: control.name,
 		textColor: controlOptions.isSubControl && buttonActive ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-50 text-surface-950',

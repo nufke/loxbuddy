@@ -69,7 +69,7 @@
 		...DEFAULT_CONTROLVIEW,
 		control: control,
 		isFavorite: controlOptions.isFavorite,
-		iconName: store.getCategoryIcon(control, controlOptions.isSubControl),
+		iconName: store.getIcon(control, controlOptions.isSubControl),
 		textName: control.name,
 		statusName: radioIndex ? radioIndex.name : 'unknown',
 		statusColor: selectedRadio ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700',

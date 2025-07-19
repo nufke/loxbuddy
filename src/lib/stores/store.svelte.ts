@@ -3,6 +3,7 @@ import { INITIAL_STRUCTURE } from '$lib/types/models';
 import type { Structure, Control, Category, Room, SystemStatus, Route, ModalView, NotificationMap, NotificationList,
 							ControlsMap, CategoriesMap, RoomsMap, MessageCenter, NotificationMessage } from '$lib/types/models';
 import { utils } from '$lib/helpers/utils';
+import { getDefaultIcon } from '$lib/helpers/components';
 import { loxiconsPath } from '$lib/helpers/paths';
 import { Menu } from '@lucide/svelte';
 
@@ -158,15 +159,18 @@ class Store {
 		return images || [];
 	}
 
-	getCategoryIcon(control: Control, isSubControl: boolean | undefined, textState: any = null) {
-		if (textState && textState.icon) return  loxiconsPath + textState.icon; /* used for TextState icon*/
+	getIcon(control: Control, isSubControl: boolean | undefined, textState: any = null) {
+		if (textState && textState.icon) return  loxiconsPath + textState.icon; /* used for TextState icon */
 		if (control.defaultIcon) return  loxiconsPath + control.defaultIcon;
 		if (!isSubControl) { 
+			let icon = getDefaultIcon(control.type);
+			if (icon.length ) {
+				return icon;
+			} 
 			const cat = this.categoryList.find((cat: Category) => cat.uuid == control.cat);
 			return cat ? loxiconsPath + cat.image : '';
-		} else {
-			return ''; // hide icon for subcontrols by returning empty name
 		}
+		return ''; // no icon found / used (TODO: keep empty?)
 	}
 
 	setMqttStatus(s: number) {

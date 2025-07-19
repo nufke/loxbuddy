@@ -12,6 +12,8 @@
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
 	let position = $derived(Number(store.getState(control.states.position)) * 100);
+	let autoActive = $derived(Number(store.getState(control.states.autoActive)));
+	let isAutomatic = $derived(Number(control.details.isAutomatic));
 
 	let buttons: SingleButtonView[] = $state([
 		{
@@ -79,11 +81,13 @@
 		...DEFAULT_CONTROLVIEW,
 		control: control,
 		isFavorite: controlOptions.isFavorite,
-		iconName: store.getCategoryIcon(control, controlOptions.isSubControl),
+		iconName: store.getIcon(control, controlOptions.isSubControl),
 		iconColor: (position > 0) ? 'dark:fill-primary-500 fill-primary-700' : 'fill-surface-950 dark:fill-surface-50',
 		textName: control.name,
 		statusName: position < 1 ? $_('Opened') : position > 99 ? $_('Closed') : fmt.sprintf('%1.0f%% ', position),
 		statusColor: (position > 0) ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700',
+		badgeIconName: isAutomatic ? '/icons/svg/automatic-2.svg' : '',
+		badgeIconColor: autoActive ? 'dark:bg-primary-500 bg-primary-700' : 'dark:bg-surface-50 bg-surface-950',
 		buttons: buttons,
 		modal: modal
 	});

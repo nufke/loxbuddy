@@ -424,6 +424,8 @@ export type ControlView = {
 	iconName: string;
 	iconText?: string;
 	iconColor?: string;
+	badgeIconName?: string;
+	badgeIconColor?: string;
 	textName: string;
 	textColor?: string;
 	statusName?: string;

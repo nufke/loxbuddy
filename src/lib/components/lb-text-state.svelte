@@ -21,7 +21,7 @@
 		...DEFAULT_CONTROLVIEW,
 		control: control,
 		isFavorite: controlOptions.isFavorite,
-		iconName: store.getCategoryIcon(control, controlOptions.isSubControl, iconAndColor),
+		iconName: store.getIcon(control, controlOptions.isSubControl, iconAndColor),
 		iconColor: iconAndColor?.color || 'dark:fill-surface-50 fill-surface-950',
 		textName: control.name,
 		statusName: textAndIcon,

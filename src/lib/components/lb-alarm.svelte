@@ -66,7 +66,7 @@
 		...DEFAULT_CONTROLVIEW,
 		control: control,
 		isFavorite: controlOptions.isFavorite,
-		iconName: armed ? '/icons/svg/shield.svg' : '/icons/svg/shield-off.svg',
+		iconName: store.getIcon(control, controlOptions.isSubControl),
 		iconColor: armed ? 'dark:fill-primary-500 fill-primary-700' : 'fill-surface-950 dark:fill-surface-50',
 		textName: control.name,
 		statusName: getStatus(),

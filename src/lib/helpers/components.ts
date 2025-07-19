@@ -21,35 +21,43 @@ import LbSmokeAlarm from '$lib/components/lb-smoke-alarm.svelte';
 import LbCentralJalousie from '$lib/components/lb-central-jalousie.svelte';
 import LbAlarmClock from '$lib/components/lb-alarm-clock.svelte';
 import LbTimedSwitch from '$lib/components/lb-timed-switch.svelte';
+import LbPresenceDetector from '$lib/components/lb-presence-detector.svelte';
 import LbUnknown from '$lib/components/lb-unknown.svelte';
+import { loxiconsPath } from '$lib/helpers/paths';
 
 let componentList = [
-	{ format: 'UpDownDigital', component: LbUpDownDigital },
-	{ format: 'TextState', component: LbTextState },
-	{ format: 'InfoOnlyAnalog', component: LbInfoOnlyAnalog },
-	{ format: 'InfoOnlyDigital', component: LbInfoOnlyDigital },
-	{ format: 'InfoOnlyText', component: LbInfoOnlyText },
-	{ format: 'Radio', component: LbRadio },
-	{ format: 'Pushbutton', component: LbPushbutton },
-	{ format: 'Webpage', component: LbWebpage },
-	{ format: 'Slider', component: LbSlider },
-	{ format: 'Switch', component: LbSwitch },
-	{ format: 'Jalousie', component: LbJalousie },
-	{ format: 'LightControllerV2', component: LbLightControllerV2 },
-	{ format: 'Fronius', component: LbFronius },
-	{ format: 'Intercom', component: LbIntercom },
-	{ format: 'CentralLightController', component: LbCentralLight },
-	{ format: 'Alarm', component: LbAlarm },
-	{ format: 'IRoomController', component: LbIRoomController },
-	{ format: 'IRoomControllerV2', component: LbIRoomControllerV2 },
-	{ format: 'Daytimer', component: LbDaytimer },
-	{ format: 'SmokeAlarm', component: LbSmokeAlarm },
-	{ format: 'CentralJalousie', component: LbCentralJalousie },
-	{ format: 'AlarmClock', component: LbAlarmClock },
-	{ format: 'TimedSwitch', component: LbTimedSwitch }
+	{ type: 'UpDownDigital', component: LbUpDownDigital, defaultIcon: '' },
+	{ type: 'TextState', component: LbTextState, defaultIcon: '' },
+	{ type: 'InfoOnlyAnalog', component: LbInfoOnlyAnalog, defaultIcon: '' },
+	{ type: 'InfoOnlyDigital', component: LbInfoOnlyDigital, defaultIcon: '' },
+	{ type: 'InfoOnlyText', component: LbInfoOnlyText, defaultIcon: '' },
+	{ type: 'Radio', component: LbRadio, defaultIcon: '' },
+	{ type: 'Pushbutton', component: LbPushbutton, defaultIcon: '' },
+	{ type: 'Webpage', component: LbWebpage, defaultIcon: loxiconsPath + 'IconsFilled/globe-3.svg' },
+	{ type: 'Slider', component: LbSlider, defaultIcon: '' },
+	{ type: 'Switch', component: LbSwitch, defaultIcon: '' },
+	{ type: 'Jalousie', component: LbJalousie, defaultIcon: loxiconsPath + 'IconsFilled/blinds-half-closed.svg' },
+	{ type: 'LightControllerV2', component: LbLightControllerV2, defaultIcon: '' },
+	{ type: 'Fronius', component: LbFronius, defaultIcon: '' },
+	{ type: 'Intercom', component: LbIntercom, defaultIcon: '' },
+	{ type: 'CentralLightController', component: LbCentralLight, defaultIcon: '' },
+	{ type: 'Alarm', component: LbAlarm, defaultIcon: loxiconsPath + 'IconsFilled/shield-2.svg' },
+	{ type: 'IRoomController', component: LbIRoomController, defaultIcon: '' },
+	{ type: 'IRoomControllerV2', component: LbIRoomControllerV2, defaultIcon: '' },
+	{ type: 'Daytimer', component: LbDaytimer, defaultIcon: '/icons/svg/calendar-clock.svg' },
+	{ type: 'SmokeAlarm', component: LbSmokeAlarm, defaultIcon: '/icons/svg/flame.svg' },
+	{ type: 'CentralJalousie', component: LbCentralJalousie, defaultIcon: '' },
+	{ type: 'AlarmClock', component: LbAlarmClock, defaultIcon: loxiconsPath + 'IconsFilled/alarm-clock.svg' },
+	{ type: 'TimedSwitch', component: LbTimedSwitch, defaultIcon: '' },
+	{ type: 'PresenceDetector', component: LbPresenceDetector, defaultIcon: loxiconsPath + 'IconsFilled/presence.svg' }
 ];
 
-export function getComponent(name: string) {
-	const comp = componentList.find((type) => type.format == name);
+export function getComponent(type: string) {
+	const comp = componentList.find((component) => component.type == type);
 	return comp ? comp.component : LbUnknown;
+}
+
+export function getDefaultIcon(type: string) {
+	const comp = componentList.find((component) => component.type == type);
+	return comp ? comp.defaultIcon : '';
 }
