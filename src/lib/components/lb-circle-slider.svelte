@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { _ } from 'svelte-i18n';
 
-	let { min, max, step, actual, target, onValueChangeEnd } = $props();
+	let { min, max, step, actual, target, onValueChangeEnd, manual } = $props();
 
 	let radius = 140;
 	let loc = {x: 160, y: 160};
@@ -55,7 +55,9 @@
 	}
 
   function knobMouseDown(e: any) {
-	  isDragging = true;
+		if (manual) {
+			isDragging = true;  /* only allow dragging when manual is enabled */
+		}
   }
 
   function trackMouseDown(e: any) {
@@ -105,6 +107,7 @@
 		<text x="157" y="90" text-anchor="middle" fill="#737373" font-size="20px">&#9679; <tspan class="label">{$_('Actual')}</tspan></text>
 		<text class="label" x="160" y="175" text-anchor="middle" font-size="80px">{actualTempDisplay[0]}<tspan class="label" dx="0" dy="0" font-size="50px">.{actualTempDisplay[1]}</tspan></text>
 		<text x="157" y="220" text-anchor="middle" fill="var(--color-primary-500)" font-size="18px">&#9679; <tspan class="label">{$_('Target')} {targetTempDisplay[0]}<tspan dx="2" dy="-6" font-size="10px">{targetTempDisplay[1]}</tspan></text>
+		{#if manual}
 		<svg class="button" x="105" y="260" onmousedown={startDown} onmouseup={endDown}>
 			<circle class="c1" cx="20" cy="20" r="20" />
 			<path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke="currentColor" d="m14 17 6 6 6-6"></path>
@@ -113,6 +116,7 @@
 			<circle cx="20" cy="20" r="20"/>
 			<path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke="currentColor" d="m26 22-6-6-6 6"></path>
 		</svg>
+		{/if}
 	</svg>
 </div>
 

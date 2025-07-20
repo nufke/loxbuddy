@@ -44,7 +44,7 @@
 	let overrideV2 = $derived(overrideEntriesV2 && overrideEntriesV2[0] ? (overrideEntriesV2[0].isTimer ?  1: 0 ) : 0);
 
 	let modeV1 = $derived(Number(store.getState(controlView.control.states.mode)));
-	let modeIdV1 = $derived(temperatureModeList[modeV1].id);
+	let modeIdV1 = $derived(temperatureModeList && temperatureModeList[modeV1] ? temperatureModeList[modeV1].id : 0);
 	let isAutomaticV1 = $derived(modeIdV1<5);
 	let isHeatingV1 = $derived(modeIdV1==1 || modeIdV1==3 || modeIdV1==5);
 	let isCoolingV1 = $derived(modeIdV1==2 || modeIdV1==4 || modeIdV1==6);
@@ -72,7 +72,21 @@
 		openModal: false
 	});
 
-	function setTempPresent(i: number) {
+	function setTempPresent(id: number) {
+		if (!isV1 && id == 3) { /* manual mode only exists in IRCv2 */
+			setTempManual(id);
+		} else {
+			setTimerOverride(id);
+		}
+	}
+
+	function setTempManual(id: number) {
+		let cmd = isCooling ? 'setComfortTemperatureCool/' : 'setComfortTemperature/';
+		cmd += tempTarget;
+	  publishTopic(controlView.control.uuidAction, cmd);
+	}
+
+	function setTimerOverride(id: number) {
 		let coeff = 1000 * 60; // round to minute
 		let overrideTimeSec = Math.round((date.getTime() - Date.now())/coeff)*coeff/1000;
     if (overrideTimeSec > 60 && controlView.control) {// TODO define minimum time of 1 minute
@@ -80,7 +94,7 @@
 			overrideTimeSec += (isV1 ? 0 : Math.round((Date.now() - utils.loxTimeRef)/1000)); // V2 starts to count from 1-1-2009
 			overrideTimeSec += (!isV1 && utils.isDST(date) ? -3600 : 0); // DST correction for V2
 			overrideTimeSec = (isV1 ? Math.round(overrideTimeSec/60) : overrideTimeSec); // V1 in minutes!!
-			cmd += String(i) + '/' + String(overrideTimeSec);
+			cmd += String(id) + '/' + String(overrideTimeSec);
 			publishTopic(controlView.control.uuidAction, cmd);
     } else {
 			console.error('IRC: timer period to low:', overrideTimeSec);
@@ -152,7 +166,7 @@
 	{#if selectedTab==0}
 		<div class="items-center justify-center">
 			<button class="w-full mt-2" onclick={(e) => { e.stopPropagation()}}> <!-- workaround wrapper to stop propagation for slider -->
-				<LbCicleSlider min={10} max={30} step={0.5} target={tempTarget} actual={tempActual} onValueChangeEnd={(e: any) => {updatePosition(e.value)}}/>
+				<LbCicleSlider min={10} max={30} step={0.5} target={tempTarget} manual={!isAutomatic} actual={tempActual} onValueChangeEnd={(e: any) => {updatePosition(e.value)}}/>
 			</button>
 			<div class="text-center">
 				<div class="relative flex items-center justify-center ml-2">

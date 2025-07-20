@@ -157,6 +157,16 @@
 			{/each}
 		</div>
 		{/if}
+		{#if controlView.modal && controlView.modal.details}
+		<div class="container grid grid-cols-1 gap-2 m-5">
+			{#each controlView.modal.details as item}
+			<p class="flex justify-center items-center text-md">
+				<span class="dark:text-surface-300 text-surface-700">{item.name} &nbsp;</span>
+				<span>{item.value}</span>
+			</p>
+			{/each}
+		</div>
+		{/if}
 		{#if linkedControls}
 		<div class="container relative w-full">
 			{#if showScrollTop}

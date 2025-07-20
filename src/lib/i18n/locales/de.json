@@ -48,6 +48,7 @@
     "Control": "Bedienelement",
     "Controls": "Bedienelemente",
     "Daily": "Täglich",
+    "Day": "Tag",
     "Days": "So|Mo|Di|Mi|Do|Fr|Sa",
     "DaysFull": "Sonntag|Montag|Dienstag|Mittwoch|Donnerstag|Freitag|Samstag",
     "Date & Time": "Datum und Uhrzeit",
@@ -110,6 +111,7 @@
     "Menu": "Menü",
     "Messages": "Nachrichten",
     "Minutes": "Minuten",
+    "Month": "Monat",
     "Months": "Jan|Feb|Mär|Apr|Mei|Jun|Jul|Aug|Sep|Okt|Nov|Dez",
     "Moods": "Stimmungen",
     "Mostly cloudy": "Überwiegend bewölkt",
@@ -192,6 +194,7 @@
     "Till": "Bis",
     "Tilted": "Gekippt",
     "Time": "Uhrzeit",
+    "Total": "Gesamt", 
     "Turn off": "Ausschalten",
     "Turn on": "Einschalten",
     "Up": "Auf",
@@ -208,6 +211,8 @@
     "Warning": "Warnung",
     "Warning_message": "WARNUNG: Die LoxBuddy App befindet sich in der frühen Entwicklungsphase und ist daher instabil und unvollständig. Dies kann die Stabilität Ihres Smart Home beeinträchtigen. Die Nutzung erfolgt auf eigene Gefahr.",
     "Weather": "Wetter",
+    "Week": "Woche",
     "Windy": "Windig",
+    "Year": "Jahr",
     "You received %s notifications": "Sie haben %s Benachrichtigungen erhalten"
 }

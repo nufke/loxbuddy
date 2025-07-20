@@ -445,7 +445,6 @@ export type ModalView = {
 	state?: boolean;
 	buttons?: SingleButtonView[];
 	details?: any;
-	timeout?: any;
 	noBlur?: boolean;
 	size?: {
 		width?: string; // tailwindcss notation

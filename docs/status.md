@@ -41,7 +41,7 @@ or submit a [pull request](https://github.com/nufke/loxbuddy/pulls).
 | EFM                      | Not started       |                             |
 | EnergyManager            | Not started       |                             |
 | EnergyManager2           | Not started       |                             |
-| Fronius                  | Under development | No statistics yet           |
+| Fronius                  | Under development | No statistics planned       |
 | Gate                     | Not started       |                             |
 | GateCentral              | Not started       |                             |
 | Heatmixer                | Not started       |                             |
@@ -107,13 +107,13 @@ or submit a [pull request](https://github.com/nufke/loxbuddy/pulls).
 | UpDownDigital            | Available         |                             |
 | UpDownLeftRightAnalog    | Not started       |                             |
 | UpDownLeftRightDigital   | Not started       |                             |
-| ValueSelector            | Under development |                             |
+| ValueSelector            | Available         |                             |
 | Ventilation              | Not started       |                             |
 | Wallbox2                 | Not started       |                             |
 | Webpage                  | Available         |                             |
 | Weather                  | Not started       |                             |
 | Window                   | Not started       |                             |
-| WindowMonitor            | Under development |                             |
+| WindowMonitor            | Available         |                             |
 | Universal                | Not started       |                             |
 
 ## Feature list under development

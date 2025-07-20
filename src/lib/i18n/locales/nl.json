@@ -48,6 +48,7 @@
     "Control": "Bediening",
     "Controls": "Bedieningselementen",
     "Daily": "Dagelijks",
+    "Day": "Dag",
     "Days": "zo|ma|di|wo|do|vr|za",
     "DaysFull": "zondag|maandag|dinsdag|woensdag|donderdag|vrijdag|zaterdag",
     "Date & Time": "Dag & Tijd",
@@ -110,6 +111,7 @@
     "Menu": "Menu",
     "Messages": "Meldingen",
     "Minutes": "Minuten",
+    "Month": "Maand",
     "Months": "jan|feb|mar|apr|mei|jun|jul|aug|sep|oct|nov|dec",
     "Moods": "Stemmingen",
     "Mostly cloudy": "Overwegend bewolkt",
@@ -192,6 +194,7 @@
     "Till": "Tot",
     "Tilted": "Gekanteld",
     "Time": "Tijd",
+    "Total": "Totaal", 
     "Turn off": "Uitschakelen",
     "Turn on": "Inschakelen",
     "Up": "Omhoog",
@@ -208,6 +211,8 @@
     "Weather": "Weer",
     "Warning": "Waarschuwing",
     "Warning_message": "WAARSCHUWING: De LoxBuddy App bevindt zich nog in een vroeg stadium van ontwikkeling, is daardoor onstabiel en onvolledig en kan de stabiliteit van uw Smart Home beïnvloeden. Gebruik de App op eigen risico.",
+    "Week": "Week",
     "Windy": "Winderig",
+    "Year": "Jaar",
     "You received %s notifications": "U heeft %s meldingen ontvangen"
 }

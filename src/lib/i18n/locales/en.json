@@ -48,6 +48,7 @@
     "Control": "Control",
     "Controls": "Controls",
     "Daily": "Daily",
+    "Day": "Day",
     "Days": "Su|Mo|Tu|We|Th|Fr|Sa",
     "DaysFull": "Sunday|Monday|Tuesday|Wednesday|Thursday|Friday|Saturday",
     "Date & Time": "Date & Time",
@@ -110,6 +111,7 @@
     "Menu": "Menu",
     "Messages": "Messages",
     "Minutes": "Minutes",
+    "Month": "Month",
     "Months": "Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec",
     "Moods": "Moods",
     "Mostly cloudy": "Mostly cloudy",
@@ -191,6 +193,7 @@
     "Till": "Till",
     "Tilted": "Tilted",
     "Time": "Time",
+    "Total": "Total",
     "Turn off": "Turn off",
     "Turn on": "Turn on",
     "Up": "Up",
@@ -207,6 +210,8 @@
     "Warning": "Warning",
     "Warning_message": "WARNING: The LoxBuddy App is in early developement, thus unstable and incomplete, and may impact the stability of your Smart Home. Use it at your own risk.",
     "Weather": "Weather",
+    "Week": "Week",
     "Windy": "Windy",
+    "Year": "Year",
     "You received %s notifications": "You received %s notifications"
 }
