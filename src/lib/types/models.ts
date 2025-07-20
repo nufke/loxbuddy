@@ -560,4 +560,7 @@ export type WindowListItem = {
 	installPlace: string;
 	uuid: string;
 	room: string;
+	roomName: string;
+	state: number;
+	prio: number;
 }

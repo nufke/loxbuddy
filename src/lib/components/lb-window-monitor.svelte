@@ -18,10 +18,13 @@
   let showScrollTop = $state(false);
 	let showScrollBottom = $state(true);
 
-	let windowList = control.details.windows as WindowListItem[];
+	// test sequence
+	//let windowStates = $state("4,4,1,1,8,16,4,2,0,4,4,4");
+	//let windowStates = $state("1,1,1,1,1,1,1,1,1,1,1,1");
 
-	let windowStates = $derived(String(store.getState(control.states.activeMoodsNum)));
-	let windowStatesList = $derived(windowStates.split(','));
+	let windowList: WindowListItem[] = control.details.windows;
+	let windowStates = $derived(String(store.getState(control.states.windowStates)));
+	let windowStatesList = $derived(getSortedWindowList(windowStates.split(',')));
 
 	let numOpen = $derived(Number(store.getState(control.states.numOpen)));
 	let numClosed = $derived(Number(store.getState(control.states.numClosed)));
@@ -29,7 +32,6 @@
 	let numOffline = $derived(Number(store.getState(control.states.numOffline)));
 	let numLocked = $derived(Number(store.getState(control.states.numLocked)));
 	let numUnlocked = $derived(Number(store.getState(control.states.numUnlocked)));
-
 	let allClosed = $derived((numOpen + numTilted + numUnlocked) == 0);
 
 	// TODO check what the summary is
@@ -44,6 +46,42 @@
 		return summary;
 	}
 
+	/* window states -> prio states (1 = highest prio)
+		0: Offline	32 
+		1: Closed		8
+		2: Titled		2
+		4: Open			1
+		8: Locked		16
+		16: Unlocked 4 
+	*/
+
+	function getSortedWindowList(states: string[]) {
+		let list: WindowListItem[] = [];
+		for( let i = 0; i < windowList.length; i++) {
+			let prio: number[] = [32,32,32,32,32,32];
+			let s = Number(states[i]);
+			if (s == 0) { prio[0] = 32; }
+			if (s & 1) { prio[1] = 8; }
+			if (s & 2) { prio[2] = 2; }
+			if (s & 4) { prio[3] = 1; }
+			if (s & 8) { prio[4] = 16; }
+			if (s & 16) { prio[5] = 4; }
+			list[i] = {
+				name: windowList[i].name,
+				installPlace: windowList[i].installPlace,
+				uuid: windowList[i].uuid,
+				room: windowList[i].room,
+				roomName: store.rooms[windowList[i].room].name,
+				state: s,
+				prio: Math.min(prio[0], prio[1], prio[2], prio[3], prio[4], prio[5])
+			};
+		}
+		list.sort((a, b) => a.name.localeCompare(b.name))
+			.sort((a, b) => a.roomName.localeCompare(b.roomName))
+			.sort((a, b) => a.prio - b.prio);
+		return list;
+	}
+
 	function getStatus() {
 		if (allClosed) { 
 			return $_('All closed');
@@ -52,9 +90,9 @@
 		return str.toLowerCase();
 	}
 
-	function getState(i: number) {
-		let state = Number(windowStatesList[i]);
+	function getState(state: number) {
 		let stateList: any = [];
+		if (state == 0) { stateList.push({ name: $_('Offline'), color: false}) }
 		if (state & 1) { stateList.push({ name: $_('Closed'), color: false}) }
 		if (state & 2) { stateList.push({ name: $_('Tilted'), color: true}) }
 		if (state & 4) { stateList.push({ name: $_('Open'), color: true}) }
@@ -88,10 +126,10 @@
 		control: control,
 		isFavorite: controlOptions.isFavorite,
 		iconName: store.getIcon(control, controlOptions.isSubControl),
-		iconColor: allClosed ? 'fill-surface-950 dark:fill-surface-50' : 'dark:fill-primary-500 fill-primary-700',
+		iconColor: allClosed ? 'dark:fill-primary-500 fill-primary-700' : 'fill-orange-500',
 		textName: control.name,
 		statusName: getStatus(),
-		statusColor: allClosed ? 'dark:text-surface-300 text-surface-700' : 'dark:text-primary-500 text-primary-700', 
+		statusColor: allClosed ? 'dark:text-primary-500 text-primary-700' : 'text-orange-500', 
 		modal: modal
 	});
 </script>
@@ -122,7 +160,7 @@
 				<h2 class="text-lg text-center">
 					{#each getSummary() as state, i}
 						{@const isLast = i === getSummary().length - 1}
-							<span class={ state.color ? 'dark:text-primary-500 text-primary-700' : 'text-surface-950 dark:text-surface-50'}>{state.name}</span>{#if !isLast }
+							<span class={ state.color ? 'text-orange-500' : 'dark:text-primary-500 text-primary-700'}>{state.name}</span>{#if !isLast }
 								<span>,&nbsp;</span>{/if}
 					{/each}
 				</h2>
@@ -140,19 +178,20 @@
 					<div class="absolute z-10 left-[50%] lb-center -bottom-[16px] text-surface-500" transition:fade={{ duration: 300 }}><ChevronDown size="30"/></div>
 				{/if}
 				<div class="overflow-y-auto space-y-2 max-h-[474px]" bind:this={viewport} onscroll={parseScroll}>
-					{#each windowList as window, index}
+					{#each windowStatesList as window, index}
 						<div class="w-full flex h-[60px] items-center justify-start rounded-lg border border-white/15 hover:border-white/50
 													dark:bg-surface-950 bg-surface-50 px-2 py-2">
 							<div class="flex items-center truncate w-full">
 								<div class="mt-0 ml-2 mr-2 flex flex-row w-full justify-between truncate items-center">
 									<div class="flex flex-col">
 										<p class="leading-6 truncate text-lg {getStatusColor(index)}">{window.name}</p>
-										<p class="truncate bg-transparent text-left text-xs dark:text-surface-300 text-surface-700">{store.rooms[window.room].name}</p>
+										<p class="truncate bg-transparent text-left text-xs dark:text-surface-300 text-surface-700">{window.roomName}</p>
 									</div>
 									<p class="text-lg">
-										{#each getState(index) as state, i}
-											{@const isLast = i === getState(index).length - 1}
-											<span class={ state.color ? 'dark:text-primary-500 text-primary-700' : 'text-surface-950 dark:text-surface-50'}>{state.name}</span>{#if !isLast }
+										{#each getState(window.state) as state, i}
+											{@const isLast = i === getState(window.state).length - 1}
+											<span class={ state.color ? 'text-orange-500' : ( window.state ? 'dark:text-primary-500 text-primary-700' :
+											'dark:text-surface-300 text-surface-700')}>{state.name}</span>{#if !isLast }
 												<span>,&nbsp;</span>{/if}
 										{/each}
 									</p>
