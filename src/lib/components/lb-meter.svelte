@@ -13,7 +13,7 @@
 	let actualFormat = control.details.actualFormat;
 	let totalFormat = control.details.totalFormat;
 
-	let actual = 10; //$derived(Number(store.getState(control.states.actual)));
+	let actual = $derived(Number(store.getState(control.states.actual)));
 	let total = $derived(Number(store.getState(control.states.total)));
 	let totalDay = $derived(Number(store.getState(control.states.totalDay)));
 	let totalWeek = $derived(Number(store.getState(control.states.totalWeek)));
