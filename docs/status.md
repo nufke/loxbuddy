@@ -72,7 +72,7 @@ or submit a [pull request](https://github.com/nufke/loxbuddy/pulls).
 | MailBox                  | Not started       |                             |
 | Media                    | Not started       |                             |
 | MediaClient              | Not started       |                             |
-| Meter                    | Not started       |                             |
+| Meter                    | Under development | No statistics yet           |
 | MeterV2                  | Not started       |                             |
 | MultifunctionSW          | Not started       |                             |
 | NFCCodeTouch             | Not started       |                             |

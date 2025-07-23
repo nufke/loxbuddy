@@ -8,6 +8,7 @@ import { loxiconsPath } from '$lib/helpers/paths';
 import { Menu } from '@lucide/svelte';
 
 class Store {
+	isTest: boolean = $state(false);
   controlState: SvelteMap<string, any> = new SvelteMap();
 	nav: Route = $state({ label: 'Menu', href: '/menu', icon: Menu });
 	structure: Structure = $state(INITIAL_STRUCTURE);

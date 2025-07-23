@@ -20,58 +20,75 @@ export type MQTTSettings = {
 export type Structure = {
 	lastModified: string;
 	msInfo: MsInfo;
+	partnerInfo: PartnerInfo;
 	globalStates: GlobalStates;
 	operatingModes: operatingModesMap;
 	rooms: RoomsMap;
 	cats: CategoriesMap;
 	modes: ModesMap;
 	controls: ControlsMap;
-	weatherServer: WeatherServer;
+	weatherServer?: WeatherServer;
 	times: TimesMap;
 	caller: CallerMap;
 	mailer: MailerMap;
 	autopilot: AutopilotMap;
 	messageCenter: MessageCenterMap;
+	mediaServer: MediaServerMap;
+	structureDate: string;
 }
 
-export type ControlsMap ={
+export type PartnerInfo = {
+	name: string;
+	image: string;
+	details: {
+		phoneNumber: string;
+		eMailAddress: string;
+		website: string;
+	}
+}
+
+export type ControlsMap = {
 	[key: string]: Control;
 }
 
-export type CategoriesMap ={
+export type CategoriesMap = {
 	[key: string]: Category;
 }
 
-export type operatingModesMap ={
+export type operatingModesMap = {
 	[key: string]: String;
 }
 
-export type RoomsMap ={
+export type RoomsMap = {
 	[key: string]: Room;
 }
 
-export type ModesMap ={
+export type ModesMap = {
 	[key: string]: Mode;
 }
 
-export type TimesMap ={
+export type TimesMap = {
 	[key: string]: Time;
 }
 
-export type CallerMap ={
+export type CallerMap = {
 	[key: string]: Caller;
 }
 
-export type MailerMap ={
+export type MailerMap = {
 	[key: string]: Mailer;
 }
 
-export type AutopilotMap ={
+export type AutopilotMap = {
 	[key: string]: Autopilot;
 }
 
-export type MessageCenterMap ={
+export type MessageCenterMap = {
 	[key: string]: MessageCenter;
+}
+
+export type MediaServerMap = {
+	[key: string]: MediaServer;
 }
 
 export type GlobalStates = {
@@ -113,7 +130,7 @@ export type MsInfo = {
 	coolPeriodEnd: string;				// month and day when the cooling period ends (DEPRECATED)
 	catTitle: string;							// locale name of categories
 	roomTitle: string;						// locale name of rooms
-	miniserverType: 0,						// miniserver type (0:Gen1, 1:GoGen1, 2:Gen2, 3:GoGen2, 4:Compact)
+	miniserverType: number;				// miniserver type (0:Gen1, 1:GoGen1, 2:Gen2, 3:GoGen2, 4:Compact)
 	deviceMonitor: string;
 	currentUser: {
 		name: string;								// current user name
@@ -178,6 +195,15 @@ export const INITIAL_STRUCTURE: Structure = {
 	lastModified: '',
 	msInfo: DEFAULT_MSINFO,
 	globalStates: DEFAULT_GLOBALSTATES,
+	partnerInfo: {
+		name: '',
+		image: '',
+		details: {
+			phoneNumber: '',
+			eMailAddress: '',
+			website: '',
+		}
+	},
 	operatingModes: {},
 	rooms: {},
 	cats: {},
@@ -202,7 +228,9 @@ export const INITIAL_STRUCTURE: Structure = {
 	caller: {},
 	mailer: {},
 	autopilot: {},
-	messageCenter: {}
+	messageCenter: {},
+	mediaServer: {},
+	structureDate: ''
 }
 
 export type Control = {
@@ -214,10 +242,11 @@ export type Control = {
 	defaultRating: number;				// default rating
 	isFavorite: boolean;					// elevate to favorite item
 	isSecured: boolean;						// passwd/PIN protected control
-	defaultIcon: string;					// default icon
+	defaultIcon?: string | null;	// default icon
 	restrictions: number;
-	details: any;									// control details
-	states: any;									// control states
+	details?: any;								// control details
+	states?: any;									// control states
+	preset?: any;									// control presets
 	links?: string[];							// UUID links for TextState control
 	securedDetails?: any;					// secured details (optional)
 	subControls: {
@@ -246,8 +275,9 @@ export type Room = {
 	name: string;									// GUI name of the room
 	image: string;								// location of the image
 	defaultRating: number;				// default rating
+	default?: boolean;						//
 	isFavorite: boolean;					// elevate to favorite item
-	type: string;									// type of room
+	type: number;									// type of room
 	color: string;								// color of room
 }
 
@@ -256,7 +286,7 @@ export type Category = {
 	name: string;									// GUI name of the category
 	image: string;								// location of the image
 	defaultRating: number;				// default rating
-	default: boolean;							//
+	default?: boolean;						//
 	type: string;									// type of category
 	color: string;								// color of category
 }
@@ -286,44 +316,36 @@ export type WeatherServer = {
 			id: number;
 			name: string;
 			analog: boolean
-			unit: string;
-			format: string;
+			unit?: string;
+			format?: string;
 		}
 	}
 }
 
 export type Time = {
-	[key: string]: {
-		id: number;
-		name: string;
-		analog: boolean;
-	}
+	id: number;
+	name: string;
+	analog: boolean;
 }
 
 export type Caller = {
-	[key: string]: {
-		id: string;
-		name: string;
-		phoneNumber: string;
-	}
+	id: string;
+	name: string;
+	phoneNumber: string;
 }
 
 export type Mailer = {
-	[key: string]: {
-		id: string;
-		name: string;
-		eMailAddress: string;
-	}
+	id: string;
+	name: string;
+	eMailAddress: string;
 }
 
 export type Autopilot = {
-	[key: string]: {
-		name: string;
-		uuidAction: string;
-		states: {
-			 changed: string;
-			 history: string;
-		}
+	name: string;
+	uuidAction: string;
+	states: {
+		 changed: string;
+		 history: string;
 	}
 }
 
@@ -332,6 +354,25 @@ export type MessageCenter = {
 	uuidAction: string;
 	states: {
 		 changed: string;
+	}
+}
+
+export type MediaServer = {
+	type: number;
+	subType: number;
+	host: string;
+	mac: string;
+	uuidAction: string;
+	useTriggerCard: boolean;
+	internal: boolean;
+	states: {
+		audioEvents: string;
+		apiVersion: string;
+		serverState: string;
+		grouping: string;
+		connState: string;
+		certificateValid: string;
+		host: string;
 	}
 }
 
@@ -445,10 +486,11 @@ export type ModalView = {
 	state?: boolean;
 	buttons?: SingleButtonView[];
 	details?: any;
+	timeout?: any;			// timeout for screensaver
 	noBlur?: boolean;
 	size?: {
-		width?: string; // tailwindcss notation
-		height?: string; // tailwindcss notation
+		width?: string;		// tailwindcss notation
+		height?: string;	// tailwindcss notation
 	}
 }
 

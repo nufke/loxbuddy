@@ -2,9 +2,9 @@ import mqtt from 'mqtt';
 import { store } from '$lib/stores/store.svelte';
 import { weatherStore } from '$lib/stores/weather-store.svelte';
 import { utils } from '$lib/helpers/utils';
+import { test } from '$lib/test/test';
 
 let connected: boolean;
-let serialNr: string;  // TODO support multiple miniservers
 let topicPrefix = 'loxone'; // TODO configure prefix in GUI
 let weatherPrefix = 'weather4lox'; // TODO configure prefix in GUI
 
@@ -78,10 +78,14 @@ export async function reconnect() {
 
 export const publishTopic = (uuid: string, msg: string, retain: boolean = false) => {
 	const qos = 1; // TODO add to configuration?
-	if (connected && serialNr) {
-		const topic = topicPrefix + '/' + serialNr + '/' + uuid + '/cmd';
+	const serialNr = store.structure.msInfo.serialNr;
+	const topic = topicPrefix + '/' + serialNr + '/' + uuid + '/cmd';
+	if (connected && serialNr && !store.isTest) {
 		console.log('MQTT publish:', topic, msg);
 		mqttclient.publish(topic, msg, { retain, qos });
+	} else {
+		console.log('TEST publish:', topic, msg);
+		test.exec(uuid, topic, msg);
 	}
 };
 
@@ -90,11 +94,15 @@ function monitorStructure(topic: string, msg: string) {
 	const found = topic.match(regex);
 	if (found && found[1]) {
 		store.initStructure(JSON.parse(msg));
-		serialNr = found[1];
-		console.log('Miniserver registered: ', serialNr);
-		console.log('Query all initial states for miniserver: ', serialNr);
-		publishTopic('states', '1'); // get initial states
-		publishTopic('systemStatus', '1'); // get system status
+		const serialNr = store.structure.msInfo.serialNr;
+		if (serialNr == found[1]) {
+			console.log('Miniserver registered: ', serialNr);
+			console.log('Query all initial states for miniserver: ', serialNr);
+			publishTopic('states', '1'); // get initial states
+			publishTopic('systemStatus', '1'); // get system status
+		} else {
+			console.log('Miniserver serialNr mismatch between topic and structure: ', serialNr, found[1]);
+		}
  	}
 }
 
@@ -104,7 +112,7 @@ function monitorInitialStates(topic: string, msg: string) {
 	if (found && found[1]) {
 		const regex2 = new RegExp(topicPrefix + '/' + found[1] + '/', 'g'); // TODO replace stored states at server 
 		msg = msg.replace(regex2, '');
-		store.setInitialStates(JSON.parse(msg))
+		store.setInitialStates(JSON.parse(msg));
 	}
 }
 
@@ -132,7 +140,7 @@ function monitorStates(topic: string, msg: string) {
 	const found = topic.match(regex);
 	if (found && found[1] && found[2]) {
 		let obj = utils.isValidJSONObject(msg) ? JSON.parse(msg) : msg;
-		//console.log('setState: ', found, obj);
+		//console.log('setState: ', found[2], obj);
 		store.setState(found[2], obj);
 	}
 }

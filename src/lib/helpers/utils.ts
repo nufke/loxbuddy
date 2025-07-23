@@ -129,3 +129,5 @@ class Utils {
 }
 
 export const utils = new Utils();
+
+export const locale = window.navigator.language;

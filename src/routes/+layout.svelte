@@ -18,9 +18,17 @@
 	import LbLockScreenModal from '$lib/components/lb-lock-screen-modal.svelte';
 	import { format } from 'date-fns';
 	import { goto } from '$app/navigation';
+	import { test } from '$lib/test/test';
 
-	/* start MQTT client */
-	mqttConnect(page.data.mqtt);
+	store.isTest = page.data.test; 
+
+	if (store.isTest) {
+		/* load test demo structure */
+		test.start();
+	} else {
+		/* start MQTT client */
+		mqttConnect(page.data.mqtt);
+	}
 
 	let { children } = $props();
 

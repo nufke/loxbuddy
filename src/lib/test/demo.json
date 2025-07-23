@@ -1,0 +1,385 @@
+{
+  "lastModified": "2025-07-12 11:11:11",
+  "msInfo": {
+    "serialNr": "111222333444",
+    "msName": "Demo Miniserver Name",
+    "projectName": "Demo Project Name",
+    "localUrl": "192.168.1.1",
+    "remoteUrl": "dns.loxonecloud.com/111222333444",
+    "hostname": "",
+    "tempUnit": 0,
+    "currency": "€",
+    "squareMeasure": "m²",
+    "location": "Amsterdam",
+    "latitude": 52.378,
+    "longitude": 4.9,
+    "altitude": 3,
+    "languageCode": "NLD",
+    "heatPeriodStart": "10-01",
+    "heatPeriodEnd": "04-30",
+    "coolPeriodStart": "05-01",
+    "coolPeriodEnd": "09-30",
+    "catTitle": "Categorieën",
+    "roomTitle": "Ruimtes",
+    "miniserverType": 2,
+    "deviceMonitor": "__deviceMonitor",
+    "currentUser": {
+      "name": "user",
+      "uuid": "__currentUser_uuid",
+      "isAdmin": false,
+      "changePassword": false,
+      "userRights": 16390
+    }
+  },
+  "partnerInfo": {
+    "name": "LoxBuddy",
+    "image": "__uuid__partnerInfo_image.png",
+    "details": {
+      "phoneNumber": "+31 6 1234 5678",
+      "eMailAddress": "info@loxbuddy.nl",
+      "website": "www.loxbuddy.nl"
+    }
+  },
+  "globalStates": {
+    "operatingMode": "__uuid__globalStates_operatingMode",
+    "sunrise": "__uuid__globalStates_sunrise",
+    "sunset": "__uuid__globalStates_sunset",
+    "pastTasks": "__uuid__globalStates_pastTasks",
+    "plannedTasks": "__uuid__globalStates_plannedTasks",
+    "notifications": "__uuid__globalStates_notifications",
+    "modifications": "__uuid__globalStates_modifications",
+    "favColorSequences": "__uuid__globalStates_favColorSequences",
+    "favColors": "__uuid__globalStates_favColors",
+    "miniserverTime": "__uuid__globalStates_miniserverTime",
+    "liveSearch": "__uuid__globalStates_liveSearch",
+    "userSettings": "__uuid__globalStates_userSettings",
+    "userSettingsTs": "__uuid__globalStates_userSettingsTs",
+    "cloudservice": "__uuid__globalStates_cloudservice",
+    "trustVersion": "__uuid__globalStates_trustVersion",
+    "propsVersion": "__uuid__globalStates_propsVersion",
+    "hasInternet": "__uuid__globalStates_hasInternet"
+  },
+  "operatingModes": {
+    "0": "Feestdag",
+    "1": "Vakantie",
+    "2": "Vrije dag/Schoolverlof",
+    "3": "Maandag",
+    "4": "Dinsdag",
+    "5": "Woensdag",
+    "6": "Donderdag",
+    "7": "Vrijdag",
+    "8": "Zaterdag",
+    "9": "Zondag",
+    "10": "Verwarming periode",
+    "11": "Koeling periode",
+    "-1": "Alarm",
+    "-2": "Aanwezigheidssimulatie",
+    "-3": "Huis in diepe slaap",
+    "-4": "Verhoogde temperatuur",
+    "-5": "Party",
+    "-6": "Afwezig",
+    "-1000": "Slapen",
+    "-1003": "Technische alarm",
+    "-1004": "Aanwezig",
+    "-1002": "Vorst bescherming",
+    "-1001": "Storm bescherming"
+  },
+  "rooms": {
+    "__uuid__rooms_Woonkamer": {
+      "uuid": "__uuid__rooms_Woonkamer",
+      "name": "Woonkamer",
+      "image": "IconsFilled/sofa-1.svg",
+      "defaultRating": 10,
+      "isFavorite": false,
+      "type": 4,
+      "color": "#69C350"
+    }
+  },
+  "cats": {
+    "__uuid__cats_Verlichting": {
+      "uuid": "__uuid__cats_Verlichting",
+      "name": "Verlichting",
+      "image": "IconsFilled/lightbulb-3.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": "undefined",
+      "color": "#E4354A"
+    }
+  },
+  "controls": {
+    "__uuid__controls_Schakelaar": {
+      "name": "Schakelaar",
+      "type": "Switch",
+      "uuidAction": "__uuid__controls_Schakelaar",
+      "room": "__uuid__rooms_Woonkamer",
+      "cat": "__uuid__cats_Verlichting",
+      "defaultRating": 0,
+      "isFavorite": true,
+      "isSecured": false,
+      "defaultIcon": null,
+      "restrictions": 0,
+      "details": {
+        "jLockable": false,
+        "type": 71
+      },
+      "states": {
+        "active": "__uuid_controls_Schakelaar_states_active"
+      }
+    },
+    "__uuid__controls_PV_meter": {
+      "name": "PV Meter",
+      "type": "Meter",
+      "uuidAction": "__uuid__controls_PV_meter",
+      "room": "__uuid__rooms_Woonkamer",
+      "cat": "__uuid__cats_Verlichting",
+      "defaultRating": 2,
+      "isFavorite": true,
+      "isSecured": false,
+      "defaultIcon": null,
+      "restrictions": 0,
+      "details": {
+        "jLockable": true,
+        "type": "unidirectional",
+        "displayType": 0,
+        "actualFormat": "%.3f kW",
+        "totalFormat": "%.1f kWh",
+        "powerName": "Verbruik"
+      },
+      "states": {
+        "jLocked": "__uuid_controls_PV_meter_states_jLocked",
+        "actual": "__uuid_controls_PV_meter_states_actual",
+        "total": "__uuid_controls_PV_meter_states_total",
+        "totalDay": "__uuid_controls_PV_meter_states_totalDay",
+        "totalWeek": "__uuid_controls_PV_meter_states_totalWeek",
+        "totalMonth": "__uuid_controls_PV_meter_states_totalMonth",
+        "totalYear": "__uuid_controls_PV_meter_states_totalYear"
+      },
+      "statisticV2": {
+        "groups": [
+          {
+            "id": "1",
+            "mode": 11,
+            "dataPoints": [
+              {
+                "title": "Verbruik",
+                "format": "%.3f kW",
+                "output": "actual"
+              }
+            ]
+          },
+          {
+            "id": "2",
+            "mode": 11,
+            "accumulated": true,
+            "dataPoints": [
+              {
+                "title": "Tellerstand",
+                "format": "%.1f kWh",
+                "output": "total"
+              }
+            ]
+          }
+        ]
+      },
+      "links": [
+        "__uuid_unknonw",
+        "__uuid_unknown"
+      ]
+    },
+    "__uuid__controls_Batterij": {
+      "name": "Batterie",
+      "type": "Meter",
+      "uuidAction": "__uuid__controls_Batterij",
+      "room": "__uuid__rooms_Woonkamer",
+      "cat": "__uuid__cats_Verlichting",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/battery-full.svg",
+      "restrictions": 0,
+      "details": {
+        "jLockable": true,
+        "type": "storage",
+        "displayType": 0,
+        "actualFormat": "%.3f kW",
+        "totalFormat": "%.1f kWh",
+        "powerName": "Verbruik",
+        "storageFormat": "%.2f%%",
+        "storageMax": 100
+      },
+      "states": {
+        "jLocked": "__uuid_controls_Batterij_states_jLocked",
+        "actual": "__uuid_controls_Batterij_states_actual",
+        "total": "__uuid_controls_Batterij_states_total",
+        "totalNeg": "__uuid_controls_Batterij_states_totalNeg",
+        "storage": "__uuid_controls_Batterij_states_storage",
+        "totalDay": "__uuid_controls_Batterij_states_totalDay",
+        "totalWeek": "__uuid_controls_Batterij_states_totalWeek",
+        "totalMonth": "__uuid_controls_Batterij_states_totalMonth",
+        "totalYear": "__uuid_controls_Batterij_states_totalYear",
+        "totalNegDay": "__uuid_controls_Batterij_states_totalNegDay",
+        "totalNegWeek": "__uuid_controls_Batterij_states_totalNegWeek",
+        "totalNegMonth": "__uuid_controls_Batterij_states_totalNegMonth",
+        "totalNegYear": "__uuid_controls_Batterij_states_totalNegYear"
+      },
+      "statisticV2": {
+        "groups": [
+          {
+            "id": "1",
+            "mode": 11,
+            "dataPoints": [
+              {
+                "title": "Verbruik",
+                "format": "%.3f kW",
+                "output": "actual"
+              }
+            ]
+          },
+          {
+            "id": "2",
+            "mode": 11,
+            "accumulated": true,
+            "dataPoints": [
+              {
+                "title": "Tellerstand",
+                "format": "%.1f kWh",
+                "output": "total"
+              },
+              {
+                "title": "Tellerstand",
+                "format": "%.1f kWh",
+                "output": "totalNeg"
+              }
+            ]
+          },
+          {
+            "id": "3",
+            "mode": 11,
+            "dataPoints": [
+              {
+                "title": "Opslag",
+                "format": "%.2f%%",
+                "output": "storageLevel"
+              }
+            ]
+          }
+        ]
+      },
+      "links": [
+        "__uuid_unknonw",
+        "__uuid_unknonw",
+        "__uuid_unknonw",
+        "__uuid_unknonw",
+        "__uuid_unknonw",
+        "__uuid_unknonw",
+        "__uuid_unknonw",
+        "__uuid_unknonw",
+        "__uuid_unknonw",
+        "__uuid_unknonw",
+        "__uuid_unknonw",
+        "__uuid_unknonw"
+      ]
+    },
+    "__uuid__controls_Net": {
+      "name": "Net",
+      "type": "Meter",
+      "uuidAction": "__uuid__controls_Net",
+      "room": "__uuid__rooms_Woonkamer",
+      "cat": "__uuid__cats_Verlichting",
+      "defaultRating": 1,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/electric-pole.svg",
+      "restrictions": 0,
+      "details": {
+        "jLockable": true,
+        "type": "bidirectional",
+        "displayType": 0,
+        "actualFormat": "%.3f kW",
+        "totalFormat": "%.1f kWh",
+        "powerName": "Verbruik"
+      },
+      "states": {
+        "jLocked": "__uuid_controls_Net_states_jLocked",
+        "actual": "__uuid_controls_Net_states_actual",
+        "total": "__uuid_controls_Net_states_total",
+        "totalNeg": "__uuid_controls_Net_states_totalNeg",
+        "totalDay": "__uuid_controls_Net_states_totalDay",
+        "totalWeek": "__uuid_controls_Net_states_totalWeek",
+        "totalMonth": "__uuid_controls_Net_states_totalMonth",
+        "totalYear": "__uuid_controls_Net_states_totalYear",
+        "totalNegDay": "__uuid_controls_Net_states_totalNegDay",
+        "totalNegWeek": "__uuid_controls_Net_states_totalNegWeek",
+        "totalNegMonth": "__uuid_controls_Net_states_totalNegMonth",
+        "totalNegYear": "__uuid_controls_Net_states_totalNegYear"
+      },
+      "statisticV2": {
+        "groups": [
+          {
+            "id": "1",
+            "mode": 11,
+            "dataPoints": [
+              {
+                "title": "Verbruik",
+                "format": "%.3f kW",
+                "output": "actual"
+              }
+            ]
+          },
+          {
+            "id": "2",
+            "mode": 11,
+            "accumulated": true,
+            "dataPoints": [
+              {
+                "title": "Tellerstand",
+                "format": "%.1f kWh",
+                "output": "total"
+              },
+              {
+                "title": "Tellerstand",
+                "format": "%.1f kWh",
+                "output": "totalNeg"
+              }
+            ]
+          }
+        ]
+      },
+      "links": [
+        "__uuid_unknonw",
+        "__uuid_unknonw",
+        "__uuid_unknonw",
+        "__uuid_unknonw"
+      ]
+    },
+    "__uuid__controls_Trapverlichting": {
+      "name": "Trapverlichting",
+      "type": "TimedSwitch",
+      "uuidAction": "__uuid__controls_Trapverlichting",
+      "room": "__uuid__rooms_Woonkamer",
+      "cat": "__uuid__cats_Verlichting",
+      "defaultRating": 1,
+      "isFavorite": true,
+      "isSecured": false,
+      "defaultIcon": null,
+      "restrictions": 0,
+      "details": {
+        "jLockable": true,
+        "isStairwayLs": true
+      },
+      "states": {
+        "jLocked": "__uuid__controls_Trapverlichting_jLocked",
+        "deactivationDelay": "__uuid__controls_Trapverlichting_deactivationDelay",
+        "deactivationDelayTotal": "__uuid__controls_Trapverlichting_deactivationDelayTotal"
+      }
+    }
+  },
+  "modes": {},
+  "times": {},
+  "caller": {},
+  "mailer": {},
+  "mediaServer": {},
+  "autopilot": {},
+  "messageCenter": {},
+  "structureDate": "2025-07-12 11:11:11"
+}

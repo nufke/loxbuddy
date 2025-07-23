@@ -55,7 +55,7 @@ let componentList = [
 	{ type: 'PresenceDetector', component: LbPresenceDetector, defaultIcon: loxiconsPath + 'IconsFilled/presence.svg' },
 	{ type: 'WindowMonitor', component: LbWindowMonitor, defaultIcon: '/icons/svg/pull-door.svg' },
 	{ type: 'ValueSelector', component: LbValueSelector, defaultIcon: '' },
-	{ type: 'Meter', component: LbMeter, defaultIcon: '' },
+	{ type: 'Meter', component: LbMeter, defaultIcon: '' }
 ];
 
 export function getComponent(type: string) {

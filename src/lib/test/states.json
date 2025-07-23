@@ -1,0 +1,41 @@
+{
+  "__uuid_controls_Schakelaar_states_active": "1",
+
+  "__uuid_controls_PV_meter_states_jLocked": "",
+  "__uuid_controls_PV_meter_states_actual": "0.046656",
+  "__uuid_controls_PV_meter_states_total": "15395.896460099048",
+  "__uuid_controls_PV_meter_states_totalDay": "21.327889667039823",
+  "__uuid_controls_PV_meter_states_totalWeek": "66.16646010048272",
+  "__uuid_controls_PV_meter_states_totalMonth": "432.8754601004778",
+  "__uuid_controls_PV_meter_states_totalYear": "3970.6304601005295",
+
+  "__uuid_controls_Batterij_states_jLocked": "",
+  "__uuid_controls_Batterij_states_actual": "0.7951",
+  "__uuid_controls_Batterij_states_total": "5421.057169277915",
+  "__uuid_controls_Batterij_states_totalNeg": "5400.316186477901",
+  "__uuid_controls_Batterij_states_storage": "93.05",
+  "__uuid_controls_Batterij_states_totalDay": "4.444740365111041",
+  "__uuid_controls_Batterij_states_totalWeek": "19.540169277971682",
+  "__uuid_controls_Batterij_states_totalMonth": "118.63616927797597",
+  "__uuid_controls_Batterij_states_totalYear": "1300.8581692779169",
+  "__uuid_controls_Batterij_states_totalNegDay": "7.9328978271387545",
+  "__uuid_controls_Batterij_states_totalNegWeek": "23.807186477750093",
+  "__uuid_controls_Batterij_states_totalNegMonth": "128.6241864777459",
+  "__uuid_controls_Batterij_states_totalNegYear": "1335.6391864777568",
+
+  "__uuid_controls_Net_states_jLocked": "",
+  "__uuid_controls_Net_states_actual": "0.021",
+  "__uuid_controls_Net_states_total": "2007.9069857112838",
+  "__uuid_controls_Net_states_totalNeg": "374.21980303264303",
+  "__uuid_controls_Net_states_totalDay": "0.07558577722222252",
+  "__uuid_controls_Net_states_totalWeek": "0.2949857111111247",
+  "__uuid_controls_Net_states_totalMonth": "1.4279857111109602",
+  "__uuid_controls_Net_states_totalYear": "223.90998571110723",
+  "__uuid_controls_Net_states_totalNegDay": "0.5401129277777879",
+  "__uuid_controls_Net_states_totalNegWeek": "23.807186477750093",
+  "__uuid_controls_Net_states_totalNegMonth": "9.141803032217302",
+  "__uuid_controls_Net_states_totalNegYear": "95.58080303219289",
+
+  "__uuid__controls_Trapverlichting_deactivationDelay": 0,
+  "__uuid__controls_Trapverlichting_deactivationDelayTotal": 120
+}

@@ -2,6 +2,7 @@ import { env } from '$env/dynamic/private'
 
 export async function load() {
 	const data = {
+		test: (env.TEST == "1") ? true : false,
 		mqtt: {
 			MQTT_HOSTNAME: env.MQTT_HOSTNAME,
 			MQTT_PORT: env.MQTT_PORT,
