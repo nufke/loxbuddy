@@ -111,9 +111,17 @@
 		return activeMoodsNum == 778 ? 'text-surface-950 dark:text-surface-50' : 'dark:text-primary-500 text-primary-700';
 	}
 
-	function selectLight(i: number) {
-		lightList[i].selected = !lightList[i].selected;
+	function selectLight(control: Control) {
+		let index = lightList.findIndex( item => item.uuid == control.uuidAction);
+		if (lightList[index]) {
+			lightList[index].selected = !lightList[index].selected;
+		}
 		scenesEnabled = selectedLightCount == 1;
+	}
+	
+	function isSelected(control: Control) {
+		let light = lightList.find( item => item.uuid == control.uuidAction);
+		return light ? light.selected : false;
 	}
 
 	function changeLight(mood: string) {
@@ -139,7 +147,7 @@
 		let light = lightList.find( item => item.selected);
 		let control: Control | undefined = store.controlList.find( (control: Control) => control.uuidAction == light?.uuid);
 		if (control) {
-			controlView.modal.action(false);
+			//controlView.modal.action(false); // TODO should we close the central overview or not?
 			selectedControl = control;
 			selectedControlOptions = {...DEFAULT_CONTROLOPTIONS, showModal: true, showControl: false};
 		}
@@ -192,10 +200,10 @@
 					<div class="absolute z-10 left-[50%] lb-center -bottom-[16px] text-surface-500" transition:fade={{ duration: 300 }}><ChevronDown size="30"/></div>
 				{/if}
 				<div class="overflow-y-auto space-y-2 max-h-[474px]" bind:this={viewport} onscroll={parseScroll}>
-					{#each lightControls as control, index}
+					{#each lightControls as control}
 						<button class="w-full flex h-[60px] items-center justify-start rounded-lg border border-white/15 hover:border-white/50
-													{lightList[index].selected ? 'dark:bg-surface-800 bg-surface-200' : 'dark:bg-surface-950 bg-surface-50'} px-2 py-2"
-													onclick={() => selectLight(index)}>
+													{isSelected(control) ? 'dark:bg-surface-800 bg-surface-200' : 'dark:bg-surface-950 bg-surface-50'} px-2 py-2"
+													onclick={() => selectLight(control)}>
 							<div class="flex items-center truncate w-full">
 								<div class="mt-0 ml-2 mr-2 flex flex-row w-full justify-between truncate items-center">
 									<div class="flex flex-col">

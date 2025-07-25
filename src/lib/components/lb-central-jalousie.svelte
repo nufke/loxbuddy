@@ -60,9 +60,17 @@
 			return status;
 	}
 
-	function selectScreen(i: number) {
-		screenList[i].selected = !screenList[i].selected;
+	function selectScreen(control: Control) {
+		let index = screenList.findIndex( item => item.uuid == control.uuidAction);
+		if (screenList[index]) {
+			screenList[index].selected = !screenList[index].selected;
+		}
 		screenSelected = selectedScreenCount == 1;
+	}
+
+	function isSelected(control: Control) {
+		let screen = screenList.find( item => item.uuid == control.uuidAction);
+		return screen ? screen.selected : false;
 	}
 
 	function selectScreenOptions() {
@@ -70,7 +78,7 @@
 		let screen = screenList.find( item => item.selected);
 		let control: Control | undefined = store.controlList.find( (control: Control) => control.uuidAction == screen?.uuid);
 		if (control) {
-			controlView.modal.action(false);
+			//controlView.modal.action(false); // TODO should we close the central overview or not?
 			selectedControl = control;
 			selectedControlOptions = {...DEFAULT_CONTROLOPTIONS, showModal: true, showControl: false};
 		}
@@ -84,13 +92,13 @@
 		state: false
 	});
 
-	function getScreenPosition(uuid: string) {
-		let position = Math.round(Number(store.getState(store.controls[uuid].states.position)) * 100);
+	function getScreenPosition(control: Control) {
+		let position = Math.round(Number(store.getState(store.controls[control.uuidAction].states.position)) * 100);
 		return position < 1 ? $_('Opened') : (position > 99 ? $_('Closed') : String(position) + ' %');
 	}
 
-	function getStatusColor(uuid: string) {
-		let position = Math.round(Number(store.getState(store.controls[uuid].states.position)) * 100);
+	function getStatusColor(control: Control) {
+		let position = Math.round(Number(store.getState(store.controls[control.uuidAction].states.position)) * 100);
 		return position > 1 ? 'dark:text-primary-500 text-primary-700' : 'text-surface-950 dark:text-surface-50';
 	}
 
@@ -194,17 +202,17 @@
 					<div class="absolute z-10 left-[50%] lb-center -bottom-[16px] text-surface-500" transition:fade={{ duration: 300 }}><ChevronDown size="30"/></div>
 				{/if}
 				<div class="overflow-y-auto space-y-2 max-h-[474px]" bind:this={viewport} onscroll={parseScroll}>
-					{#each screenControls as control, index}
+					{#each screenControls as control}
 					<button class="w-full flex h-[60px] items-center justify-start rounded-lg border border-white/10 hover:border-white/50
-												{screenList[index].selected ? 'dark:bg-surface-800  bg-surface-200' : 'dark:bg-surface-950  bg-surface-50'} px-2 py-2"
-												 onclick={() => selectScreen(index)}>
+												{isSelected(control) ? 'dark:bg-surface-800  bg-surface-200' : 'dark:bg-surface-950  bg-surface-50'} px-2 py-2"
+												 onclick={() => selectScreen(control)}>
 						<div class="flex truncate w-full">
 							<div class="mt-0 ml-2 mr-2 flex flex-row w-full justify-between truncate items-center">
 								<div class="flex flex-col">
-									<p class="leading-6 truncate text-lg {getStatusColor(screenList[index].uuid)}">{getControlName(control)}</p>
+									<p class="leading-6 truncate text-lg {getStatusColor(control)}">{getControlName(control)}</p>
 									<p class="truncate text-left text-xs dark:text-surface-300 text-surface-700">{getRoomName(control)}</p>
 								</div>
-								<p class="text-lg {getStatusColor(screenList[index].uuid)}">{getScreenPosition(screenList[index].uuid)}</p>
+								<p class="text-lg {getStatusColor(control)}">{getScreenPosition(control)}</p>
 							</div>
 						</div>
 					</button>
