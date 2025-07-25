@@ -27,7 +27,7 @@
 	let totalNegYear = $derived(Number(store.getState(control.states.totalNegYear)));
 
 	function printValue(n: number, scale: string, unit: string) {
-		return n.toLocaleString(locale) + ' ' + scale + unit;
+		return [n.toLocaleString(locale), scale + unit];
 	}
 
 	function getScale(s:string) {
@@ -42,41 +42,52 @@
 		return scale;
 	}
 
-	function format(n: number, total = true) {
-		let scaleUnit = total ? totalFormat.split(' ')[1] : actualFormat.split(' ')[1]; // e.g kW
-		let scaleStr = scaleUnit[0];
-		let unitStr;
-		let scale = getScale(scaleStr);
+	function getScaleUnit(total: boolean = true) {
 
-		if (scale == 1) {
-			unitStr = scaleUnit;
-			scaleStr = '';
-		} else {
-			unitStr = scaleUnit.slice(1);
+		let format = total ? totalFormat.split(' ') : actualFormat.split(' ');
+		if (format.length<2) { /* no space found, so no scale and unit */
+			return { scale: 1, unit: ''}
+		} 
+
+		let scaleUnit = format[1]; // e.g kW
+		if (scaleUnit.length<2) { /* no scale found, only unit */
+			return {scale: 1, unit: scaleUnit}
 		}
 
-		if (n < 1E3/scale) { 
+		let scale = getScale(scaleUnit[0]);
+		if (scale == 1) {
+			return {scale: 1, unit: scaleUnit[0]}
+		} else {
+			return {scale: scale, unit: scaleUnit.slice(1)}
+		}
+	}
+
+	function format(n: number, total:boolean = true) {
+		let su = getScaleUnit(total)
+	
+		if (Math.abs(n) < 1E3/su.scale) { 
 			n *= 1E3;
 			n = Math.round(n);
-			return printValue(n, '', unitStr);
+			return printValue(n, '', su.unit);
 		}
 
-		if (n > 1E3/scale && n < 1E6/scale) { 
+		if (Math.abs(n) > 1E3/su.scale && Math.abs(n) < 1E6/su.scale) { 
 			n = Math.round(n * 10) / 10;
-			return printValue(n, 'k', unitStr);
+			return printValue(n, 'k', su.unit);
 		}
 
-		if (n > 1E6/scale && n < 1E9/scale) {
+		if (Math.abs(n) > 1E6/su.scale && Math.abs(n) < 1E9/su.scale) {
 			n /= 1E3;
 			n = Math.round(n * 100) / 100;
-			return printValue(n, 'M', unitStr);
+			return printValue(n, 'M', su.unit);
 		}
 
-		if (n > 1E9/scale) {
+		if (Math.abs(n) > 1E9/su.scale) {
 			n /= 1E6;
 			n = Math.round(n * 100) / 100;
-			return printValue(n, 'G', unitStr);
+			return printValue(n, 'G', su.unit);
 		}
+		return printValue(0, '', '');
 	}
 
 	let details = $derived({
@@ -104,10 +115,10 @@
 		control: control,
 		isFavorite: controlOptions.isFavorite,
 		iconName: store.getIcon(control, controlOptions.isSubControl),
-		iconColor: (actual > 0) ? 'dark:fill-primary-500 fill-primary-700' : 'fill-surface-950 dark:fill-surface-50',
+		iconColor: (actual > 0) ? 'dark:fill-primary-500 fill-primary-700' : ((actual == 0) ? 'dark:fill-surface-50 fill-surface-950' : 'dark:fill-tertiary-500 fill-tertiary-700'),
 		textName: control.name,
-		statusName: format(actual, false),
-		statusColor: (actual > 0) ? 'dark:text-primary-500 text-primary-700' : 'text-surface-700 dark:text-surface-300',
+		statusName: format(actual, false).join(' '),
+		statusColor: (actual > 0) ? 'dark:text-primary-500 text-primary-700' : ((actual == 0) ? 'dark:text-surface-50 text-surface-950' : 'dark:text-tertiary-500 text-tertiary-700'),
 		modal: {
 			...modal,
 			details }

@@ -93,6 +93,15 @@
       "isFavorite": false,
       "type": 4,
       "color": "#69C350"
+    },
+    "__uuid__rooms_Centraal": {
+      "uuid": "__uuid__rooms_Centraal",
+      "name": "Centraal",
+      "image": "IconsFilled/central.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": 4,
+      "color": "#69C350"
     }
   },
   "cats": {
@@ -104,6 +113,24 @@
       "isFavorite": false,
       "type": "undefined",
       "color": "#E4354A"
+    },
+    "__uuid__cats_Zonnepanelen": {
+      "uuid": "__uuid__cats_Zonnepanelen",
+      "name": "Zonnepanelen",
+      "image": "IconsFilled/solar-panel.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": "undefined",
+      "color": "#69C350"
+    },
+    "__uuid__cats_Energie": {
+      "uuid": "__uuid__cats_Energie",
+      "name": "Energie",
+      "image": "IconsFilled/flash-1.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": "undefined",
+      "color": "#327AE7"
     }
   },
   "controls": {
@@ -130,8 +157,8 @@
       "name": "PV Meter",
       "type": "Meter",
       "uuidAction": "__uuid__controls_PV_meter",
-      "room": "__uuid__rooms_Woonkamer",
-      "cat": "__uuid__cats_Verlichting",
+      "room": "__uuid__rooms_Centraal",
+      "cat": "__uuid__cats_Zonnepanelen",
       "defaultRating": 2,
       "isFavorite": true,
       "isSecured": false,
@@ -190,8 +217,8 @@
       "name": "Batterie",
       "type": "Meter",
       "uuidAction": "__uuid__controls_Batterij",
-      "room": "__uuid__rooms_Woonkamer",
-      "cat": "__uuid__cats_Verlichting",
+      "room": "__uuid__rooms_Centraal",
+      "cat": "__uuid__cats_Energie",
       "defaultRating": 0,
       "isFavorite": false,
       "isSecured": false,
@@ -284,8 +311,8 @@
       "name": "Net",
       "type": "Meter",
       "uuidAction": "__uuid__controls_Net",
-      "room": "__uuid__rooms_Woonkamer",
-      "cat": "__uuid__cats_Verlichting",
+      "room": "__uuid__rooms_Centraal",
+      "cat": "__uuid__cats_Energie",
       "defaultRating": 1,
       "isFavorite": false,
       "isSecured": false,
@@ -371,6 +398,47 @@
         "jLocked": "__uuid__controls_Trapverlichting_jLocked",
         "deactivationDelay": "__uuid__controls_Trapverlichting_deactivationDelay",
         "deactivationDelayTotal": "__uuid__controls_Trapverlichting_deactivationDelayTotal"
+      }
+    },
+    "__uuid__controls_PresentieDetectie": {
+      "name": "PresentieDetectie",
+      "type": "PresenceDetector",
+      "uuidAction": "__uuid__controls_PresentieDetectie",
+      "room": "__uuid__rooms_Woonkamer",
+      "cat": "__uuid__cats_Verlichting",
+      "defaultRating": 1,
+      "isFavorite": false,
+      "isSecured": false,
+      "restrictions": 0,
+      "details": {
+        "jLockable": true,
+        "parameterConnections": 0
+      },
+      "states": {
+        "jLocked": "__uuid__controls_PresentieDetectie_jLocked",
+        "active": "__uuid__controls_PresentieDetectie_active",
+        "locked": "__uuid__controls_PresentieDetectie_locked",
+        "events": "__uuid__controls_PresentieDetectie_events",
+        "time": "__uuid__controls_PresentieDetectie_time",
+        "activeSince": "__uuid__controls_PresentieDetectie_activeSince",
+        "infoText": "__uuid__controls_PresentieDetectie_infoText"
+      },
+      "subControls": {
+        "__uuid__controls_PresentieDetectie_sucControls/sensors": {
+          "name": "sensors",
+          "type": "Tracker",
+          "uuidAction": "__uuid__controls_PresentieDetectie_sucControls/sensors",
+          "defaultRating": 0,
+          "isFavorite": false,
+          "isSecured": false,
+          "restrictions": 0,
+          "details": {
+            "maxEntries": 20
+          },
+          "states": {
+            "entries": "__uuid__controls_PresentieDetectie_sucControls"
+          }
+        }
       }
     }
   },

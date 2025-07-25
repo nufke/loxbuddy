@@ -36,6 +36,8 @@
   "__uuid_controls_Net_states_totalNegMonth": "9.141803032217302",
   "__uuid_controls_Net_states_totalNegYear": "95.58080303219289",
 
-  "__uuid__controls_Trapverlichting_deactivationDelay": 0,
-  "__uuid__controls_Trapverlichting_deactivationDelayTotal": 120
+  "__uuid__controls_Trapverlichting_deactivationDelay": "0",
+  "__uuid__controls_Trapverlichting_deactivationDelayTotal": "120",
+
+  "__uuid__controls_PresentieDetectie_active": "1"
 }

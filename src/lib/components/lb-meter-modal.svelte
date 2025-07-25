@@ -11,13 +11,11 @@
 
 	let { controlView = $bindable() }: { controlView: ControlView } = $props();
 
-	function getIconColorHex(hexColor: string | undefined) {
-		return (hexColor && hexColor[0] == '#') ? 'fill: ' + hexColor : '';
-	}
-
+	let soc =  $derived(Number(controlView.modal.details['storage']));
 	let selected = $state(0);
 
 	function getWeekDates(d: Date) {
+		return $_('Week'); // TODO change in weekdays for statistics
 		const today = d.getDate();
 		const currentDay = d.getDay();
 		let now = format(d, 'd-L');
@@ -56,136 +54,116 @@
 		<div class="container w-full">
 			<div class="grid grid-cols-3 gap-x-2 m-2">
 				<div></div>
-				<div class="flex h-18 w-18 m-auto items-center justify-center rounded-full border border-white/10 dark:bg-surface-950 bg-surface-50">
-					<LbIcon class={controlView.iconColor} name={controlView.iconName} width="36" height="36"
-								style={getIconColorHex(controlView.iconColor)}/>
+				{#if controlView.control.details.type == 'unidirectional' || controlView.control.details.type == 'bidirectional'}
+				<div class="flex h-18 w-18 m-auto items-center justify-center rounded-full border
+										{controlView.modal.details['actual'][0] > 0 ? 'border-2 border-primary-500' : 
+										(controlView.modal.details['actual'][0] == 0 ? 'border-white/10' :
+										(controlView.control.details.type == 'bidirectional' ? 'border-2 border-tertiary-500' : 'border-white/10'))} dark:bg-surface-950 bg-surface-50">
+					<LbIcon class="dark:fill-surface-50 fill-surface-950" name={controlView.iconName} width="36" height="36"/>
 				</div>
-				<div>
-					{#if controlView.modal.details && controlView.control.details.type == 'storage'}
-					<div class="relative w-full flex flex-col justify-center items-center">
+				{/if}
+				{#if controlView.control.details.type == 'storage'}
+				<div class="relative flex items-center justify-center dark:fill-surface-950 fill-surface-50">
+					<LbIcon class="absolute dark:fill-surface-50 fill-surface-950" name={controlView.iconName} width="36" height="36"/>
+					<svg height="74" width="74" viewBox='0 0 74 74'>
+    				<circle class="dark:stroke-tertiary-500 stroke-tertiary-700" r="36" cx="37" cy="37" stroke-width="2" />
+						<circle class="dark:stroke-primary-500 stroke-primary-700" r="36" cx="37" cy="37" transform="rotate({-90+(soc/100)},37,37)"
+									stroke-dasharray="calc({2*3.1415*36*soc/100}) calc({2*3.1415*36*(100-soc)/100})" stroke-width="2" fill="none"/>
+					</svg>
+				</div>
+				{/if}
+				<div></div>
+				<div></div>
+				<div class="relative w-full flex flex-col justify-center items-center">
+					<p class="text-lg {controlView.modal.details['actual'][0] > 0 ? 'dark:text-primary-500 text-primary-700' :
+								(controlView.modal.details['actual'][0] == 0 ? 'border-white/10' :
+									'dark:text-tertiary-500 text-tertiary-700')} ">{controlView.modal.details['actual'].join(' ')}</p>
+						{#if controlView.modal.details && controlView.control.details.type == 'storage'}
 						<p class="text-lg dark:text-primary-500 text-primary-700">{controlView.modal.details['storage']} %</p>
-						<p>SOC</p>
-					</div>
-					{/if}
+						{/if}
 				</div>
+				<div></div>
 			</div>
 		</div>
 		<div class="relative w-full mt-2">
-			{#if controlView.modal.details && controlView.control.details.type == 'unidirectional'}
-			<div class="grid grid-cols-3 gap-x-2 m-2">
-				<div class="relative w-full flex justify-center items-center">
-					<p class="text-lg dark:text-primary-500 text-primary-700">{controlView.modal.details['actual']}</p>
-				</div>
-				<div class="relative w-full flex justify-center items-center">
-					<p class="text-lg dark:text-primary-500 text-primary-700">{controlView.modal.details['totalDay']}</p>
-				</div>
-				<div class="relative w-full flex justify-center items-center">
-					<p class="text-lg dark:text-primary-500 text-primary-700">{controlView.modal.details['totalWeek']}</p>
-				</div>
-				<div class="relative w-full flex justify-center items-center">
-					<p class="text-md">{$_('Actual')}</p>
-				</div>
-				<div class="relative w-full flex justify-center items-center">
-					<p class="text-md">{$_('Today')}</p>
-				</div>
-				<div class="relative w-full flex justify-center items-center">
-					<p class="text-md">{getWeekDates(store.time)}</p>
-				</div>
-			</div>
-			<div class="grid grid-cols-3 gap-x-2 m-2">
-				<div class="relative w-full flex justify-center items-center">
-					<p class="text-lg dark:text-primary-500 text-primary-700">{controlView.modal.details['totalMonth']}</p>
-				</div>
-				<div class="relative w-full flex justify-center items-center">
-					<p class="text-lg dark:text-primary-500 text-primary-700">{controlView.modal.details['totalYear']}</p>
-				</div>
-				<div class="relative w-full flex justify-center items-center">
-					<p class="text-lg dark:text-primary-500 text-primary-700">{controlView.modal.details['total']}</p>
-				</div>
-				<div class="relative w-full flex justify-center items-center">
-					<p class="text-md">{format(store.time, 'MMMM')}</p>
-				</div>
-				<div class="relative w-full flex justify-center items-center">
-					<p class="text-md">{format(store.time, 'u')}</p>
-				</div>
-				<div class="relative w-full flex justify-center items-center">
-					<p class="text-md">{$_('Total')}</p>
-				</div>
-			</div>
-			{/if}
-			{#if controlView.modal.details && (controlView.control.details.type == 'storage' || controlView.control.details.type == 'bidirectional')}
-			<div class="grid grid-cols-3 gap-x-2 m-2">
+			{#if controlView.modal.details}
+			<div class="grid { controlView.control.details.type == 'unidirectional' ? 'grid-cols-2' : 'grid-cols-3'} gap-x-2 m-2">
+				{#if controlView.control.details.type == 'storage' || controlView.control.details.type == 'bidirectional'}
 				<div></div>
+				{/if}
 				<div class="relative w-full flex justify-center items-center">
 					{#if controlView.control.details.type == 'storage'}
 					<p class="text-md dark:text-primary-500 text-primary-700">{$_('Charge')}</p>
-					{:else}
+					{/if}
+					{#if controlView.control.details.type == 'bidirectional'}
 					<p class="text-md dark:text-primary-500 text-primary-700">{$_('Production')}</p>
 					{/if}
 				</div>
 				<div class="relative w-full flex justify-center items-center">
 					{#if controlView.control.details.type == 'storage'}
-					<p class="text-md dark:text-yellow-500 text-yello-700">{$_('Discharge')}</p>
-					{:else}
-					<p class="text-md dark:text-yellow-500 text-yello-700">{$_('Consumption')}</p>
+					<p class="text-md dark:text-tertiary-500 text-tertiary-700">{$_('Discharge')}</p>
+					{/if}
+					{#if controlView.control.details.type == 'bidirectional'}
+					<p class="text-md dark:text-tertiary-500 text-tertiary-700">{$_('Consumption')}</p>
 					{/if}
 				</div>
 			</div>
-			<div class="grid grid-cols-3 gap-2 m-2">
-				<div class="relative w-full flex justify-center items-center">
-					<p class="text-md">{$_('Actual')}</p>
-				</div>
-				<div class="relative w-full flex justify-center items-center">
-					<p class="text-lg dark:text-primary-500 text-primary-700">{controlView.modal.details['actual']}</p>
-				</div>
-				<div class="relative w-full flex justify-center items-center">
-					<p class="text-lg dark:text-yellow-500 text-yello-700">-</p>
-				</div>
+			<div class="grid { controlView.control.details.type == 'unidirectional' ? 'grid-cols-2' : 'grid-cols-3'} gap-2 m-2">
 				<div class="relative w-full flex justify-center items-center">
 					<p class="text-md">{$_('Today')}</p>
 				</div>
 				<div class="relative w-full flex justify-center items-center">
-					<p class="text-lg dark:text-primary-500 text-primary-700">{controlView.modal.details['totalDay']}</p>
+					<p class="text-lg dark:text-primary-500 text-primary-700">{controlView.modal.details['totalDay'].join(' ')}</p>
 				</div>
+				{#if controlView.control.details.type != 'unidirectional'}
 				<div class="relative w-full flex justify-center items-center">
-					<p class="text-lg dark:text-yellow-500 text-yello-700">{controlView.modal.details['totalNegDay']}</p>
+					<p class="text-lg dark:text-tertiary-500 text-tertiary-700">{controlView.modal.details['totalNegDay'].join(' ')}</p>
 				</div>
+				{/if}
 				<div class="relative w-full flex justify-center items-center">
 					<p class="text-md">{getWeekDates(store.time)}</p>
 				</div>
 				<div class="relative w-full flex justify-center items-center">
-					<p class="text-lg dark:text-primary-500 text-primary-700">{controlView.modal.details['totalWeek']}</p>
+					<p class="text-lg dark:text-primary-500 text-primary-700">{controlView.modal.details['totalWeek'].join(' ')}</p>
 				</div>
+				{#if controlView.control.details.type != 'unidirectional'}
 				<div class="relative w-full flex justify-center items-center">
-					<p class="text-lg dark:text-yellow-500 text-yello-700">{controlView.modal.details['totalNegWeek']}</p>
+					<p class="text-lg dark:text-tertiary-500 text-tertiary-700">{controlView.modal.details['totalNegWeek'].join(' ')}</p>
 				</div>
+				{/if}
 				<div class="relative w-full flex justify-center items-center">
 					<p class="text-md">{format(store.time, 'MMMM')}</p>
 				</div>
 				<div class="relative w-full flex justify-center items-center">
-					<p class="text-lg dark:text-primary-500 text-primary-700">{controlView.modal.details['totalMonth']}</p>
+					<p class="text-lg dark:text-primary-500 text-primary-700">{controlView.modal.details['totalMonth'].join(' ')}</p>
 				</div>
+				{#if controlView.control.details.type != 'unidirectional'}
 				<div class="relative w-full flex justify-center items-center">
-					<p class="text-lg dark:text-yellow-500 text-yello-700">{controlView.modal.details['totalNegMonth']}</p>
+					<p class="text-lg dark:text-tertiary-500 text-tertiary-700">{controlView.modal.details['totalNegMonth'].join(' ')}</p>
 				</div>
+				{/if}
 				<div class="relative w-full flex justify-center items-center">
 					<p class="text-md">{format(store.time, 'u')}</p>
 				</div>
 				<div class="relative w-full flex justify-center items-center">
-					<p class="text-lg dark:text-primary-500 text-primary-700">{controlView.modal.details['totalYear']}</p>
+					<p class="text-lg dark:text-primary-500 text-primary-700">{controlView.modal.details['totalYear'].join(' ')}</p>
 				</div>
+				{#if controlView.control.details.type != 'unidirectional'}
 				<div class="relative w-full flex justify-center items-center">
-					<p class="text-lg dark:text-yellow-500 text-yello-700">{controlView.modal.details['totalNegYear']}</p>
+					<p class="text-lg dark:text-tertiary-500 text-tertiary-700">{controlView.modal.details['totalNegYear'].join(' ')}</p>
 				</div>
+				{/if}
 				<div class="relative w-full flex justify-center items-center">
 					<p class="text-md">{$_('Total')}</p>
 				</div>
 				<div class="relative w-full flex justify-center items-center">
-					<p class="text-lg dark:text-primary-500 text-primary-700">{controlView.modal.details['total']}</p>
+					<p class="text-lg dark:text-primary-500 text-primary-700">{controlView.modal.details['total'].join(' ')}</p>
 				</div>
+				{#if controlView.control.details.type != 'unidirectional'}
 				<div class="relative w-full flex justify-center items-center">
-					<p class="text-lg dark:text-yellow-500 text-yello-700">{controlView.modal.details['totalNeg']}</p>
+					<p class="text-lg dark:text-tertiary-500 text-tertiary-700">{controlView.modal.details['totalNeg'].join(' ')}</p>
 				</div>
+				{/if}
 			</div>
 			{/if}
 		</div>
@@ -209,8 +187,5 @@
 		</div>
 		{/if}
 	</div>
-	
 	{/snippet}
 </Modal>
-<!--				<p class="text-md">{getWeekDates(store.time)}</p>
--->

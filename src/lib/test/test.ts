@@ -11,6 +11,23 @@ class Test {
 		console.log('TEST MODE: Use demo structure');
 		store.initStructure(demo);
 		store.setInitialStates(states);
+		let i = 0;
+		let j = 0;
+		let val = [ "0.0234", "0", "0", "0.500", "-0.400", "0", "2", "-2", "0"];
+		let soc = [ "100", "80", "60", "40", "20", "0"];
+		
+		setInterval(() => {
+			store.setState("__uuid_controls_PV_meter_states_actual", val[i]);
+			store.setState("__uuid_controls_Batterij_states_actual", val[2+i]);
+			store.setState("__uuid_controls_Net_states_actual", val[4+i]);
+			if (i==2) { i = 0; } else { i++; }
+		}, 2000);
+
+		setInterval(() => {
+			store.setState("__uuid_controls_Batterij_states_storage", soc[j]);
+			if (j==5) { j = 0; } else { j++; }
+		}, 1000);
+
 	}
 
 	exec(uuid: string, topic: string, msg: string) {
