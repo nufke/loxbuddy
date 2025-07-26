@@ -97,7 +97,7 @@
 		'totalMonth': format(totalMonth),
 		'totalYear': format(totalYear),
 		'total': format(total),
-		'storage': String(Math.round(storage * 10) / 10),
+		'storage': (Math.round(storage * 10) / 10).toLocaleString(locale),
 		'totalNegDay': format(totalNegDay),
 		'totalNegWeek': format(totalNegWeek),
 		'totalNegMonth': format(totalNegMonth),

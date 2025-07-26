@@ -134,10 +134,10 @@
 		</div>
 		{/if}
 		{#if controlView && controlView.modal && controlView.modal.buttons}
-		<div class="container grid grid-cols-1 gap-2 m-2">
+		<div class="container grid grid-cols-1 {controlView.modal.class} gap-2 m-2">
 			{#each controlView.modal.buttons as button, index}
 				{#if button.type === 'button' && button.click}
-					<button type="button" class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50" 
+					<button type="button" class="w-full {button.class} btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50" 
 							onclick={button.click}>
 							{#if button.name}
 								<span class="text-lg">{$_(button.name)}</span>

@@ -42,7 +42,7 @@ or submit a [pull request](https://github.com/nufke/loxbuddy/pulls).
 | EnergyManager            | Not started       |                             |
 | EnergyManager2           | Not started       |                             |
 | Fronius                  | Under development | No statistics planned       |
-| Gate                     | Not started       |                             |
+| Gate                     | Under development |                             |
 | GateCentral              | Not started       |                             |
 | Heatmixer                | Not started       |                             |
 | Hourcounter              | Not started       |                             |

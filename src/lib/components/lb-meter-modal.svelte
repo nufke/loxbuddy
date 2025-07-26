@@ -52,8 +52,7 @@
 	</header>
 	<div class="flex flex-col items-center justify-center">
 		<div class="container w-full">
-			<div class="grid grid-cols-3 gap-x-2 m-2">
-				<div></div>
+			<div class="grid grid-cols-1 gap-x-2 m-2">
 				{#if controlView.control.details.type == 'unidirectional' || controlView.control.details.type == 'bidirectional'}
 				<div class="flex h-18 w-18 m-auto items-center justify-center rounded-full border
 										{controlView.modal.details['actual'][0] > 0 ? 'border-2 border-primary-500' : 
@@ -72,9 +71,7 @@
 					</svg>
 				</div>
 				{/if}
-				<div></div>
-				<div></div>
-				<div class="relative w-full flex flex-col justify-center items-center">
+				<div class="relative w-full mt-2 flex flex-col justify-center items-center">
 					<p class="text-lg {controlView.modal.details['actual'][0] > 0 ? 'dark:text-primary-500 text-primary-700' :
 								(controlView.modal.details['actual'][0] == 0 ? 'border-white/10' :
 									'dark:text-tertiary-500 text-tertiary-700')} ">{controlView.modal.details['actual'].join(' ')}</p>
@@ -82,7 +79,6 @@
 						<p class="text-lg dark:text-primary-500 text-primary-700">{controlView.modal.details['storage']} %</p>
 						{/if}
 				</div>
-				<div></div>
 			</div>
 		</div>
 		<div class="relative w-full mt-2">

@@ -82,6 +82,7 @@
 				name: $_('Shade'),
 				type: 'button',
 				color: '',
+				class: 'col-span-2',
 				click: () => publishTopic(control.uuidAction, 'shade'),
 				mousedown: () => {}, // do nothing
 				mouseup: () => {} // do nothing

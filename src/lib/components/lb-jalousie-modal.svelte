@@ -13,9 +13,6 @@
 
 	let autoActive = $derived(Number(store.getState(controlView.control.states.autoActive)));
 
-	function getColSpan(i: number, j: number) {
-		return (i==4 && j!=0)  ? 'col-span-2' : '';
-	}
 </script>
 
 <Modal
@@ -65,9 +62,9 @@
 		</div>
 		<div class="container flex grid grid-cols-2 gap-2 mt-6 m-2">
 		{#if controlView.modal && controlView.modal.buttons}
-			{#each controlView.modal.buttons as button, index}
+			{#each controlView.modal.buttons as button}
 				{#if button.type === 'button'}
-					<button type="button" class="w-full {getColSpan(index, controlView.modal.buttons.length)} btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50" 
+					<button type="button" class="w-full {button.class} btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50" 
 							onclick={(e) => { e.stopPropagation(); e.preventDefault(); button.click()}}
 							onmousedown={(e) => { e.stopPropagation(); e.preventDefault(); button.mousedown()}}
 							onmouseup={(e) => { e.stopPropagation(); e.preventDefault(); button.mouseup()}}>

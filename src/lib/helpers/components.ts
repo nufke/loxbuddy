@@ -26,6 +26,7 @@ import LbWindowMonitor from '$lib/components/lb-window-monitor.svelte';
 import LbValueSelector from '$lib/components/lb-value-selector.svelte';
 import LbMeter from '$lib/components/lb-meter.svelte';
 import LbUnknown from '$lib/components/lb-unknown.svelte';
+import LbGate from '$lib/components/lb-gate.svelte';
 import { loxiconsPath } from '$lib/helpers/paths';
 
 let componentList = [
@@ -55,7 +56,8 @@ let componentList = [
 	{ type: 'PresenceDetector', component: LbPresenceDetector, defaultIcon: loxiconsPath + 'IconsFilled/presence.svg' },
 	{ type: 'WindowMonitor', component: LbWindowMonitor, defaultIcon: '/icons/svg/pull-door.svg' },
 	{ type: 'ValueSelector', component: LbValueSelector, defaultIcon: '' },
-	{ type: 'Meter', component: LbMeter, defaultIcon: '' }
+	{ type: 'Meter', component: LbMeter, defaultIcon: '' },
+	{ type: 'Gate', component: LbGate, defaultIcon: '' }
 ];
 
 export function getComponent(type: string) {

@@ -41,11 +41,25 @@
 
   "__uuid__controls_PresentieDetectie_active": "1",
   
-  "__uuid__controls_Sunscreen_lamellen_position" : "0.2",
-  "__uuid__controls_Sunscreen_lamellen_shadePosition" : "0",
+  "__uuid__controls_Sunscreen_lamellen_position": "0.2",
+  "__uuid__controls_Sunscreen_lamellen_shadePosition": "0",
   "__uuid__controls_Sunscreen_lamellen_autoActive": "1",
 
-  "__uuid__controls_Sunscreen_Keuken_position" : "0.4",
-  "__uuid__controls_Sunscreen_Keuken_shadePosition" : "0"
+  "__uuid__controls_Sunscreen_Keuken_position": "0.4",
+  "__uuid__controls_Sunscreen_Keuken_shadePosition": "0",
 
+  "__uuid__controls_SOC_niveau_min": "0",
+  "__uuid__controls_SOC_niveau_max": "100",
+  "__uuid__controls_SOC_niveau_step": "5",
+  "__uuid__controls_SOC_niveau_value": "0",
+  
+  "__uuid__controls_Raam_en_deur_bewaking_numOpen" : "2",
+  "__uuid__controls_Raam_en_deur_bewaking_numClosed": "5",
+  "__uuid__controls_Raam_en_deur_bewaking_numTilted": "0",
+  "__uuid__controls_Raam_en_deur_bewaking_numOffline": "0",
+  "__uuid__controls_Raam_en_deur_bewaking_numLocked": "0",
+  "__uuid__controls_Raam_en_deur_bewaking_numUnlocked": "0",
+  "__uuid__controls_Raam_en_deur_bewaking_windowStates": "4,1,1,1,1,4,1",
+  
+  "__uuid__controls_Verwarmingsstand_activeOutput": "1"
 }

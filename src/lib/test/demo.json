@@ -102,6 +102,33 @@
       "isFavorite": false,
       "type": 4,
       "color": "#69C350"
+    },
+    "__uuid__rooms_Buiten": {
+      "uuid": "__uuid__rooms_Buiten",
+      "name": "Buiten",
+      "image": "IconsFilled/tree.svg",
+      "defaultRating": 1,
+      "isFavorite": true,
+      "type": 2,
+      "color": "#69C350"
+    },
+    "__uuid__rooms_Keuken": {
+      "uuid": "__uuid__rooms_Keuken",
+      "name": "Keuken",
+      "image": "IconsFilled/knife-fork.svg",
+      "defaultRating": 9,
+      "isFavorite": true,
+      "type": 2,
+      "color": "#69C350"
+    },
+    "__uuid__rooms_Badkamer": {
+      "uuid": "__uuid__rooms_Badkamer",
+      "name": "Badkamer Ouders",
+      "image": "IconsFilled/shower-1.svg",
+      "defaultRating": 1,
+      "isFavorite": true,
+      "type": 2,
+      "color": "#69C350"
     }
   },
   "cats": {
@@ -140,6 +167,24 @@
       "isFavorite": true,
       "type": "shading",
       "color": "#1DB0D9"
+    },
+    "__uuid__cats_Veiligheid": {
+      "uuid": "__uuid__cats_Veiligheid",
+      "name": "Veiligheid",
+      "image": "IconsFilled/cc-camera.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": "undefined",
+      "color": "#69C350"
+    },
+    "__uuid__cats_Verwarming": {
+      "uuid": "__uuid__cats_Verwarming",
+      "name": "Verwarming",
+      "image": "IconsFilled/radiator.svg",
+      "defaultRating": 2,
+      "isFavorite": true,
+      "type": "indoortemperature",
+      "color": "#69C350"
     }
   },
   "controls": {
@@ -554,6 +599,145 @@
       "states": {
         "jLocked": "__uuid__controls_Zonwering_centraal_jLocked",
         "events": "__uuid__controls_Zonwering_centraal_events"
+      }
+    },
+    "__uuid__controls_Poort": {
+      "name": "Poort",
+      "type": "Gate",
+      "uuidAction": "__uuid__controls_Poort",
+      "room": "__uuid__rooms_Buiten",
+      "cat": "__uuid__cats_Veiligheid",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": true,
+      "restrictions": 0,
+      "details": {
+        "jLockable": true,
+        "controlHistory": true,
+        "hasHistory": 20,
+        "animation": 0
+      },
+      "states": {
+        "jLocked": "__uuid__controls_Poort_jLocked",
+        "position": "__uuid__controls_Poort_position",
+        "active": "__uuid__controls_Poort_active",
+        "preventOpen": "__uuid__controls_Poort_preventOpen",
+        "preventClose": "__uuid__controls_Poort_preventClose"
+      }
+    },
+    "__uuid__controls_SOC_niveau": {
+      "name": "SOC niveau",
+      "type": "ValueSelector",
+      "uuidAction": "__uuid__controls_SOC_niveau",
+      "room": "__uuid__rooms_Centraal",
+      "cat": "__uuid__cats_Energie",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": null,
+      "restrictions": 0,
+      "details": {
+        "jLockable": true,
+        "increaseOnly": false,
+        "format": "%.0f %%"
+      },
+      "states": {
+        "jLocked": "__uuid__controls_SOC_niveau_jLocked",
+        "min": "__uuid__controls_SOC_niveau_min",
+        "max": "__uuid__controls_SOC_niveau_max",
+        "step": "__uuid__controls_SOC_niveau_step",
+        "value": "__uuid__controls_SOC_niveau_value"
+      }
+    },
+    "__uuid__controls_Raam_en_deur_bewaking": {
+      "name": "Raam en deur bewaking",
+      "type": "WindowMonitor",
+      "uuidAction": "__uuid__controls_Raam_en_deur_bewaking",
+      "room": "__uuid__rooms_Centraal",
+      "cat": "__uuid__cats_Veiligheid",
+      "defaultRating": 8,
+      "isFavorite": true,
+      "isSecured": false,
+      "restrictions": 0,
+      "details": {
+        "jLockable": false,
+        "windows": [
+          {
+            "name": "Raam",
+            "installPlace": "",
+            "uuid": "__uuid__controls_Raam_en_deur_bewaking_Raam1",
+            "room": "__uuid__rooms_Woonkamer"
+          },
+          {
+            "name": "Raam",
+            "installPlace": "",
+            "uuid": "__uuid__controls_Raam_en_deur_bewaking_Raam2",
+            "room": "__uuid__rooms_Woonkamer"
+          },
+          {
+            "name": "Raam",
+            "installPlace": "",
+            "uuid": "__uuid__controls_Raam_en_deur_bewaking_Raam3",
+            "room": "__uuid__rooms_Woonkamer"
+          },
+          {
+            "name": "Raam",
+            "installPlace": "",
+            "uuid": "__uuid__controls_Raam_en_deur_bewaking_Raam4",
+            "room": "__uuid__rooms_Keuken"
+          },
+          {
+            "name": "Raam",
+            "installPlace": "",
+            "uuid": "__uuid__controls_Raam_en_deur_bewaking_Raam5",
+            "room": "__uuid__rooms_Badkamer"
+          },
+          {
+            "name": "Raam",
+            "installPlace": "",
+            "uuid": "__uuid__controls_Raam_en_deur_bewaking_Raam6",
+            "room": "__uuid__rooms_Badkamer"
+          }
+        ]
+      },
+      "states": {
+        "numOpen": "__uuid__controls_Raam_en_deur_bewaking_numOpen",
+        "numClosed": "__uuid__controls_Raam_en_deur_bewaking_numClosed",
+        "numTilted": "__uuid__controls_Raam_en_deur_bewaking_numTilted",
+        "numOffline": "__uuid__controls_Raam_en_deur_bewaking_numOffline",
+        "numLocked": "__uuid__controls_Raam_en_deur_bewaking_numLocked",
+        "numUnlocked": "__uuid__controls_Raam_en_deur_bewaking_numUnlocked",
+        "windowStates": "__uuid__controls_Raam_en_deur_bewaking_windowStates"
+      }
+    },
+    "__uuid__controls_Verwarmingsstand": {
+      "name": "Verwarmingsstand",
+      "type": "Radio",
+      "uuidAction": "__uuid__controls_Verwarmingsstand",
+      "room": "__uuid__rooms_Centraal",
+      "cat": "__uuid__cats_Verwarming",
+      "defaultRating": 1,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/radiator.svg",
+      "restrictions": 0,
+      "details": {
+        "jLockable": true,
+        "allOff": "Normaal",
+        "outputs": {
+          "1": "Spaarstand",
+          "2": "Comfort continue",
+          "3": "Vrije dag",
+          "4": "Party",
+          "5": "Verhoogde temperatuur",
+          "6": "Allemaal afwezig",
+          "7": "Woning in diepe slaap",
+          "8": "Alarm"
+        }
+      },
+      "states": {
+        "jLocked": "__uuid__controls_Verwarmingsstand_jLocked",
+        "activeOutput": "__uuid__controls_Verwarmingsstand_activeOutput"
       }
     }
   },

@@ -434,6 +434,7 @@ export type SingleButtonView = {
 	name?: string;
 	iconName?: string;
 	iconColor?: string;
+	class?: string;
 	type: string;
 	state?: boolean;
 	click?: any;
@@ -484,6 +485,7 @@ export type ControlView = {
 export type ModalView = {
 	action: any,
 	state?: boolean;
+	class?: string;
 	buttons?: SingleButtonView[];
 	details?: any;
 	timeout?: any;			// timeout for screensaver

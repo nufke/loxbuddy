@@ -44,15 +44,29 @@ class Test {
 			case 'Switch' : this.switch(control, msg); break;
 			case 'TimedSwitch': this.timedSwitch(control, msg); break;
 			case 'Jalousie': this.jalousie(control, msg); break;
+			case 'ValueSelector': this.valueSelector(control, msg); break;
+			case 'Radio': this.radio(control, msg); break;
+			default: console.log('control not tested ', control.name, ' of type', control.type);
 		}
 	}
 
 	switch(control: Control, msg: string) {
-		let state = control.states.active;
+		let stateId = control.states.active;
 		let val;
 		if (msg == 'on') val = '1';
 		if (msg == 'off') val = '0';
-		store.setState(state, val);
+		store.setState(stateId, val);
+	}
+
+	radio(control: Control, msg: string) {
+		let stateId = control.states.activeOutput;
+		let val = msg =='reset' ? 0 : msg;
+		store.setState(stateId, val);
+	}
+
+	valueSelector(control: Control, msg: string) {
+		let stateId = control.states.value;
+		store.setState(stateId, msg);
 	}
 
 	jalousie(control: Control, msg: string) {
