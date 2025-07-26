@@ -2,6 +2,8 @@
 	import LbControl from '$lib/components/lb-control.svelte';
 	import LbWidget from '$lib/components/lb-widget.svelte';
 	import LbJalousie from '$lib/components/lb-jalousie.svelte';
+	import LbIcon from '$lib/components/lb-icon-by-name.svelte';
+	import LbJalousieIcon from '$lib/components/lb-jalousie-icon.svelte';
 	import type { Control, ControlOptions, ControlView, ModalView, ScreenItem, SingleButtonView } from '$lib/types/models';
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import { store } from '$lib/stores/store.svelte';
@@ -23,9 +25,9 @@
 	screenList.forEach( item => item.selected = false); // default all screens unselected
 
 	let screenUuid = control.details.controls.map((item: ScreenItem) => item.uuid);
-	let screenControls = store.controlList.filter(
+	let screenControls = $derived(store.controlList.filter(
 		(controls: Control) => screenUuid.indexOf(controls.uuidAction) > -1
-	);
+	));
 
 	let screensClosed = $derived(
 		screenControls.filter((control: Control) => Number(store.getState(control.states.position)) * 100 > 1)
@@ -93,12 +95,25 @@
 	});
 
 	function getScreenPosition(control: Control) {
-		let position = Math.round(Number(store.getState(store.controls[control.uuidAction].states.position)) * 100);
-		return position < 1 ? $_('Opened') : (position > 99 ? $_('Closed') : String(position) + ' %');
+		return Math.round(Number(store.getState(control.states.position)) * 100);
+	}
+
+	function getShadePosition(control: Control) {
+		if (control.details.animation != 0) {
+			return 100;
+		} else {
+		  return Math.round(Number(store.getState(control.states.shadePosition)) * 100);
+		}
+	}
+
+	function isAutoActive(control: Control) {
+		let a = Number(store.getState(control.states.autoActive));
+		console.log(control, a);
+		return a;
 	}
 
 	function getStatusColor(control: Control) {
-		let position = Math.round(Number(store.getState(store.controls[control.uuidAction].states.position)) * 100);
+		let position = Math.round(Number(store.getState(control.states.position)) * 100);
 		return position > 1 ? 'dark:text-primary-500 text-primary-700' : 'text-surface-950 dark:text-surface-50';
 	}
 
@@ -206,13 +221,22 @@
 					<button class="w-full flex h-[60px] items-center justify-start rounded-lg border border-white/10 hover:border-white/50
 												{isSelected(control) ? 'dark:bg-surface-800  bg-surface-200' : 'dark:bg-surface-950  bg-surface-50'} px-2 py-2"
 												 onclick={() => selectScreen(control)}>
-						<div class="flex truncate w-full">
+						<div class="relative flex truncate w-full">
 							<div class="mt-0 ml-2 mr-2 flex flex-row w-full justify-between truncate items-center">
 								<div class="flex flex-col">
 									<p class="leading-6 truncate text-lg {getStatusColor(control)}">{getControlName(control)}</p>
 									<p class="truncate text-left text-xs dark:text-surface-300 text-surface-700">{getRoomName(control)}</p>
 								</div>
-								<p class="text-lg {getStatusColor(control)}">{getScreenPosition(control)}</p>
+								<div class="relative inline-flex h-12 p-0">
+									<LbJalousieIcon position={getScreenPosition(control)} shadePosition={getShadePosition(control)} width="32" height="32"/>
+									{#if control.details.isAutomatic }
+									<div class="absolute -top-[0px] -left-[9px] inline-flex items-center justify-center w-[18px] h-[18px]
+									{isAutoActive(control) ? 'dark:bg-primary-500 bg-primary-700' : 'dark:bg-surface-50 bg-surface-950'} rounded-full
+															border border-1 dark:border-surface-950 border-surface-50">
+										<LbIcon class='dark:text-surface-950 text-surface-50' name="/icons/svg/automatic-2.svg" size="10"/>
+									</div>
+									{/if}
+								</div>
 							</div>
 						</div>
 					</button>

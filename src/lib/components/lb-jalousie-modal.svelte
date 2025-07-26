@@ -2,6 +2,7 @@
 	import { Modal } from '@skeletonlabs/skeleton-svelte';
   import type { ControlView } from '$lib/types/models';
 	import LbIcon from '$lib/components/lb-icon-by-name.svelte';
+	import LbJalousieIcon from '$lib/components/lb-jalousie-icon.svelte';
 	import { X } from '@lucide/svelte';
 	import { _ } from 'svelte-i18n';
 	import { fade200 } from '$lib/helpers/transition';
@@ -26,7 +27,8 @@
 
 	let statusText = $derived(controlView.statusName + 
 									((shadePosition == 0 && type == 0 ) ? ', ' + $_('Slats are horizontal').toLocaleLowerCase() : 
-									((shadePosition == 1 && type == 0 ) ? ', ' + $_('Slats are vertical').toLocaleLowerCase() : '')));
+									((shadePosition == 1 && type == 0 ) ? ', ' + $_('Slats are vertical').toLocaleLowerCase() :
+									((shadePosition > 0 && shadePosition < 1 && type == 0 ) ? ', ' + $_('Slats at').toLocaleLowerCase() + ' %' : ''))));
 
 	function getColSpan(i: number, j: number) {
 		return (i==4 && j!=0)  ? 'col-span-2' : '';
@@ -52,7 +54,7 @@
 	<header class="relative">
 		<div class="flex justify-center">
 			<div class="relative inline-flex h-18 w-18 items-center justify-center overflow-hidden rounded-full border border-white/10 dark:bg-surface-950">
-				<LbIcon class={controlView.iconColor} name={controlView.iconName} width="36" height="36"/>
+				<LbJalousieIcon position={controlView.modal.details.position} shadePosition={controlView.modal.details.shadePosition} width="36" height="36"/>
 				{#if controlView.badgeIconName?.length}
 					<div class="absolute top-[9px] left-[10px] inline-flex items-center justify-center w-[18px] h-[18px] {controlView.badgeIconColor} rounded-full
 											border border-1 dark:border-surface-950 border-surface-50">

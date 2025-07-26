@@ -3,6 +3,7 @@
 	import type { ControlView, ControlOptions } from '$lib/types/models';
 	import { DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import LbIcon from '$lib/components/lb-icon-by-name.svelte';
+	import LbJalousieIcon from '$lib/components/lb-jalousie-icon.svelte';
 	import { _ } from 'svelte-i18n';
 
 	let { controlView = $bindable(), controlOptions = DEFAULT_CONTROLOPTIONS } : { controlView: ControlView, controlOptions: ControlOptions } = $props();
@@ -38,8 +39,12 @@
 		<div class="relative flex items-center truncate">
 			{#if controlView.iconName.length && !controlView.isSubControl} <!-- only show icon if name is given -->
 				<div class="relative mr-1 inline-flex items-center justify-center w-12 h-12 min-w-12 overflow-hidden rounded-full border border-white/10 dark:bg-surface-950 bg-surface-50">
+					{#if controlView.control.type =='Jalousie'}
+						<LbJalousieIcon position={controlView.modal.details.position} shadePosition={controlView.modal.details.shadePosition} width="28" height="28"/>
+					{:else}
 					<LbIcon class={controlView.iconColor} name={controlView.iconName} width="24" height="24"
 					  style={getIconColorHex(controlView.iconColor)}/>
+					{/if}
 					{#if controlView.badgeIconName?.length}
 						<div class="absolute top-[4px] left-[6px] inline-flex items-center justify-center w-[14px] h-[14px] {controlView.badgeIconColor} rounded-full
 												 border border-1 dark:border-surface-950 border-surface-50">

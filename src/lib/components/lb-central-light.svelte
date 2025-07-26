@@ -23,9 +23,9 @@
 	lightList.forEach( item => item.selected = false ); // default all lights unselected
 
 	let lightsUuid = control.details.controls.map((item: LightItem) => item.uuid);
-	let lightControls = store.controlList.filter(
+	let lightControls = $derived(store.controlList.filter(
 		(controls: Control) => lightsUuid.indexOf(controls.uuidAction) > -1
-	);
+	));
 
 	let lightsOff = $derived(
 		lightControls.filter((control: Control) => store.getState(control.states.activeMoodsNum) == 778)
