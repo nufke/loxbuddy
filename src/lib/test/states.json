@@ -41,6 +41,11 @@
 
   "__uuid__controls_PresentieDetectie_active": "1",
   
-  "__uuid__controls_Sunscreen_links_position" : "0.5",
-  "__uuid__controls_Sunscreen_links_shadePosition" : "0.5"
+  "__uuid__controls_Sunscreen_lamellen_position" : "0.2",
+  "__uuid__controls_Sunscreen_lamellen_shadePosition" : "0",
+  "__uuid__controls_Sunscreen_lamellen_autoActive": "1",
+
+  "__uuid__controls_Sunscreen_Keuken_position" : "0.4",
+  "__uuid__controls_Sunscreen_Keuken_shadePosition" : "0"
+
 }

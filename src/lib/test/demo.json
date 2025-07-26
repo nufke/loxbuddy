@@ -450,10 +450,10 @@
         }
       }
     },
-    "__uuid__controls_Sunscreen_links": {
-      "name": "Sunscreen links",
+    "__uuid__controls_Sunscreen_lamellen": {
+      "name": "Sunscreen lamellen",
       "type": "Jalousie",
-      "uuidAction": "__uuid__controls_Sunscreen_links",
+      "uuidAction": "__uuid__controls_Sunscreen_lamellen",
       "room": "__uuid__rooms_Woonkamer",
       "cat": "__uuid__cats_Zonwering",
       "defaultRating": 7,
@@ -469,26 +469,92 @@
         "type": 348
       },
       "states": {
-        "jLocked": "__uuid__controls_Sunscreen_links_jLocked",
-        "infoText": "__uuid__controls_Sunscreen_links_infoText",
-        "up": "__uuid__controls_Sunscreen_links_up",
-        "down": "__uuid__controls_Sunscreen_links_down",
-        "position": "__uuid__controls_Sunscreen_links_position",
-        "shadePosition": "__uuid__controls_Sunscreen_links_shadePosition",
-        "safetyActive": "__uuid__controls_Sunscreen_links_safetyActive",
-        "autoAllowed": "__uuid__controls_Sunscreen_links_autoAllowed",
-        "autoActive": "__uuid__controls_Sunscreen_links_autoActive",
-        "locked": "__uuid__controls_Sunscreen_links_locked",
-        "autoInfoText": "__uuid__controls_Sunscreen_links_autoInfoText",
-        "autoState": "__uuid__controls_Sunscreen_links_autoState",
-        "deviceState": "__uuid__controls_Sunscreen_links_deviceState",
-        "targetPosition": "__uuid__controls_Sunscreen_links_targetPosition",
-        "targetPositionLamelle": "__uuid__controls_Sunscreen_links_targetPositionLamelle",
-        "adjustingEndPos": "__uuid__controls_Sunscreen_links_adjustingEndPos"
+        "jLocked": "__uuid__controls_Sunscreen_lamellen_jLocked",
+        "infoText": "__uuid__controls_Sunscreen_lamellen_infoText",
+        "up": "__uuid__controls_Sunscreen_lamellen_up",
+        "down": "__uuid__controls_Sunscreen_lamellen_down",
+        "position": "__uuid__controls_Sunscreen_lamellen_position",
+        "shadePosition": "__uuid__controls_Sunscreen_lamellen_shadePosition",
+        "safetyActive": "__uuid__controls_Sunscreen_lamellen_safetyActive",
+        "autoAllowed": "__uuid__controls_Sunscreen_lamellen_autoAllowed",
+        "autoActive": "__uuid__controls_Sunscreen_lamellen_autoActive",
+        "locked": "__uuid__controls_Sunscreen_lamellen_locked",
+        "autoInfoText": "__uuid__controls_Sunscreen_lamellen_autoInfoText",
+        "autoState": "__uuid__controls_Sunscreen_lamellen_autoState",
+        "deviceState": "__uuid__controls_Sunscreen_lamellen_deviceState",
+        "targetPosition": "__uuid__controls_Sunscreen_lamellen_targetPosition",
+        "targetPositionLamelle": "__uuid__controls_Sunscreen_lamellen_targetPositionLamelle",
+        "adjustingEndPos": "__uuid__controls_Sunscreen_lamellen_adjustingEndPos"
       },
       "links": [
         "__uuid_unknonw"
       ]
+    },
+    "__uuid__controls_Sunscreen_Keuken": {
+      "name": "Screen Keuken",
+      "type": "Jalousie",
+      "uuidAction": "__uuid__controls_Sunscreen_Keuken",
+      "room": "__uuid__rooms_Woonkamer",
+      "cat": "__uuid__cats_Zonwering",
+      "defaultRating": 1,
+      "isFavorite": false,
+      "isSecured": false,
+      "restrictions": 0,
+      "details": {
+        "jLockable": true,
+        "controlHistory": true,
+        "hasHistory": 20,
+        "isAutomatic": true,
+        "animation": 1,
+        "type": 348
+      },
+      "states": {
+        "jLocked": "__uuid__controls_Sunscreen_Keuken_jLocked",
+        "infoText": "__uuid__controls_Sunscreen_Keuken_infoText",
+        "up": "__uuid__controls_Sunscreen_Keuken_up",
+        "down": "__uuid__controls_Sunscreen_Keuken_down",
+        "position": "__uuid__controls_Sunscreen_Keuken_position",
+        "shadePosition": "__uuid__controls_Sunscreen_Keuken_shadePosition",
+        "safetyActive": "__uuid__controls_Sunscreen_Keuken_safetyActive",
+        "autoAllowed": "__uuid__controls_Sunscreen_Keuken_autoAllowed",
+        "autoActive": "__uuid__controls_Sunscreen_Keuken_autoActive",
+        "locked": "__uuid__controls_Sunscreen_Keuken_locked",
+        "autoInfoText": "__uuid__controls_Sunscreen_Keuken_autoInfoText",
+        "autoState": "__uuid__controls_Sunscreen_Keuken_autoState",
+        "deviceState": "__uuid__controls_Sunscreen_Keuken_deviceState",
+        "targetPosition": "__uuid__controls_Sunscreen_Keuken_targetPosition",
+        "targetPositionLamelle": "__uuid__controls_Sunscreen_Keuken_targetPositionLamelle",
+        "adjustingEndPos": "__uuid__controls_Sunscreen_Keuken_adjustingEndPos"
+      }
+    },
+    "__uuid__controls_Zonwering_centraal": {
+      "name": "Zonwering centraal",
+      "type": "CentralJalousie",
+      "uuidAction": "__uuid__controls_Zonwering_centraal",
+      "room": "__uuid__rooms_Woonkamer",
+      "cat": "__uuid__cats_Zonwering",
+      "defaultRating": 1,
+      "isFavorite": false,
+      "isSecured": false,
+      "restrictions": 0,
+      "details": {
+        "jLockable": true,
+        "controls": [
+          {
+            "id": 0,
+            "uuid": "__uuid__controls_Sunscreen_lamellen"
+          },
+          {
+            "id": 1,
+            "uuid": "__uuid__controls_Sunscreen_Keuken"
+          }
+        ],
+        "parameterConnections": 0
+      },
+      "states": {
+        "jLocked": "__uuid__controls_Zonwering_centraal_jLocked",
+        "events": "__uuid__controls_Zonwering_centraal_events"
+      }
     }
   },
   "modes": {},

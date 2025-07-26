@@ -90,11 +90,19 @@
 	});
 
 	function getPosition() {
-		let str = fmt.sprintf('%1.0f%% ', position) + $_('Closed').toLowerCase();
-		if (type == 0) {
-			str += fmt.sprintf(', lamellen %1.0f%%', shadePosition);
+		if (position < 1 && (shadePosition < 1 || type != 0)) return $_('Opened');
+		if (position > 99 && (shadePosition > 99 || type != 0)) return $_('Closed');
+		let str = (position < 1 ) ? $_('Opened') : ( (position > 99 ) ? $_('Closed') : fmt.sprintf('%1.0f%% ', position) + $_('Closed').toLowerCase());
+		if (shadePosition < 1 && type == 0) {
+			return str += ', ' + $_('Slats are horizontal').toLocaleLowerCase();
 		}
-		return str; 
+		if (shadePosition > 99 && type == 0) {
+			return str += ', ' + $_('Slats are vertical').toLocaleLowerCase();
+		}
+		if (type == 0) {
+			return str += fmt.sprintf(', lamellen %1.0f%%', shadePosition);
+		}
+		return str;
 	}
 
 	let jalousie = $derived({
@@ -110,7 +118,7 @@
 		iconName: store.getIcon(control, controlOptions.isSubControl),
 		iconColor: (position > 0) ? 'dark:fill-primary-500 fill-primary-700' : 'fill-surface-950 dark:fill-surface-50',
 		textName: control.name,
-		statusName: (position < 1 && shadePosition < 1) ? $_('Opened') : (position > 99 && shadePosition>99) ? $_('Closed') : getPosition(),
+		statusName: getPosition(),
 		statusColor: (position > 0) ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700',
 		badgeIconName: isAutomatic ? '/icons/svg/automatic-2.svg' : '',
 		badgeIconColor: autoActive ? 'dark:bg-primary-500 bg-primary-700' : 'dark:bg-surface-50 bg-surface-950',

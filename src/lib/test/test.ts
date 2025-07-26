@@ -5,7 +5,8 @@ import states from '$lib/test/states.json';
 
 class Test {
 
-	timer: any = {};
+	_timer: any = {};
+	_jalousie: any = {};
 
 	start() {
 		console.log('TEST MODE: Use demo structure');
@@ -42,6 +43,7 @@ class Test {
 		switch (control.type) {
 			case 'Switch' : this.switch(control, msg); break;
 			case 'TimedSwitch': this.timedSwitch(control, msg); break;
+			case 'Jalousie': this.jalousie(control, msg); break;
 		}
 	}
 
@@ -52,17 +54,44 @@ class Test {
 		if (msg == 'off') val = '0';
 		store.setState(state, val);
 	}
-	
+
+	jalousie(control: Control, msg: string) {
+		if (msg == 'down') this.startJalousie(control, 1);
+		if (msg == 'DownOff') clearInterval(this._jalousie[control.uuidAction]);
+		if (msg == 'up') this.startJalousie(control, -1);
+		if (msg == 'UpOff') clearInterval(this._jalousie[control.uuidAction]);
+		if (msg == 'FullDown') this.startJalousie(control, 1);
+		if (msg == 'FullUp') this.startJalousie(control, -1);
+	}
+
+	startJalousie(control: Control, direction: number) {
+		if (this._jalousie[control.uuidAction]) {
+			clearInterval(this._jalousie[control.uuidAction]);
+		}
+		let posId = control.states.position;
+		let pos: number = Number(store.getState(posId));
+		this._jalousie[control.uuidAction] = setInterval(() => {
+			
+			if (pos <= 1 && pos >= 0 ) {
+				pos += 0.1 * direction;
+				if (pos>1) { pos = 1; clearInterval(this._jalousie[control.uuidAction]);}
+				if (pos<0) { pos = 0; clearInterval(this._jalousie[control.uuidAction]);}
+				store.setState(posId, String(pos));
+			} else {
+				clearInterval(this._jalousie[control.uuidAction]);
+			}}, 1000);
+	}
+
 	timedSwitch(control: Control, msg: string) {
 		let state = control.states.deactivationDelay;
 		let initDelay = store.getState(control.states.deactivationDelayTotal);
 
 		let val: number = 0;
 		switch (msg) {
-			case 'on': clearInterval(this.timer[state]); val = -1; store.setState(state, String(val)); break;
-			case 'off': clearInterval(this.timer[state]); val = 0; store.setState(state, String(val)); break;
-			case 'pulse': { val = initDelay; clearInterval(this.timer[state]);
-											this.timer[state] = setInterval(() => {
+			case 'on': clearInterval(this._timer[state]); val = -1; store.setState(state, String(val)); break;
+			case 'off': clearInterval(this._timer[state]); val = 0; store.setState(state, String(val)); break;
+			case 'pulse': { val = initDelay; clearInterval(this._timer[state]);
+											this._timer[state] = setInterval(() => {
 												if (val>0) {
 													val--;
 													store.setState(state, String(val));

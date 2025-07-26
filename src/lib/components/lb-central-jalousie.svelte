@@ -157,6 +157,7 @@
 		control: control,
 		isFavorite: controlOptions.isFavorite,
 		iconName: store.getIcon(control, controlOptions.isSubControl),
+		iconColor: screensClosed.length ? 'dark:fill-primary-500 fill-primary-700' : 'dark:fill-surface-300 fill-surface-700',
 		textName: control.name,
 		statusName: getActiveScreens(),
 		statusColor: screensClosed.length ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700',
