@@ -12,23 +12,6 @@
 	let { controlView = $bindable() }: { controlView: ControlView } = $props();
 
 	let autoActive = $derived(Number(store.getState(controlView.control.states.autoActive)));
-	let shadePosition = $derived(store.getState(controlView.control.states.shadePosition));
-	let type = controlView.control.details.animation;
-
-	/* blinds type
-		0: Venetian blinds (jaloezie/lamellen)
-		1: Roller blinds (rolluik/dakrolgordijn/screen)
-		2: Curtains opening to both sides
-		3: Schlotterer Retrolux
-		4: Curtain left
-		5: Curtain right
-		6: Awning (zonneluifel)
-		*/
-
-	let statusText = $derived(controlView.statusName + 
-									((shadePosition == 0 && type == 0 ) ? ', ' + $_('Slats are horizontal').toLocaleLowerCase() : 
-									((shadePosition == 1 && type == 0 ) ? ', ' + $_('Slats are vertical').toLocaleLowerCase() :
-									((shadePosition > 0 && shadePosition < 1 && type == 0 ) ? ', ' + $_('Slats at').toLocaleLowerCase() + ' %' : ''))));
 
 	function getColSpan(i: number, j: number) {
 		return (i==4 && j!=0)  ? 'col-span-2' : '';
@@ -78,7 +61,7 @@
 				{ autoActive ? $_("Sun position detection enabled") : $_("Sun position detection disabled")}</p>
 		</div>
 		<div class="mt-2 truncate">
-			<p class="text-lg truncate {controlView.statusColor}">{statusText}</p>
+			<p class="text-lg truncate {controlView.statusColor}">{controlView.statusName}</p>
 		</div>
 		<div class="container flex grid grid-cols-2 gap-2 mt-6 m-2">
 		{#if controlView.modal && controlView.modal.buttons}

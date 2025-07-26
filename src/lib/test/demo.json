@@ -131,6 +131,15 @@
       "isFavorite": false,
       "type": "undefined",
       "color": "#327AE7"
+    },
+    "__uuid__cats_Zonwering": {
+      "uuid": "__uuid__cats_Zonwering",
+      "name": "Zonwering",
+      "image": "IconsFilled/blinds-half-closed.svg",
+      "defaultRating": 1,
+      "isFavorite": true,
+      "type": "shading",
+      "color": "#1DB0D9"
     }
   },
   "controls": {
@@ -440,6 +449,46 @@
           }
         }
       }
+    },
+    "__uuid__controls_Sunscreen_links": {
+      "name": "Sunscreen links",
+      "type": "Jalousie",
+      "uuidAction": "__uuid__controls_Sunscreen_links",
+      "room": "__uuid__rooms_Woonkamer",
+      "cat": "__uuid__cats_Zonwering",
+      "defaultRating": 7,
+      "isFavorite": false,
+      "isSecured": false,
+      "restrictions": 0,
+      "details": {
+        "jLockable": true,
+        "controlHistory": true,
+        "hasHistory": 100,
+        "isAutomatic": true,
+        "animation": 0,
+        "type": 348
+      },
+      "states": {
+        "jLocked": "__uuid__controls_Sunscreen_links_jLocked",
+        "infoText": "__uuid__controls_Sunscreen_links_infoText",
+        "up": "__uuid__controls_Sunscreen_links_up",
+        "down": "__uuid__controls_Sunscreen_links_down",
+        "position": "__uuid__controls_Sunscreen_links_position",
+        "shadePosition": "__uuid__controls_Sunscreen_links_shadePosition",
+        "safetyActive": "__uuid__controls_Sunscreen_links_safetyActive",
+        "autoAllowed": "__uuid__controls_Sunscreen_links_autoAllowed",
+        "autoActive": "__uuid__controls_Sunscreen_links_autoActive",
+        "locked": "__uuid__controls_Sunscreen_links_locked",
+        "autoInfoText": "__uuid__controls_Sunscreen_links_autoInfoText",
+        "autoState": "__uuid__controls_Sunscreen_links_autoState",
+        "deviceState": "__uuid__controls_Sunscreen_links_deviceState",
+        "targetPosition": "__uuid__controls_Sunscreen_links_targetPosition",
+        "targetPositionLamelle": "__uuid__controls_Sunscreen_links_targetPositionLamelle",
+        "adjustingEndPos": "__uuid__controls_Sunscreen_links_adjustingEndPos"
+      },
+      "links": [
+        "__uuid_unknonw"
+      ]
     }
   },
   "modes": {},

@@ -107,9 +107,7 @@
 	}
 
 	function isAutoActive(control: Control) {
-		let a = Number(store.getState(control.states.autoActive));
-		console.log(control, a);
-		return a;
+		return Number(store.getState(control.states.autoActive));
 	}
 
 	function getStatusColor(control: Control) {

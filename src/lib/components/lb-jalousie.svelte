@@ -90,9 +90,9 @@
 	});
 
 	function getPosition() {
-		let str = fmt.sprintf('%1.0f%% ', position);
+		let str = fmt.sprintf('%1.0f%% ', position) + $_('Closed').toLowerCase();
 		if (type == 0) {
-			str += fmt.sprintf(', lamellen %1.0f%% ', shadePosition);
+			str += fmt.sprintf(', lamellen %1.0f%%', shadePosition);
 		}
 		return str; 
 	}
