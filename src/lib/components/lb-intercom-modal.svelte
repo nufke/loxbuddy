@@ -32,8 +32,8 @@
 	}
 
 	function getImage(image: number) {
-		return  controlView.details.lastBellEventImages && 
-						controlView.details.lastBellEventImages.hasOwnProperty(image) ? controlView.details.lastBellEventImages[image] : '';
+		return controlView.details.lastBellEventImages && 
+					controlView.details.lastBellEventImages.hasOwnProperty(image) ? controlView.details.lastBellEventImages[image] : '';
 	}
 
 	function resetTab() {

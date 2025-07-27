@@ -87,7 +87,6 @@ class Utils {
 		return Number((Number(hhmm[0]) * 3600 + Number(hhmm[1]) * 60));
 	}
 
-
 	dec2hours(i: number) {
 		let hrs = Math.floor(i/3600);
 		let min = Math.round((Number(i/3600)-hrs) * 60);
@@ -108,7 +107,7 @@ class Utils {
 	}
 
 	time2epoch(dateEpoch: number, time: string) {
-		let hhmm = time.split(':'); // HH:mm notation
+		let hhmm = time.split(':'); // HH:mm:ss notation, we ignore seconds
 		let date = new Date(dateEpoch);
 		let dayStart = new Date(date.getFullYear(), date.getMonth(), date.getDate(), Number(hhmm[0]), Number(hhmm[1]));
 		return dayStart.valueOf();

@@ -19,7 +19,7 @@
 
 	function updatePosition(e: any, isUp: number) {
 		let newPosition;
-		if (e && e.sliderPosition == undefined && sliderBar.position) { // no sliderPosition, is button
+		if (e && e.sliderPosition == undefined && sliderBar.position >= sliderBar.min && sliderBar.position <= sliderBar.max) { // no sliderPosition, is button
 			newPosition = sliderBar.position + sliderBar.step * isUp;
 			if (newPosition > sliderBar.max) newPosition = sliderBar.max;
 			if (newPosition < sliderBar.min) newPosition = sliderBar.min;

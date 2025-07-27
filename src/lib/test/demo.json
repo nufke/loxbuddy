@@ -739,6 +739,348 @@
         "jLocked": "__uuid__controls_Verwarmingsstand_jLocked",
         "activeOutput": "__uuid__controls_Verwarmingsstand_activeOutput"
       }
+    },
+    "__uuid__controls_Laadvermogen": {
+      "name": "Laadvermogen",
+      "type": "Slider",
+      "uuidAction": "__uuid__controls_Laadvermogen",
+      "room": "__uuid__rooms_Centraal",
+      "cat": "__uuid__cats_Energie",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": null,
+      "restrictions": 0,
+      "details": {
+        "jLockable": false,
+        "format": "%.1f kW",
+        "min": 0,
+        "max": 11,
+        "step": 0.1
+      },
+      "states": {
+        "value": "__uuid__controls_Laadvermogen_value",
+        "error": "__uuid__controls_Laadvermogen_error"
+      }
+    },
+    "__uuid__controls_Dimmer_woonkamer": {
+      "name": "Dimmer woonkamer",
+      "type": "Dimmer",
+      "uuidAction": "__uuid__controls_Dimmer_woonkamer",
+      "room": "__uuid__rooms_Woonkamer",
+      "cat": "__uuid__cats_Verlichting",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "restrictions": 0,
+      "details": {
+        "jLockable": true
+      },
+      "states": {
+        "jLocked": "__uuid__controls_Dimmer_woonkamer_jLocked",
+        "position": "__uuid__controls_Dimmer_woonkamer_position",
+        "min": "__uuid__controls_Dimmer_woonkamer_min",
+        "max": "__uuid__controls_Dimmer_woonkamer_max",
+        "step": "__uuid__controls_Dimmer_woonkamer_+step"
+      }
+    },
+    "__uuid__controls_Fase_1": {
+      "name": "Fase 1",
+      "type": "InfoOnlyAnalog",
+      "uuidAction": "__uuid__controls_Fase_1",
+      "room": "__uuid__rooms_Centraal",
+      "cat": "__uuid__cats_Energie",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/flash-1.svg",
+      "restrictions": 0,
+      "details": {
+        "jLockable": false,
+        "format": "%.1f A"
+      },
+      "states": {
+        "value": "__uuid__controls_Fase_1",
+        "error": "__uuid__controls_Fase_1/error"
+      }
+    },
+    "__uuid__controls_Aanvraag_warmte": {
+      "name": "Aanvraag warmte",
+      "type": "InfoOnlyDigital",
+      "uuidAction": "__uuid__controls_Aanvraag_warmte",
+      "room": "__uuid__rooms_Centraal",
+      "cat": "__uuid__cats_Energie",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": null,
+      "restrictions": 0,
+      "details": {
+        "jLockable": false,
+        "text": {
+          "off": "Off",
+          "on": "On"
+        },
+        "color": {
+          "off": "#E73246",
+          "on": "#69C350"
+        }
+      },
+      "states": {
+        "active": "__uuid__controls_Aanvraag_warmte"
+      }
+    },
+    "__uuid__controls_Reset_box": {
+      "name": "Reset box",
+      "type": "Pushbutton",
+      "uuidAction": "__uuid__controls_Reset_box",
+      "room": "__uuid__rooms_Centraal",
+      "cat": "__uuid__cats_Energie",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": null,
+      "restrictions": 0,
+      "details": {
+        "jLockable": true
+      },
+      "states": {
+        "jLocked": "__uuid__controls_Reset_box_jLocked",
+        "active": "__uuid__controls_Reset_box_active"
+      }
+    },
+    "__uuid__controls_Lichtsturing_Woonkamer": {
+      "name": "Lichtsturing",
+      "type": "LightControllerV2",
+      "uuidAction": "__uuid__controls_Lichtsturing_Woonkamer",
+      "room": "__uuid__rooms_Woonkamer",
+      "cat": "__uuid__cats_Verlichting",
+      "defaultRating": 1,
+      "isFavorite": false,
+      "isSecured": false,
+      "restrictions": 0,
+      "details": {
+        "jLockable": true,
+        "controlHistory": true,
+        "hasHistory": 20,
+        "movementScene": 1,
+        "masterValue": "__uuid__controls_Lichtsturing_Woonkamer/masterValue"
+      },
+      "states": {
+        "jLocked": "__uuid__controls_Lichtsturing_Woonkamer_jLocked",
+        "activeMoods": "__uuid__controls_Lichtsturing_Woonkamer_activeMoods",
+        "moodList": "__uuid__controls_Lichtsturing_Woonkamer_moodList",
+        "activeMoodsNum": "__uuid__controls_Lichtsturing_Woonkamer_activeMoodsNum",
+        "favoriteMoods": "__uuid__controls_Lichtsturing_Woonkamer_favoriteMoods",
+        "additionalMoods": "__uuid__controls_Lichtsturing_Woonkamer_additionalMoods",
+        "circuitNames": "__uuid__controls_Lichtsturing_Woonkamer_circuitNames",
+        "daylightConfig": "__uuid__controls_Lichtsturing_Woonkamer_daylightConfig",
+        "presence": "__uuid__controls_Lichtsturing_Woonkamer_presence"
+      },
+      "subControls": {
+        "__uuid__controls_Lichtsturing_Woonkamer/masterValue": {
+          "name": "Master Brightness",
+          "type": "Dimmer",
+          "uuidAction": "__uuid__controls_Lichtsturing_Woonkamer/masterValue",
+          "defaultRating": 0,
+          "isFavorite": false,
+          "isSecured": false,
+          "restrictions": 0,
+          "states": {
+            "position": "__uuid__controls_Lichtsturing_Woonkamer/masterValue_position",
+            "min": "__uuid__controls_Lichtsturing_Woonkamer/masterValue_min",
+            "max": "__uuid__controls_Lichtsturing_Woonkamer/masterValue_max",
+            "step": "__uuid__controls_Lichtsturing_Woonkamer/masterValue_step"
+          }
+        },
+        "__uuid__controls_Lichtsturing_Woonkamer/masterColor": {
+          "name": "Master Color",
+          "type": "ColorPickerV2",
+          "uuidAction": "__uuid__controls_Lichtsturing_Woonkamer/masterColor",
+          "defaultRating": 0,
+          "isFavorite": false,
+          "isSecured": false,
+          "restrictions": 0,
+          "details": {
+            "pickerType": "Rgb"
+          },
+          "states": {
+            "color": "__uuid__controls_Lichtsturing_Woonkamer/masterColor_color",
+            "sequence": "__uuid__controls_Lichtsturing_Woonkamer/masterColor_sequence",
+            "sequenceColorIdx": "__uuid__controls_Lichtsturing_Woonkamer/masterColor_sequenceColorIdx"
+          }
+        },
+        "__uuid__controls_Lichtsturing_Woonkamer/AI1": {
+          "name": "Spots",
+          "type": "Dimmer",
+          "uuidAction": "__uuid__controls_Lichtsturing_Woonkamer/AI1",
+          "defaultRating": 0,
+          "isFavorite": false,
+          "isSecured": false,
+          "restrictions": 0,
+          "states": {
+            "position": "__uuid__controls_Lichtsturing_Woonkamer/AI1_position",
+            "min": "__uuid__controls_Lichtsturing_Woonkamer/AI1_min",
+            "max": "__uuid__controls_Lichtsturing_Woonkamer/AI1_max",
+            "step": "__uuid__controls_Lichtsturing_Woonkamer/AI1_step"
+          }
+        },
+        "__uuid__controls_Lichtsturing_Woonkamer/AI2": {
+          "name": "Spiegel",
+          "type": "Switch",
+          "uuidAction": "__uuid__controls_Lichtsturing_Woonkamer/AI2",
+          "defaultRating": 0,
+          "isFavorite": false,
+          "isSecured": false,
+          "restrictions": 0,
+          "states": {
+            "active": "__uuid__controls_Lichtsturing_Woonkamer/AI2_active"
+          }
+        },
+        "__uuid__controls_Lichtsturing_Woonkamer/AI3": {
+          "name": "Boven Kleur",
+          "type": "ColorPickerV2",
+          "uuidAction": "__uuid__controls_Lichtsturing_Woonkamer/AI3",
+          "defaultRating": 0,
+          "isFavorite": false,
+          "isSecured": false,
+          "restrictions": 0,
+          "details": {
+            "pickerType": "Rgb"
+          },
+          "states": {
+            "color": "__uuid__controls_Lichtsturing_Woonkamer/AI3_color",
+            "sequence": "__uuid__controls_Lichtsturing_Woonkamer/AI3_sequence",
+            "sequenceColorIdx": "__uuid__controls_Lichtsturing_Woonkamer/AI3_sequenceColorIdx"
+          }
+        },
+        "__uuid__controls_Lichtsturing_Woonkamer/AI4": {
+          "name": "Onder Kleur",
+          "type": "ColorPickerV2",
+          "uuidAction": "__uuid__controls_Lichtsturing_Woonkamer/AI4",
+          "defaultRating": 0,
+          "isFavorite": false,
+          "isSecured": false,
+          "restrictions": 0,
+          "details": {
+            "pickerType": "Rgb"
+          },
+          "states": {
+            "color": "__uuid__controls_Lichtsturing_Woonkamer/AI4_color",
+            "sequence": "__uuid__controls_Lichtsturing_Woonkamer/AI4_sequence",
+            "sequenceColorIdx": "__uuid__controls_Lichtsturing_Woonkamer/AI4_sequenceColorIdx"
+          }
+        }
+      }
+    },
+    "__uuid__controls_Lichtsturing_Keuken": {
+      "name": "Lichtsturing",
+      "type": "LightControllerV2",
+      "uuidAction": "__uuid__controls_Lichtsturing_Keuken",
+      "room": "__uuid__rooms_Keuken",
+      "cat": "__uuid__cats_Verlichting",
+      "defaultRating": 1,
+      "isFavorite": false,
+      "isSecured": false,
+      "restrictions": 0,
+      "details": {
+        "jLockable": true,
+        "controlHistory": true,
+        "hasHistory": 20,
+        "movementScene": 1,
+        "masterValue": "__uuid__controls_Lichtsturing_Keuken/masterValue"
+      },
+      "states": {
+        "jLocked": "__uuid__controls_Lichtsturing_Keuken_jLocked",
+        "activeMoods": "__uuid__controls_Lichtsturing_Keuken_activeMoods",
+        "moodList": "__uuid__controls_Lichtsturing_Keuken_moodList",
+        "activeMoodsNum": "__uuid__controls_Lichtsturing_Keuken_activeMoodsNum",
+        "favoriteMoods": "__uuid__controls_Lichtsturing_Keuken_favoriteMoods",
+        "additionalMoods": "__uuid__controls_Lichtsturing_Keuken_additionalMoods",
+        "circuitNames": "__uuid__controls_Lichtsturing_Keuken_circuitNames",
+        "daylightConfig": "__uuid__controls_Lichtsturing_Keuken_daylightConfig",
+        "presence": "__uuid__controls_Lichtsturing_Keuken_presence"
+      },
+      "subControls": {
+        "__uuid__controls_Lichtsturing_Keuken/masterValue": {
+          "name": "Master Brightness",
+          "type": "Dimmer",
+          "uuidAction": "__uuid__controls_Lichtsturing_Keuken/masterValue",
+          "defaultRating": 0,
+          "isFavorite": false,
+          "isSecured": false,
+          "restrictions": 0,
+          "states": {
+            "position": "__uuid__controls_Lichtsturing_Keuken/masterValue_position",
+            "min": "__uuid__controls_Lichtsturing_Keuken/masterValue_min",
+            "max": "__uuid__controls_Lichtsturing_Keuken/masterValue_max",
+            "step": "__uuid__controls_Lichtsturing_Keuken/masterValue_step"
+          }
+        },
+        "__uuid__controls_Lichtsturing_Keuken/AI1": {
+          "name": "Spots",
+          "type": "Dimmer",
+          "uuidAction": "__uuid__controls_Lichtsturing_Keuken/AI1",
+          "defaultRating": 0,
+          "isFavorite": false,
+          "isSecured": false,
+          "restrictions": 0,
+          "states": {
+            "position": "__uuid__controls_Lichtsturing_Keuken/AI1_position",
+            "min": "__uuid__controls_Lichtsturing_Keuken/AI1_min",
+            "max": "__uuid__controls_Lichtsturing_Keuken/AI1_max",
+            "step": "__uuid__controls_Lichtsturing_Keuken/AI1_step"
+          }
+        }
+      }
+    },
+    "__uuid__controls_Verlichting_centraal": {
+      "name": "Verlichting centraal",
+      "type": "CentralLightController",
+      "uuidAction": "__uuid__controls_Verlichting_centraal",
+      "room": "__uuid__rooms_Woonkamer",
+      "cat": "__uuid__cats_Verlichting",
+      "defaultRating": 10,
+      "isFavorite": true,
+      "isSecured": false,
+      "restrictions": 0,
+      "details": {
+        "jLockable": true,
+        "controls": [
+          {
+            "id": 0,
+            "uuid": "__uuid__controls_Lichtsturing_Keuken"
+          },
+          {
+            "id": 1,
+            "uuid": "__uuid__controls_Lichtsturing_Woonkamer"
+          }
+        ],
+        "parameterConnections": 0
+      },
+      "states": {
+        "jLocked": "__uuid__controls_Verlichting_centraal_jLocked",
+        "events": "__uuid__controls_Verlichting_centraal_events"
+      }
+    },
+    "__uuid__controls_Logboek": {
+      "name": "Logboek",
+      "type": "Tracker",
+      "uuidAction": "__uuid__controls_Logboek",
+      "room": "__uuid__rooms_Centraal",
+      "cat": "__uuid__cats_Energie",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/brightness-decrease.svg",
+      "restrictions": 0,
+      "details": {
+        "jLockable": false,
+        "maxEntries": 28
+      },
+      "states": {
+        "entries": "__uuid__controls_Logboek"
+      }
     }
   },
   "modes": {},

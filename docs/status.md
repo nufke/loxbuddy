@@ -102,7 +102,7 @@ or submit a [pull request](https://github.com/nufke/loxbuddy/pulls).
 | TextInput                | Not started       |                             |
 | TextState                | Available         |                             |
 | TimedSwitch              | Under development |                             |
-| Tracker                  | Not started       |                             |
+| Tracker                  | Under development |                             |
 | UpDownAnalog             | Not started       |                             |
 | UpDownDigital            | Available         |                             |
 | UpDownLeftRightAnalog    | Not started       |                             |

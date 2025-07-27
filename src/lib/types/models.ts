@@ -456,6 +456,7 @@ export type SliderBar = {
   max: number;
   step: number;
 	position: number;
+	orientation?: string;
 }
 
 export type ControlView = {

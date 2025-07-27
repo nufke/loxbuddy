@@ -76,7 +76,7 @@
 					{/if}
 					{#if button.type === 'button' && button.iconName}
 						<button type="button" class="btn-icon p-3 dark:bg-surface-950 bg-surface-50 rounded-lg border border-white/15 hover:border-white/50" 
-										onclick={(e) => { e.stopPropagation(); e.preventDefault(); button.click(e)}}> <!--|stopPropagation|preventDefault-->
+										onclick={(e) => { e.stopPropagation(); e.preventDefault(); button.click(e)}}>
 							<span style="font-size:26px">
 								<LbIcon class={button.iconColor} name={button.iconName} />
 							</span>

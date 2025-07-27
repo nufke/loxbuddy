@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { Control, ControlView, ControlOptions } from '$lib/types/models';
 	import LbIcon from '$lib/components/lb-icon-by-name.svelte';
+	import LbSimpleSlider from '$lib/components/lb-simple-slider.svelte';
 	import { store } from '$lib/stores/store.svelte';
 	import { getComponent } from '$lib/helpers/components';
 	import { DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
@@ -12,6 +13,7 @@
 	import { fade200 } from '$lib/helpers/transition';
 	import { fade } from 'svelte/transition'
 	import Info from '$lib/components/lb-info.svelte';
+	import { format } from 'date-fns';
 
 	let { controlView = $bindable() }: { controlView: ControlView } = $props();
 
@@ -19,10 +21,12 @@
 	let min = $derived(controlView.slider ? controlView.slider.min : 0);
 	let max = $derived(controlView.slider ? controlView.slider.max : 100);
 	let step = $derived(controlView.slider ? controlView.slider.step : 1);
+	let orientation = $derived(controlView.slider ? controlView.slider.orientation : '');
 
-	function setPostion(pos: number[]) {
+	function setPostion(position: any) {
+		let pos: number = position.length ? position[0] : position; // skeleton Slider returns array, select first one
 		if (controlView && controlView.buttons && controlView.buttons[0]) {
-			controlView.buttons[0].click({sliderPosition: pos[0]});
+			controlView.buttons[0].click({sliderPosition: pos});
 		}
 	}
 
@@ -65,7 +69,8 @@
 	onOpenChange={()=>{}}
 	triggerBase="btn bg-surface-600"
 	contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-sm rounded-lg border border-white/5 hover:border-white/10
-							max-w-9/10 max-h-9/10 overflow-auto {controlView.modal.size?.width || 'w-[380px]'} {linkedControls.length > 1 ? 'lg:w-[760px]': ''}"
+							max-w-9/10 max-h-9/10 {controlView.modal.size?.width || 'w-[380px]'} {controlView.modal.size?.height || ''}
+							 {linkedControls.length > 1 ? 'lg:w-[760px]': ''}"
 	backdropClasses={ controlView.modal.noBlur ? "" : "backdrop-blur-sm"}
 	backdropBackground="">
 	{#snippet content()}
@@ -127,10 +132,15 @@
 				{/each}
 		</div>
 		{/if}
-		{#if controlView && controlView.slider && controlView.slider.position}
-		<div class="container flex m-2 p-0">
-	 	 <Slider classes="mt-6 ml-2 mr-2 mb-2" thumbSize="size-5" name="example" {value} {min} {max} {step} onValueChange={(e) => setPostion(e.value)} markers={[min, max]}
-				markText="size-8" markersClasses="-mt-11 ml-2 -mr-2"/>
+		{#if controlView && controlView.slider && controlView.slider.position >= min}
+		<div class="container flex justify-center items-center m-2 p-0">
+		{#if controlView.slider.orientation?.length} <!-- use simple-slider for vertical orientation -->
+			<LbSimpleSlider classes='dimmer' {orientation}
+										{min} {max} {step} {value} onValueChangeEnd={(e: any) => {setPostion(e.value)}}/>
+		{:else}
+			<Slider classes="mt-6 ml-2 mr-2 mb-2" thumbSize="size-5" name="example" {value} {min} {max} {step} onValueChange={(e: any) => setPostion(e.value)} markers={[min, max]}
+							markText="size-8" markersClasses="-mt-11 ml-2 -mr-2"/>
+		{/if}
 		</div>
 		{/if}
 		{#if controlView && controlView.modal && controlView.modal.buttons}
@@ -157,13 +167,17 @@
 			{/each}
 		</div>
 		{/if}
-		{#if controlView.modal && controlView.modal.details}
-		<div class="container grid grid-cols-1 gap-2 m-5">
-			{#each controlView.modal.details as item}
-			<p class="flex justify-center items-center text-md">
-				<span class="dark:text-surface-300 text-surface-700">{item.name} &nbsp;</span>
-				<span>{item.value}</span>
-			</p>
+		{#if controlView.modal && controlView.modal.details && controlView.modal.details.tracker} <!-- used for entries for tracker-->
+		<div class="container relative w-full h-[605px] overflow-auto pl-2 pr-2">
+			{#each Object.keys(controlView.modal.details.tracker).sort( (a, b) => Number(b) - Number(a)) as key}
+				<p class="text-lg dark:text-surface-50 text-surface-950">{format(new Date(Number(key)), "PPP")}</p>
+				<hr class="hr" />
+				<div class="grid grid-cols-5 gap-2 mt-2 mb-2">
+					{#each controlView.modal.details.tracker[key].sort( (a:any, b:any) => Number(b.time) - Number(a.time)) as item}
+						<p class="text-md dark:text-surface-300 text-surface-700">{format(new Date(Number(item.time)), "p")}</p>
+						<p class="text-md col-span-4">{item.description}</p>
+					{/each}
+				</div>
 			{/each}
 		</div>
 		{/if}

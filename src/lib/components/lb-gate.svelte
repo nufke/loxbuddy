@@ -1,16 +1,32 @@
 <script lang="ts">
 	import LbControl from '$lib/components/lb-control.svelte';
 	import LbWidget from '$lib/components/lb-widget.svelte';
-	import type { Control, ControlOptions, ControlView, ModalView } from '$lib/types/models';
+	import type { Control, ControlOptions, ControlView, ModalView, SingleButtonView } from '$lib/types/models';
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import LbModal from '$lib/components/lb-modal.svelte';
 	import { store } from '$lib/stores/store.svelte';
 	import { publishTopic } from '$lib/communication/mqttclient';
 	import { _ } from 'svelte-i18n';
+	import fmt from 'sprintf-js';
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
-	let position = $derived(Number(store.getState(control.states.position)));
+	let position = $derived(Number(store.getState(control.states.position)) * 100);
+
+	let buttons: SingleButtonView[] = $state([
+		{
+			iconName: 'ChevronDown',
+			type: 'button',
+			color: '',
+			click: () => publishTopic(control.uuidAction, 'close')
+		},
+		{
+			iconName: 'ChevronUp',
+			type: 'button',
+			color: '',
+			click: () => publishTopic(control.uuidAction, 'open')
+		}
+	]);
 
 	let modal: ModalView = $state({
 		action: (state: boolean) => {modal.state = state},
@@ -45,7 +61,8 @@
 		isFavorite: controlOptions.isFavorite,
 		iconName: store.getIcon(control, controlOptions.isSubControl),
 		textName: control.name,
-		statusName: (position == 1) ? $_('Open') : ( (position == 0) ? $_('Closed') : ''),
+		statusName: (position > 99) ? $_('Open') : ( (position < 1) ? $_('Closed') :  fmt.sprintf('%2.0f %% %s', position, $_('Open'))),
+		buttons: buttons,
 		modal: modal
 	});
 </script>

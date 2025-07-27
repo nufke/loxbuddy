@@ -48,6 +48,8 @@
   "__uuid__controls_Sunscreen_Keuken_position": "0.4",
   "__uuid__controls_Sunscreen_Keuken_shadePosition": "0",
 
+  "__uuid__controls_Poort_position": "0",
+
   "__uuid__controls_SOC_niveau_min": "0",
   "__uuid__controls_SOC_niveau_max": "100",
   "__uuid__controls_SOC_niveau_step": "5",
@@ -61,5 +63,74 @@
   "__uuid__controls_Raam_en_deur_bewaking_numUnlocked": "0",
   "__uuid__controls_Raam_en_deur_bewaking_windowStates": "4,1,1,1,1,4,1",
   
-  "__uuid__controls_Verwarmingsstand_activeOutput": "1"
+  "__uuid__controls_Verwarmingsstand_activeOutput": "1",
+  
+  "__uuid__controls_Laadvermogen_value": "0",
+  
+  "__uuid__controls_Dimmer_woonkamer_position": "12",
+  "__uuid__controls_Dimmer_woonkamer_min": "0",
+  "__uuid__controls_Dimmer_woonkamer_max": "80",
+  "__uuid__controls_Dimmer_woonkamer_+step": "2",
+  
+  "__uuid__controls_Aanvraag_warmte": "0",
+
+  "__uuid__controls_Fase_1": "0",
+  
+  "__uuid__controls_Lichtsturing_Woonkamer_activeMoodsNum": "778",
+  "__uuid__controls_Lichtsturing_Woonkamer_moodList": [
+    {
+        "name": "Standaard",
+        "id": 1
+    },
+    {
+        "name": "Alles aan",
+        "id": 777
+    },
+    {
+        "name": "Uit",
+        "id": 778
+    }
+  ],
+  "__uuid__controls_Lichtsturing_Woonkamer/masterValue_position": "20",
+  "__uuid__controls_Lichtsturing_Woonkamer/masterValue_min": "0",
+  "__uuid__controls_Lichtsturing_Woonkamer/masterValue_max": "100",
+  "__uuid__controls_Lichtsturing_Woonkamer/masterValue_step": "1",
+  "__uuid__controls_Lichtsturing_Woonkamer/masterColor_color": "hsv(144,33,82)",
+  "__uuid__controls_Lichtsturing_Woonkamer/AI1_position": "20",
+  "__uuid__controls_Lichtsturing_Woonkamer/AI1_min": "0",
+  "__uuid__controls_Lichtsturing_Woonkamer/AI1_max": "100",
+  "__uuid__controls_Lichtsturing_Woonkamer/AI1_step": "1",
+  "__uuid__controls_Lichtsturing_Woonkamer/AI2_position": "20",
+  "__uuid__controls_Lichtsturing_Woonkamer/AI2_min": "0",
+  "__uuid__controls_Lichtsturing_Woonkamer/AI2_max": "100",
+  "__uuid__controls_Lichtsturing_Woonkamer/AI2_step": "1",
+  "__uuid__controls_Lichtsturing_Woonkamer/AI3_color": "hsv(144,33,82)",
+  "__uuid__controls_Lichtsturing_Woonkamer/AI4_color": "hsv(144,33,82)",
+
+  "__uuid__controls_Lichtsturing_Keuken_activeMoodsNum": "778",
+  "__uuid__controls_Lichtsturing_Keuken_moodList": [
+    {
+        "name": "Standaard",
+        "id": 1
+    },
+    {
+        "name": "Alles aan",
+        "id": 777
+    },
+    {
+        "name": "Uit",
+        "id": 778
+    }
+  ],
+  "__uuid__controls_Lichtsturing_Keuken/masterValue_position": "20",
+  "__uuid__controls_Lichtsturing_Keuken/masterValue_min": "0",
+  "__uuid__controls_Lichtsturing_Keuken/masterValue_max": "100",
+  "__uuid__controls_Lichtsturing_Keuken/masterValue_step": "1",
+  "__uuid__controls_Lichtsturing_Keuken/AI1_position": "20",
+  "__uuid__controls_Lichtsturing_Keuken/AI1_min": "0",
+  "__uuid__controls_Lichtsturing_Keuken/AI1_max": "100",
+  "__uuid__controls_Lichtsturing_Keuken/AI1_step": "1",
+  
+  "__uuid__controls_Logboek": "2025-07-17 21:00:00 Zonsondergang: Zonsondergang|2025-07-17 21:40:00 Schemering: Schemering|2025-07-18 04:58:00 Dageraad: Dageraad|2025-07-18 05:38:00 Zonsopgang: Zonsopgang|2025-07-18 21:00:00 Zonsondergang: Zonsondergang|2025-07-18 21:39:00 Schemering: Schemering|2025-07-19 04:59:00 Dageraad: Dageraad|2025-07-19 05:39:00 Zonsopgang: Zonsopgang|2025-07-19 20:59:00 Zonsondergang: Zonsondergang|2025-07-19 21:38:00 Schemering: Schemering|2025-07-20 05:00:00 Dageraad: Dageraad|2025-07-20 05:40:00 Zonsopgang: Zonsopgang|2025-07-20 20:58:00 Zonsondergang: Zonsondergang|2025-07-20 21:37:00 Schemering: Schemering|2025-07-21 05:02:00 Dageraad: Dageraad|2025-07-21 05:41:00 Zonsopgang: Zonsopgang|2025-07-21 20:57:00 Zonsondergang: Zonsondergang|2025-07-21 21:36:00 Schemering: Schemering|2025-07-22 05:03:00 Dageraad: Dageraad|2025-07-22 05:42:00 Zonsopgang: Zonsopgang|2025-07-22 20:56:00 Zonsondergang: Zonsondergang|2025-07-22 21:35:00 Schemering: Schemering|2025-07-23 05:04:00 Dageraad: Dageraad|2025-07-23 05:43:00 Zonsopgang: Zonsopgang|2025-07-23 20:55:00 Zonsondergang: Zonsondergang|2025-07-23 21:34:00 Schemering: Schemering|2025-07-24 05:05:00 Dageraad: Dageraad|2025-07-24 05:44:00 Zonsopgang: Zonsopgang"
+
 }

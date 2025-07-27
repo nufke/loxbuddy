@@ -4,7 +4,7 @@
   import type { Control, ControlView, ListItem } from '$lib/types/models';
 	import { fade } from 'svelte/transition'
 	import LbSwitch from '$lib/components/lb-switch.svelte';
-	import LbDimmer from '$lib/components/lb-dimmer.svelte';
+	import LbLightDimmer from '$lib/components/lb-light-dimmer.svelte';
 	import LbColorPickerV2 from '$lib/components/lb-colorpicker-v2.svelte';
 	import { X, Lightbulb, SlidersHorizontal, ChevronUp, ChevronDown } from '@lucide/svelte';
 	import { _ } from 'svelte-i18n';
@@ -19,7 +19,7 @@
 
 	let selectedTab = $state(0);
 	let isLightController = $derived(controlView.control?.type=='LightControllerV2' || controlView.control?.type=='LightController');
-  let id = $state(0); // selected subControl, default is first
+  let id = $derived(subControls.findIndex( subControl => subControl.type === 'ColorPickerV2')); // select first color subControl
 
 	let viewportTab0: any = $state(); // TODO make HTMLDivElement
 	let hasScrollTab0 = $state(true);
@@ -71,7 +71,7 @@
 	onOpenChange={()=>{ controlView.modal.action(false)}}
 	triggerBase="btn bg-surface-600"
 	contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-sm rounded-lg border border-white/5 hover:border-white/10
-							max-w-9/10 max-h-9/10 w-[450px]"
+							max-w-9/10 max-h-9/10 {controlView.modal.size?.width || 'w-[450px]'} {controlView.modal.size?.height || ''}"
 	backdropClasses="backdrop-blur-sm"
 	backdropBackground="">
 	{#snippet content()}
@@ -146,10 +146,10 @@
 					<LbSwitch control={subControl} controlOptions={{isSubControl: true}}/>
 				{/if}
 				{#if subControl.type=='Dimmer'}
-					<LbDimmer control={subControl} controlOptions={{isSubControl: true}}/>
+					<LbLightDimmer control={subControl} controlOptions={{isSubControl: true}}/>
 				{/if}
 				{#if subControl.type=='ColorPickerV2'}
-					<LbDimmer control={subControl} controlOptions={{isSubControl: true, action: ()=>{id=index; selectedTab=2}}}/>
+					<LbLightDimmer control={subControl} controlOptions={{isSubControl: true, action: ()=>{id=index; selectedTab=2}}}/>
 				{/if}
 			{/each}
 		</div>
@@ -168,7 +168,7 @@
 	</header>
 	<div class="overflow-y-scroll" style="max-height: 500px;">
 	{#if subControls[id].type === "Dimmer" || subControls[id].type === "ColorPickerV2" }
-		<LbDimmer control={subControls[id]} controlOptions={{isSubControl: true}}/>
+		<LbLightDimmer control={subControls[id]} controlOptions={{isSubControl: true}}/>
 		<LbColorPickerV2 control={subControls[id]}/>
 	{/if}
 	</div>

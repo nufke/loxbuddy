@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Control, ControlOptions, ControlView, SingleButtonView, SliderBar, ModalView } from '$lib/types/models';
+	import type { Control, ControlOptions, ControlView, SingleButtonView, ModalView } from '$lib/types/models';
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import LbControl from '$lib/components/lb-control.svelte';
 	import LbWidget from '$lib/components/lb-widget.svelte';

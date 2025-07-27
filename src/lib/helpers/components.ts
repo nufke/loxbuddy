@@ -27,6 +27,8 @@ import LbValueSelector from '$lib/components/lb-value-selector.svelte';
 import LbMeter from '$lib/components/lb-meter.svelte';
 import LbUnknown from '$lib/components/lb-unknown.svelte';
 import LbGate from '$lib/components/lb-gate.svelte';
+import LbDimmer from '$lib/components/lb-dimmer.svelte';
+import LbTracker from '$lib/components/lb-tracker.svelte';
 import { loxiconsPath } from '$lib/helpers/paths';
 
 let componentList = [
@@ -57,7 +59,10 @@ let componentList = [
 	{ type: 'WindowMonitor', component: LbWindowMonitor, defaultIcon: '/icons/svg/pull-door.svg' },
 	{ type: 'ValueSelector', component: LbValueSelector, defaultIcon: '' },
 	{ type: 'Meter', component: LbMeter, defaultIcon: '' },
-	{ type: 'Gate', component: LbGate, defaultIcon: '' }
+	{ type: 'Gate', component: LbGate, defaultIcon: '' },
+	{ type: 'Dimmer', component: LbDimmer, defaultIcon: '' },
+	{ type: 'Tracker', component: LbTracker, defaultIcon: '' },
+	
 ];
 
 export function getComponent(type: string) {

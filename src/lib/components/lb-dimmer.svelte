@@ -1,90 +1,96 @@
 <script lang="ts">
-	import type { Control, ControlOptions, ControlView } from '$lib/types/models';
+	import type { Control, ControlOptions, ControlView, SingleButtonView, ModalView, SliderBar } from '$lib/types/models';
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
-	import { utils } from '$lib/helpers/utils';
+	import LbControl from '$lib/components/lb-control.svelte';
+	import LbWidget from '$lib/components/lb-widget.svelte';
+	import LbModal from '$lib/components/lb-modal.svelte';
 	import { store } from '$lib/stores/store.svelte';
 	import { publishTopic } from '$lib/communication/mqttclient';
 	import { _ } from 'svelte-i18n';
-  import SimpleSlider from '$lib/components/lb-simple-slider.svelte'
-	import { ChevronRight } from '@lucide/svelte';
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
-	let min = $derived(control.states.min ? Number(store.getState(control.states.min)) : 0 );
-	let max = $derived(control.states.max ? Number(store.getState(control.states.max)) : 100);
-	let step = $derived(control.states.step ? Number(store.getState(control.states.step)) : 1);
-	let nPosition = $derived(Number(store.getState(control.states.position)));
-	let color = $derived(String(store.getState(control.states.color)));
-	let {rgbColor, brightness} = $derived(getColor(color));
-	let position = $derived ( (control.type === 'ColorPickerV2') ? brightness : Math.round(nPosition));
+	let min = $derived(Number(store.getState(control.states.min)) || 0 );
+	let max = $derived(Number(store.getState(control.states.max)) || 100);
+	let step = $derived(Number(store.getState(control.states.step)) || 1);
+	let position = $derived(Number(store.getState(control.states.position)) || 0);
 
-	function getColor(color: string) {
-		let hsv = color.match(/hsv\(([0-9]*),([0-9]*),([0-9]*)\)/);
-		let temp = color.match(/temp\(([0-9]*),([0-9]*)\)/);
-		let rgb, brightness;
-		if (hsv && hsv.length > 3) {
-			rgb = utils.hsv2rgb(Number(hsv[1]), Number(hsv[2]), 100);
-			brightness = Number(hsv[3]);
-		} else if (temp && temp.length > 2) {
-			brightness = Number(temp[1]);
+	let sliderBar: SliderBar = $derived({
+		min: min,
+		max: max,
+		step: step,
+		position: position,
+		orientation: 'vertical'
+	});
+
+	function updatePosition(e: any, isUp: number) {
+		let newPosition;
+		if (e && e.sliderPosition == undefined && sliderBar.position >= min && sliderBar.position <= max ) { // no sliderPosition, is button
+			newPosition = sliderBar.position + sliderBar.step * isUp;
+			if (newPosition > sliderBar.max) newPosition = sliderBar.max;
+			if (newPosition < sliderBar.min) newPosition = sliderBar.min;
+		} else { // is slider
+			newPosition = e.sliderPosition;
 		}
-		return {rgbColor: rgb, brightness: brightness};
+		publishTopic(control.uuidAction, String(newPosition));
 	}
 
-	function trackColor() {
-		const rgb = rgbColor;
-		if (rgb) {
-			return String('background-image: linear-gradient(to right, rgba('+ rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ',0.1), rgba(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ',1)');
-		} else { // normal dimmer or tempColor
-			return 'background-image: linear-gradient(to right, rgba(49,56,62,1), rgba(255,191,64,1)';
+	let plusMinusButtons: SingleButtonView[] = $state([
+		{
+			iconName: 'Minus',
+			type: 'button',
+			color: '',
+			click: (e: any) => {updatePosition(e, -1)}
+		},
+		{
+			iconName: 'Plus',
+			type: 'button',
+			color: '',
+			click: (e: any) => {updatePosition(e, 1)}
 		}
-	}
+	]);
 
-  function updatePosition(e: any) {
-		let newPosition = Math.round(e);
-		if (newPosition == position) return; // same position, do not update
-
-    if (control.type === 'Dimmer') {
-      publishTopic(control.uuidAction, String(e));
-    }
-
-    if (control.type === 'ColorPickerV2') {
-      let hsv = color.match(/hsv\(([0-9]*),([0-9]*),([0-9]*)\)/);
-			if (hsv) {
-        let newColor = 'hsv(' + hsv[1] + ',' + hsv[2] + ',' + String(e) + ')';
-			  publishTopic(control.uuidAction, newColor);
+	let onOffButton: SingleButtonView = $derived(
+		{
+			name: (position > 0) ? 'Switch off' : 'Switch on',
+			type: 'button',
+			class: 'col-span-2',
+			click: (e: any) => {
+				publishTopic(control.uuidAction, (position == 0) ? 'on' : 'off');
 			}
-    }
-  }
+		}
+	);
+	
+	let modal: ModalView = $state({
+		action: (state: boolean) => {modal.state = state},
+		state: false,
+		size: { height: 'h-[530px]' },
+		class: 'grid-cols-2',
+	});
 
 	let controlView: ControlView = $derived({
 		...DEFAULT_CONTROLVIEW,
 		control: control,
-		isSubControl: controlOptions.isSubControl,
 		isFavorite: controlOptions.isFavorite,
+		iconName: store.getIcon(control, controlOptions.isSubControl),
+		iconColor: position > 0 ? 'dark:fill-primary-500 fill-primary-700' : 'fill-surface-950 dark:fill-surface-50',
 		textName: control.name,
-		statusName: position + ' %'
+		statusName: String(sliderBar.position) + ' %',
+		statusColor: position > 0 ? 'dark:text-primary-500 text-primary-700' : 'text-surface-700 dark:text-surface-300',
+		buttons: plusMinusButtons,
+		slider: sliderBar,
+		modal: {
+			...modal,
+			buttons: [
+				...plusMinusButtons,
+				onOffButton
+			]
+		}
 	});
 </script>
 
-<div role="button" tabindex="0" onkeydown={()=>{}} aria-label="card" onclick={() => {controlOptions.action ? controlOptions.action() : controlView.modal.action(true)}}
-     class="card m-0 flex min-h-[70px] items-center justify-start rounded-lg border border-white/5
-						{controlOptions.isSubControl ? 'bg-surface-200-800' : 'bg-surface-100-900'} px-2 py-2 hover:border-white/10">
-	<div class="w-full ">
-		<div class="flex justify-between mt-0 mb-3 ml-2 mr-2">
-			<div class="flex">
-				<p class="text-lg">{controlView.textName}</p>
-				{#if controlOptions.action}
-					<p class="mt-1"><ChevronRight size="20"/></p>
-				{/if}
-			</div>
-			<p class="text-md">{controlView.statusName}</p>
-		</div>
-		<div class="container">
-			<button class="w-full" onclick={(e) => { e.stopPropagation()}}> <!-- workaround wrapper to stop propagation for slider -->
-				<SimpleSlider classes="ml-1 mr-1 mb-1" thumbStyle={trackColor()}
-											min={min} max={max} step={step} value={position} onValueChangeEnd={(e: any) => {updatePosition(e.value)}}/>
-			</button>
-		</div>
-	</div>
+<div>
+	<LbControl bind:controlView {controlOptions}/>
+	<LbWidget bind:controlView />
+	<LbModal bind:controlView />
 </div>

@@ -197,15 +197,20 @@
 				</div>
 				<div class="container grid grid-cols-5 gap-2 mt-4">
 					<button type="button" class="btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm text-surface-950-50
-																				rounded-lg border border-white/10 hover:border-white/50" onclick={() => screenAction("FullDown")}><ChevronDown/></button>
+																				rounded-lg border border-white/10 hover:border-white/50" onclick={() => screenAction("FullDown")}>
+																				<span class="w-[32px] flex justify-center items-center"><ChevronDown/></span></button> <!-- to span to avoid scaling of icons -->
 					<button type="button" class="btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm text-surface-950-50
-																				rounded-lg border border-white/10 hover:border-white/50" onclick={() => screenAction("FullUp")}><ChevronUp/></button>
+																				rounded-lg border border-white/10 hover:border-white/50" onclick={() => screenAction("FullUp")}>
+																				<span class="w-[32px] flex justify-center items-center"><ChevronUp/></span></button>
 					<button type="button" class="btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm text-surface-950-50
-																				rounded-lg border border-white/10 hover:border-white/50" onclick={() => screenAction("shade")}><Blinds/></button>
+																				rounded-lg border border-white/10 hover:border-white/50" onclick={() => screenAction("shade")}>
+																				<span class="w-[32px] flex justify-center items-center"><Blinds/></span></button>
 					<button type="button" class="btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm text-surface-950-50
-																				rounded-lg border border-white/10 hover:border-white/50" onclick={() => screenAction("stop")}><OctagonMinus/></button>
+																				rounded-lg border border-white/10 hover:border-white/50" onclick={() => screenAction("stop")}>
+																				<span class="w-[32px] flex justify-center items-center"><OctagonMinus/></span></button>
 					<button type="button" class="btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm {screenSelected ? 'text-surface-800-200' : 'text-surface-200-800'}
-																				rounded-lg border border-white/10 hover:border-white/50" onclick={() => selectScreenOptions()}><Settings/></button>
+																				rounded-lg border border-white/10 hover:border-white/50" onclick={() => selectScreenOptions()}>
+																				<span class="w-[32px] flex justify-center items-center"><Settings/></span></button>
 				</div>
 			</header>
 			<div class="container relative w-full">
