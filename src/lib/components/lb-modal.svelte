@@ -101,7 +101,7 @@
 			<h2 class="h4 text-center">{controlView.textName}</h2>
 		</div>
 		<div class="m-2 truncate">
-			{#if controlView.statusName}
+			{#if controlView.statusName && !controlView.modal.details?.tracker} <!-- remove status when we show a tracker -->
 				<p class="text-lg truncate {controlView.statusColor}" style={getStatusColorHex(controlView.statusColor)}>{$_(controlView.statusName)}</p>
 			{/if}
 		</div>
@@ -136,7 +136,7 @@
 		<div class="container flex justify-center items-center m-2 p-0">
 		{#if controlView.slider.orientation?.length} <!-- use simple-slider for vertical orientation -->
 			<LbSimpleSlider classes='dimmer' {orientation}
-										{min} {max} {step} {value} onValueChangeEnd={(e: any) => {setPostion(e.value)}}/>
+										{min} {max} {step} {value} onValueChange={(e: any) => {setPostion(e.value)}}/>
 		{:else}
 			<Slider classes="mt-6 ml-2 mr-2 mb-2" thumbSize="size-5" name="example" {value} {min} {max} {step} onValueChange={(e: any) => setPostion(e.value)} markers={[min, max]}
 							markText="size-8" markersClasses="-mt-11 ml-2 -mr-2"/>
@@ -168,12 +168,12 @@
 		</div>
 		{/if}
 		{#if controlView.modal && controlView.modal.details && controlView.modal.details.tracker} <!-- used for entries for tracker-->
-		<div class="container relative w-full h-[605px] overflow-auto pl-2 pr-2">
-			{#each Object.keys(controlView.modal.details.tracker).sort( (a, b) => Number(b) - Number(a)) as key}
+		<div class="relative w-full pl-2 pr-2 h-[575px] overflow-auto">
+			{#each Object.keys(controlView.modal.details.tracker) as key}
 				<p class="text-lg dark:text-surface-50 text-surface-950">{format(new Date(Number(key)), "PPP")}</p>
 				<hr class="hr" />
 				<div class="grid grid-cols-5 gap-2 mt-2 mb-2">
-					{#each controlView.modal.details.tracker[key].sort( (a:any, b:any) => Number(b.time) - Number(a.time)) as item}
+					{#each controlView.modal.details.tracker[key] as item}
 						<p class="text-md dark:text-surface-300 text-surface-700">{format(new Date(Number(item.time)), "p")}</p>
 						<p class="text-md col-span-4">{item.description}</p>
 					{/each}

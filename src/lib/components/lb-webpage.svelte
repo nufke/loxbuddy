@@ -14,7 +14,7 @@
 	function openWebPage() {
 		window.open(url || urlHd, "_blank")
 	}
-	
+
 	let buttons: SingleButtonView[] = $state([
 		{
 			iconName: 'SquareArrowOutUpRight',

@@ -6,25 +6,35 @@
 	import LbModal from '$lib/components/lb-modal.svelte';
 	import { store } from '$lib/stores/store.svelte';
 	import { utils } from '$lib/helpers/utils';
-	
+	import { format } from 'date-fns';
+
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
 	let entries = $derived(store.getState(control.states.entries)) as String;
 	let entryList = $derived(entries ? entries.split('|') : []);
 	let entryMap = $derived(updateEntries(entryList));
+	let lastEntryDate = $derived(Object.keys(entryMap)[0]);
+
+	const sortEntries = (obj: any) =>
+		Object.keys(obj)
+			.sort( (a, b) => Number(b) - Number(a))
+			.reduce( (newObj: any, key) => {
+				newObj[key] = obj[key].sort( (a:any, b:any) => b.time - a.time);
+				return newObj;
+			}, {});
 
 	function updateEntries(list: string[]) {
-		let map: any = {};
+		let obj: any = {};
 		list.forEach( item => {
 			const regex = new RegExp('([0-9]{4}-[0-9]{2}-[0-9]{2}).*([0-9]{2}:[0-9]{2}:[0-9]{2}).(.*)');
 			const found = item.match(regex);
 			if (found && found[1] && found[2] && found[3]) {
 				let epoch: number = new Date(found[1]).valueOf();
-				if (!map[epoch]) { map[epoch] = [] }
-				map[epoch].push({ time: utils.time2epoch(epoch, found[2]), description: found[3]})
+				if (!obj[epoch]) { obj[epoch] = [] }
+				obj[epoch].push({ time: utils.time2epoch(epoch, found[2]), description: found[3]})
 			}
 		});
-		return map;
+		return sortEntries(obj)
 	}
 
 	let	modal: ModalView = $state({
@@ -39,6 +49,7 @@
 		isFavorite: controlOptions.isFavorite,
 		iconName: store.getIcon(control, controlOptions.isSubControl),
 		textName: control.name,
+		statusName: format(new Date(Number(lastEntryDate)), "PPP ") + format(new Date(Number(entryMap[lastEntryDate][0].time)), "p"),
 		modal: {
 			...modal,
 			details: {

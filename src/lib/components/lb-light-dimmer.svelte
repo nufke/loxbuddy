@@ -83,7 +83,7 @@
 		<div class="container">
 			<button class="w-full" onclick={(e) => { e.stopPropagation()}}> <!-- workaround wrapper to stop propagation for slider -->
 				<LbSimpleSlider classes='slider' style={trackColor()}
-												min={min} max={max} step={step} value={position} onValueChangeEnd={(e: any) => {updatePosition(e.value)}}/>
+												min={min} max={max} step={step} value={position} onValueChange={(e: any) => {updatePosition(e.value)}}/>
 			</button>
 		</div>
 	</div>

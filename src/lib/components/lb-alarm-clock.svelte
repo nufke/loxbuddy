@@ -54,7 +54,7 @@
 	});
 
 	function newId() {
-		let max = Math.max(...entryListIds);
+		let max = entryListIds.length ? Math.max(...entryListIds) : 0;
 		for( let i = 0; i <= max; i++) {
 			if (!entryListIds.includes(i)) return i;
 		}

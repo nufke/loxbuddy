@@ -123,15 +123,33 @@
     },
     "__uuid__rooms_Badkamer": {
       "uuid": "__uuid__rooms_Badkamer",
-      "name": "Badkamer Ouders",
+      "name": "Badkamer",
       "image": "IconsFilled/shower-1.svg",
       "defaultRating": 1,
       "isFavorite": true,
       "type": 2,
       "color": "#69C350"
+    },
+    "__uuid__rooms_Slaapkamer": {
+      "uuid": "__uuid__rooms_Slaapkamer",
+      "name": "Slaapkamer",
+      "image": "IconsFilled/bed-double.svg",
+      "defaultRating": 5,
+      "isFavorite": false,
+      "type": 2,
+      "color": "#69C350"
     }
   },
   "cats": {
+    "__uuid__cats_Alarm": {
+      "uuid": "__uuid__cats_Alarm",
+      "name": "Alarm",
+      "image": "IconsFilled/alarm-1.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": "undefined",
+      "color": "#E4354A"
+    },
     "__uuid__cats_Verlichting": {
       "uuid": "__uuid__cats_Verlichting",
       "name": "Verlichting",
@@ -184,6 +202,15 @@
       "defaultRating": 2,
       "isFavorite": true,
       "type": "indoortemperature",
+      "color": "#69C350"
+    },
+    "__uuid__cats_Wekker": {
+      "uuid": "__uuid__cats_Wekker",
+      "name": "Wekker",
+      "image": "IconsFilled/alarm-clock.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": "undefined",
       "color": "#69C350"
     }
   },
@@ -1080,6 +1107,242 @@
       },
       "states": {
         "entries": "__uuid__controls_Logboek"
+      }
+    },
+    "__uuid__controls_Webpage": {
+      "name": "Webpage",
+      "type": "Webpage",
+      "uuidAction": "__uuid__controls_Webpage_2",
+      "room": "__uuid__rooms_Centraal",
+      "cat": "__uuid__cats_Verlichting",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "restrictions": 0,
+      "details": {
+        "jLockable": false,
+        "url": "https://github.com/nufke/loxbuddy",
+        "urlHd": "https://github.com/nufke/loxbuddy",
+        "image": "",
+        "iconColor": "#000000"
+      }
+    },
+    "__uuid__controls_Wekker": {
+      "name": "Wekker",
+      "type": "AlarmClock",
+      "uuidAction": "__uuid__controls_Wekker",
+      "room": "__uuid__rooms_Slaapkamer",
+      "cat": "__uuid__cats_Wekker",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "restrictions": 0,
+      "details": {
+        "jLockable": true,
+        "hasNightLight": false,
+        "snoozeDurationConnected": false,
+        "brightInactiveConnected": false,
+        "brightActiveConnected": false,
+        "wakeAlarmSoundConnected": false,
+        "wakeAlarmVolumeConnected": false,
+        "wakeAlarmSlopingConnected": false,
+        "wakeAlarmSounds": [
+          {
+            "id": 1,
+            "name": "Diepe 4-voudige piep"
+          },
+          {
+            "id": 2,
+            "name": "Hoge 4-voudige piep"
+          },
+          {
+            "id": 3,
+            "name": "Diepe 2-voudige piep"
+          },
+          {
+            "id": 4,
+            "name": "Hoge 2-voudige piep"
+          },
+          {
+            "id": 5,
+            "name": "Sirene"
+          }
+        ]
+      },
+      "states": {
+        "jLocked": "__uuid__controls_Wekker_jLocked",
+        "isEnabled": "__uuid__controls_Wekker_isEnabled",
+        "isAlarmActive": "__uuid__controls_Wekker_isAlarmActive",
+        "confirmationNeeded": "__uuid__controls_Wekker_confirmationNeeded",
+        "entryList": "__uuid__controls_Wekker_entryList",
+        "currentEntry": "__uuid__controls_Wekker_currentEntry",
+        "nextEntry": "__uuid__controls_Wekker_nextEntry",
+        "nextEntryMode": "__uuid__controls_Wekker_nextEntryMode",
+        "ringingTime": "__uuid__controls_Wekker_ringingTime",
+        "ringDuration": "__uuid__controls_Wekker_ringDuration",
+        "prepareDuration": "__uuid__controls_Wekker_prepareDuration",
+        "snoozeTime": "__uuid__controls_Wekker_snoozeTime",
+        "snoozeDuration": "__uuid__controls_Wekker_snoozeDuration",
+        "nextEntryTime": "__uuid__controls_Wekker_nextEntryTime",
+        "deviceState": "__uuid__controls_Wekker_deviceState",
+        "deviceSettings": "__uuid__controls_Wekker_deviceSettings",
+        "wakeAlarmSoundSettings": "__uuid__controls_Wekker_wakeAlarmSoundSettings"
+      }
+    },
+    "__uuid__controls_Alarmsysteem": {
+      "name": "Alarmsysteem",
+      "type": "Alarm",
+      "uuidAction": "__uuid__controls_Alarmsysteem",
+      "room": "__uuid__rooms_Centraal",
+      "cat": "__uuid__cats_Alarm",
+      "defaultRating": 2,
+      "isFavorite": false,
+      "isSecured": false,
+      "restrictions": 0,
+      "details": {
+        "jLockable": true,
+        "alert": true,
+        "presenceConnected": false
+      },
+      "states": {
+        "jLocked": "__uuid__controls_Alarmsysteem_jLocked",
+        "armed": "__uuid__controls_Alarmsysteem_armed",
+        "nextLevel": "__uuid__controls_Alarmsysteem_nextLevel",
+        "nextLevelDelay": "__uuid__controls_Alarmsysteem_nextLevelDelay",
+        "nextLevelDelayTotal": "__uuid__controls_Alarmsysteem_nextLevelDelayTotal",
+        "level": "__uuid__controls_Alarmsysteem_level",
+        "startTime": "__uuid__controls_Alarmsysteem_startTime",
+        "armedAt": "__uuid__controls_Alarmsysteem_armedAt",
+        "nextLevelAt": "__uuid__controls_Alarmsysteem_nextLevelAt",
+        "armedDelay": "__uuid__controls_Alarmsysteem_armedDelay",
+        "armedDelayTotal": "__uuid__controls_Alarmsysteem_armedDelayTotal",
+        "sensors": "__uuid__controls_Alarmsysteem_sensors",
+        "disabledMove": "__uuid__controls_Alarmsysteem_disabledMove",
+        "events": "__uuid__controls_Alarmsysteem_events"
+      },
+      "subControls": {
+        "__uuid__controls_Alarmsysteem/sensors": {
+          "name": "sensors",
+          "type": "Tracker",
+          "uuidAction": "__uuid__controls_Alarmsysteem/sensors",
+          "defaultRating": 0,
+          "isFavorite": false,
+          "isSecured": false,
+          "restrictions": 0,
+          "details": {
+            "maxEntries": 40
+          },
+          "states": {
+            "entries": "__uuid__controls_Alarmsysteem"
+          }
+        }
+      }
+    },
+    "__uuid__controls_IRC": {
+      "name": "Intelligente ruimte regeling",
+      "type": "IRoomController",
+      "uuidAction": "__uuid__controls_IRC",
+      "room": "__uuid__rooms_Woonkamer",
+      "cat": "__uuid__cats_Verwarming",
+      "defaultRating": 1,
+      "isFavorite": false,
+      "isSecured": false,
+      "restrictions": 0,
+      "details": {
+        "jLockable": true,
+        "restrictedToMode": 0,
+        "temperatures": {
+          "0": {
+            "isAbsolute": false
+          },
+          "1": {
+            "isAbsolute": true
+          },
+          "2": {
+            "isAbsolute": true
+          },
+          "3": {
+            "isAbsolute": true
+          },
+          "4": {
+            "isAbsolute": true
+          },
+          "5": {
+            "isAbsolute": false
+          },
+          "6": {
+            "isAbsolute": false
+          }
+        },
+        "format": "%.1f°"
+      },
+      "states": {
+        "jLocked": "__uuid__controls_IRC_jLocked",
+        "tempTarget": "__uuid__controls_IRC_tempTarget",
+        "tempActual": "__uuid__controls_IRC_tempActual",
+        "error": "__uuid__controls_IRC_error",
+        "mode": "__uuid__controls_IRC_mode",
+        "serviceMode": "__uuid__controls_IRC_serviceMode",
+        "currHeatTempIx": "__uuid__controls_IRC_currHeatTempIx",
+        "currCoolTempIx": "__uuid__controls_IRC_currCoolTempIx",
+        "override": "__uuid__controls_IRC_override",
+        "isPreparing": "__uuid__controls_IRC_isPreparing",
+        "valveHeat": "__uuid__controls_IRC_valveHeat",
+        "valveCool": "__uuid__controls_IRC_valveCool",
+        "openWindow": "__uuid__controls_IRC_openWindow",
+        "stop": "__uuid__controls_IRC_stop",
+        "overrideTotal": "__uuid__controls_IRC_overrideTotal",
+        "movement": "__uuid__controls_IRC_movement",
+        "manualMode": "__uuid__controls_IRC_manualMode",
+        "temperatures": [
+          "__uuid__controls_IRC_temp0",
+          "__uuid__controls_IRC_temp1",
+          "__uuid__controls_IRC_temp2",
+          "__uuid__controls_IRC_temp3",
+          "__uuid__controls_IRC_temp4",
+          "__uuid__controls_IRC_temp5",
+          "__uuid__controls_IRC_temp6"
+        ]
+      },
+      "subControls": {
+        "__uuid__controls_IRC_subControls_Heating": {
+          "name": "Heating",
+          "type": "IRCDaytimer",
+          "uuidAction": "__uuid__controls_IRC_subControls_Heating",
+          "defaultRating": 0,
+          "isFavorite": false,
+          "isSecured": false,
+          "restrictions": 0,
+          "details": {
+            "analog": true,
+            "format": "%.1f°"
+          },
+          "states": {
+            "entriesAndDefaultValue": "__uuid__controls_IRC_subControls_Heating",
+            "mode": "__uuid__controls_IRC_subControls_Heating_mode",
+            "modeList": "__uuid__controls_IRC_subControls_Heating_modeList",
+            "value": "__uuid__controls_IRC_subControls_Heating_value"
+          }
+        },
+        "__uuid__controls_IRC_subControls_Cooling": {
+          "name": "Cooling",
+          "type": "IRCDaytimer",
+          "uuidAction": "__uuid__controls_IRC_subControls_Cooling",
+          "defaultRating": 0,
+          "isFavorite": false,
+          "isSecured": false,
+          "restrictions": 0,
+          "details": {
+            "analog": true,
+            "format": "%.1f°"
+          },
+          "states": {
+            "entriesAndDefaultValue": "__uuid__controls_IRC_subControls_Cooling",
+            "mode": "__uuid__controls_IRC_subControls_Cooling_mode",
+            "modeList": "__uuid__controls_IRC_subControls_Cooling_modeList",
+            "value": "__uuid__controls_IRC_subControls_Cooling_value"
+          }
+        }
       }
     }
   },

@@ -64,7 +64,6 @@
 	let modal: ModalView = $state({
 		action: (state: boolean) => {modal.state = state},
 		state: false,
-		size: { height: 'h-[530px]' },
 		class: 'grid-cols-2',
 	});
 

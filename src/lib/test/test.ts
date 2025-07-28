@@ -1,15 +1,17 @@
 import { store } from '$lib/stores/store.svelte';
-import type { Control } from '$lib/types/models';
+import type { Control, AlarmClockEntry } from '$lib/types/models';
+import { utils } from '$lib/helpers/utils';
 import demo from '$lib/test/demo.json';
 import states from '$lib/test/states.json';
+import { format } from 'date-fns';
 
 class Test {
 
-	_timer: any = {};
+	_timedSwitch: any = {};
 	_jalousie: any = {};
 	_dimmer: any = {}
 	_gate: any = {}
-	
+
 	start() {
 		console.log('TEST MODE: Use demo structure');
 		store.initStructure(demo);
@@ -53,12 +55,14 @@ class Test {
 		let control = store.controls[uuid];
 		if (!control) {
 			let subControl = uuid.split('/');
-			if (subControl[0]) {
+			if (subControl && subControl[0] && store.controls[subControl[0]]) {
 				control = store.controls[subControl[0]].subControls[uuid];
 			}
 		}
 		if (control) {
 			this.action(control, msg);
+		} else {
+			console.error('Control or subControl not found:', uuid);
 		}
 	}
 
@@ -75,7 +79,10 @@ class Test {
 			case 'Dimmer': this.dimmer(control, msg); break;
 			case 'ColorPickerV2': this.colorPickerV2(control, msg); break;
 			case 'Gate': this.gate(control, msg); break;
-			default: console.log('control not tested ', control.name, ' of type', control.type);
+			case 'Alarm': this.alarm(control, msg); break;
+			case 'AlarmClock': this.alarmClock(control, msg); break;
+			case 'IRoomController': this.irc(control, msg); break;
+			default: console.error('No TEST for Control', control.name, 'of type', control.type);
 		}
 	}
 
@@ -131,10 +138,13 @@ class Test {
 	}
 
 	gate(control: Control, msg: string) { 
-		if (msg == 'open') this.moveGate(control, 1); // 1 = open and 0 = closed
-		if (msg == 'stop') clearInterval(this._gate[control.uuidAction]);
-		if (msg == 'close') this.moveGate(control, 0);
-		if (msg == 'partiallyOpen') this.moveGate(control, 0.5); // to 50%
+		switch (msg) {
+		 	case 'open': this.moveGate(control, 1); break;// 1 = open and 0 = closed
+			case 'stop': clearInterval(this._gate[control.uuidAction]); break;
+			case 'close': this.moveGate(control, 0); break;
+			case 'partiallyOpen': this.moveGate(control, 0.5); break; // to 50%
+			default: console.error('Command', msg, 'not found for Control', control.uuidAction, control.type);
+		}
 	}
 
 	moveGate(control: Control, endState: number) {
@@ -158,12 +168,15 @@ class Test {
 	}
 
 	jalousie(control: Control, msg: string) {
-		if (msg == 'down') this.startJalousie(control, 1);
-		if (msg == 'DownOff') clearInterval(this._jalousie[control.uuidAction]);
-		if (msg == 'up') this.startJalousie(control, -1);
-		if (msg == 'UpOff') clearInterval(this._jalousie[control.uuidAction]);
-		if (msg == 'FullDown') this.startJalousie(control, 1);
-		if (msg == 'FullUp') this.startJalousie(control, -1);
+		switch (msg) {
+			case 'down': this.startJalousie(control, 1); break;
+			case 'DownOff': clearInterval(this._jalousie[control.uuidAction]); break;
+			case 'up': this.startJalousie(control, -1); break;
+			case 'UpOff': clearInterval(this._jalousie[control.uuidAction]); break;
+			case 'FullDown': this.startJalousie(control, 1); break;
+			case  'FullUp': this.startJalousie(control, -1); break;
+			default: console.error('Command', msg, 'not found for Control', control.uuidAction, control.type);
+		}
 	}
 
 	startJalousie(control: Control, direction: number) {
@@ -185,22 +198,103 @@ class Test {
 	}
 
 	timedSwitch(control: Control, msg: string) {
-		let state = control.states.deactivationDelay;
-		let initDelay = store.getState(control.states.deactivationDelayTotal);
-
+		let stateId= control.states.deactivationDelay;
 		let val: number = 0;
 		switch (msg) {
-			case 'on': clearInterval(this._timer[state]); val = -1; store.setState(state, String(val)); break;
-			case 'off': clearInterval(this._timer[state]); val = 0; store.setState(state, String(val)); break;
-			case 'pulse': { val = initDelay; clearInterval(this._timer[state]);
-											this._timer[state] = setInterval(() => {
-												if (val>0) {
-													val--;
-													store.setState(state, String(val));
-												}}, 1000);
-											break;
-										}
+			case 'on': clearInterval(this._timedSwitch[control.uuidAction]); val = -1; store.setState(stateId, String(val)); break;
+			case 'off': clearInterval(this._timedSwitch[control.uuidAction]); val = 0; store.setState(stateId, String(val)); break;
+			case 'pulse': this.startTimedSwitch(control); break;
+			default: console.error('Command', msg, 'not found for Control', control.uuidAction, control.type);
 		}
+	}
+
+	startTimedSwitch(control: Control) {
+		let val = store.getState(control.states.deactivationDelayTotal);
+		let stateId = control.states.deactivationDelay;
+		clearInterval(this._timedSwitch[control.uuidAction]);
+		this._timedSwitch[control.uuidAction] = setInterval(() => {
+			if (val > 0) {
+				val--;
+				store.setState(stateId, String(val));
+			}
+		}, 1000);
+	}
+
+	alarm(control: Control, msg: string) {
+		let msgItems = msg.split('/');
+		if (msg.includes('dismv/')) {
+			switch (msgItems[1]) {
+				case '0' : store.setState(control.states.disabledMove, '0'); break;
+				case '1' : store.setState(control.states.disabledMove, '1'); break;
+			}
+			return;
+		}
+		if (msg == 'on') {
+			store.setState(control.states.armed, '1');
+			return;
+		}
+		if (msg == 'off') {
+			store.setState(control.states.armed, '0');
+			return;
+		}
+		if (msg.includes('delayedon/')) {
+			setTimeout(() => {
+				this.alarm(control, 'on/' + msgItems[1]);
+			}, 2000);
+			return;
+		}
+		if (msg.includes('on/')) {
+			switch (msgItems[1]) {
+				case '0' : store.setState(control.states.armed, '1'); store.setState(control.states.disabledMove, '1'); break;
+				case '1' : store.setState(control.states.armed, '1'); store.setState(control.states.disabledMove, '0'); break;
+			}
+			return;
+		}
+		console.error('Command', msg, 'not found for Control', control.uuidAction, control.type);
+	}
+
+	alarmClock(control: Control, msg: string) {
+		let entryListId = control.states.entryList;
+		let nextEntryTimeId = control.states.nextEntryTime;
+		let entryList = store.getState(entryListId);
+		let msgItems = msg.split('/');
+		if (msg.includes('entryList/put')) {
+			if (entryList && entryList[msgItems[2]]) { // entry exists
+				console.log('TODO entry exists')
+			} else { // new entry
+				let newEntry: AlarmClockEntry = this.alarmClockAddEntry();
+				let size = entryList ? Object.keys(entryList).length : -1;
+				if (size == -1) {
+					entryList = {};
+				}
+				entryList[size+1] = newEntry;
+				store.setState(nextEntryTimeId, String(new Date().valueOf()/1000 - 1230764400 + 3600)); // TODO
+				store.setState(entryListId, entryList);
+			}
+			return;
+		}
+		console.error('Command', msg, 'not found for Control', control.uuidAction, control.type);
+	}
+
+	alarmClockAddEntry() {
+		let day = format(new Date(), 'eeee');
+		let opModes = store.structure.operatingModes;
+		let idx = Object.keys(opModes).find( (key) => opModes[key].toLowerCase() == day);
+		let date = new Date();
+		let entry: AlarmClockEntry = {
+			name: 'Alarm clock',
+			alarmTime: utils.hours2sec(format(date, 'p')),
+			isActive: true,
+			modes: [Number(idx)], 
+			nightLight: false,
+			daily: false
+		};
+		return entry;
+	}
+
+	irc(control: Control, msg: string) {
+		let msgItems = msg.split('/');
+		console.error('Command', msg, 'not found for Control', control.uuidAction, control.type);
 	}
 }
 

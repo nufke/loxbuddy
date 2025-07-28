@@ -12,6 +12,16 @@
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
 	let position = $derived(Number(store.getState(control.states.position)) * 100);
+	let type = control.details.animation
+
+	/* Gate types (based on animation detail )
+		0 = Garage Door
+		1 = Single Gate opening to the left
+		2 = Single Gate opening to the right
+		3 = Gate opening to both sides
+		4 = Folding door opening to the left
+		5 = Folding door opening to the right
+	*/
 
 	let buttons: SingleButtonView[] = $state([
 		{

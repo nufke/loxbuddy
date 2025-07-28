@@ -1,11 +1,23 @@
 <script lang="ts">
-	let { min, max, step, value, orientation = '', classes='', style = '', onValueChangeEnd } = $props();
+	let { min, max, step, value, orientation = '', classes='', style = '', onValueChange } = $props();
 
 	let mode = $state(localStorage.getItem('mode') || 'dark');
 	let viewport: any;
+	let startMouseMove = $state(false);
 
 	function handleMouseUp(e: any) {
-		onValueChangeEnd({value: value});
+		onValueChange({value: value});
+		startMouseMove = false;
+	}
+
+	function handleMouseDown(e: any) {
+		startMouseMove = true;
+	}
+
+	function handleMouseMove(e: any) {
+		if (startMouseMove) {
+			onValueChange({value: value});
+		}
 	}
 
 	function dimmerBackground() {
@@ -16,7 +28,7 @@
 </script>
 
 <div class="ml-1 mr-1 mb-1 {orientation == 'vertical' ? 'rotate-270 m-3 ml-3 mb-8':''}">
-	<input bind:this={viewport} class={classes} type="range" id="vol" name="vol" min={min} max={max} step={step} bind:value={value} onmouseup={handleMouseUp}
+	<input bind:this={viewport} class={classes} type="range" id="vol" name="vol" min={min} max={max} step={step} bind:value={value} onmouseup={handleMouseUp} onmousedown={handleMouseDown} onmousemove={handleMouseMove}
 					style="{style} { classes == 'dimmer' ? dimmerBackground() : ''}" />
 </div>
 
@@ -43,7 +55,14 @@
 		border-style: solid;
 		cursor: pointer;
 	}
-	
+	.slider[type="range"]::-moz-range-thumb {
+		width: 20px;
+		height: 20px;
+		border-radius: 11px;
+		border-width: 3px;
+		border-color: white;
+		background-color: transparent;
+	}
 	.dimmer {
 		position: relative;
 		-webkit-appearance: none;
@@ -61,5 +80,9 @@
 		width: 0px;
 		height: 0px;
 		cursor: pointer;
+	}
+	.dimmer[type="range"]::-moz-range-thumb {
+  	background-color: transparent;
+		border: none;
 	}
 </style>
