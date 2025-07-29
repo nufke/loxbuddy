@@ -37,6 +37,11 @@
 		return sortEntries(obj)
 	}
 
+	function getStatus() {
+		return lastEntryDate && entryMap[lastEntryDate][0] ? 
+			format(new Date(Number(lastEntryDate)), "PPP ") + format(new Date(Number(entryMap[lastEntryDate][0].time)), "p") : '';
+	}
+
 	let	modal: ModalView = $state({
 		action: (state: boolean) => {modal.state = state},
 		state: false,
@@ -49,7 +54,7 @@
 		isFavorite: controlOptions.isFavorite,
 		iconName: store.getIcon(control, controlOptions.isSubControl),
 		textName: control.name,
-		statusName: format(new Date(Number(lastEntryDate)), "PPP ") + format(new Date(Number(entryMap[lastEntryDate][0].time)), "p"),
+		statusName: getStatus(),
 		modal: {
 			...modal,
 			details: {

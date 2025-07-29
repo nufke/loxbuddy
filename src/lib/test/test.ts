@@ -14,8 +14,6 @@ class Test {
 
 	start() {
 		console.log('TEST MODE: Use demo structure');
-		store.initStructure(demo);
-		store.setInitialStates(states);
 		let i = 0;
 		let j = 0;
 		let k = false; // used for InfoOnlyDigital
@@ -23,6 +21,14 @@ class Test {
 		let val = [ "0.0234", "0", "0", "0.500", "-0.400", "0", "2", "-2", "0"];
 		let soc = [ "100", "80", "60", "40", "20", "0"];
 		let fase = [ "0.1", "0.2", "0.3", "0.4", "-0.2", "-0.1"];
+		
+		setTimeout( () => {
+			store.initStructure(demo);
+		}, 100);
+		
+		setTimeout( () => {
+			store.setInitialStates(states);
+		}, 5000);
 		
 		// Meter
 		setInterval(() => {
