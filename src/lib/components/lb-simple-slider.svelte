@@ -6,7 +6,7 @@
 	let mode = $state(localStorage.getItem('mode') || 'dark');
 	let viewport: any;
 	let startMouseMove = $state(false);
-	let windowHeight = $state(innerHeight.current || 0);
+	let windowHeight = $derived(innerHeight.current || 0);
  
 	function handleMouseUp(e: any) {
 		onValueChange({value: value});
@@ -32,7 +32,7 @@
 
 <div class="ml-1 mr-1 mb-1 { (orientation == 'vertical' && windowHeight > 630) ? 'rotate-270 m-3 ml-3 mb-8':''}">
 	<input bind:this={viewport} type="range" id="vol" name="vol" min={min} max={max} step={step} bind:value={value} onmouseup={handleMouseUp} onmousedown={handleMouseDown} onmousemove={handleMouseMove}
-					class=" {classes} { (classes == 'dimmer' && windowHeight < 630 ) ? 'h-[100px] w-[200px]' : 'h-[150px] w-[200px] '}"
+					class=" {classes} { (classes == 'dimmer' && windowHeight < 630 ) ? 'h-[100px] w-[250px]' : 'h-[150px] w-[200px] '}"
 					style=" {style} { classes == 'dimmer' ? dimmerBackground() : ''}" />
 </div>
 
