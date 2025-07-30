@@ -1,10 +1,13 @@
 <script lang="ts">
+	import { innerHeight } from 'svelte/reactivity/window';
+
 	let { min, max, step, value, orientation = '', classes='', style = '', onValueChange } = $props();
 
 	let mode = $state(localStorage.getItem('mode') || 'dark');
 	let viewport: any;
 	let startMouseMove = $state(false);
-
+	let windowHeight = $state(innerHeight.current || 0);
+ 
 	function handleMouseUp(e: any) {
 		onValueChange({value: value});
 		startMouseMove = false;
@@ -27,9 +30,10 @@
 	}
 </script>
 
-<div class="ml-1 mr-1 mb-1 {orientation == 'vertical' ? 'rotate-270 m-3 ml-3 mb-8':''}">
-	<input bind:this={viewport} class={classes} type="range" id="vol" name="vol" min={min} max={max} step={step} bind:value={value} onmouseup={handleMouseUp} onmousedown={handleMouseDown} onmousemove={handleMouseMove}
-					style="{style} { classes == 'dimmer' ? dimmerBackground() : ''}" />
+<div class="ml-1 mr-1 mb-1 { (orientation == 'vertical' && windowHeight > 630) ? 'rotate-270 m-3 ml-3 mb-8':''}">
+	<input bind:this={viewport} type="range" id="vol" name="vol" min={min} max={max} step={step} bind:value={value} onmouseup={handleMouseUp} onmousedown={handleMouseDown} onmousemove={handleMouseMove}
+					class=" {classes} { (classes == 'dimmer' && windowHeight < 630 ) ? 'h-[100px] w-[200px]' : 'h-[150px] w-[200px] '}"
+					style=" {style} { classes == 'dimmer' ? dimmerBackground() : ''}" />
 </div>
 
 <style>
@@ -66,8 +70,6 @@
 	.dimmer {
 		position: relative;
 		-webkit-appearance: none;
-		width: 200px;
-		height: 150px;
 		border-radius: 10px;
 		outline: none;
 		-webkit-transition: .2s;

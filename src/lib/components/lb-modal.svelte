@@ -68,17 +68,25 @@
 	transitionsPositionerOut = {fade200}
 	onOpenChange={()=>{}}
 	triggerBase="btn bg-surface-600"
-	contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-sm rounded-lg border border-white/5 hover:border-white/10
-							max-w-9/10 max-h-9/10 {controlView.modal.size?.width || 'w-[380px]'} {controlView.modal.size?.height || ''}
+	contentBase="card bg-surface-100-900 p-4 shadow-sm rounded-lg border border-white/5 hover:border-white/10
+							max-w-9/10 max-h-9/10 {controlView.modal.size?.width || 'w-[450px]'} {controlView.modal.size?.height || ''}
 							 {linkedControls.length > 1 ? 'lg:w-[760px]': ''}"
 	backdropClasses={ controlView.modal.noBlur ? "" : "backdrop-blur-sm"}
 	backdropBackground="">
 	{#snippet content()}
 	<!-- TODO better method to create multiple modal overlays with backdrop?-->
 	<div class="fixed w-full h-full top-0 left-0 right-0 bottom-0 -z-10 bg-surface-50/75 dark:bg-surface-950/75" onclick={()=>controlView.modal.action(false)}></div> 
-	<Info control={controlView.control}/>
+	<!--<Info control={controlView.control}/>-->
 	<header class="relative">
-		<div class="flex justify-center">
+		<div class="absolute right-0 top-0">
+			<button type="button" aria-label="close" class="btn-icon w-auto" onclick={()=>controlView.modal.action(false)}>
+				<X/>
+			</button>
+		</div>
+	</header>
+	<div class="flex flex-col items-center justify-center h-full">
+		<h2 class="flex h4 text-center items-center justify-center w-[80%]">{controlView.textName}</h2>
+		<div class="flex justify-center mt-4">
 			<div class="relative inline-flex h-18 w-18 items-center justify-center overflow-hidden rounded-full border border-white/10 dark:bg-surface-950 bg-surface-50">
 				<LbIcon class={controlView.iconColor} name={controlView.iconName} width="36" height="36"
 								style={getIconColorHex(controlView.iconColor)}/>
@@ -89,16 +97,6 @@
 					</div>
 				{/if}
 			</div>
-		</div>
-		<div class="absolute right-0 top-0">
-			<button type="button" aria-label="close" class="btn-icon w-auto" onclick={()=>controlView.modal.action(false)}>
-				<X/>
-			</button>
-		</div>
-	</header>
-	<div class="flex flex-col items-center justify-center mt-2">
-		<div>
-			<h2 class="h4 text-center">{controlView.textName}</h2>
 		</div>
 		<div class="m-2 truncate">
 			{#if controlView.statusName && !controlView.modal.details?.tracker} <!-- remove status when we show a tracker -->
@@ -168,7 +166,7 @@
 		</div>
 		{/if}
 		{#if controlView.modal && controlView.modal.details && controlView.modal.details.tracker} <!-- used for entries for tracker-->
-		<div class="relative w-full pl-2 pr-2 h-[575px] overflow-auto">
+		<div class="flex flex-col w-full mt-2 pl-2 pr-2 h-full overflow-y-auto">
 			{#each Object.keys(controlView.modal.details.tracker) as key}
 				<p class="text-lg dark:text-surface-50 text-surface-950">{format(new Date(Number(key)), "PPP")}</p>
 				<hr class="hr" />

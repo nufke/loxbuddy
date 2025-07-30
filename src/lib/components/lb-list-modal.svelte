@@ -70,7 +70,7 @@
 	transitionsPositionerOut = {fade200}
 	onOpenChange={()=>{ controlView.modal.action(false)}}
 	triggerBase="btn bg-surface-600"
-	contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-sm rounded-lg border border-white/5 hover:border-white/10
+	contentBase="card bg-surface-100-900 p-4 shadow-sm rounded-lg border border-white/5 hover:border-white/10
 							max-w-9/10 max-h-9/10 {controlView.modal.size?.width || 'w-[450px]'} {controlView.modal.size?.height || ''}"
 	backdropClasses="backdrop-blur-sm"
 	backdropBackground="">
@@ -80,20 +80,18 @@
 	<Info control={controlView.control}/>
 	{#if selectedTab==0} <!-- scenes -->
 	<header class="relative">
-		<div class="flex justify-center">
-			<div class="relative inline-flex h-18 w-18 items-center justify-center overflow-hidden rounded-full border border-white/5 dark:bg-surface-950">
-				<LbIcon class={controlView.iconColor} name={controlView.iconName} width="36" height="36"/>
-			</div>
-		</div>
 		<div class="absolute right-0 top-0">
 			<button type="button" aria-label="close" class="btn-icon w-auto" onclick={() => { controlView.modal.action(false); resetTab(); }}>
 				<X/>
 			</button>
 		</div>
 	</header>
-	<div class="flex flex-col items-center justify-center m-2">
-		<div>
-			<h2 class="h4 text-center">{controlView.textName}</h2>
+	<div class="flex flex-col items-center justify-center">
+		<h2 class="flex h4 text-center items-center justify-center w-[80%]">{controlView.textName}</h2>
+		<div class="flex justify-center mt-4">
+			<div class="relative inline-flex h-18 w-18 items-center justify-center overflow-hidden rounded-full border border-white/5 dark:bg-surface-950">
+				<LbIcon class={controlView.iconColor} name={controlView.iconName} width="36" height="36"/>
+			</div>
 		</div>
 		<div class="mt-4 mb-2 truncate">
 			<p class="text-lg truncate {controlView.statusColor}">{controlView.statusName}</p>
@@ -174,7 +172,7 @@
 	</div>
 	{/if}
 	{#if isLightController}
-	<div class="sticky bottom-0 left-0 w-full h-16 pt-2">
+	<div class="sticky bottom-0 left-0 w-full h-16 pt-2 mt-4">
 		<div class="grid h-full max-w-lg {subControlsColorPicker.length ? 'grid-cols-3' : 'grid-cols-2'}  mx-auto">
 				<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==0 ? 'dark:text-primary-500 text-primary-700' : ''} " onclick={() => selectedTab=0}>
 					<Lightbulb/>

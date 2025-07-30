@@ -21,15 +21,16 @@ class Test {
 		let val = [ "0.0234", "0", "0", "0.500", "-0.400", "0", "2", "-2", "0"];
 		let soc = [ "100", "80", "60", "40", "20", "0"];
 		let fase = [ "0.1", "0.2", "0.3", "0.4", "-0.2", "-0.1"];
-		
+
+		// loadding of structure and states delayed to test uninitialized variables
 		setTimeout( () => {
 			store.initStructure(demo);
 		}, 100);
-		
+
 		setTimeout( () => {
 			store.setInitialStates(states);
 		}, 5000);
-		
+
 		// Meter
 		setInterval(() => {
 			store.setState("__uuid_controls_PV_meter_states_actual", val[i]);

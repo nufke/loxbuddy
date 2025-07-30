@@ -45,7 +45,7 @@
 	let	modal: ModalView = $state({
 		action: (state: boolean) => {modal.state = state},
 		state: false,
-		size: { height: 'w-[450px]' },
+		size: { width: 'w-[450px]', height: 'h-[700px]'},
 	});
 
   let controlView: ControlView = $derived({
