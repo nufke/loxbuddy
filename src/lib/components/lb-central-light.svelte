@@ -13,6 +13,8 @@
 	import fmt from 'sprintf-js';
 	import { fade200 } from '$lib/helpers/transition';
 	import Info from '$lib/components/lb-info.svelte';
+	import { innerHeight } from 'svelte/reactivity/window';
+	import { tick } from 'svelte';
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
@@ -41,6 +43,10 @@
   let showScrollTop = $state(false);
 	let showScrollBottom = $state(true);
 
+	let modalViewport: any = $state(); // TODO make HTMLDivElement
+	let windowHeight = $derived(innerHeight.current || 0);
+	let limitHeight = $state(false); 
+
 	function parseScroll() {
 		hasScroll = viewport?.scrollHeight > viewport?.clientHeight;
     showScrollTop = hasScroll && (viewport?.scrollTop > 20);
@@ -49,6 +55,12 @@
 
 	$effect( () => {
 		parseScroll();
+		if (windowHeight && modalViewport) { /* trigger on windowHeight change */
+			limitHeight = false;
+			tick().then( () => {
+				limitHeight = (windowHeight * 0.9 - modalViewport.getBoundingClientRect().bottom - 10) < 0;
+			});
+		}
 	});
 
 	function getActiveLights() {
@@ -66,6 +78,12 @@
 			return status;
 	}
 
+	function resetState() {
+		lightList.forEach( item => item.selected = false ); // empty selected lights
+		selectedControl = undefined;
+		selectedControlOptions = undefined;
+	}
+
 	let modal: ModalView = $state({
 		action: (state: boolean) => {
 			modal.state = state;
@@ -73,12 +91,6 @@
 		},
 		state: false
 	});
-
-	function resetState() {
-		lightList.forEach( item => item.selected = false ); // empty selected lights
-		selectedControl = undefined;
-		selectedControlOptions = undefined;
-	}
 
 	let controlView: ControlView = $derived({
 		...DEFAULT_CONTROLVIEW,
@@ -165,47 +177,46 @@
 		transitionsPositionerOut = {fade200}
 		onOpenChange={() => controlView.modal.action(false)}
 		triggerBase="btn bg-surface-600"
-		contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-sm rounded-lg border border-white/5 hover:border-white/10
-									md:max-w-9/10 md:max-h-9/10 w-[450px]"
+		contentBase="card bg-surface-100-900 p-4 shadow-sm rounded-lg border border-white/5 hover:border-white/10
+									md:max-w-9/10 md:max-h-9/10 w-[450px] { limitHeight ? 'h-full': '' }"
 		backdropClasses="backdrop-blur-sm"
 		backdropBackground="">
 		{#snippet content()}
 		<!-- TODO better method to create multiple modal overlays with backdrop? -->
 		<div class="fixed w-full h-full top-0 left-0 right-0 bottom-0 -z-10 bg-surface-50/75 dark:bg-surface-950/75" onclick={()=>controlView.modal.action(false)}></div> 
-			<Info control={controlView.control}/>
-			<header class="relative">
-				<div class="mb-2 flex justify-center">
-					<h2 class="h4 text-center ">{controlView.textName}</h2>
-				</div>
-				<h2 class="text-lg text-center {lightsOn ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700'}">{getActiveLights()}</h2>
-				<div class="absolute top-0 right-0">
-					<button type="button" aria-label="close" class="btn-icon w-auto" onclick={() => {scenesEnabled=false; controlView.modal.action(false)}}>
-						<X />
-					</button>
-				</div>
-				<div class="container grid grid-cols-3 gap-2 mt-4">
-					<button type="button" class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm text-surface-950-50
-																				rounded-lg border border-white/15 hover:border-white/50" onclick={() => changeLight('On')}>{$_('On')}</button>
-					<button type="button" class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm text-surface-950-50
-																				rounded-lg border border-white/15 hover:border-white/50" onclick={() => changeLight('Off')}>{$_('Off')}</button>
-					<button type="button" class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm {scenesEnabled ? 'text-surface-800-200' : 'text-surface-200-800'}
-																				rounded-lg border border-white/15 hover:border-white/50" onclick={() => selectScenes()}>{$_('Scenes')}</button>
-				</div>
-			</header>
-			<div class="container relative w-full">
+		<Info control={controlView.control}/>
+		<header class="relative">
+			<div class="absolute top-0 right-0">
+				<button type="button" aria-label="close" class="btn-icon w-auto" onclick={() => {scenesEnabled=false; controlView.modal.action(false)}}>
+					<X />
+				</button>
+			</div>
+		</header>
+		<div bind:this={modalViewport} class="flex flex-col items-center justify-center h-full">
+			<h2 class="h4 text-center items-center justify-center w-[80%]">{controlView.textName}</h2>
+			<h2 class="mt-2 mb-4 text-lg text-center {lightsOn ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700'}">{getActiveLights()}</h2>
+			<div class="container grid grid-cols-3 gap-2 mb-2">
+				<button type="button" class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm text-surface-950-50
+																			rounded-lg border border-white/15 hover:border-white/50" onclick={() => changeLight('On')}>{$_('On')}</button>
+				<button type="button" class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm text-surface-950-50
+																			rounded-lg border border-white/15 hover:border-white/50" onclick={() => changeLight('Off')}>{$_('Off')}</button>
+				<button type="button" class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm {scenesEnabled ? 'text-surface-800-200' : 'text-surface-200-800'}
+																			rounded-lg border border-white/15 hover:border-white/50" onclick={() => selectScenes()}>{$_('Scenes')}</button>
+			</div>
+			<div class="relative flex flex-col overflow-y-auto w-full h-full">
 				{#if showScrollTop}
-					<div class="absolute z-10 left-[50%] lb-center top-[16px] text-surface-500" transition:fade={{ duration: 300 }}><ChevronUp size="30"/></div>
+					<div class="absolute z-10 left-[50%] lb-center top-[9px] text-surface-500" transition:fade={{ duration: 300 }}><ChevronUp size="30"/></div>
 				{/if}
 				{#if showScrollBottom}
-					<div class="absolute z-10 left-[50%] lb-center -bottom-[16px] text-surface-500" transition:fade={{ duration: 300 }}><ChevronDown size="30"/></div>
+					<div class="absolute z-10 left-[50%] lb-center -bottom-[18px] text-surface-500" transition:fade={{ duration: 300 }}><ChevronDown size="30"/></div>
 				{/if}
-				<div class="overflow-y-auto space-y-2 max-h-[474px]" bind:this={viewport} onscroll={parseScroll}>
+				<div class="flex flex-col space-y-2 overflow-y-auto" bind:this={viewport} onscroll={parseScroll}>
 					{#each lightControls as control}
 						<button class="w-full flex h-[60px] items-center justify-start rounded-lg border border-white/15 hover:border-white/50
 													{isSelected(control) ? 'dark:bg-surface-800 bg-surface-200' : 'dark:bg-surface-950 bg-surface-50'} px-2 py-2"
 													onclick={() => selectLight(control)}>
 							<div class="flex items-center truncate w-full">
-								<div class="mt-0 ml-2 mr-2 flex flex-row w-full justify-between truncate items-center">
+								<div class="mt-0 ml-2 mr-2 flex flex-row w-full justify-between truncate items-center h-[60px]">
 									<div class="flex flex-col">
 										<p class="leading-6 truncate text-lg {getStatusColor(control)}">{getControlName(control)}</p>
 										<p class="truncate bg-transparent text-left text-xs dark:text-surface-300 text-surface-700">{getRoomName(control)}</p>
@@ -217,6 +228,7 @@
 					{/each}
 				</div>
 			</div>
+		</div>
 		{/snippet}
 	</Modal>
 

@@ -101,7 +101,7 @@
 	onOpenChange={()=>{openModal=false}}
 	triggerBase="btn bg-surface-600"
 	contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-sm rounded-lg border border-white/5 hover:border-white/10
-							max-w-9/10 max-h-9/10 overflow-auto w-[450px]"
+							md:max-w-9/10 md:max-h-9/10 overflow-auto w-[450px]"
 	backdropClasses="backdrop-blur-sm">
 	{#snippet content()}
 		<header class="relative">

@@ -10,6 +10,8 @@
 	import { fade } from 'svelte/transition'
 	import { fade200 } from '$lib/helpers/transition';
 	import Info from '$lib/components/lb-info.svelte';
+	import { innerHeight } from 'svelte/reactivity/window';
+	import { tick } from 'svelte';
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
@@ -18,9 +20,6 @@
   let showScrollTop = $state(false);
 	let showScrollBottom = $state(true);
 
-	// test sequence
-	//let windowStates = $state("4,4,1,1,8,16,4,2,0,4,4,4");
-	//let windowStates = $state("1,1,1,1,1,1,1,1,1,1,1,1");
 
 	let windowList: WindowListItem[] = control.details.windows;
 	let windowStates = $derived(String(store.getState(control.states.windowStates)));
@@ -33,6 +32,10 @@
 	let numLocked = $derived(Number(store.getState(control.states.numLocked)));
 	let numUnlocked = $derived(Number(store.getState(control.states.numUnlocked)));
 	let allClosed = $derived((numOpen + numTilted + numUnlocked) == 0);
+
+	let modalViewport: any = $state(); // TODO make HTMLDivElement
+	let windowHeight = $derived(innerHeight.current || 0);
+	let limitHeight = $state(false); 
 
 	// TODO check what the summary is
 	function getSummary() {
@@ -71,7 +74,7 @@
 				installPlace: windowList[i].installPlace,
 				uuid: windowList[i].uuid,
 				room: windowList[i].room,
-				roomName: store.rooms[windowList[i].room].name,
+				roomName: getRoomName(i),
 				state: s,
 				prio: Math.min(prio[0], prio[1], prio[2], prio[3], prio[4], prio[5])
 			};
@@ -80,6 +83,14 @@
 			.sort((a, b) => a.roomName.localeCompare(b.roomName))
 			.sort((a, b) => a.prio - b.prio);
 		return list;
+	}
+
+	function getRoomName(i: number) {
+		if (windowList[i] && windowList[i].room && store.rooms[windowList[i].room]) {
+			return store.rooms[windowList[i].room].name;
+		} else {
+		  return '';
+		} 
 	}
 
 	function getStatus() {
@@ -114,6 +125,12 @@
 
 	$effect( () => {
 		parseScroll();
+		if (windowHeight && modalViewport) { /* trigger on windowHeight change */
+			limitHeight = false; 
+			tick().then( () => {
+				limitHeight = (windowHeight * 0.9 - modalViewport.getBoundingClientRect().bottom - 3) < 0;
+			});
+		}
 	});
 
 	let modal: ModalView = $state({
@@ -145,39 +162,38 @@
 		transitionsPositionerOut = {fade200}
 		onOpenChange={() => controlView.modal.action(false)}
 		triggerBase="btn bg-surface-600"
-		contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-sm rounded-lg border border-white/5 hover:border-white/10
-									md:max-w-9/10 md:max-h-9/10 w-[450px]"
+		contentBase="card bg-surface-100-900 p-4 shadow-sm rounded-lg border border-white/5 hover:border-white/10
+									md:max-w-9/10 md:max-h-9/10 w-[450px] {limitHeight ? 'h-full': '' }"
 		backdropClasses="backdrop-blur-sm"
 		backdropBackground="">
 		{#snippet content()}
 		<!-- TODO better method to create multiple modal overlays with backdrop? -->
-		<div class="fixed w-full h-full top-0 left-0 right-0 bottom-0 -z-10 bg-surface-50/75 dark:bg-surface-950/75" onclick={()=>controlView.modal.action(false)}></div> 
-			<Info control={controlView.control}/>
-			<header class="relative">
-				<div class="mb-2 flex justify-center">
-					<h2 class="h4 text-center ">{controlView.textName}</h2>
-				</div>
-				<h2 class="text-lg text-center">
-					{#each getSummary() as state, i}
-						{@const isLast = i === getSummary().length - 1}
-							<span class={ state.color ? 'text-orange-500' : 'dark:text-primary-500 text-primary-700'}>{state.name}</span>{#if !isLast }
-								<span>,&nbsp;</span>{/if}
-					{/each}
-				</h2>
-				<div class="absolute top-0 right-0">
-					<button type="button" aria-label="close" class="btn-icon w-auto" onclick={() => {controlView.modal.action(false)}}>
-						<X />
-					</button>
-				</div>
-			</header>
-			<div class="container relative w-full">
+		<div class="fixed w-full h-full top-0 left-0 right-0 bottom-0 -z-10 bg-surface-50/75 dark:bg-surface-950/75" onclick={()=>controlView.modal.action(false)}></div>
+		<Info control={controlView.control}/>
+		<header class="relative">
+			<div class="absolute top-0 right-0">
+				<button type="button" aria-label="close" class="btn-icon w-auto" onclick={() => {controlView.modal.action(false)}}>
+					<X />
+				</button>
+			</div>
+		</header>
+		<div bind:this={modalViewport} class="flex flex-col h-full items-center justify-center">
+			<h2 class="flex h4 text-center items-center justify-center w-[80%]">{controlView.textName}</h2>
+			<h2 class="flex relative text-lg text-center mt-2 mb-2">
+				{#each getSummary() as state, i}
+					{@const isLast = i === getSummary().length - 1}
+						<span class={ state.color ? 'text-orange-500' : 'dark:text-primary-500 text-primary-700'}>{state.name}</span>{#if !isLast }
+							<span>,&nbsp;</span>{/if}
+				{/each}
+			</h2>
+			<div class="flex flex-col relative w-full overflow-y-auto h-full">
 				{#if showScrollTop}
 					<div class="absolute z-10 left-[50%] lb-center top-[16px] text-surface-500" transition:fade={{ duration: 300 }}><ChevronUp size="30"/></div>
 				{/if}
 				{#if showScrollBottom}
 					<div class="absolute z-10 left-[50%] lb-center -bottom-[16px] text-surface-500" transition:fade={{ duration: 300 }}><ChevronDown size="30"/></div>
 				{/if}
-				<div class="overflow-y-auto space-y-2 max-h-[474px]" bind:this={viewport} onscroll={parseScroll}>
+				<div class="flex flex-col space-y-2 overflow-y-auto w-full h-full mt-2"  bind:this={viewport} onscroll={parseScroll}>
 					{#each windowStatesList as window, index}
 						<div class="w-full flex h-[60px] items-center justify-start rounded-lg border border-white/15 hover:border-white/50
 													dark:bg-surface-950 bg-surface-50 px-2 py-2">
@@ -201,6 +217,7 @@
 					{/each}
 				</div>
 			</div>
+		</div>
 		{/snippet}
 	</Modal>
 </div>

@@ -103,7 +103,7 @@
 	open={openThemeModal}
 	onOpenChange={(e) => (openThemeModal = e.open)}
 	triggerBase="btn bg-surface-600"
-	contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-sm max-w-9/10 max-h-9/10 overflow-auto md:w-[380px] lg:w-[680px]"
+	contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-sm md:max-w-9/10 md:max-h-9/10 overflow-auto md:w-[380px] lg:w-[680px]"
 	backdropClasses="backdrop-blur-sm">
 	{#snippet content()}
 <div class="grid md:grid-cols-1 lg:grid-cols-2 gap-2">
@@ -438,7 +438,7 @@
 	open={openStartpageModal}
 	onOpenChange={(e) => (openStartpageModal = e.open)}
 	triggerBase="btn bg-surface-600"
-	contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-sm max-w-9/10 max-h-9/10 overflow-auto w-[450px]"
+	contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-sm md:max-w-9/10 md:max-h-9/10 overflow-auto w-[450px]"
 	backdropClasses="backdrop-blur-sm">
 	{#snippet content()}
 	<header class="relative">

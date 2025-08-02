@@ -17,10 +17,10 @@
 	import { publishTopic } from '$lib/communication/mqttclient';
 	import { utils } from '$lib/helpers/utils';
 	import Info from '$lib/components/lb-info.svelte';
+	import { innerHeight } from 'svelte/reactivity/window';
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
-	let viewport: any;
 	let entryList = $derived(store.getState(control.states.entryList) as AlarmClockEntries);
 	let entryListIds = $derived(entryList ? Object.keys(entryList).map(n => Number(n)) : []);
 	let entryListArray = $derived(entryList ? Object.values(entryList) : []);
@@ -28,7 +28,12 @@
 	let alarms = $derived(entryList ? Object.values(entryList).filter( entry => entry.isActive) : []);
 	let nextEntryTime = $derived(Number(store.getState(control.states.nextEntryTime)));
 	let selectedEntry = $state(0);
-	
+
+	let viewport: any = $state(); // TODO make HTMLDivElement
+	let modalViewport: any = $state(); // TODO make HTMLDivElement
+	let windowHeight = $derived(innerHeight.current || 0);
+	let limitHeight = $state(false); 
+
 	let dateTimeView = $state({
 		isDateView: false,
 		isMinuteView: false,
@@ -134,12 +139,24 @@
 		if (entryListArray) { /* to trigger the scroll, we need to be sensitive to the entryList */
 			tick().then( () => {
 				if ( viewport && prevEntryListLength != entryListIds.length ) {
-   				viewport.scroll({ top: viewport.scrollHeight, behavior: 'smooth' });
+					viewport.scroll({ top: viewport.scrollHeight, behavior: 'smooth' });
+					tick().then( () => {
+						limitHeight = (windowHeight * 0.9 - modalViewport.getBoundingClientRect().bottom - 10) < 0;
+					});
 					prevEntryListLength = entryListIds.length;
 				}
 			});
 		}
   });
+
+	$effect( () => {
+		if (windowHeight && modalViewport) { /* trigger on windowHeight change */
+			limitHeight = false;
+			tick().then( () => {
+				limitHeight = (windowHeight * 0.9 - modalViewport.getBoundingClientRect().bottom - 10) < 0;
+			});
+		}
+	});
 </script>
 
 <div>
@@ -153,25 +170,24 @@
 		transitionsPositionerOut = {fade200}
 		onOpenChange={()=>controlView.modal.action(false)}
 		triggerBase="btn bg-surface-600"
-		contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-sm rounded-lg border border-white/5 hover:border-white/10
-								max-w-9/10 max-h-9/10 overflow-auto w-[380px]"
+		contentBase="card bg-surface-100-900 p-4 shadow-sm rounded-lg border border-white/5 hover:border-white/10
+								md:max-w-9/10 md:max-h-9/10 w-[380px] { limitHeight ? 'h-full': '' }"
 		backdropClasses="backdrop-blur-sm"
 		backdropBackground="">
 		{#snippet content()}
 		<!-- TODO better method to create multiple modal overlays with backdrop? -->
-	<div class="fixed w-full h-full top-0 left-0 right-0 bottom-0 -z-10 bg-surface-50/75 dark:bg-surface-950/75" onclick={()=>controlView.modal.action(false)}></div> 
+		<div class="fixed w-full h-full top-0 left-0 right-0 bottom-0 -z-10 bg-surface-50/75 dark:bg-surface-950/75" onclick={()=>controlView.modal.action(false)}></div> 
 		<Info control={controlView.control}/>
 		<header class="relative" >
-			<div class="flex justify-center">
-				<h2 class="h4 text-center">{controlView.textName}</h2>
-			</div>
 			<div class="absolute top-0 right-0">
 				<button type="button" aria-label="close" class="btn-icon w-auto" onclick={() => controlView.modal.action(false)}>
 					<X />
 				</button>
 			</div>
 		</header>
-		<div bind:this={viewport} class="max-h-[405px] overflow-auto">
+		<div bind:this={modalViewport} class="flex flex-col items-center justify-center h-full">
+			<h2 class="h4 text-center items-center justify-center w-[80%]">{controlView.textName}</h2>
+		<div bind:this={viewport} class="container mt-2 overflow-y-auto w-full">
 			{#each entryListArray as entry, i}
 				<div class="mt-2 p-4 dark:bg-surface-950 bg-surface-50 rounded-lg">
 					<div class="flex w-full m-auto h-[72px] justify-between">
@@ -199,13 +215,14 @@
 				</div>
 			{/each}
 		</div>
-		<footer class="">
+		<footer class="mt-2 container w-full">
 			<button type="button" class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50
 				 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
 					onclick={addEntry}>
 				<span class="text-lg {entryListIds.length > 15 ? 'dark:text-surface-800 text-surface-200' : ''}">{$_("Add new alarm time")}</span>
 			</button>
 		</footer>
+		</div>
 		{/snippet}
 	</Modal>
 

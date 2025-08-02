@@ -15,6 +15,8 @@
 	import Info from '$lib/components/lb-info.svelte';
 	import { utils } from '$lib/helpers/utils';
 	import { format } from 'date-fns';
+	import { innerHeight } from 'svelte/reactivity/window';
+	import { tick } from 'svelte';
 
 	let { controlView = $bindable() }: { controlView: ControlView } = $props();
 
@@ -64,6 +66,10 @@
 
 	let timerEndsV1 = $state(new SvelteDate());
 	let timerEndsV2 = $state(new SvelteDate());
+
+	let modalViewport: any = $state(); // TODO make HTMLDivElement
+	let windowHeight = $derived(innerHeight.current || 0);
+	let limitHeight = $state(false); 
 
 	let dateTimeView = $state({
 		isDateView: true,
@@ -135,6 +141,15 @@
 	$effect( () => {
 		timerEndsV2 = new SvelteDate(getTimerEpoch(overrideEntriesV2));
 	});
+	
+	$effect( () => {
+		if (windowHeight && modalViewport) { /* trigger on windowHeight change */
+			limitHeight = false;
+			tick().then( () => {
+				limitHeight = (windowHeight * 0.9 - modalViewport.getBoundingClientRect().bottom - 10) < 0;
+			});
+		}
+	});
 </script>
 
 <Modal
@@ -145,26 +160,24 @@
 	transitionsPositionerOut = {fade200}
 	onOpenChange={()=>controlView.modal.action(false)}
 	triggerBase="btn bg-surface-600"
-	contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-sm rounded-lg border border-white/5 hover:border-white/10
-							max-w-9/10 max-h-9/10 overflow-auto w-[450px]"
+	contentBase="card bg-surface-100-900 p-4 shadow-sm rounded-lg border border-white/5 hover:border-white/10
+							md:max-w-9/10 md:max-h-9/10 w-[450px] { limitHeight ? 'h-full': '' }"
 	backdropClasses="backdrop-blur-sm"
 	backdropBackground="">
 	{#snippet content()}
 	<!-- TODO better method to create multiple modal overlays with backdrop? -->
 	<div class="fixed w-full h-full top-0 left-0 right-0 bottom-0 -z-10 bg-surface-50/75 dark:bg-surface-950/75" onclick={() => {controlView.modal.action(false); resetTab();}}></div> 
 	<Info control={controlView.control}/>
-	<header class="relative flex">
-		<div class="flex justify-center m-auto w-[80%]">
-			<p class="h4 truncate">{controlView.textName}</p>
-		</div>
+	<header class="relative">
 		<div class="absolute top-0 right-0">
-			<button type="button" aria-label="close" class="btn-icon w-auto" onclick={() => {controlView.modal.action(false); resetTab();}}>
-				<X/>
+			<button type="button" aria-label="close" class="btn-icon w-auto" onclick={() => controlView.modal.action(false)}>
+				<X />
 			</button>
 		</div>
 	</header>
-	{#if selectedTab==0}
-		<div class="items-center justify-center">
+	<div bind:this={modalViewport} class="flex flex-col items-center justify-center h-full">
+		<h2 class="h4 text-center items-center justify-center w-[80%]">{controlView.textName}</h2>
+		{#if selectedTab==0}
 			<button class="w-full mt-2" onclick={(e) => { e.stopPropagation()}}> <!-- workaround wrapper to stop propagation for slider -->
 				<LbCicleSlider min={10} max={30} step={0.5} target={tempTarget} manual={!isAutomatic} actual={tempActual} onValueChangeEnd={(e: any) => {updatePosition(e.value)}}/>
 			</button>
@@ -197,16 +210,9 @@
 					</button>
 				{/if}
 			</div>
-		</div>
-	{/if} 
-	{#if selectedTab==1}
-		<div class="flex flex-col items-center justify-center m-2">
-			{#if controlView.statusName}
-				<div class="mb-2 truncate">
-					<p class="text-lg truncate {controlView.statusColor}">{$_(controlView.statusName)}</p>
-				</div>
-			{/if}
-			<div class="container mt-2">
+		{/if} 
+		{#if selectedTab==1}
+			<div class="container mt-2 overflow-y-auto">
 				{#if controlView.list}
 					{#each controlView.list as listItem, index}
 						<button type="button" class="w-full mt-2 btn btn-lg {(index==selectedItem) ? 'dark:bg-surface-800 bg-surface-200' : 'dark:bg-surface-950 bg-surface-50' }
@@ -227,18 +233,18 @@
 					</div>
 				</button>
 			</div>
-		</div>
-	{/if}
-	<div class="sticky bottom-0 left-0 w-full h-16 pt-2">
-		<div class="grid h-full max-w-lg grid-cols-2 mx-auto">
-			<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==0 ? 'dark:text-primary-500 text-primary-700' : ''} " onclick={() => selectedTab=0}>
-				<LbIcon class={selectedTab==0 ? 'dark:fill-primary-500 fill-primary-700' : 'fill-surface-50'} name={"/icons/svg/thermostat.svg"} width="24" height="24"/>
-				<span class="mt-1 text-xs">{$_("Control")}</span>
-			</button>
-			<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==1 ? 'dark:text-primary-500 text-primary-700' : ''} " onclick={() => selectedTab=1}>
-				<List/>
-				<span class="mt-1 text-xs">{$_("Preset")}</span>
-			</button>
+		{/if}
+		<div class="flex mt-6 mb-2">
+			<div class="grid h-full max-w-lg grid-cols-2 mx-auto">
+				<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==0 ? 'dark:text-primary-500 text-primary-700' : ''} " onclick={() => selectedTab=0}>
+					<LbIcon class={selectedTab==0 ? 'dark:fill-primary-500 fill-primary-700' : 'fill-surface-50'} name={"/icons/svg/thermostat.svg"} width="24" height="24"/>
+					<span class="mt-1 text-xs">{$_("Control")}</span>
+				</button>
+				<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==1 ? 'dark:text-primary-500 text-primary-700' : ''} " onclick={() => selectedTab=1}>
+					<List/>
+					<span class="mt-1 text-xs">{$_("Preset")}</span>
+				</button>
+			</div>
 		</div>
 	</div>
 	{/snippet}

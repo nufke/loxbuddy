@@ -14,6 +14,8 @@
 	import { fade } from 'svelte/transition'
 	import Info from '$lib/components/lb-info.svelte';
 	import { format } from 'date-fns';
+	import { innerHeight } from 'svelte/reactivity/window';
+	import { tick } from 'svelte';
 
 	let { controlView = $bindable() }: { controlView: ControlView } = $props();
 
@@ -49,6 +51,10 @@
   let showScrollTop = $state(false);
 	let showScrollBottom = $state(true);
 
+	let modalViewport: any = $state(); // TODO make HTMLDivElement
+	let windowHeight = $derived(innerHeight.current || 0);
+	let limitHeight = $state(false); 
+
 	function parseScroll() {
 		hasScroll = viewport?.scrollHeight > viewport?.clientHeight;
     showScrollTop = hasScroll && (viewport?.scrollTop > 20);
@@ -57,6 +63,12 @@
 
 	$effect( () => {
 		parseScroll();
+		if (windowHeight && modalViewport) { /* trigger on windowHeight change */
+			limitHeight = false; 
+			tick().then( () => {
+				limitHeight = (windowHeight * 0.9 - modalViewport.getBoundingClientRect().bottom - 12) < 0;
+			});
+		}
 	});
 </script>
 
@@ -69,14 +81,14 @@
 	onOpenChange={()=>{}}
 	triggerBase="btn bg-surface-600"
 	contentBase="card bg-surface-100-900 p-4 shadow-sm rounded-lg border border-white/5 hover:border-white/10
-							max-w-9/10 max-h-9/10 {controlView.modal.size?.width || 'w-[450px]'} {controlView.modal.size?.height || ''}
-							 {linkedControls.length > 1 ? 'lg:w-[760px]': ''}"
+								md:max-w-9/10 md:max-h-9/10 {controlView.modal.size?.width || 'w-[450px]'}
+							 {linkedControls.length > 1 ? 'lg:w-[760px]': ''} {limitHeight ? 'h-full': '' }"
 	backdropClasses={ controlView.modal.noBlur ? "" : "backdrop-blur-sm"}
 	backdropBackground="">
 	{#snippet content()}
 	<!-- TODO better method to create multiple modal overlays with backdrop?-->
 	<div class="fixed w-full h-full top-0 left-0 right-0 bottom-0 -z-10 bg-surface-50/75 dark:bg-surface-950/75" onclick={()=>controlView.modal.action(false)}></div> 
-	<!--<Info control={controlView.control}/>-->
+	<Info control={controlView.control}/>
 	<header class="relative">
 		<div class="absolute right-0 top-0">
 			<button type="button" aria-label="close" class="btn-icon w-auto" onclick={()=>controlView.modal.action(false)}>
@@ -84,9 +96,9 @@
 			</button>
 		</div>
 	</header>
-	<div class="flex flex-col items-center justify-center h-full">
+	<div bind:this={modalViewport} class="flex flex-col items-center justify-center h-full">
 		<h2 class="flex h4 text-center items-center justify-center w-[80%]">{controlView.textName}</h2>
-		<div class="flex justify-center mt-4">
+		<div class="flex flex-col items-center  justify-center mt-4">
 			<div class="relative inline-flex h-18 w-18 items-center justify-center overflow-hidden rounded-full border border-white/10 dark:bg-surface-950 bg-surface-50">
 				<LbIcon class={controlView.iconColor} name={controlView.iconName} width="36" height="36"
 								style={getIconColorHex(controlView.iconColor)}/>
@@ -97,14 +109,14 @@
 					</div>
 				{/if}
 			</div>
-		</div>
-		<div class="m-2 truncate">
-			{#if controlView.statusName && !controlView.modal.details?.tracker} <!-- remove status when we show a tracker -->
-				<p class="text-lg truncate {controlView.statusColor}" style={getStatusColorHex(controlView.statusColor)}>{$_(controlView.statusName)}</p>
-			{/if}
+			<div class="flex flex-col justify-center items-center m-2 truncate">
+				{#if controlView.statusName && !controlView.modal.details?.tracker} <!-- remove status when we show a tracker -->
+					<p class="text-lg truncate {controlView.statusColor}" style={getStatusColorHex(controlView.statusColor)}>{$_(controlView.statusName)}</p>
+				{/if}
+			</div>
 		</div>
 		{#if controlView.buttons.length && !controlView.slider && !controlView.modal.buttons}
-		<div class="container flex m-2">
+		<div class="container flex m-2 h-full overflow-y-auto">
 			{#each controlView.buttons as button, index}
 				{#if index > 0}
 					<div class="ml-2"></div>
@@ -132,7 +144,7 @@
 		{/if}
 		{#if controlView && controlView.slider && controlView.slider.position >= min}
 		<div class="container flex justify-center items-center m-2 p-0">
-		{#if controlView.slider.orientation?.length} <!-- use simple-slider for vertical orientation -->
+		{#if controlView.control?.type=='Dimmer'}
 			<LbSimpleSlider classes='dimmer' {orientation}
 										{min} {max} {step} {value} onValueChange={(e: any) => {setPostion(e.value)}}/>
 		{:else}
@@ -142,8 +154,8 @@
 		</div>
 		{/if}
 		{#if controlView && controlView.modal && controlView.modal.buttons}
-		<div class="container grid grid-cols-1 {controlView.modal.class} gap-2 m-2">
-			{#each controlView.modal.buttons as button, index}
+		<div class="container flex flex-col grid grid-cols-1 {controlView.modal.class} gap-2 m-2 h-full overflow-y-auto">
+			{#each controlView.modal.buttons as button}
 				{#if button.type === 'button' && button.click}
 					<button type="button" class="w-full {button.class} btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50" 
 							onclick={button.click}>

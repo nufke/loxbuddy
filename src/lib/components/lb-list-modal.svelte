@@ -10,6 +10,8 @@
 	import { _ } from 'svelte-i18n';
 	import { fade200 } from '$lib/helpers/transition';
 	import Info from '$lib/components/lb-info.svelte';
+	import { innerHeight } from 'svelte/reactivity/window';
+	import { tick } from 'svelte';
 
 	let { controlView = $bindable() }: { controlView: ControlView } = $props();
 
@@ -30,7 +32,11 @@
 	let hasScrollTab1 = $state(true);
   let showScrollTopTab1 = $state(false);
 	let showScrollBottomTab1 = $state(true);
-	
+
+	let modalViewport: any = $state(); // TODO make HTMLDivElement
+	let windowHeight = $derived(innerHeight.current || 0);
+	let limitHeight = $state(false);
+
 	function setItem(i: number) {
 		if (controlView && controlView.buttons && controlView.buttons[0]) {
 			controlView.buttons[0].click({checked: i});
@@ -49,10 +55,15 @@
 		showScrollBottomTab1 = hasScrollTab1 && (viewportTab1.scrollTop + viewportTab1?.clientHeight < (viewportTab1?.scrollHeight - 20));
   }
 
-	
 	$effect( () => {
 		parseScrollTab0();
 		parseScrollTab1();
+		if (windowHeight && modalViewport) { /* trigger on windowHeight change */
+			limitHeight = false;
+			tick().then( () => {
+				limitHeight = (windowHeight * 0.9 - modalViewport.getBoundingClientRect().bottom - 3) < 0;
+			});
+		}
 	});
 
 	function resetTab() {
@@ -71,14 +82,13 @@
 	onOpenChange={()=>{ controlView.modal.action(false)}}
 	triggerBase="btn bg-surface-600"
 	contentBase="card bg-surface-100-900 p-4 shadow-sm rounded-lg border border-white/5 hover:border-white/10
-							max-w-9/10 max-h-9/10 {controlView.modal.size?.width || 'w-[450px]'} {controlView.modal.size?.height || ''}"
+							md:max-w-9/10 md:max-h-9/10 {controlView.modal.size?.width || 'w-[450px]'} { limitHeight ? 'h-full' : ''}"
 	backdropClasses="backdrop-blur-sm"
 	backdropBackground="">
 	{#snippet content()}
 	<!-- TODO better method to create multiple modal overlays with backdrop? -->
 	<div class="fixed w-full h-full top-0 left-0 right-0 bottom-0 -z-10 bg-surface-50/75 dark:bg-surface-950/75" onclick={() => {controlView.modal.action(false); resetTab();}}></div> 
 	<Info control={controlView.control}/>
-	{#if selectedTab==0} <!-- scenes -->
 	<header class="relative">
 		<div class="absolute right-0 top-0">
 			<button type="button" aria-label="close" class="btn-icon w-auto" onclick={() => { controlView.modal.action(false); resetTab(); }}>
@@ -86,18 +96,19 @@
 			</button>
 		</div>
 	</header>
-	<div class="flex flex-col items-center justify-center">
-		<h2 class="flex h4 text-center items-center justify-center w-[80%]">{controlView.textName}</h2>
-		<div class="flex justify-center mt-4">
+	<div bind:this={modalViewport} class="flex flex-col items-center justify-center h-full">
+		<h2 class="flex mb-4 h4 text-center items-center justify-center w-[80%]">{controlView.textName}</h2>
+		{#if selectedTab==0} <!-- scenes -->
+		<div class="flex flex-col justify-center">
 			<div class="relative inline-flex h-18 w-18 items-center justify-center overflow-hidden rounded-full border border-white/5 dark:bg-surface-950">
 				<LbIcon class={controlView.iconColor} name={controlView.iconName} width="36" height="36"/>
 			</div>
 		</div>
-		<div class="mt-4 mb-2 truncate">
+		<div class="flex items-center justify-center truncate mt-4">
 			<p class="text-lg truncate {controlView.statusColor}">{controlView.statusName}</p>
 		</div>
-		<div class="container relative w-full">
-			<div class="overflow-y-scroll w-full max-h-[405px]" bind:this={viewportTab0} onscroll={parseScrollTab0}>
+		<div class="container flex flex-col w-full overflow-y-scroll h-full mt-2">
+			<div class="relative flex flex-col overflow-y-scroll w-full max-h-[405px]" bind:this={viewportTab0} onscroll={parseScrollTab0}>
 				{#if showScrollTopTab0}
 					<div class="absolute z-10 left-[50%] lb-center top-3 text-surface-500" transition:fade={{ duration: 300 }}><ChevronUp size="30"/></div>
 				{/if}
@@ -109,27 +120,16 @@
 					<button type="button" class="w-full mt-2 btn btn-lg {(index==selectedItem) ? 'dark:bg-surface-800 bg-surface-200' : 'dark:bg-surface-950 bg-surface-50' }
 								 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
 									onclick={(e) => { e.stopPropagation(); e.preventDefault(); setItem(index)}}>
-						<span class="text-lg">{$_(listItem.name)}</span>
+								<span class="text-lg">{$_(listItem.name)}</span>
 					</button>
 					{/each}
 				{/if}
 			</div>
 		</div>
-	</div>
-	{/if}
-	{#if selectedTab==1} <!-- control -->
-	<header class="relative">
-		<div class="flex justify-center mb-3">
-			<h2 class="h4 text-center">{controlView.textName}</h2>
-		</div>
-		<div class="absolute right-0 top-0">
-			<button type="button" aria-label="close" class="btn-icon w-auto" onclick={() => { controlView.modal.action(false); resetTab(); }}>
-				<X/>
-			</button>
-		</div>
-	</header>
-	<div class="container relative w-full">
-		<div class="overflow-y-scroll max-h-[495px]" bind:this={viewportTab1} onscroll={parseScrollTab1}>
+		{/if}
+		{#if selectedTab==1} <!-- control -->
+		<div class="relative w-full overflow-y-scroll">
+		<div class="relative overflow-y-scroll h-full" bind:this={viewportTab1} onscroll={parseScrollTab1}>
 			{#if showScrollTopTab1}
 				<div class="absolute z-10 left-[50%] lb-center top-3 text-surface-500" transition:fade={{ duration: 300 }}><ChevronUp size="30"/></div>
 			{/if}
@@ -151,29 +151,21 @@
 				{/if}
 			{/each}
 		</div>
-	</div>
-	{/if}
-	{#if selectedTab==2 && subControlsColorPicker.length } <!-- colors -->
-	<header class="relative">
-		<div class="flex justify-center mb-3">
-			<h2 class="h4 text-center">{controlView.textName}</h2>
 		</div>
-		<div class="absolute right-0 top-0">
-			<button type="button" aria-label="close" class="btn-icon w-auto" onclick={() => { controlView.modal.action(false); resetTab(); }}>
-				<X/>
-			</button>
+		{/if}
+		{#if selectedTab==2 && subControlsColorPicker.length } <!-- colors -->
+		<div class="relative w-full">
+			<div class="container">
+			{#if subControls[id].type === "Dimmer" || subControls[id].type === "ColorPickerV2" }
+				<LbLightDimmer control={subControls[id]} controlOptions={{isSubControl: true}}/>
+				<LbColorPickerV2 control={subControls[id]}/>
+			{/if}
+			</div>
 		</div>
-	</header>
-	<div class="overflow-y-scroll" style="max-height: 500px;">
-	{#if subControls[id].type === "Dimmer" || subControls[id].type === "ColorPickerV2" }
-		<LbLightDimmer control={subControls[id]} controlOptions={{isSubControl: true}}/>
-		<LbColorPickerV2 control={subControls[id]}/>
-	{/if}
-	</div>
-	{/if}
-	{#if isLightController}
-	<div class="sticky bottom-0 left-0 w-full h-16 pt-2 mt-4">
-		<div class="grid h-full max-w-lg {subControlsColorPicker.length ? 'grid-cols-3' : 'grid-cols-2'}  mx-auto">
+		{/if}
+		{#if isLightController}
+		<div class="flex mt-6 mb-2">
+			<div class="grid max-w-lg {subControlsColorPicker.length ? 'grid-cols-3' : 'grid-cols-2'}">
 				<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==0 ? 'dark:text-primary-500 text-primary-700' : ''} " onclick={() => selectedTab=0}>
 					<Lightbulb/>
 					<span class="mt-1 text-xs">{$_("Scenes")}</span>
@@ -183,14 +175,15 @@
 					<span class="mt-1 text-xs">{$_("Controls")}</span>
 				</button>
 				{#if subControlsColorPicker.length}
-				<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==2 ? 'dark:text-primary-500 text-primary-700' : ''} " onclick={() => selectedTab=2}>
-					<LbIcon name={"/icons/svg/streamline--color-palette.svg"} fill="white" width="24" height="24"/>
-					<span class="mt-1 text-xs">{$_("Colors")}</span>
-				</button>
+					<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==2 ? 'dark:text-primary-500 text-primary-700' : ''} " onclick={() => selectedTab=2}>
+						<LbIcon name={"/icons/svg/streamline--color-palette.svg"} fill="white" width="24" height="24"/>
+						<span class="mt-1 text-xs">{$_("Colors")}</span>
+					</button>
 				{/if}
+			</div>
 		</div>
+		{/if}
 	</div>
-	{/if}
 	{/snippet}
 </Modal>
 

@@ -52,7 +52,7 @@
 	onOpenChange={()=>controlView.modal.action(false)}
 	triggerBase="btn bg-surface-600"
 	contentBase="card bg-surface-100-900 pt-4 space-y-4 shadow-sm rounded-lg border border-white/5
-							max-w-9/10 max-h-9/10 w-[680px] lg:w-[800px]"
+							md:max-w-9/10 md:max-h-9/10 w-[680px] lg:w-[800px]"
 	backdropClasses="backdrop-blur-sm"
 	backdropBackground="">
 	{#snippet content()}

@@ -167,7 +167,7 @@
 	});
 </script>
 
-<div class="w-full btn-group preset-outlined-surface-200-800 grid-cols-2 mt-3 mb-10 p-2 flex-row">
+<div class="w-full btn-group preset-outlined-surface-200-800 grid-cols-2 mt-3 mb-4 p-2 flex-row">
 	<button type="button" class="w-full h-9 rounded-sm {!isTempColor ? 'bg-surface-600' : ''}" onclick={() => isTempColor=false}>{$_("Colors")}</button>
 	<button type="button" class="w-full h-9 rounded-sm {isTempColor ? 'bg-surface-600' : ''}" onclick={() => isTempColor=true}>{$_("Color temperature")}</button>
 </div>
