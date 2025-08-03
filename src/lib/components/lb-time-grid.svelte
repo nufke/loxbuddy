@@ -12,7 +12,7 @@
 	let time = $derived(store.time)
 	let m = $derived(utils.hours2dec(format(time, 'p')));
 
-	let slots = entries.entry.filter((item:any) => Number(item.mode) === mode);
+	let slots = entries ? entries.entry.filter((item:any) => Number(item.mode) === mode) : [];
 
 	// calculate width
 	function cw(t: any) { 

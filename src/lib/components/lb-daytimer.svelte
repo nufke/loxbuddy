@@ -84,7 +84,7 @@
 		return {startTime: startTime, endTime: endTime};
 	}
 
-	function extractEntries(s: any) {
+	function extractEntries(s: string) {
 		if (!s || s.length == 0) return;
 		let _s: string = s;
 		_s = s.replaceAll('}\n{', '},\n{');										// fix array
@@ -169,13 +169,13 @@
 		onOpenChange={() => {}}
 		triggerBase="btn bg-surface-600"
 		contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-sm rounded-lg border border-white/5 hover:border-white/10
-								md:max-w-9/10 md:max-h-9/10 overflow-auto w-[450px]"
+								md:max-w-9/10 md:max-h-9/10 w-[450px]"
 		backdropClasses="backdrop-blur-sm"
 		backdropBackground="">
 		{#snippet content()}
 		<!-- TODO better method to create multiple modal overlays with backdrop? -->
 		<div class="fixed w-full h-full top-0 left-0 right-0 bottom-0 -z-10 bg-surface-50/75 dark:bg-surface-950/75" onclick={(e) => { controlView.modal.action(false); resetTab();}}></div> 
-		<Info control={controlView.control}/>
+		<!--<Info control={controlView.control}/>-->
 			<header class="relative">
 				<div class="mb-2 flex justify-center">
 					<h2 class="h4 text-center ">{controlView.textName}</h2>
@@ -201,8 +201,8 @@
 			</div>
 			{/if}
 			{#if selectedTab==1}
-			<div class="container flex flex-col items-center justify-center m-2">
-				<div class="w-full mt-2 btn-group dark:bg-surface-950 bg-surface-50 rounded-lg grid-cols-2 p-2 flex-row border border-white/15 hover:border-white/50">
+			<div class="flex flex-col items-center justify-center">
+				<div class="flex w-full mt-2 btn-group dark:bg-surface-950 bg-surface-50 rounded-lg grid-cols-2 p-2 flex-row border border-white/15 hover:border-white/50">
 					<button type="button" class="w-full h-9 rounded-sm {outputActive ? 'bg-surface-600' : ''}" onclick={() => outputActive=true}>
 						<p class="text-lg">{$_("Active")}</p>
 					</button>

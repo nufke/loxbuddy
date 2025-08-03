@@ -300,7 +300,6 @@ class Test {
 	}
 
 	irc(control: Control, msg: string) {
-		let msgItems = msg.split('/');
 		console.error('Command', msg, 'not found for Control', control.uuidAction, control.type);
 	}
 }

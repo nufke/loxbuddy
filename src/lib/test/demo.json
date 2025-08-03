@@ -1344,6 +1344,36 @@
           }
         }
       }
+    },
+    "__uuid__controls_Timer": {
+      "name": "Timer verlichting",
+      "type": "Daytimer",
+      "uuidAction": "__uuid__controls_Timer",
+      "room": "__uuid__rooms_Centraal",
+      "cat": "__uuid__cats_Verlichting",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": null,
+      "restrictions": 0,
+      "details": {
+        "jLockable": true,
+        "analog": false,
+        "text": {
+          "on": "Actief",
+          "off": "Inactief"
+        }
+      },
+      "states": {
+        "jLocked": "__uuid__controls_Timer_jLocked",
+        "mode": "__uuid__controls_Timer_mode",
+        "override": "__uuid__controls_Timer_override",
+        "value": "__uuid__controls_Timer_value",
+        "needsActivation": "__uuid__controls_Timer_needsActivation",
+        "modeList": "__uuid__controls_Timer_modeList",
+        "entriesAndDefaultValue": "__uuid__controls_Timer",
+        "resetActive": "__uuid__controls_Timer_resetActive"
+      }
     }
   },
   "modes": {},

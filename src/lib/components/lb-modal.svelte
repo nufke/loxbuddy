@@ -98,7 +98,7 @@
 	</header>
 	<div bind:this={modalViewport} class="flex flex-col items-center justify-center h-full">
 		<h2 class="flex h4 text-center items-center justify-center w-[80%]">{controlView.textName}</h2>
-		<div class="flex flex-col items-center  justify-center mt-4">
+		<div class="flex flex-col items-center justify-center mt-4">
 			<div class="relative inline-flex h-18 w-18 items-center justify-center overflow-hidden rounded-full border border-white/10 dark:bg-surface-950 bg-surface-50">
 				<LbIcon class={controlView.iconColor} name={controlView.iconName} width="36" height="36"
 								style={getIconColorHex(controlView.iconColor)}/>
@@ -122,7 +122,7 @@
 					<div class="ml-2"></div>
 				{/if}
 				{#if button.type === 'button' && button.click}
-					<button type="button" class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50" 
+					<button type="button" class="w-full btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50" 
 							onclick={(e) => {e.stopPropagation(); e.preventDefault(); button.click();}}>
 							{#if button.name}
 								<span>{$_(button.name)}</span>
@@ -157,7 +157,7 @@
 		<div class="container flex flex-col grid grid-cols-1 {controlView.modal.class} gap-2 m-2 h-full overflow-y-auto">
 			{#each controlView.modal.buttons as button}
 				{#if button.type === 'button' && button.click}
-					<button type="button" class="w-full {button.class} btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50" 
+					<button type="button" class="w-full {button.class} btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50" 
 							onclick={button.click}>
 							{#if button.name}
 								<span class="text-lg">{$_(button.name)}</span>

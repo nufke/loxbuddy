@@ -64,7 +64,7 @@
 		{#if controlView.modal && controlView.modal.buttons}
 			{#each controlView.modal.buttons as button}
 				{#if button.type === 'button'}
-					<button type="button" class="w-full {button.class} btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50" 
+					<button type="button" class="w-full {button.class} btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50" 
 							onclick={(e) => { e.stopPropagation(); e.preventDefault(); button.click()}}
 							onmousedown={(e) => { e.stopPropagation(); e.preventDefault(); button.mousedown()}}
 							onmouseup={(e) => { e.stopPropagation(); e.preventDefault(); button.mouseup()}}>

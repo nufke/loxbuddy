@@ -13,6 +13,11 @@
 	-webkit-tap-highlight-color: transparent;
 }
 
+/* disable focus on elements */
+*:focus {
+  outline: 0;
+}
+
 /* TODO center on page */
 @media (width >=48rem) { /* >= 768px */
 	.lb-page-centerX {

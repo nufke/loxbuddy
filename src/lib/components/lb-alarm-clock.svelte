@@ -207,7 +207,7 @@
 					<div class="flex w-full m-auto justify-between">
 						<LbDayPickerModal {entry} onValueChange={(e:any)=>{updateSettings(i, e)}}/>
 						{#if i > 0}
-						<button type="button" class="dark:text-surface-300 text-surface-700" aria-label="delete" onclick={() =>deleteEntry(i)}>
+						<button type="button" class="h-[48px] dark:text-surface-300 text-surface-700" aria-label="delete" onclick={() =>deleteEntry(i)}>
 							<Trash2/>
 						</button>
 						{/if}
@@ -216,7 +216,7 @@
 			{/each}
 		</div>
 		<footer class="mt-2 container w-full">
-			<button type="button" class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50
+			<button type="button" class="w-full btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50
 				 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
 					onclick={addEntry}>
 				<span class="text-lg {entryListIds.length > 15 ? 'dark:text-surface-800 text-surface-200' : ''}">{$_("Add new alarm time")}</span>

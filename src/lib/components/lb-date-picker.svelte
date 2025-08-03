@@ -100,11 +100,11 @@
 	}
 </script>
 
-<div class="relative flex flex-col justify-center items-center">
+<div class="flex flex-col justify-center items-center">
 	<p class="text-xl mb-1">{format(date, 'PPP')}</p>
 	<div class="card m-0 flex rounded-lg border border-white/5 hover:border-white/10
 							bg-surface-50-950 px-2 py-2 hover:border-white/10" style="width: {calenderHeight}px; height: {calenderHeight}px;">
-		<div class="w-full grid grid-cols-7 gap-0">
+		<div class="grid grid-cols-7 gap-0">
 			<div class="btn-icon {cw} justify-start m-auto" onclick={() => setMonth(-1)}><ChevronLeft size="26"/></div>
 			<div class="btn-icon {cw} justify-start m-auto dark:text-primary-500 text-primary-700" onclick={() => reset()}><Undo2/></div>
 			<div class="btn col-span-3 {ts}">{month} {year}</div>
