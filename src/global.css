@@ -18,6 +18,23 @@
   outline: 0;
 }
 
+/* disable text selection */
+* {
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: -moz-none;
+    -o-user-select: none;
+    user-select: none;
+}
+
+p {
+    -webkit-user-select: text;
+    -khtml-user-select: text;
+    -moz-user-select: text;
+    -o-user-select: text;
+    user-select: text;
+}
+
 /* TODO center on page */
 @media (width >=48rem) { /* >= 768px */
 	.lb-page-centerX {

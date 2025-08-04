@@ -11,6 +11,8 @@ class Test {
 	_jalousie: any = {};
 	_dimmer: any = {}
 	_gate: any = {}
+	_daytimer: any = {};
+	_daytimerOldValue: any = {};
 
 	start() {
 		console.log('TEST MODE: Use demo structure');
@@ -89,6 +91,7 @@ class Test {
 			case 'Alarm': this.alarm(control, msg); break;
 			case 'AlarmClock': this.alarmClock(control, msg); break;
 			case 'IRoomController': this.irc(control, msg); break;
+			case 'Daytimer': this.daytimer(control, msg); break;
 			default: console.error('No TEST for Control', control.name, 'of type', control.type);
 		}
 	}
@@ -302,6 +305,38 @@ class Test {
 	irc(control: Control, msg: string) {
 		console.error('Command', msg, 'not found for Control', control.uuidAction, control.type);
 	}
+	
+	daytimer(control: Control, msg: string) {
+		let valueId = control.states.value;
+		let overrideId = control.states.override;
+		let msgItems = msg.split('/');
+		if (msg.includes('startOverride/')) {
+			this.startDaytimer(control, Number(msgItems[2]), msgItems[1]);
+		}
+		console.log('msg', msg)
+		switch (msg) {
+			case 'stopOverride': clearInterval(this._daytimer[control.uuidAction]); store.setState(overrideId, '0'); store.setState(valueId, String(this._daytimerOldValue)); break;
+		}
+	}
+
+	startDaytimer(control: Control, overrideTimeSec: number, overrideValue: string) {
+		let time = overrideTimeSec;
+		let overrideId = control.states.override;
+		this._daytimerOldValue = store.getState(control.states.value);
+		let valueId = control.states.value;
+		clearInterval(this._daytimer[control.uuidAction]);
+		this._daytimer[control.uuidAction] = setInterval(() => {
+			if (time > 0) {
+				time--;
+				store.setState(overrideId, String(time));
+				store.setState(valueId, String(overrideValue));
+			} else {
+				store.setState(valueId, String(this._daytimerOldValue));
+				clearInterval(this._daytimer[control.uuidAction]);
+			}
+		}, 1000);
+	}
+
 }
 
 export const test = new Test();

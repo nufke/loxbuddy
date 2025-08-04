@@ -12,7 +12,7 @@
 	let time = $derived(store.time)
 	let m = $derived(utils.hours2dec(format(time, 'p')));
 
-	let slots = entries ? entries.entry.filter((item:any) => Number(item.mode) === mode) : [];
+	let slots = $derived(entries ? entries.entry.filter((item:any) => Number(item.mode) === mode) : []);
 
 	// calculate width
 	function cw(t: any) { 
@@ -24,7 +24,7 @@
 	}
 </script>
 
-<div class="w-full h-full mt-6 flex align-center justify-center">
+<div class="w-full h-full mt-4 flex align-center justify-center">
 	<svg width="330" height="60">
 		{#each axis as i}
 			<path d="M{i*dt+o} 60 L {i*dt+o} {(i % 6) ? 27 : 22}" fill="none" stroke="#737373" stroke-width="1"/>

@@ -16,7 +16,6 @@
 	import LbIcon from '$lib/components/lb-icon-by-name.svelte';
 	import LbWeatherModal from '$lib/components/lb-weather-modal.svelte';
 	import LbLockScreenModal from '$lib/components/lb-lock-screen-modal.svelte';
-	import LbCalendarModal from '$lib/components/lb-calendar-modal.svelte';
 	import { format } from 'date-fns';
 	import { goto } from '$app/navigation';
 	import { test } from '$lib/test/test';
@@ -32,8 +31,6 @@
 	}
 
 	let { children } = $props();
-
-	let open = $state(true);
 
 	let currentWeather = $derived(weatherStore.current);
 	let dailyForecast = $derived(weatherStore.daily);
@@ -225,8 +222,6 @@
 
 <LbWeatherModal />
 <LbLockScreenModal />
-
-<!--<LbCalendarModal bind:open={open}/>-->
 
 <style>
 .main {
