@@ -2,7 +2,7 @@
 	import { _ } from 'svelte-i18n';
 	import { store } from '$lib/stores/store.svelte';
 	import { weatherStore } from '$lib/stores/weather-store.svelte';
-	import { slide, fade } from 'svelte/transition'
+	import { slide, fade } from 'svelte/transition';
 	import LbIcon from '$lib/components/lb-icon-by-name.svelte';
 	import { Sunrise, Sunset, X } from '@lucide/svelte';
 	import type { WeatherCurrentConditions, WeatherDailyForecast, WeatherHourlyForecast } from '$lib/types/weather';

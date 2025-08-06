@@ -12,8 +12,8 @@
 	import { Modal } from '@skeletonlabs/skeleton-svelte';
 	import { fade200 } from '$lib/helpers/transition';
 	import LbInPlaceEdit from '$lib/helpers/in-place-ediit.svelte';
-	import LbTimePickerModal from '$lib/components/lb-time-picker-modal.svelte';
-	import LbDayPickerModal from '$lib/components/lb-day-picker-modal.svelte';
+	import LbDateTimePickerModal from '$lib/components/lb-date-time-picker-modal.svelte';
+	import LbAlarmClockDayPickerModal from '$lib/components/lb-alarm-clock-day-picker-modal.svelte';
 	import { publishTopic } from '$lib/communication/mqttclient';
 	import { utils } from '$lib/helpers/utils';
 	import Info from '$lib/components/lb-info.svelte';
@@ -205,9 +205,9 @@
 						</div>
 					</div>
 					<div class="flex w-full m-auto justify-between">
-						<LbDayPickerModal {entry} onValueChange={(e:any)=>{updateSettings(i, e)}}/>
+						<LbAlarmClockDayPickerModal {entry} label={$_("Alarm")} onValueChange={(e:any)=>{updateSettings(i, e)}}/>
 						{#if i > 0}
-						<button type="button" class="h-[48px] dark:text-surface-300 text-surface-700" aria-label="delete" onclick={() =>deleteEntry(i)}>
+						<button type="button" class="dark:text-surface-300 text-surface-700" aria-label="delete" onclick={() =>deleteEntry(i)}>
 							<Trash2/>
 						</button>
 						{/if}
@@ -226,5 +226,5 @@
 		{/snippet}
 	</Modal>
 
-	<LbTimePickerModal date={getTimerDate()} bind:view={dateTimeView} onValueChange={(e:any)=>{ updateAlarmTime(e)}}/>
+	<LbDateTimePickerModal date={getTimerDate()} bind:view={dateTimeView} onValueChange={(e:any)=>{ updateAlarmTime(e)}}/>
 </div>

@@ -77,12 +77,12 @@ class Utils {
 		else false;
 	}
 
-	hours2dec(t:string) {
+	hours2dec(t: string) {
 		let hhmm = t.split(':'); // HH:mm notation
 		return Number((Number(hhmm[0]) + Number(hhmm[1]) / 60).toFixed(2));
 	}
 
-	hours2sec(t:string) {
+	hours2sec(t: string) {
 		let hhmm = t.split(':'); // HH:mm notation
 		return Number((Number(hhmm[0]) * 3600 + Number(hhmm[1]) * 60));
 	}
@@ -104,6 +104,12 @@ class Utils {
 		let min = Math.round((Number(t/3600)-hrs) * 60);
 		let date = new Date();
 		return new Date(date.getFullYear(), date.getMonth(), date.getDate(), hrs, min);
+	}
+
+	hours2date(t: string) {
+		let hhmm = t.split(':'); // HH:mm notation
+		let date = new Date();
+		return new Date(date.getFullYear(), date.getMonth(), date.getDate(), Number(hhmm[0]), Number(hhmm[1]));
 	}
 
 	time2epoch(dateEpoch: number, time: string) {

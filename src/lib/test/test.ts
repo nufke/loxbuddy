@@ -313,9 +313,9 @@ class Test {
 		if (msg.includes('startOverride/')) {
 			this.startDaytimer(control, Number(msgItems[2]), msgItems[1]);
 		}
-		console.log('msg', msg)
 		switch (msg) {
 			case 'stopOverride': clearInterval(this._daytimer[control.uuidAction]); store.setState(overrideId, '0'); store.setState(valueId, String(this._daytimerOldValue)); break;
+			default: console.error('Command', msg, 'not found for Control', control.uuidAction, control.type);
 		}
 	}
 
@@ -336,7 +336,6 @@ class Test {
 			}
 		}, 1000);
 	}
-
 }
 
 export const test = new Test();

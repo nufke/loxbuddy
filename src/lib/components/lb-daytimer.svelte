@@ -7,7 +7,7 @@
 	import type { Control, ControlOptions, ControlView, ModalView, EntriesAndDefaultValue, WeekDays } from '$lib/types/models';
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import LbTimeGrid from '$lib/components/lb-time-grid.svelte';
-	import LbTimePickerModal from '$lib/components/lb-time-picker-modal.svelte';
+	import LbDateTimePickerModal from '$lib/components/lb-date-time-picker-modal.svelte';
 	import LbCalendarModal from '$lib/components/lb-calendar-modal.svelte';
 	import { store } from '$lib/stores/store.svelte';
 	import { fade200 } from '$lib/helpers/transition';
@@ -124,6 +124,7 @@
 	}
 
 	let calendarView = $state({
+		control: control,
 		openModal: false
 	});
 	
@@ -215,8 +216,8 @@
 		</div>
 		{/snippet}
 	</Modal>
-	<LbTimePickerModal date={date} bind:view={dateTimeView} onValueChange={(e:any)=>{ updateTimer(e)}}/>
+	<LbDateTimePickerModal date={date} bind:view={dateTimeView} onValueChange={(e:any)=>{ updateTimer(e)}}/>
 	<Toaster {toaster}></Toaster>
-	<LbCalendarModal bind:view={calendarView} {weekdays} {entries}/>
+	<LbCalendarModal bind:view={calendarView} {mode} {weekdays} {entries}/>
 
 </div>

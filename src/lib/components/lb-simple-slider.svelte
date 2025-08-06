@@ -40,6 +40,7 @@
 	.slider {
 		position: relative;
 		-webkit-appearance: none;
+		appearance: none;
 		width: 100%;
 		height: 20px;
 		border-radius: 10px;
@@ -70,6 +71,7 @@
 	.dimmer {
 		position: relative;
 		-webkit-appearance: none;
+		appearance: none;
 		border-radius: 10px;
 		outline: none;
 		-webkit-transition: .2s;

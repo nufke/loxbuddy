@@ -11,7 +11,7 @@
 	import { Slider } from '@skeletonlabs/skeleton-svelte';
 	import { _ } from 'svelte-i18n';
 	import { fade200 } from '$lib/helpers/transition';
-	import { fade } from 'svelte/transition'
+	import { fade } from 'svelte/transition';
 	import Info from '$lib/components/lb-info.svelte';
 	import { format } from 'date-fns';
 	import { innerHeight } from 'svelte/reactivity/window';

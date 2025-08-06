@@ -4,14 +4,14 @@
 	import { SvelteDate } from 'svelte/reactivity';
 	import type { ControlView, ListItem } from '$lib/types/models';
 	import { store } from '$lib/stores/store.svelte';	
-	import { X, Timer, Leaf, Flame, List, CalendarClock } from '@lucide/svelte';
+	import { X, Timer, Leaf, Flame, List } from '@lucide/svelte';
 	import { _ } from 'svelte-i18n';
 	import fmt from 'sprintf-js';
 	import { fade200 } from '$lib/helpers/transition';
 	import { publishTopic } from '$lib/communication/mqttclient';
 	import LbCicleSlider from '$lib/components/lb-circle-slider.svelte';
 	import LbIcon from '$lib/components/lb-icon-by-name.svelte';
-	import LbTimePickerModal from '$lib/components/lb-time-picker-modal.svelte';
+	import LbDateTimePickerModal from '$lib/components/lb-date-time-picker-modal.svelte';
 	import Info from '$lib/components/lb-info.svelte';
 	import { utils } from '$lib/helpers/utils';
 	import { format } from 'date-fns';
@@ -250,6 +250,6 @@
 	{/snippet}
 </Modal>
 
-<LbTimePickerModal date={date} bind:view={dateTimeView} onValueChange={(e:any)=>{ updateTimer(e)}}/>
+<LbDateTimePickerModal date={date} bind:view={dateTimeView} onValueChange={(e:any)=>{ updateTimer(e)}}/>
 
 <Toaster {toaster}></Toaster>

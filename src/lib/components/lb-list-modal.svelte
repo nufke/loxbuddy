@@ -2,7 +2,7 @@
 	import LbIcon from '$lib/components/lb-icon-by-name.svelte';
 	import { Modal } from '@skeletonlabs/skeleton-svelte';
   import type { Control, ControlView, ListItem } from '$lib/types/models';
-	import { fade } from 'svelte/transition'
+	import { fade } from 'svelte/transition';
 	import LbSwitch from '$lib/components/lb-switch.svelte';
 	import LbLightDimmer from '$lib/components/lb-light-dimmer.svelte';
 	import LbColorPickerV2 from '$lib/components/lb-colorpicker-v2.svelte';

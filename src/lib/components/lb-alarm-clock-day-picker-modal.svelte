@@ -4,11 +4,12 @@
 	import { _ } from 'svelte-i18n';
 	import { store } from '$lib/stores/store.svelte';
 	import { tick } from 'svelte';
+	import { X } from '@lucide/svelte';
 
-	let { entry, onValueChange } = $props();
+	let { entry, onValueChange, label } = $props();
 
 	// use temprary entry object till OK is pressed
-	let setEntry = $state({
+	let setEntry = $derived({
 		modes: entry.modes,
 		daily: entry.daily,
 		nightLight: entry.nightLight
@@ -65,16 +66,24 @@
 	transitionsPositionerOut={fade200}
 	onOpenChange={cancel}
 	triggerBase="btn bg-surface-600"
-	contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-sm rounded-lg border border-white/5 hover:border-white/10
+	contentBase="card bg-surface-100-900 p-4 shadow-sm rounded-lg border border-white/5 hover:border-white/10
 							md:max-w-9/10 md:max-h-9/10 overflow-auto w-[340px]"
 	backdropClasses=""
 	backdropBackground="">
 	{#snippet content()}
-	<!-- TODO better method to create multiple modal overlays with backdrop? -->
-	<div class="fixed w-full h-full top-0 left-0 right-0 bottom-0 -z-10 bg-surface-50/75 dark:bg-surface-950/75" onclick={cancel}></div> 
-		<div class="m-2 flex flex-col items-center justify-center">
+		<!-- TODO better method to create multiple modal overlays with backdrop? -->
+		<div class="fixed w-full h-full top-0 left-0 right-0 bottom-0 -z-10 bg-surface-50/75 dark:bg-surface-950/75" onclick={cancel}></div>
+		<header class="relative">
+			<div class="absolute top-0 right-0">
+				<button type="button" aria-label="close" class="btn-icon w-auto" onclick={cancel}>
+					<X />
+				</button>
+			</div>
+		</header>
+		<div class="flex flex-col items-center justify-center">
+			<h2 class="h4 text-center items-center justify-center w-[80%]">{label}</h2>
 			{#if setEntry.nightLight}
-				<form class="space-y-2">
+				<form class="mt-4 space-y-2">
 				  <label class="flex items-center space-x-2">
 						<input class="radio" type="radio" checked={setEntry.daily} name="daily" onclick={() => {setEntry.daily=true}}/>
 						<p>{$_("Daily")}</p>
@@ -85,7 +94,7 @@
 				  </label>
 				</form>
 			{:else}
-				<form class="space-y-2">
+				<form class="mt-4 space-y-2">
 					{#each weekDayNrs as i}
 					<label class="flex items-center space-x-2">
 						<input class="checkbox" type="checkbox" checked={setEntry.modes.includes(Number(i))} onclick={() => {setValue(Number(i))}}/>
@@ -95,7 +104,7 @@
 				</form>
 			{/if}
 		</div>
-		<div class="mt-4 flex grid grid-cols-2 gap-2">
+		<div class="mt-6 flex grid grid-cols-2 gap-2">
 			<button type="button"
 				class="btn btn-lg dark:bg-surface-950 bg-surface-50 w-full rounded-lg border border-white/15 shadow-sm hover:border-white/50"
 				onclick={cancel}>

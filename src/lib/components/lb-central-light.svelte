@@ -8,7 +8,7 @@
 	import { Modal } from '@skeletonlabs/skeleton-svelte';
 	import { X, ChevronUp, ChevronDown } from '@lucide/svelte';
 	import { _ } from 'svelte-i18n';
-	import { fade } from 'svelte/transition'
+	import { fade } from 'svelte/transition';
 	import { publishTopic } from '$lib/communication/mqttclient';
 	import fmt from 'sprintf-js';
 	import { fade200 } from '$lib/helpers/transition';

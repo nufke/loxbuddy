@@ -7,7 +7,7 @@
 	import { Modal } from '@skeletonlabs/skeleton-svelte';
 	import { X, ChevronUp, ChevronDown } from '@lucide/svelte';
 	import { _ } from 'svelte-i18n';
-	import { fade } from 'svelte/transition'
+	import { fade } from 'svelte/transition';
 	import { fade200 } from '$lib/helpers/transition';
 	import Info from '$lib/components/lb-info.svelte';
 	import { innerHeight } from 'svelte/reactivity/window';

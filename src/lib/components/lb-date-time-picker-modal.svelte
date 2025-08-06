@@ -48,25 +48,25 @@
 					</button>
 				</div>
 			</header>
-		<div class="flex flex-row items-center justify-center">
-			<div class="flex {flexCol} items-center justify-center">
-				{#if view.isDateView}
-					<LbDatePicker bind:date={setDate} bind:view={view}/>
-				{/if}
-				<LbTimePicker bind:date={setDate} bind:view={view}/>
+			<div class="flex flex-row items-center justify-center">
+				<div class="flex {flexCol} items-center justify-center">
+					{#if view.isDateView}
+						<LbDatePicker bind:date={setDate} bind:view={view}/>
+					{/if}
+					<LbTimePicker bind:date={setDate} bind:view={view}/>
+				</div>
 			</div>
-		</div>
-		<div class="flex justify-center items-center w-full">
-		<div class="flex grid grid-cols-2 gap-2 mt-1 mb-1">
-			<button type="button" class="w-full btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50" 
-							onclick={() => view.openModal = false}>
-				<span class="text-lg">{$_("Cancel")}</span>
-			</button>
-			<button type="button" class="w-full btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50" 
+			<div class="flex justify-center items-center w-full">
+			<div class="flex grid grid-cols-2 gap-2 mt-1 mb-1">
+				<button type="button" class="w-full btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50" 
+								onclick={() => view.openModal = false}>
+					<span class="text-lg">{$_("Cancel")}</span>
+				</button>
+				<button type="button" class="w-full btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50" 
 							onclick={ () => { valueChanged() ? onValueChange(valueChanged()) : null}}>
-				<span class="text-lg">{$_("OK")}</span>
-			</button>
-		</div>
+					<span class="text-lg">{$_("OK")}</span>
+				</button>
+			</div>
 		</div>
 	{/snippet}
 </Modal>

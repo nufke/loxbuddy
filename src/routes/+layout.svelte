@@ -3,7 +3,7 @@
 	import '../global.css';
 	import { Navigation } from '@skeletonlabs/skeleton-svelte';
 	import { innerWidth } from 'svelte/reactivity/window';
-	import { fade } from 'svelte/transition'
+	import { fade } from 'svelte/transition';
   import { Home, FileText, Grid2x2, Menu, LayoutList, Circle, Square, type Icon as IconType } from '@lucide/svelte';
 	import type { Route } from '$lib/types/models';
 	import { mqttConnect } from '$lib/communication/mqttclient';
