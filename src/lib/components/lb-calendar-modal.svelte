@@ -2,16 +2,18 @@
 	import { Modal } from '@skeletonlabs/skeleton-svelte';
 	import { fade200 } from '$lib/helpers/transition';
 	import { utils } from '$lib/helpers/utils';
-	import { store } from '$lib/stores/store.svelte';
 	import { X, ArrowLeft } from '@lucide/svelte';
+	import type { Entry } from '$lib/types/models';
 	import LbCalendarEntryModal from '$lib/components/lb-calendar-entry-modal.svelte';
 	
-	let { view = $bindable(), mode, weekdays, entries } = $props();
+	let { view = $bindable(), mode, dayModes, entries } = $props();
 
 	const notation = (num: number) => String(num).padStart(2, '0') + ':00'
 	const hours = [...Array(24).keys(), 0];
 
-	let length = $derived(entries ? entries.entry.length * 156 + 60 : 0);
+	let modesDuplicates = $derived(entries ? entries.entry.map( (m: Entry) => m.mode) : []);
+	let modes = $derived(modesDuplicates.filter((item: string, index: number) => modesDuplicates.indexOf(item) === index));
+	let length = $derived(modes.length * 156 + 60);
 	let selectedEntry = $state();
 
 	let irc = 0; // IRC offset
@@ -25,7 +27,11 @@
 	}
 
 	function getMode(mode: string) {
-		return Object.keys(weekdays).findIndex( key => key == mode);
+		return Object.keys(dayModes).findIndex( key => key == mode);
+	}
+
+	function getIndex(entry: Entry) {
+		return modes.findIndex( (s: string) => s == entry.mode);
 	}
 
 	let calendarEntryView = $state({
@@ -65,8 +71,8 @@
 		<div class="mt-10">
 			<svg width={length} height="1050">
 				<rect class="dark:fill-surface-900 fill-surface-100" x={60+getMode(mode)*156} y="55" width="150" height="960" fill="currentColor"></rect>
-				{#each entries?.entry as entry,i}
-					<text fill="white" font-size="16px" text-anchor="middle" x={135+i*156} y="40">{weekdays[Number(entry.mode)]}</text>
+				{#each entries?.entry as entry}
+					<text fill="white" font-size="16px" text-anchor="middle" x={135+getIndex(entry)*156} y="40">{dayModes[Number(entry.mode)]}</text>
 				{/each}
 				{#each hours as hour,j}
 					<text fill="white" font-size="16px" x="10" y={60+j*40}>{notation(hour)}</text>
@@ -88,4 +94,4 @@
 	{/snippet}
 </Modal>
 
-<LbCalendarEntryModal bind:view={calendarEntryView} {entries} {selectedEntry} {weekdays}/>
+<LbCalendarEntryModal bind:view={calendarEntryView} {entries} {selectedEntry} {dayModes}/>

@@ -11,7 +11,7 @@
 	import { slide } from 'svelte/transition'
 	import { publishTopic } from '$lib/communication/mqttclient';
 
-	let { view = $bindable(), entries, selectedEntry, weekdays } = $props();
+	let { view = $bindable(), entries, selectedEntry, dayModes } = $props();
 
 	let selectedTime = $derived(selectedEntry);
 	let isStartTime = $state(false);
@@ -21,13 +21,16 @@
 	let isFullDay = $derived(selectedEntry.from == '00:00' && selectedEntry.to =='00:00');
 	let needActivate = $derived(Number(selectedEntry.needActivate) == 1);
 
-	let sameEntries = $derived(entries && selectedEntry ? entries.entry.filter( (entry: Entry) => entry.from == selectedEntry.from &&
-																	entry.to == selectedEntry.to) : []); 
+	let sameEntries = $derived(entries && selectedEntry ? 
+			entries.entry.filter( (entry: Entry) => entry.from == selectedEntry.from &&
+																							entry.to == selectedEntry.to &&
+																							entry.needActivate == selectedEntry.needActivate &&
+																							entry.value == selectedEntry.value) : []); 
 
 	let modes = $derived(sameEntries.map( (m: Entry) => m.mode)) as string[];
 
 	function getDayModes() {
-		return Array.from(modes, (x) => weekdays[x]).join(', ');
+		return Array.from(modes, (x) => dayModes[x]).join(', ');
 	}
 
 	function updateTime(e: any) {
@@ -100,9 +103,9 @@
 			<div class="mt-4 space-y-2">
 				<button class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
 								onclick={(e) => { e.stopPropagation(); dayModeView.openModal=true;}}>
-					<div class="flex w-full justify-between">
+					<div class="flex w-full items-center justify-between">
 						<h1 class="truncate text-lg">{$_("Dag / mode")}</h1>
-						<p class="flex items-center justify-end text-right text-xs w-60 text-wrap truncate line-clamp-2">{getDayModes()}</p>
+						<p class="text-right text-xs w-60 text-wrap truncate line-clamp-2">{getDayModes()}</p>
 					</div>
 				</button>
 				<button class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
@@ -155,4 +158,4 @@
 </Modal>
 
 <LbDateTimePickerModal date={getDateTime()} bind:view={dateTimeView} onValueChange={(e:any)=>{ updateTime(e)}}/>
-<LbDayModePickerModal bind:view={dayModeView} {modes} onValueChange={(e:any)=>{ updateDayModes(e)}}/>
+<LbDayModePickerModal bind:view={dayModeView} {modes} {dayModes} onValueChange={(e:any)=>{ updateDayModes(e)}}/>

@@ -3,7 +3,7 @@
 	import { store } from '$lib/stores/store.svelte';
 	import { format } from 'date-fns';
 
-	let { mode, weekdays, entries } = $props();
+	let { mode, entries } = $props();
 
 	let axis = [...Array(25).keys()];
 	let dt = 13; // grid

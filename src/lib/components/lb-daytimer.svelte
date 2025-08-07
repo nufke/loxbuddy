@@ -31,7 +31,7 @@
 	let modeList = $derived(String(store.getState(control.states.modeList))); 
 
 	let currentTime = $derived(store.time);
-	let weekdays = $derived(extractWeekdays(modeList)) as WeekDays;
+	let dayModes = $derived(extractDayModes(modeList)) as WeekDays;
 	let status = $derived(isAnalog ? valueFormatted : ( value ? control.details.text.on : control.details.text.off)) as string;
 	let overrideTime = $derived(Number(store.getState(control.states.override)));
 	let timer = $derived(calcStartEndTime());
@@ -93,13 +93,13 @@
 		return JSON.parse(_s);
 	}
 
-	function extractWeekdays(s: string) {
-		let weekdays: any = {};
-		const regex = /mode=(\d+);name=\\\"([a-z,A-Z]+)/g;
+	function extractDayModes(s: string) {
+		let obj: any = {};
+		const regex = /mode=(\d+);name=\\\"([a-z,A-Z,\s]+)/g;
 		for (const match of s.matchAll(regex)) {
-			weekdays[match[1]] = match[2];
+			obj[match[1]] = match[2];
 		}
-		return weekdays;
+		return obj;
 	}
 
 	function startStopTimer() {
@@ -186,8 +186,8 @@
 			</h2>
 			<div class="w-full mb-2 dark:bg-surface-950 bg-surface-50 rounded-lg border border-white/15 hover:border-white/50"
 						onclick={(e) => { e.stopPropagation(); e.preventDefault(); calendarView.openModal=true;}}>
-				<LbTimeGrid {mode} {weekdays} {entries}/>
-				<h2 class="m-2 text-md text-center text-surface-50">{weekdays[mode]}</h2>
+				<LbTimeGrid {mode} {entries}/>
+				<h2 class="m-2 text-md text-center text-surface-50">{dayModes[mode]}</h2>
 			</div>
 		</div>
 		<div class="flex flex-col items-center justify-center">
@@ -218,6 +218,5 @@
 	</Modal>
 	<LbDateTimePickerModal date={date} bind:view={dateTimeView} onValueChange={(e:any)=>{ updateTimer(e)}}/>
 	<Toaster {toaster}></Toaster>
-	<LbCalendarModal bind:view={calendarView} {mode} {weekdays} {entries}/>
-
+	<LbCalendarModal bind:view={calendarView} {mode} {dayModes} {entries}/>
 </div>

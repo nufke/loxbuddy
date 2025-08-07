@@ -2,15 +2,12 @@
 	import { Modal } from '@skeletonlabs/skeleton-svelte';
 	import { fade200 } from '$lib/helpers/transition';
 	import { _ } from 'svelte-i18n';
-	import { store } from '$lib/stores/store.svelte';
 	import { X } from '@lucide/svelte';
 
-	let { view = $bindable(), modes, onValueChange } = $props();
+	let { view = $bindable(), modes, dayModes, onValueChange } = $props();
 
-	let opModes = store.structure.operatingModes;
-	let daysFull = $_('DaysFull').split('|');
-	let weekDayNrs = $derived(Object.keys(opModes).filter( (key) => daysFull.includes(opModes[key].toLowerCase())));
 	let newDayModes = $derived(modes);
+	let dayModeEntries = $derived(Object.entries(dayModes));
 
 	async function cancel() {
 		view.openModal = false;
@@ -50,10 +47,10 @@
 		<div class="flex flex-col items-center justify-center">
 			<h2 class="h4 text-center items-center justify-center w-[80%]">{view.label}</h2>
 			<form class="mt-4 space-y-2">
-				{#each weekDayNrs as s}
+				{#each dayModeEntries as entry}
 				<label class="flex items-center space-x-2">
-					<input class="checkbox" type="checkbox" checked={newDayModes.includes(s)} onclick={() => {setDayMode(s)}}/>
-					<p>{opModes[s]}</p>
+					<input class="checkbox" type="checkbox" checked={newDayModes.includes(entry[0])} onclick={() => {setDayMode(entry[0])}}/>
+					<p>{entry[1]}</p>
 				</label>
 				{/each}
 			</form>
