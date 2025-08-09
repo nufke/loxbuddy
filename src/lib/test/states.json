@@ -140,8 +140,25 @@
   "__uuid__controls_IRC_subControls_Cooling_value": "0",
   "__uuid__controls_IRC_subControls_Heating": "{defValue: 0, entries: 20, entry: [\n{mode: 0, from: 06:00, to: 09:00, needActivate: 0, value: 0}\n{mode: 0, from: 18:00, to: 21:00, needActivate: 0, value: 0}\n{mode: 1, from: 06:00, to: 09:00, needActivate: 0, value: 0}\n{mode: 1, from: 18:00, to: 21:00, needActivate: 0, value: 0}\n{mode: 2, from: 06:00, to: 09:00, needActivate: 0, value: 0}\n{mode: 2, from: 18:00, to: 21:00, needActivate: 0, value: 0}\n{mode: 3, from: 06:00, to: 09:00, needActivate: 0, value: 0}\n{mode: 3, from: 18:00, to: 21:00, needActivate: 0, value: 0}\n{mode: 4, from: 06:00, to: 09:00, needActivate: 0, value: 0}\n{mode: 4, from: 18:00, to: 21:00, needActivate: 0, value: 0}\n{mode: 5, from: 06:00, to: 09:00, needActivate: 0, value: 0}\n{mode: 5, from: 18:00, to: 21:00, needActivate: 0, value: 0}\n{mode: 6, from: 06:00, to: 09:00, needActivate: 0, value: 0}\n{mode: 6, from: 18:00, to: 21:00, needActivate: 0, value: 0}\n{mode: 7, from: 06:00, to: 09:00, needActivate: 0, value: 0}\n{mode: 7, from: 18:00, to: 21:00, needActivate: 0, value: 0}\n{mode: 8, from: 06:00, to: 09:00, needActivate: 0, value: 0}\n{mode: 8, from: 18:00, to: 21:00, needActivate: 0, value: 0}\n{mode: 9, from: 06:00, to: 09:00, needActivate: 0, value: 0}\n{mode: 9, from: 18:00, to: 21:00, needActivate: 0, value: 0}\n], uuid: 15ece6c6-008a-1d8a-ffffb5505c96fcf9}",
   
-  "__uuid__controls_Timer": "{defValue: 0, entries: 7, entry: [\n{mode: 3, from: 15:00, to: 18:00, needActivate: 0, value: 0}\n{mode: 4, from: 15:00, to: 18:00, needActivate: 0, value: 0}\n{mode: 5, from: 15:00, to: 18:00, needActivate: 0, value: 0}\n{mode: 6, from: 15:00, to: 18:00, needActivate: 0, value: 0}\n{mode: 7, from: 15:00, to: 18:00, needActivate: 0, value: 0}\n{mode: 8, from: 15:00, to: 18:00, needActivate: 0, value: 0}\n{mode: 9, from: 15:00, to: 18:00, needActivate: 0, value: 0}\n], uuid: 10f4f3e4-0238-dcdd-ffff9fbd670c23f7}",
+  "__uuid__controls_Timer": "{defValue: 0, entries: 7, entry: [\n{mode: 3, from: 9:00, to: 11:00, needActivate: 0, value: 0}\n{mode: 3, from: 15:00, to: 22:00, needActivate: 0, value: 0}\n{mode: 4, from: 15:00, to: 18:00, needActivate: 0, value: 0}\n{mode: 5, from: 15:00, to: 18:00, needActivate: 0, value: 0}\n{mode: 6, from: 15:00, to: 18:00, needActivate: 0, value: 0}\n{mode: 7, from: 15:00, to: 18:00, needActivate: 0, value: 0}\n{mode: 8, from: 15:00, to: 18:00, needActivate: 0, value: 0}\n{mode: 9, from: 15:00, to: 18:00, needActivate: 0, value: 0}\n], uuid: 10f4f3e4-0238-dcdd-ffff9fbd670c23f7}",
   "__uuid__controls_Timer_modeList": "0:mode=3;name=\\\"Maandag\\\",1:mode=4;name=\\\"Dinsdag\\\",2:mode=5;name=\\\"Woensdag\\\",3:mode=6;name=\\\"Donderdag\\\",4:mode=7;name=\\\"Vrijdag\\\",5:mode=8;name=\\\"Zaterdag\\\",6:mode=9;name=\\\"Zondag\\\"",
   "__uuid__controls_Timer_mode": "3",
-  "__uuid__controls_Timer_value": "0"
+  "__uuid__controls_Timer_value": "0",
+  
+  "__uuid__controls_Wekker_entryList": {
+    "1": {
+      "name": "Alarm Nightlight",
+      "isActive": true,
+      "alarmTime": 29940,
+      "nightLight": true,
+      "daily": true
+    },
+    "2": {
+      "name": "Wekker 2",
+      "isActive": true,
+      "alarmTime": 29940,
+      "nightLight": false,
+      "modes": [0,1,2,3,5]
+    }
+  }
 }

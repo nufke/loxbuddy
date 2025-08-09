@@ -87,6 +87,11 @@ class Utils {
 		return Number((Number(hhmm[0]) * 3600 + Number(hhmm[1]) * 60));
 	}
 
+	hours2min(t: string) {
+		let hhmm = t.split(':'); // HH:mm notation
+		return Number((Number(hhmm[0]) * 60 + Number(hhmm[1])));
+	}
+
 	dec2hours(i: number) {
 		let hrs = Math.floor(i/3600);
 		let min = Math.round((Number(i/3600)-hrs) * 60);
@@ -94,9 +99,9 @@ class Utils {
 	}
 
 	isDST(d: Date) { // correction for daylight saving time
-    let jan = new Date(d.getFullYear(), 0, 1).getTimezoneOffset();
-    let jul = new Date(d.getFullYear(), 6, 1).getTimezoneOffset();
-    return Math.max(jan, jul) !== d.getTimezoneOffset();    
+		let jan = new Date(d.getFullYear(), 0, 1).getTimezoneOffset();
+		let jul = new Date(d.getFullYear(), 6, 1).getTimezoneOffset();
+		return Math.max(jan, jul) !== d.getTimezoneOffset();    
 	}
 
 	decTime2date(t: number) {
@@ -124,13 +129,20 @@ class Utils {
 		return format(date, "p");
 	}
 
+	epoch2TimeStrNextHour(epoch: number) {
+		let date = new Date(epoch*1000);
+		const ext = date.getMinutes() ? 1 : 0;
+		date = new Date(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours() + ext);
+		return format(date, "p");
+	}
+	
 	serialize(value: any): string {
-    return  JSON.stringify(value);
-  }
+		return  JSON.stringify(value);
+	}
 
-  deserialize(item: string | null): any {
-    return item ? JSON.parse(item) : null;
-  }
+	deserialize(item: string | null): any {
+		return item ? JSON.parse(item) : null;
+	}
 }
 
 export const utils = new Utils();

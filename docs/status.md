@@ -102,7 +102,7 @@ or submit a [pull request](https://github.com/nufke/loxbuddy/pulls).
 | TextInput                | Not started       |                             |
 | TextState                | Available         |                             |
 | TimedSwitch              | Under development |                             |
-| Tracker                  | Under development |                             |
+| Tracker                  | Available         |                             |
 | UpDownAnalog             | Not started       |                             |
 | UpDownDigital            | Available         |                             |
 | UpDownLeftRightAnalog    | Not started       |                             |
@@ -123,7 +123,6 @@ or submit a [pull request](https://github.com/nufke/loxbuddy/pulls).
 | 12h clock notation          | Not started              |
 | Alarm sync w mobile alarm   | Not started              |
 | Battery status update       | Not started              |
-| Calendar                    | Not started              |
 | Connection status           | Available                |
 | Dark / Light themes         | Available                |
 | Internationalization        | Available (NL, DE, US)   |
@@ -138,6 +137,7 @@ or submit a [pull request](https://github.com/nufke/loxbuddy/pulls).
 | Statistics / history        | Not started              |
 | Statusbar (time, temp, etc) | Available                |
 | System messages             | Available                |
+| User calendar               | Not started              |
 | Voice control               | Not started              |
 | Weather forecast            | Available (Weather4Lox)  |
 

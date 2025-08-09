@@ -270,29 +270,47 @@ class Test {
 		let msgItems = msg.split('/');
 		if (msg.includes('entryList/put')) {
 			if (entryList && entryList[msgItems[2]]) { // entry exists
-				console.log('TODO entry exists')
-			} else { // new entry
-				let newEntry: AlarmClockEntry = this.alarmClockAddEntry();
-				let size = entryList ? Object.keys(entryList).length : -1;
-				if (size == -1) {
-					entryList = {};
+				if (entryList[msgItems[2]].nightLight) { // alarm is nightlight
+					entryList[msgItems[2]] = {
+						name: msgItems[3],
+						alarmTime: msgItems[4],
+						isActive: msgItems[5] == '1' ? true : false,
+						nightLight: true,
+						daily: msgItems[6] == '1' ? true : false
+					}
+				} else { // other alarm clocks
+					entryList[msgItems[2]] = {
+						name: msgItems[3],
+						alarmTime: msgItems[4],
+						isActive: msgItems[5] == '1' ? true : false,
+						nightLight: false,
+						modes: msgItems[6].split(',').map(Number) // "1,2,3" -> [1,2,3]
+					}
 				}
-				entryList[size+1] = newEntry;
+			} else { // new entry
+				let newEntry: AlarmClockEntry = this.alarmClockAddEntry(msgItems[3]);
+				entryList[msgItems[2]] = newEntry;
 				store.setState(nextEntryTimeId, String(new Date().valueOf()/1000 - 1230764400 + 3600)); // TODO
 				store.setState(entryListId, entryList);
+			}
+			return;
+		}
+		if (msg.includes('entryList/delete')) {
+			if (entryList && entryList[msgItems[2]]) { // entry exists
+				delete entryList[msgItems[2]];
 			}
 			return;
 		}
 		console.error('Command', msg, 'not found for Control', control.uuidAction, control.type);
 	}
 
-	alarmClockAddEntry() {
+	alarmClockAddEntry(name: string) {
 		let day = format(new Date(), 'eeee');
 		let opModes = store.structure.operatingModes;
 		let idx = Object.keys(opModes).find( (key) => opModes[key].toLowerCase() == day);
 		let date = new Date();
 		let entry: AlarmClockEntry = {
-			name: 'Alarm clock',
+			name: name,
 			alarmTime: utils.hours2sec(format(date, 'p')),
 			isActive: true,
 			modes: [Number(idx)], 

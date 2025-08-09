@@ -21,12 +21,12 @@
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
-	let entryList = $derived(store.getState(control.states.entryList) as AlarmClockEntries);
-	let entryListIds = $derived(entryList ? Object.keys(entryList).map(n => Number(n)) : []);
-	let entryListArray = $derived(entryList ? Object.values(entryList) : []);
+	let entryObj = $derived(store.getState(control.states.entryList) as AlarmClockEntries);
+	let entryIds = $derived(entryObj ? Object.keys(entryObj).map(n => Number(n)) : []);
+	let entryList = $derived(entryObj ? Object.values(entryObj) : []);
 	let prevEntryListLength: number = $state(0);
-	let alarms = $derived(entryList ? Object.values(entryList).filter( entry => entry.isActive) : []);
-	let nextEntryTime = $derived(Number(store.getState(control.states.nextEntryTime)));
+	let alarms = $derived(entryObj ? Object.values(entryObj).filter( entry => entry.isActive) : []);
+	let nextEntryTime = $derived(Number(store.getState(control.states.nextEntryTime)) || 0);
 	let selectedEntry = $state(0);
 
 	let viewport: any = $state(); // TODO make HTMLDivElement
@@ -59,51 +59,54 @@
 	});
 
 	function newId() {
-		let max = entryListIds.length ? Math.max(...entryListIds) : 0;
+		let max = entryIds.length ? Math.max(...entryIds) : 0;
 		for( let i = 0; i <= max; i++) {
-			if (!entryListIds.includes(i)) return i;
+			if (!entryIds.includes(i)) return i;
 		}
 		return max + 1; // new ID
 	}
 
 	function publishEntry(entry: AlarmClockEntry, i: number = -1) {
-		let id = (i == -1) ? newId() : entryListIds[i]; /* -1 is new entry */
+		let id = (i == -1) ? newId() : entryIds[i]; /* -1 is new entry */
 		let n = (i == -1) ? id : ''; /* extend name for new entries */
 		let setting = entry.nightLight ? (entry.daily ? '1' : '0') : entry.modes.map(s => s.toString());
 		let cmd = 'entryList/put/' + String(id) + '/' +
-		    entry.name + n + '/' + entry.alarmTime + '/' + 
+		    entry.name + String(n) + '/' + entry.alarmTime + '/' + 
 				(entry.isActive ? '1' : '0') + '/' + setting;
 		//console.log('cmd', cmd, id, entryListIds);
 		publishTopic(control.uuidAction, cmd);
 	}
 
 	function updateName(i: number, e: any) {
-		entryListArray[i].name = e.value;
-		publishEntry(entryListArray[i], i);
+		const entryId = entryIds[i];
+		entryObj[entryId].name = e.value;
+		publishEntry(entryObj[entryId], i);
 	}
 
 	function updateAlarmTime(e: any) {
 		let time = utils.hours2sec(utils.epoch2TimeStr(e.value.valueOf()/1000));
-		entryListArray[selectedEntry].alarmTime = time;
-		publishEntry(entryListArray[selectedEntry], selectedEntry);
+		entryList[selectedEntry].alarmTime = time;
+		publishEntry(entryList[selectedEntry], selectedEntry);
 	}
 
 	function updateIsActive(i: number, e: any) {
-		entryListArray[i].isActive = e.checked;
-		publishEntry(entryListArray[i], i);
+		const entryId = entryIds[i];
+		entryObj[entryId].isActive = e.checked;
+		publishEntry(entryObj[entryId], i);
 	}
 
 	function updateSettings(i: number, e: any) {
-		if (entryListArray[i].nightLight) {
-			entryListArray[i].daily = e.value;
+		const entryId = entryIds[i];
+		if (entryObj[entryId].nightLight) {
+			entryObj[entryId].daily = e.value;
 		} else {
-			entryListArray[i].modes = e.value;
+			entryObj[entryId].modes = e.value;
 		}
-		publishEntry(entryListArray[i], i);
+		publishEntry(entryObj[entryId], i);
 	}
 
 	function addEntry() {
-		if (entryListIds.length > 15) return; // limit to 16 entries
+		if (entryIds.length > 15) return; // limit to 16 entries
 		let day = format(new Date(), 'eeee');
 		let opModes = store.structure.operatingModes;
 		let idx = Object.keys(opModes).find( (key) => opModes[key].toLowerCase() == day);
@@ -119,7 +122,7 @@
 	}
 
 	function deleteEntry(i: number) {
-		let cmd = 'entryList/delete/' + entryListIds[i];
+		let cmd = 'entryList/delete/' + entryIds[i];
 		publishTopic(control.uuidAction, cmd);
 	}
 
@@ -131,26 +134,26 @@
 	}
 
 	function getTimerDate() {
-		return entryListArray && entryListArray[selectedEntry] ? 
-			utils.decTime2date(entryListArray[selectedEntry].alarmTime) : null;
+		return entryList && entryList[selectedEntry] ? 
+			utils.decTime2date(entryList[selectedEntry].alarmTime) : null;
 	}
 
 	$effect( () => {
-		if (entryListArray) { /* to trigger the scroll, we need to be sensitive to the entryList */
+		if (entryList) { /* to trigger the scroll, we need to be sensitive to the entryList */
 			tick().then( () => {
-				if ( viewport && prevEntryListLength != entryListIds.length ) {
+				if ( viewport && prevEntryListLength != entryIds.length ) {
 					viewport.scroll({ top: viewport.scrollHeight, behavior: 'smooth' });
 					tick().then( () => {
 						limitHeight = (windowHeight * 0.9 - modalViewport.getBoundingClientRect().bottom - 10) < 0;
 					});
-					prevEntryListLength = entryListIds.length;
+					prevEntryListLength = entryIds.length;
 				}
 			});
 		}
   });
 
 	$effect( () => {
-		if (windowHeight && modalViewport) { /* trigger on windowHeight change */
+		if (prevEntryListLength > entryIds.length) { /* trigger when list gets shorter */
 			limitHeight = false;
 			tick().then( () => {
 				limitHeight = (windowHeight * 0.9 - modalViewport.getBoundingClientRect().bottom - 10) < 0;
@@ -188,20 +191,22 @@
 		<div bind:this={modalViewport} class="flex flex-col items-center justify-center h-full">
 			<h2 class="h4 text-center items-center justify-center w-[80%]">{controlView.textName}</h2>
 		<div bind:this={viewport} class="container mt-2 overflow-y-auto w-full">
-			{#each entryListArray as entry, i}
+			{#each entryList as entry, i}
 				<div class="mt-2 p-4 dark:bg-surface-950 bg-surface-50 rounded-lg">
 					<div class="flex w-full m-auto h-[72px] justify-between">
 						<div>
 							<h1 class="text-lg truncate">
-								<LbInPlaceEdit value={entry.name} onValueChange={(e:any)=>{ updateName(i, e)}}/>
+								<LbInPlaceEdit value={entry.name} onValueChange={(e:any)=>{updateName(i, e)}}/>
 							</h1>
 							<button class="text-3xl {entry.isActive ? 'dark:text-surface-50 text-surface-950' : 'dark:text-surface-700 text-surface-300'}"
 										onclick={() => {selectedEntry = i; dateTimeView.openModal=true;}}>
-								<h1>{utils.dec2hours(entryListArray[i].alarmTime)}</h1>
+								<h1>{utils.dec2hours(entry.alarmTime)}</h1>
 						</button>
 						</div>
 						<div onclick={(e) => {e.stopPropagation(); }}> <!-- workaround wrapper to stop propagation for switch -->
-							<Switch controlClasses="w-12 h-8" name="slide" controlActive="dark:bg-primary-500 bg-primary-700" controlInactive="preset-filled-surface-300-700" thumbInactive="bg-white" checked={entry.isActive} onCheckedChange={(e) => {updateIsActive(i, e)}} />
+							<Switch controlClasses="w-12 h-8" name="slide" controlActive="dark:bg-primary-500 bg-primary-700"
+											controlInactive="preset-filled-surface-300-700" thumbInactive="bg-white" 
+											checked={entry.isActive} onCheckedChange={(e) => {updateIsActive(i, e)}} />
 						</div>
 					</div>
 					<div class="flex w-full m-auto justify-between">
@@ -219,7 +224,7 @@
 			<button type="button" class="w-full btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50
 				 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
 					onclick={addEntry}>
-				<span class="text-lg {entryListIds.length > 15 ? 'dark:text-surface-800 text-surface-200' : ''}">{$_("Add new alarm time")}</span>
+				<span class="text-lg {entryIds.length > 15 ? 'dark:text-surface-800 text-surface-200' : ''}">{$_("Add new alarm time")}</span>
 			</button>
 		</footer>
 		</div>

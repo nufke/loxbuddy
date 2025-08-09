@@ -52,7 +52,7 @@
 					</div>
 				{/each}
 			{:else}
-				<p class="text-sm dark:text-surface-700 text-surface-300'}">No entries</p>
+				<p class="text-sm dark:text-surface-700 text-surface-300'}">{$_("No entries")}</p>
 			{/if}
 		{/if}
 	</div>

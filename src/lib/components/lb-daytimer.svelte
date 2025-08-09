@@ -34,18 +34,16 @@
 	let dayModes = $derived(extractDayModes(modeList)) as WeekDays;
 	let status = $derived(isAnalog ? valueFormatted : ( value ? control.details.text.on : control.details.text.off)) as string;
 	let overrideTime = $derived(Number(store.getState(control.states.override)));
-	let timer = $derived(calcStartEndTime());
-	let date: SvelteDate = $state(new SvelteDate());
+	let timeslot = $derived(calcStartEndTime(entries));
+	let date = $state(new SvelteDate());
 	let outputActive = $derived(false);
 
 	function getDuration() {
 		let statusExt = '';
 		const timerEnds = store.time.valueOf() + overrideTime * 1000;
-		if (timerEnds) {
-			const dateStr = format(timerEnds, 'PPP p');
-			if (overrideTime>0 || (timer && timer.startTime !== timer.endTime)) {
-				statusExt = ' ' + $_('Till').toLowerCase() + ' ' + (overrideTime>0 ? dateStr : timer?.endTime);
-			}
+		if (overrideTime > 0 || (timeslot && timeslot.endTime)) {
+			const dateStr = timerEnds ? format(timerEnds, 'PPP p') : '';
+			statusExt = ' ' + $_('Till').toLowerCase() + ' ' + (overrideTime > 0 ? dateStr : timeslot?.endTime);
 		}
 		return statusExt;
 	}
@@ -58,18 +56,18 @@
 		return d3;
 	}
 
-	function calcStartEndTime() {
-		if (!entries) return;
+	function calcStartEndTime(entryList: EntriesAndDefaultValue) {
+		if (!entryList) return;
     let startTime = '00:00';
-    let endTime = '24:00';
+    let endTime = '00:00';
 
 		// no entries means not timer set
-		if (entries.entry.length == 0) {
-			return {startTime: startTime, endTime: '24:00'};
+		if (entryList.entry.length == 0) {
+			return {startTime: '00:00', endTime: '00:00'};
 		}
 
-		entries.entry.forEach( (item: any) => {
-			if (Number(item.mode) >= mode ) {
+		entryList.entry.forEach( (item: any) => {
+			if (Number(item.mode) == mode ) {
 				if (isAfter(currentTime, getTime(item.to))) {
 					startTime = item.to;
 				}
@@ -77,7 +75,9 @@
 					endTime = item.from;
 				}
 				if (isAfter(currentTime, getTime(item.from)) && isBefore(currentTime, getTime(item.to))) {
-					return {startTime: item.from, endTime: item.to}; // result found, quit
+					startTime = item.from;
+					endTime = item.to;
+					return {startTime: startTime, endTime: endTime};
 				}
 			}
 		});
@@ -87,7 +87,7 @@
 	function extractEntries(s: string) {
 		if (!s || s.length == 0) return;
 		let _s: string = s;
-		_s = s.replaceAll('}\n{', '},\n{');										// fix array
+		_s = s.replaceAll('}\n{', '},\n{');											// fix array
 		_s = _s.replace(/([a-zA-Z]+)(: )/gm, '"$1"$2');					// key as string
 		_s = _s.replace(/(: )([a-zA-Z\-\d:]+)/gm, ': "$2"');		// value as string
 		return JSON.parse(_s);
@@ -95,7 +95,7 @@
 
 	function extractDayModes(s: string) {
 		let obj: any = {};
-		const regex = /mode=(\d+);name=\\\"([a-z,A-Z,\s]+)/g;
+		const regex = /mode=(\d+);name=\\\"([a-z,A-Z,\s,/]+)/g;
 		for (const match of s.matchAll(regex)) {
 			obj[match[1]] = match[2];
 		}
