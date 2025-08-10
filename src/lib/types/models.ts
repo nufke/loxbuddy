@@ -575,6 +575,7 @@ export type Entry = {
 	needActivate: string;
 	value: string;
 }
+
 export type EntriesAndDefaultValue = {
 	defValue: string;
 	entries: string;

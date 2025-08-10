@@ -6,13 +6,11 @@
 	import type { Entry } from '$lib/types/models';
 	import LbCalendarEntryModal from '$lib/components/lb-calendar-entry-modal.svelte';
 
-	let { view = $bindable(), mode, dayModes, entries } = $props();
+	let { view = $bindable(), mode, dayModes, entries, overrideDate } = $props();
 
 	const notation = (num: number) => String(num).padStart(2, '0') + ':00'
 	const hours = [...Array(24).keys(), 0];
 
-	let modesDuplicates = $derived(entries ? entries.entry.map( (m: Entry) => m.mode) : []);
-//	let modes = $derived(modesDuplicates.filter((item: string, index: number) => modesDuplicates.indexOf(item) === index));
 	let dayModesNames = $derived(Object.values(dayModes));
 	let modes = $derived(Object.keys(dayModes));
 	let length = $derived(modes.length * 156 + 60);
@@ -21,7 +19,11 @@
 	let irc = 0; // IRC offset
 
 	function getColor(type: string) {
-		return 'green';
+		return 'dark:fill-primary-500 fill-primary-700';
+	}
+
+	function getTextColor(type: string) {
+		return 'dark:fill-surface-950 fill-surface-50';
 	}
 
 	function getTime(time: string) {
@@ -30,6 +32,11 @@
 
 	function getMode(mode: string) {
 		return Object.keys(dayModes).findIndex( key => key == mode);
+	}
+
+	// although we calculate with 24:00 for the graphics, we use 00:00 notation to display time 
+	function showTime(time: Entry) {
+		return time.from + ' - ' + (time.to == '24:00' ? '00:00' : time.to);  
 	}
 
 	function addEntry() {
@@ -91,21 +98,21 @@
 			<svg width={length} height="1050">
 				<rect class="dark:fill-surface-900 fill-surface-100" x={60+getMode(mode)*156} y="55" width="150" height="960" fill="currentColor"></rect>
 				{#each dayModesNames as name,i}
-					<text fill="white" font-size="15px" text-anchor="middle" x={135+i*156} y="40">{name}</text>
+					<text class="dark:fill-surface-50 fill-surface-950" font-size="15px" text-anchor="middle" x={135+i*156} y="40">{name}</text>
 				{/each}
 				{#each hours as hour,j}
-					<text fill="white" font-size="15px" x="10" y={60+j*40}>{notation(hour)}</text>
-					<path stroke-width="1" stroke-dasharray="150 6" stroke="white" d="m 60 {55+j*40} H {length}"></path>
+					<text class="dark:fill-surface-50 fill-surface-950" font-size="15px" x="10" y={60+j*40}>{notation(hour)}</text>
+					<path class="stroke-surface-500" stroke-width="1" stroke-dasharray="150 6" d="m 60 {55+j*40} H {length}"></path>
 					{#if j<24}
-						<path stroke-width="1" stroke-dasharray="6" stroke="white" d="m 60 {75+j*40} H {length}"></path>
+						<path class="stroke-surface-500" stroke-width="1" stroke-dasharray="6"  d="m 60 {75+j*40} H {length}"></path>
 					{/if}
 				{/each}
 				{#each entries?.entry as entry}
 			 	 <g onclick={() => {updateEntry(entry)}}>
-		  		  <rect x={60+getMode(entry.mode)*156} y={55+getTime(entry.from)*40} width="150" height={(getTime(entry.to)-getTime(entry.from))*40} 
-									rx="6" fill={getColor(entry.type)} ></rect>
+		  		  <rect class={getColor(entry.type)} x={60+getMode(entry.mode)*156} y={55+getTime(entry.from)*40} width="150" height={(getTime(entry.to)-getTime(entry.from))*40} 
+									rx="6"></rect>
   				 <!-- <text x={70+entry.day} y={75+entry.start*40} font-size="14" fill="white">{entry.temp} </text>-->
-						<text x={70+irc+getMode(entry.mode)*156} y={75+irc+getTime(entry.from)*40} font-size="14" fill="white">{entry.from} - {entry.to}</text>
+						<text class={getTextColor(entry.type)} x={70+irc+getMode(entry.mode)*156} y={75+irc+getTime(entry.from)*40} font-size="14">{showTime(entry)}</text>
 	  			</g>
 				{/each}
 			</svg>

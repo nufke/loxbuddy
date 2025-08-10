@@ -92,6 +92,7 @@ class Test {
 			case 'AlarmClock': this.alarmClock(control, msg); break;
 			case 'IRoomController': this.irc(control, msg); break;
 			case 'Daytimer': this.daytimer(control, msg); break;
+			case 'Pushbutton': break; /* no action */
 			default: console.error('No TEST for Control', control.name, 'of type', control.type);
 		}
 	}
@@ -329,7 +330,12 @@ class Test {
 		let overrideId = control.states.override;
 		let msgItems = msg.split('/');
 		if (msg.includes('startOverride/')) {
-			this.startDaytimer(control, Number(msgItems[2]), msgItems[1]);
+			this.startDaytimer(control, msgItems);
+			return;
+		}
+		if (msg.includes('set/')) {
+			this.setDayTimer(control, msgItems);
+			return;
 		}
 		switch (msg) {
 			case 'stopOverride': clearInterval(this._daytimer[control.uuidAction]); store.setState(overrideId, '0'); store.setState(valueId, String(this._daytimerOldValue)); break;
@@ -337,8 +343,8 @@ class Test {
 		}
 	}
 
-	startDaytimer(control: Control, overrideTimeSec: number, overrideValue: string) {
-		let time = overrideTimeSec;
+	startDaytimer(control: Control, msgItems: string[]) {
+		let time = Number(msgItems[2]);
 		let overrideId = control.states.override;
 		this._daytimerOldValue = store.getState(control.states.value);
 		let valueId = control.states.value;
@@ -347,12 +353,48 @@ class Test {
 			if (time > 0) {
 				time--;
 				store.setState(overrideId, String(time));
-				store.setState(valueId, String(overrideValue));
+				store.setState(valueId, String(msgItems[1]));
 			} else {
 				store.setState(valueId, String(this._daytimerOldValue));
 				clearInterval(this._daytimer[control.uuidAction]);
 			}
 		}, 1000);
+	}
+	
+	setDayTimer(control: Control, msgItems: string[]) {
+		let entriesId = control.states.entriesAndDefaultValue;
+		let entries = '{defValue: 0, entries: ' + msgItems[1] + ', entry: [\n';
+		let modeList: string[] = [];
+		for( let i = 0; i < Number(msgItems[1]); i++) {
+			let item = msgItems[i+2].split(';');
+			entries += '{mode: ' + item[0];
+			entries += ', from: ' + utils.min2hours(Number(item[1]));
+			entries += ', to: ' + utils.min2hours(Number(item[2]));
+			entries += ', needActivate: ' + item[3];
+			entries += ', value: ' + item[4];
+			entries += '}\n';
+			modeList.push(item[0]); // keep track of modes (may incl duplicates)
+		}
+		entries += '], uuid: 1}'; // TOOD replace by valid UUID
+		this.setDayTimerModes(control, modeList);
+		store.setState(entriesId, entries);
+	}
+	
+	setDayTimerModes(control: Control, modeList: string[]) {
+		let modeListId = control.states.modeList;
+		let opModes = store.structure.operatingModes;
+		let list = modeList.map( i => Number(i));
+		let modes = list.filter((item, index) => list.indexOf(item) === index).sort();
+		let modeListStr = "";
+		let i = 0;
+		modes.forEach( mode => {
+			if (i>0) {
+				modeListStr += ',';
+			}
+			modeListStr += String(i) + ':mode=' + String(mode) + ';name=\\\"' + opModes[String(mode)] + '\\\"';
+			i++;
+		});
+		store.setState(modeListId, modeListStr);
 	}
 }
 

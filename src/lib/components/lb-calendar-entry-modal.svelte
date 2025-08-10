@@ -18,7 +18,7 @@
 
 	let isStartTime = $state(false);
 	let dateTime = $state();
-	let updatedEntries = $derived(entries.entry);
+	let updatedEntries = $derived(entries.entry) as Entry[];
 	let startTime = $derived(selectedEntry.from);
 	let endTime = $derived(selectedEntry.to);
 	let isFullDay = $derived(selectedEntry.from == '00:00' && selectedEntry.to =='00:00');
@@ -96,8 +96,8 @@
 	function publishEntries() {
 		let cmd = 'set/' + updatedEntries.length;
 		updatedEntries.forEach( (entry: Entry) => { cmd += '/' + entry.mode + ';' +
-			(isFullDay ? '0' : utils.hours2min(entry.from)) + ';' + 
-			(isFullDay ? '1400' : utils.hours2min(entry.to)) + ';' +
+			utils.hours2min(entry.from) + ';' + 
+			utils.hours2min(entry.to) + ';' +
 			entry.needActivate + ';' + entry.value
 		});
 		//console.log('cmd', cmd);
@@ -106,9 +106,10 @@
 	}
 	
 	function updateEntries() {
-		let changedEntries: Entry[] = []
+		let changedEntries: Entry[] = [];
+		let endTimeCorr = endTime == '00:00' ? '24:00' : endTime;
 		const from = isFullDay ? '00:00' : startTime;
-		const to = isFullDay ? '00:00' : endTime;
+		const to = isFullDay ? '24:00' : endTimeCorr;
 		const needsActivation = needActivate ? '1' : '0';
 		const valueOfEntry = (isAnalog ? '1' : '0'); // TODO set analog value, always 0 for digital daytimers
 		modes.forEach( (mode) => {
@@ -120,7 +121,7 @@
 				value: valueOfEntry
 			});
 		});
-		updatedEntries = [...remainingEntries, ...changedEntries];
+		updatedEntries = [...remainingEntries, ...changedEntries]; // todo remove duplicated/overlapping entries
 		publishEntries();
 	}
 </script>

@@ -11,7 +11,7 @@
 	import LbCalendarModal from '$lib/components/lb-calendar-modal.svelte';
 	import { store } from '$lib/stores/store.svelte';
 	import { fade200 } from '$lib/helpers/transition';
-	import { X } from '@lucide/svelte';
+	import { X, Timer } from '@lucide/svelte';
 	import fmt from 'sprintf-js';
 	import { _ } from 'svelte-i18n';
 	import { format, isAfter, isBefore, setHours, setMinutes, setSeconds } from 'date-fns';
@@ -33,17 +33,17 @@
 	let currentTime = $derived(store.time);
 	let dayModes = $derived(extractDayModes(modeList)) as WeekDays;
 	let status = $derived(isAnalog ? valueFormatted : ( value ? control.details.text.on : control.details.text.off)) as string;
-	let overrideTime = $derived(Number(store.getState(control.states.override)));
+	let override = $derived(Number(store.getState(control.states.override)));
 	let timeslot = $derived(calcStartEndTime(entries));
-	let date = $state(new SvelteDate());
+	let overrideDate = $state({start: new SvelteDate(), end: new SvelteDate(), active: false});
 	let outputActive = $derived(false);
 
 	function getDuration() {
 		let statusExt = '';
-		const timerEnds = store.time.valueOf() + overrideTime * 1000;
-		if (overrideTime > 0 || (timeslot && timeslot.endTime)) {
-			const dateStr = timerEnds ? format(timerEnds, 'PPP p') : '';
-			statusExt = ' ' + $_('Till').toLowerCase() + ' ' + (overrideTime > 0 ? dateStr : timeslot?.endTime);
+		const timerEnds = store.time.valueOf() + override * 1000;
+		if (override > 0 || (timeslot && timeslot.endTime)) {
+			const dateStr = timerEnds ? format(timerEnds, 'd MMMM p') : '';
+			statusExt = ' ' + $_('Till').toLowerCase() + ' ' + (override > 0 ? dateStr : timeslot?.endTime);
 		}
 		return statusExt;
 	}
@@ -76,11 +76,12 @@
 				}
 				if (isAfter(currentTime, getTime(item.from)) && isBefore(currentTime, getTime(item.to))) {
 					startTime = item.from;
-					endTime = item.to;
+					endTime = item.to == '24:00' ? '00:00' : item.to;
 					return {startTime: startTime, endTime: endTime};
 				}
 			}
 		});
+		endTime = endTime == '24:00' ? '00:00' : endTime;
 		return {startTime: startTime, endTime: endTime};
 	}
 
@@ -103,12 +104,14 @@
 	}
 
 	function startStopTimer() {
-		if (overrideTime > 0) { // Timer active, so deactivate
+		if (override > 0) { // Timer active, so deactivate
 			publishTopic(control.uuidAction, 'stopOverride');
-			return
+			return;
 		}
+		overrideDate.start = new SvelteDate(); // save start time for visualization
+		overrideDate.active = outputActive;
 		let coeff = 1000 * 60; // round to minute
-		let overrideTimeSec = Math.round((date.getTime() - Date.now())/coeff)*coeff/1000;
+		let overrideTimeSec = Math.round((overrideDate.end.getTime() - Date.now())/coeff)*coeff/1000;
 		let overrideValue = outputActive ? '1' : '0'; // TODO analog values
     if (overrideTimeSec > 60) {// TODO define minimum time of 1 minute
 	    let cmd = 'startOverride/' + String(overrideValue) + '/' + String(overrideTimeSec);
@@ -120,7 +123,7 @@
 	}
 
 	function updateTimer(e: any) {
-		date = e.value;
+		overrideDate.end = e.value;
 	}
 
 	let calendarView = $state({
@@ -146,6 +149,8 @@
 		isFavorite: controlOptions.isFavorite,
 		iconName: store.getIcon(control, controlOptions.isSubControl),
 		iconColor: (value > 0 ) ? 'dark:fill-primary-500 fill-primary-700' : 'fill-surface-950 dark:fill-surface-50',
+		badgeIconName: (override > 0) ? 'Timer' : '',
+		badgeIconColor: (override > 0) ? 'bg-purple-500' : '',
 		textName: control.name,
 		statusName: status + getDuration(),
 		statusColor: (value > 0 ) ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700',
@@ -181,21 +186,27 @@
 		</header>
 		<div class="flex flex-col items-center justify-center">
 			<h2 class="h4 text-center items-center justify-center w-[80%]">{controlView.textName}</h2>
-			<h2 class="text-lg m-2 text-center {(value > 0 ) ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700'}">
+			<h2 class="text-lg mt-2 text-center {(value > 0 ) ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700'}">
 				{status + getDuration()}
 			</h2>
-			<div class="w-full mb-2 dark:bg-surface-950 bg-surface-50 rounded-lg border border-white/15 hover:border-white/50"
+			{#if override > 0}
+				<div class="flex flex-row items-center justify-center">
+					<span class="dark:text-purple-400 text-purple-800"><Timer size="16"/></span>
+					<p class="ml-1 text-lg text-center dark:text-purple-400 text-purple-800">{$_("Timer is running")}</p>
+				</div>
+			{/if}
+			<div class="w-full m-2 dark:bg-surface-950 bg-surface-50 rounded-lg border border-white/15 hover:border-white/50"
 						onclick={(e) => { e.stopPropagation(); e.preventDefault(); calendarView.openModal=true;}}>
-				<LbTimeGrid {mode} {entries}/>
-				<h2 class="m-2 text-md text-center text-surface-50">{dayModes[mode]}</h2>
+				<LbTimeGrid {mode} {entries} {overrideDate} {override}/>
+				<h2 class="m-2 text-md text-center dark:text-surface-50 text-surface-950">{dayModes[mode]}</h2>
 			</div>
 		</div>
 		<div class="flex flex-col items-center justify-center">
 			<div class="flex w-full btn-group dark:bg-surface-950 bg-surface-50 rounded-lg grid-cols-2 p-2 flex-row border border-white/15 hover:border-white/50">
-				<button type="button" class="w-full h-9 rounded-sm {outputActive ? 'bg-surface-600' : ''}" onclick={() => outputActive=true}>
+				<button type="button" class="w-full h-9 rounded-sm {outputActive ? 'dark:bg-surface-600 bg-surface-200' : ''}" onclick={() => outputActive=true}>
 					<p class="text-lg">{$_("Active")}</p>
 				</button>
-				<button type="button" class="w-full h-9 rounded-sm {!outputActive ? 'bg-surface-600' : ''}" onclick={() => outputActive=false}>
+				<button type="button" class="w-full h-9 rounded-sm {!outputActive ? 'dark:bg-surface-600 bg-surface-200' : ''}" onclick={() => outputActive=false}>
 					<p class="text-lg">{$_("Inactive")}</p>
 				</button>
 			</div>
@@ -205,18 +216,18 @@
 				<div class="w-full flex items-center truncate">
 					<div class="mt-0 ml-2 mr-2 flex w-full justify-between truncate">
 						<p class="truncate text-lg">{$_("Duration")}</p>
-						<p class="text-lg">{format(date, 'PPP p')}</p>
+						<p class="text-lg">{format(overrideDate.end, 'd MMMM p')}</p>
 					</div>
 				</div>
 			</button>
 			<button type="button" class="w-full mt-2 btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50" 
 							onclick={(e) => {e.stopPropagation(); e.preventDefault(); startStopTimer()}}>
-				<span class="text-lg">{$_( (overrideTime > 0) ? "Stop" : "Start")} {$_("Timer").toLocaleLowerCase()}</span>
+				<span class="text-lg">{$_( (override > 0) ? "Stop" : "Start")} {$_("Timer").toLocaleLowerCase()}</span>
 			</button>
 		</div>
 		{/snippet}
 	</Modal>
-	<LbDateTimePickerModal date={date} bind:view={dateTimeView} onValueChange={(e:any)=>{ updateTimer(e)}}/>
+	<LbDateTimePickerModal date={overrideDate.end} bind:view={dateTimeView} onValueChange={(e:any)=>{ updateTimer(e)}}/>
 	<Toaster {toaster}></Toaster>
-	<LbCalendarModal bind:view={calendarView} {mode} {dayModes} {entries}/>
+	<LbCalendarModal bind:view={calendarView} {mode} {dayModes} {entries} {overrideDate}/>
 </div>

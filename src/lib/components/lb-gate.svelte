@@ -71,7 +71,8 @@
 		isFavorite: controlOptions.isFavorite,
 		iconName: store.getIcon(control, controlOptions.isSubControl),
 		textName: control.name,
-		statusName: (position > 99) ? $_('Open') : ( (position < 1) ? $_('Closed') :  fmt.sprintf('%2.0f %% %s', position, $_('Open'))),
+		statusName: (position > 99) ? $_('Open') : ( (position < 1) ? $_('Closed') :  fmt.sprintf('%2.0f%% %s', position, $_('Open'))),
+		statusColor: (position > 1) ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700',
 		buttons: buttons,
 		modal: modal
 	});

@@ -98,6 +98,12 @@ class Utils {
 		return hrs + ':' + (min < 10 ? '0' + min : min);
 	}
 
+	min2hours(i: number) {
+		let hrs = Math.floor(i/60);
+		let min = i - (hrs * 60);
+		return hrs + ':' + (min < 10 ? '0' + min : min);
+	}
+	
 	isDST(d: Date) { // correction for daylight saving time
 		let jan = new Date(d.getFullYear(), 0, 1).getTimezoneOffset();
 		let jul = new Date(d.getFullYear(), 6, 1).getTimezoneOffset();
