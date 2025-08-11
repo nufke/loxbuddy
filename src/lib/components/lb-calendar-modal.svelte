@@ -18,8 +18,8 @@
 
 	let irc = 0; // IRC offset
 
-	function getColor(type: string) {
-		return 'dark:fill-primary-500 fill-primary-700';
+	function getColor(needActivate: string) {
+		return needActivate == '0' ? 'dark:fill-primary-500 fill-primary-700' : 'dark:fill-tertiary-500 fill-tertiary-700'
 	}
 
 	function getTextColor(type: string) {
@@ -35,8 +35,10 @@
 	}
 
 	// although we calculate with 24:00 for the graphics, we use 00:00 notation to display time 
+	// TODO: fix formatting of date-fnd notation 0:00
 	function showTime(time: Entry) {
-		return time.from + ' - ' + (time.to == '24:00' ? '00:00' : time.to);  
+		return 	(time.from == '0:00' ? '00:00' : time.from) + ' - ' + 
+						(time.to == '24:00' ? '00:00' : time.to);  
 	}
 
 	function addEntry() {
@@ -109,7 +111,7 @@
 				{/each}
 				{#each entries?.entry as entry}
 			 	 <g onclick={() => {updateEntry(entry)}}>
-		  		  <rect class={getColor(entry.type)} x={60+getMode(entry.mode)*156} y={55+getTime(entry.from)*40} width="150" height={(getTime(entry.to)-getTime(entry.from))*40} 
+		  		  <rect class={getColor(entry.needActivate)} x={60+getMode(entry.mode)*156} y={55+getTime(entry.from)*40} width="150" height={(getTime(entry.to)-getTime(entry.from))*40} 
 									rx="6"></rect>
   				 <!-- <text x={70+entry.day} y={75+entry.start*40} font-size="14" fill="white">{entry.temp} </text>-->
 						<text class={getTextColor(entry.type)} x={70+irc+getMode(entry.mode)*156} y={75+irc+getTime(entry.from)*40} font-size="14">{showTime(entry)}</text>

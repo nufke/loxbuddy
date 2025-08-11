@@ -574,6 +574,7 @@ export type Entry = {
 	to: string;
 	needActivate: string;
 	value: string;
+	latest?: boolean;
 }
 
 export type EntriesAndDefaultValue = {

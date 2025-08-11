@@ -27,6 +27,11 @@
 		publishTopic(control.uuidAction, 'changeTo/' + String(moodList[moodIndex].id));
 	}
 
+	function getTextName() {
+		let findName = $_('LightControllerV2').split(',').includes(control.name);
+		return (findName && store.rooms) ? store.rooms[control.room].name : control.name;
+	}
+
 	let buttons: SingleButtonView[] = $state([
 		{
 			iconName: 'Plus',
@@ -49,7 +54,7 @@
 		isFavorite: controlOptions.isFavorite,
 		iconName: store.getIcon(control, controlOptions.isSubControl),
 		iconColor: activeMoodsNum != 778 ? 'dark:fill-primary-500 fill-primary-700' : 'fill-surface-950 dark:fill-surface-50',
-		textName: $_('LightControllerV2').split(',').includes(control.name) ? store.rooms[control.room].name : control.name,
+		textName: getTextName(),
 		statusName: activeMoodsNum < 0 ? $_('Manual') : moodList?.find((item: MoodList) => item.id == activeMoodsNum)?.name,
 		statusColor: activeMoodsNum != 778 ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700',
 		list: moodList,

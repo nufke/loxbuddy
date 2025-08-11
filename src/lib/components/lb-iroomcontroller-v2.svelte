@@ -21,6 +21,11 @@
 		{ id: 4, name: 'Off', value: 0, abs: 0, corr: 0, visible: true }
 	];
 
+	function getTextName() {
+		let findName = $_('IRoomControllerV2').split(',').includes(control.name);
+		return (findName && store.rooms) ? store.rooms[control.room].name : control.name;
+	}
+	
 	let modal: ModalView = $state({
 		action: (state: boolean) => {modal.state = state},
 		state: false
@@ -33,7 +38,7 @@
 		iconName: '', // no icon, render temperature as text
 		iconText: tempActual,
 		iconColor: 'fill-surface-950 dark:fill-surface-50',
-		textName: $_('IRoomControllerV2').split(',').includes(control.name) ? store.rooms[control.room].name : control.name,
+		textName: getTextName(),
 		statusName: activeModes[activeMode]?.name,
 		statusColor: 'dark:text-surface-300 text-surface-700', // TODO other colors for temperatures
 		list: activeModes,

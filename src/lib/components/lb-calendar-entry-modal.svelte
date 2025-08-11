@@ -11,28 +11,30 @@
 	import { _ } from 'svelte-i18n';
 	import { slide } from 'svelte/transition'
 	import { publishTopic } from '$lib/communication/mqttclient';
+	import { store } from '$lib/stores/store.svelte';
 
 	let { view = $bindable(), entries, selectedEntry, dayModes } = $props();
 
 	let isAnalog = Boolean(view.control.details.analog);
-
+	let opModes = store.structure.operatingModes;
+	
 	let isStartTime = $state(false);
 	let dateTime = $state();
 	let updatedEntries = $derived(entries.entry) as Entry[];
-	let startTime = $derived(selectedEntry.from);
-	let endTime = $derived(selectedEntry.to);
-	let isFullDay = $derived(selectedEntry.from == '00:00' && selectedEntry.to =='00:00');
+	let startTime = $derived(selectedEntry.from == '0:00' ? '00:00' : selectedEntry.from ); // TODO fix notation
+	let endTime = $derived(selectedEntry.to == '24:00' ? '00:00' : selectedEntry.to);
+	let isFullDay = $derived(startTime == '00:00' && endTime =='00:00');
 	let needActivate = $derived(Number(selectedEntry.needActivate) == 1);
-	let sameEntries = $derived(entries && selectedEntry ? 
+	let sameEntries = $derived( updatedEntries && selectedEntry ? 
 			entries.entry.filter( (entry: Entry) => entry.from == selectedEntry.from &&
 																							entry.to == selectedEntry.to &&
 																							entry.needActivate == selectedEntry.needActivate &&
 																							entry.value == selectedEntry.value) : []) as Entry[];
-	let remainingEntries = $derived( entries.entry.filter( (entry: Entry) => !sameEntries.includes(entry))) as Entry[];
+	let otherEntries = $derived( entries.entry.filter( (entry: Entry) => !sameEntries.includes(entry))) as Entry[];
 	let modes = $derived(sameEntries.length ? sameEntries.map( (m: Entry) => m.mode) : [selectedEntry.mode]) as string[];
 
 	function getDayModes() {
-		return Array.from(modes, (x) => dayModes[x]).join(', ');
+		return Array.from(modes, (x) => opModes[x]).join(', ');
 	}
 
 	function updateTime(e: any) {
@@ -46,6 +48,12 @@
 
 	function updateDayModes(e: any) {
 		modes = e.modes;
+		let selectedEntries = entries.entry.filter( (entry: Entry) => modes.includes(entry.mode) &&
+																							entry.from == selectedEntry.from &&
+																							entry.to == selectedEntry.to &&
+																							entry.needActivate == selectedEntry.needActivate &&
+																							entry.value == selectedEntry.value); 
+		otherEntries = entries.entry.filter( (entry: Entry) => !selectedEntries.includes(entry));
 	}
 
 	let dateTimeView = $state({
@@ -89,7 +97,7 @@
 	}
 
 	function deleteEntries() {
-		updatedEntries = [...remainingEntries];
+		updatedEntries = [...otherEntries];
 		publishEntries();
 	}
 
@@ -118,12 +126,63 @@
 				from: from,
 				to: to,
 				needActivate: needsActivation,
-				value: valueOfEntry
+				value: valueOfEntry,
+				latest: true
 			});
 		});
-		updatedEntries = [...remainingEntries, ...changedEntries]; // todo remove duplicated/overlapping entries
+		let entries = [...otherEntries, ...changedEntries];
+		let modi = entries.map( (m: Entry) => Number(m.mode)).sort();
+		let filteredModes = modi.filter((mode, idx) => modi.indexOf(mode) == idx); // remove duplicates
+		updatedEntries = [];
+		filteredModes.forEach( mode => {
+			let mergedEntries = mergeEntries( entries.filter(e => e.mode == String(mode)));
+			updatedEntries = [...updatedEntries, ...mergedEntries];
+		});
 		publishEntries();
 	}
+
+	function mergeEntries(entries: Entry[] ) {
+		entries.sort((a, b) => utils.hours2min(a.from) - utils.hours2min(b.from));
+		const mergedEntries = [];
+		let currentEntry = entries[0];
+		for (let i = 1; i < entries.length; i++) {
+			const nextEntry = entries[i];
+			if (utils.hours2min(currentEntry.to) >= utils.hours2min(nextEntry.from)) {
+				// overlap, check if other properties are not conflicting
+				if (currentEntry.needActivate == nextEntry.needActivate &&
+					currentEntry.value == nextEntry.value) { // same properties, merge possible
+				 	currentEntry.to = (utils.hours2min(currentEntry.to) >= utils.hours2min(nextEntry.to)) ? 
+					currentEntry.to : nextEntry.to;
+				} else { // not the same properties, so add new entry but update overlapping timeslot
+					if (currentEntry.latest) { // latest has priority, so add it to the list
+						if (utils.hours2min(currentEntry.to) < utils.hours2min(nextEntry.to)) { // no full overlap
+							nextEntry.from = currentEntry.to;
+							mergedEntries.push(currentEntry);
+							currentEntry = nextEntry;
+						} else { // full overlap with next entry, and priority, so override the next entry
+							nextEntry.from = currentEntry.from;
+							nextEntry.to = currentEntry.to;
+							nextEntry.needActivate = currentEntry.needActivate;
+							nextEntry.value = currentEntry.value;
+							currentEntry = nextEntry;
+						}
+					} else { // overlap but no priority, so remove overlap based on next entry
+						currentEntry.to = nextEntry.from;
+						mergedEntries.push(currentEntry);
+						currentEntry = nextEntry;
+					}
+				}
+			} else { // No overlap, add current entry
+				mergedEntries.push(currentEntry);
+				currentEntry = nextEntry;
+			}
+		}
+		// Add the last entry
+		mergedEntries.push(currentEntry);
+		mergedEntries.forEach( m => m.latest = false);  // reset priority flag
+		return mergedEntries;
+	}
+
 </script>
 
 <Modal

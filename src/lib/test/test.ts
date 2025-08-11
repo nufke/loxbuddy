@@ -13,6 +13,7 @@ class Test {
 	_gate: any = {}
 	_daytimer: any = {};
 	_daytimerOldValue: any = {};
+	_irctimer: any = {};
 
 	start() {
 		console.log('TEST MODE: Use demo structure');
