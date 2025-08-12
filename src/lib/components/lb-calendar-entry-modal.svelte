@@ -42,7 +42,7 @@
 		if (isStartTime) {
 			startTime= timeStr;
 		} else {
-			endTime = timeStr;
+			endTime = timeStr == '00:00' ? '24:00' : timeStr;
 		}
 	}
 

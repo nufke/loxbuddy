@@ -17,13 +17,16 @@
 	let flexCol = $derived(innerWidth.current && innerWidth.current < 900 ? 'flex-col' : 'flex-row space-x-4');
 
 	function valueChanged() {
-		const epoch = setDate.valueOf();
-		if (view.isStartTime && view.checkTimeLimits && epoch >= utils.time2epoch(epoch, view.endTime)) {
+		let timeStr = utils.epoch2TimeStr(setDate.valueOf()/1000);
+		timeStr = (!view.isStartTime && timeStr == '00:00') ? '24:00' : timeStr;
+		const sec = utils.hours2sec(timeStr);
+
+		if (view.isStartTime && view.checkTimeLimits && sec >= utils.hours2sec(view.endTime)) {
 			invalidTimeView.label = $_('The selected start time should be smaller than the end time') + ' (' +  view.endTime + ')';
 			invalidTimeView.openModal = true;
 			return;
 		}
-		if (!view.isStartTime && view.checkTimeLimits && epoch <= utils.time2epoch(epoch, view.startTime)) {
+		if (!view.isStartTime && view.checkTimeLimits && sec <= utils.hours2sec(view.startTime)) {
 			invalidTimeView.label = $_('The selected end time should be bigger than the start time') + ' (' +  view.startTime + ')';
 			invalidTimeView.openModal = true;
 			return;
