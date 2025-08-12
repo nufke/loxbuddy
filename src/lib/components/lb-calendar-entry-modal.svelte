@@ -21,9 +21,9 @@
 	let isStartTime = $state(false);
 	let dateTime = $state();
 	let updatedEntries = $derived(entries.entry) as Entry[];
-	let startTime = $derived(selectedEntry.from == '0:00' ? '00:00' : selectedEntry.from ); // TODO fix notation
-	let endTime = $derived(selectedEntry.to == '24:00' ? '00:00' : selectedEntry.to);
-	let isFullDay = $derived(startTime == '00:00' && endTime =='00:00');
+	let startTime = $derived(selectedEntry.from); // TODO fix notation
+	let endTime = $derived(selectedEntry.to);
+	let isFullDay = $derived(startTime == '0:00' && endTime =='24:00');
 	let needActivate = $derived(Number(selectedEntry.needActivate) == 1);
 	let sameEntries = $derived( updatedEntries && selectedEntry ? 
 			entries.entry.filter( (entry: Entry) => entry.from == selectedEntry.from &&
@@ -48,19 +48,18 @@
 
 	function updateDayModes(e: any) {
 		modes = e.modes;
-		let selectedEntries = entries.entry.filter( (entry: Entry) => modes.includes(entry.mode) &&
-																							entry.from == selectedEntry.from &&
-																							entry.to == selectedEntry.to &&
-																							entry.needActivate == selectedEntry.needActivate &&
-																							entry.value == selectedEntry.value); 
-		otherEntries = entries.entry.filter( (entry: Entry) => !selectedEntries.includes(entry));
+		otherEntries = [...updatedEntries];
 	}
 
 	let dateTimeView = $state({
 		isDateView: false,
 		isMinuteView: false,
 		label: $_('Time'),
-		openModal: false
+		openModal: false,
+		startTime: '',
+		endTime: '',
+		isStartTime: false,
+		checkTimeLimits: false
 	});
 
 	let dayModeView = $state({
@@ -85,15 +84,23 @@
 	function setStartTime() {
 		dateTime = utils.hours2date(startTime);
 		isStartTime = true;
-		dateTimeView.label=$_("Start time");
-		dateTimeView.openModal=true;
+		dateTimeView.isStartTime = true;
+		dateTimeView.checkTimeLimits = true;
+		dateTimeView.startTime = startTime;
+		dateTimeView.endTime = endTime;
+		dateTimeView.label = $_("Start time");
+		dateTimeView.openModal = true;
 	}
 
 	function setEndTime() {
 		dateTime = utils.hours2date(endTime);
 		isStartTime = false;
-		dateTimeView.label=$_("End time");
-		dateTimeView.openModal=true;
+		dateTimeView.isStartTime = false;
+		dateTimeView.checkTimeLimits = true;
+		dateTimeView.startTime = startTime;
+		dateTimeView.endTime = endTime;
+		dateTimeView.label = $_("End time");
+		dateTimeView.openModal = true;
 	}
 
 	function deleteEntries() {
@@ -115,9 +122,8 @@
 	
 	function updateEntries() {
 		let changedEntries: Entry[] = [];
-		let endTimeCorr = endTime == '00:00' ? '24:00' : endTime;
 		const from = isFullDay ? '00:00' : startTime;
-		const to = isFullDay ? '24:00' : endTimeCorr;
+		const to = isFullDay ? '24:00' : endTime;
 		const needsActivation = needActivate ? '1' : '0';
 		const valueOfEntry = (isAnalog ? '1' : '0'); // TODO set analog value, always 0 for digital daytimers
 		modes.forEach( (mode) => {
@@ -167,9 +173,13 @@
 							currentEntry = nextEntry;
 						}
 					} else { // overlap but no priority, so remove overlap based on next entry
-						currentEntry.to = nextEntry.from;
-						mergedEntries.push(currentEntry);
-						currentEntry = nextEntry;
+						if (utils.hours2min(currentEntry.to) >= utils.hours2min(nextEntry.to)) { // full overlap
+							currentEntry.from = nextEntry.to;
+							mergedEntries.push(nextEntry); // add next entry
+						} else {
+							mergedEntries.push(currentEntry);
+							currentEntry = nextEntry;
+						}
 					}
 				}
 			} else { // No overlap, add current entry
@@ -208,7 +218,7 @@
 			</div>
 		</header>
 		<div class="flex flex-col items-center justify-center">
-			<h2 class="h4 text-center items-center justify-center w-[80%]">Schakeltijden instellen</h2>
+			<h2 class="h4 text-center items-center justify-center w-[80%]">{view.label}</h2>
 			<div class="mt-4 space-y-2 w-full">
 				<button class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
 								onclick={(e) => { e.stopPropagation(); dayModeView.openModal=true;}}>
@@ -231,14 +241,14 @@
 									onclick={setStartTime}>
 						<div class="flex w-full items-center justify-between">
 							<h1 class="truncate text-lg">{$_("Start time")}</h1>
-							<h1 class="truncate text-lg">{startTime}</h1>
+							<h1 class="truncate text-lg">{utils.hours2hours(startTime)}</h1> <!-- 00:00 notation -->
 						</div>
 					</button>
 					<button class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
 									onclick={setEndTime}>
 						<div class="flex w-full items-center justify-between">
 							<h1 class="truncate text-lg">{$_("End time")}</h1>
-							<h1 class="truncate text-lg">{endTime}</h1>
+							<h1 class="truncate text-lg">{utils.hours2hours(endTime,true)}</h1> <!-- 00:00 notation -->
 						</div>
 					</button>
 				</div>

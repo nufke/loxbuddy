@@ -19,6 +19,10 @@
 
 	let tc = 'dark:fill-surface-50 fill-surface-950'; // text color
 
+	function co(t:any) {
+		return t.needActivate == '0' ? 'dark:fill-primary-500 fill-primary-700' : 'dark:fill-tertiary-500 fill-tertiary-700';
+	}
+
 	// calculate width
 	function cw(t: any) {
 		let from = utils.hours2dec(t.from);
@@ -43,7 +47,7 @@
 		<text class={tc} x="242" y="15" text-anchor="middle" font-size="14px">18</text>
 		<text class={tc} x="320" y="15" text-anchor="middle" font-size="14px">24</text>
 		{#each slots as j}
-			<rect class="fill-primary-500" width={cw(j)*dt} height="25" x={o+cx(j)*dt} y="35"/>
+			<rect class={co(j)} width={cw(j)*dt} height="25" x={o+cx(j)*dt} y="35"/>
 		{/each}
 		{#if override > 0}
 			<rect class="fill-purple-800" width={(oe-os)*dt} height={oa ? "25" : "5"} x={o+os*dt} y={oa ? "35" : "55"}/>

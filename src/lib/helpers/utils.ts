@@ -1,4 +1,5 @@
 import { format } from 'date-fns';
+import fmt from 'sprintf-js';
 
 class Utils {
 
@@ -121,6 +122,13 @@ class Utils {
 		let hhmm = t.split(':'); // HH:mm notation
 		let date = new Date();
 		return new Date(date.getFullYear(), date.getMonth(), date.getDate(), Number(hhmm[0]), Number(hhmm[1]));
+	}
+
+	hours2hours(t: string, correction: boolean = false) { // enable HH:mm notation (avoid H:mm)
+		let hhmm = t.split(':'); // HH:mm notation
+		let hrs = (Number(hhmm[0]) == 24 && correction) ? 0 : Number(hhmm[0]); // possible conversion 24:00 -> 00:00
+		let min = Number(hhmm[1]);
+		return fmt.sprintf('%02i:%02i', hrs, min); 
 	}
 
 	time2epoch(dateEpoch: number, time: string) {

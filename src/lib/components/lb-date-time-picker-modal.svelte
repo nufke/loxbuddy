@@ -3,10 +3,12 @@
 	import { SvelteDate } from 'svelte/reactivity';
 	import LbTimePicker from '$lib/components/lb-time-picker.svelte';
 	import LbDatePicker from '$lib/components/lb-date-picker.svelte';
+	import LbGeneralModal from '$lib/components/lb-general-modal.svelte';
 	import { fade200 } from '$lib/helpers/transition';
 	import { _ } from 'svelte-i18n';
 	import { innerWidth } from 'svelte/reactivity/window';
 	import { X } from '@lucide/svelte';
+	import { utils } from '$lib/helpers/utils';
 
 	let { date, onValueChange, view = $bindable() } = $props();
 
@@ -15,12 +17,31 @@
 	let flexCol = $derived(innerWidth.current && innerWidth.current < 900 ? 'flex-col' : 'flex-row space-x-4');
 
 	function valueChanged() {
+		const epoch = setDate.valueOf();
+		if (view.isStartTime && view.checkTimeLimits && epoch >= utils.time2epoch(epoch, view.endTime)) {
+			invalidTimeView.label = $_('The selected start time should be smaller than the end time') + ' (' +  view.endTime + ')';
+			invalidTimeView.openModal = true;
+			return;
+		}
+		if (!view.isStartTime && view.checkTimeLimits && epoch <= utils.time2epoch(epoch, view.startTime)) {
+			invalidTimeView.label = $_('The selected end time should be bigger than the start time') + ' (' +  view.startTime + ')';
+			invalidTimeView.openModal = true;
+			return;
+		}
 		view.openModal = false;
 		if (setDate != date) {
 			date = setDate;
 			return {value: date};
 		}
 	}
+
+	let invalidTimeView = $state({
+		label: '',
+		openModal: false,
+		cancel: () => {setDate = date; invalidTimeView.openModal = false},
+		ok: () => {setDate = date; invalidTimeView.openModal = false},
+	});
+
 </script>
 
 <Modal
@@ -50,10 +71,12 @@
 			</header>
 			<div class="flex flex-row items-center justify-center">
 				<div class="flex {flexCol} items-center justify-center">
-					{#if view.isDateView}
-						<LbDatePicker bind:date={setDate} bind:view={view}/>
-					{/if}
-					<LbTimePicker bind:date={setDate} bind:view={view}/>
+					{#key setDate}  <!-- reinit component -->
+						{#if view.isDateView}
+							<LbDatePicker bind:date={setDate} bind:view={view}/>
+						{/if}
+							<LbTimePicker bind:date={setDate} bind:view={view}/>
+					{/key}
 				</div>
 			</div>
 			<div class="flex justify-center items-center w-full">
@@ -70,3 +93,4 @@
 		</div>
 	{/snippet}
 </Modal>
+<LbGeneralModal bind:view={invalidTimeView}/>

@@ -5,6 +5,7 @@
 	import { Plus, ArrowLeft } from '@lucide/svelte';
 	import type { Entry } from '$lib/types/models';
 	import LbCalendarEntryModal from '$lib/components/lb-calendar-entry-modal.svelte';
+	import { _ } from 'svelte-i18n';
 
 	let { view = $bindable(), mode, dayModes, entries, overrideDate } = $props();
 
@@ -37,8 +38,8 @@
 	// although we calculate with 24:00 for the graphics, we use 00:00 notation to display time 
 	// TODO: fix formatting of date-fnd notation 0:00
 	function showTime(time: Entry) {
-		return 	(time.from == '0:00' ? '00:00' : time.from) + ' - ' + 
-						(time.to == '24:00' ? '00:00' : time.to);  
+		return 	utils.hours2hours(time.from) + ' - ' + 
+						utils.hours2hours(time.to, true);  // correct 24:00 -> 00:00
 	}
 
 	function addEntry() {
@@ -49,18 +50,21 @@
 			needActivate: '0',
 			value: '0',
 		}
+		calendarEntryView.label = $_('Add switching times');
 		calendarEntryView.enableDelete = false;
 		calendarEntryView.openModal = true;
 	}
 
 	function updateEntry(entry: Entry) {
 		selectedEntry = entry;
+		calendarEntryView.label = $_('Update switching times');
 		calendarEntryView.enableDelete = true;
 		calendarEntryView.openModal = true;
 	}
 
 	let calendarEntryView = $state({
 		control: view.control,
+		label: '',
 		enableDelete: true,
 		openModal: false
 	});

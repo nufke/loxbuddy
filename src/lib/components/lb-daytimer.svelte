@@ -17,6 +17,7 @@
 	import { format, isAfter, isBefore, setHours, setMinutes, setSeconds } from 'date-fns';
 	import { publishTopic } from '$lib/communication/mqttclient';
 	import Info from '$lib/components/lb-info.svelte';
+	import { utils } from '$lib/helpers/utils';
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
@@ -43,7 +44,8 @@
 		const timerEnds = store.time.valueOf() + override * 1000;
 		if (override > 0 || (timeslot && timeslot.endTime)) {
 			const dateStr = timerEnds ? format(timerEnds, 'd MMMM p') : '';
-			statusExt = ' ' + $_('Till').toLowerCase() + ' ' + (override > 0 ? dateStr : timeslot?.endTime);
+			const timeStr = timeslot ? utils.hours2hours(timeslot.endTime, true) : '';
+			statusExt = ' ' + $_('Till').toLowerCase() + ' ' + (override > 0 ? dateStr : timeStr);
 		}
 		return statusExt;
 	}
@@ -59,11 +61,11 @@
 	function calcStartEndTime(entryList: EntriesAndDefaultValue) {
 		if (!entryList) return;
     let startTime = '00:00';
-    let endTime = '00:00';
+    let endTime = '24:00';
 
 		// no entries means not timer set
 		if (entryList.entry.length == 0) {
-			return {startTime: '00:00', endTime: '00:00'};
+			return {startTime: '00:00', endTime: '24:00'};
 		}
 
 		entryList.entry.forEach( (item: any) => {
@@ -76,12 +78,10 @@
 				}
 				if (isAfter(currentTime, getTime(item.from)) && isBefore(currentTime, getTime(item.to))) {
 					startTime = item.from;
-					endTime = item.to == '24:00' ? '00:00' : item.to;
 					return {startTime: startTime, endTime: endTime};
 				}
 			}
 		});
-		endTime = endTime == '24:00' ? '00:00' : endTime;
 		return {startTime: startTime, endTime: endTime};
 	}
 
