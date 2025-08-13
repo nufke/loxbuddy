@@ -32,6 +32,7 @@
 																							entry.value == selectedEntry.value) : []) as Entry[];
 	let otherEntries = $derived( entries.entry.filter( (entry: Entry) => !sameEntries.includes(entry))) as Entry[];
 	let modes = $derived(sameEntries.length ? sameEntries.map( (m: Entry) => m.mode) : [selectedEntry.mode]) as string[];
+	let timeValid = $derived(utils.hours2min(startTime) < utils.hours2min(endTime));
 
 	function getDayModes() {
 		return Array.from(modes, (x) => opModes[x]).join(', ');
@@ -55,11 +56,7 @@
 		isDateView: false,
 		isMinuteView: false,
 		label: $_('Time'),
-		openModal: false,
-		startTime: '',
-		endTime: '',
-		isStartTime: false,
-		checkTimeLimits: false
+		openModal: false
 	});
 
 	let dayModeView = $state({
@@ -67,27 +64,29 @@
 		openModal: false
 	});
 
-	let deleteView = $state({
-		label: $_('Delete entry') + '?',
+	let popupView = $state({
+		label: '',
 		openModal: false,
 		cancel: () => {},
-		ok: () => {deleteEntries()},
+		ok: () => {}
 	});
 
 	function openDeleteView() {
-		if (modes.length > 1) {
-			deleteView.label = $_('Delete all entries') + '?';
-		}
-		deleteView.openModal = true;
+		popupView.label = (modes.length > 1) ? ($_('Delete all entries') + '?') : ($_('Delete entry') + '?');
+		popupView.ok = () => {deleteEntries()};
+		popupView.openModal = true;
+	}
+
+	function openTimeCheckView() {
+		popupView.label = $_('End time should be later than start time');
+		popupView.cancel = () => {popupView.openModal = false};
+		popupView.ok = () => {popupView.openModal = false};
+		popupView.openModal = true;
 	}
 
 	function setStartTime() {
 		dateTime = utils.hours2date(startTime);
 		isStartTime = true;
-		dateTimeView.isStartTime = true;
-		dateTimeView.checkTimeLimits = true;
-		dateTimeView.startTime = startTime;
-		dateTimeView.endTime = endTime;
 		dateTimeView.label = $_("Start time");
 		dateTimeView.openModal = true;
 	}
@@ -95,10 +94,6 @@
 	function setEndTime() {
 		dateTime = utils.hours2date(endTime);
 		isStartTime = false;
-		dateTimeView.isStartTime = false;
-		dateTimeView.checkTimeLimits = true;
-		dateTimeView.startTime = startTime;
-		dateTimeView.endTime = endTime;
 		dateTimeView.label = $_("End time");
 		dateTimeView.openModal = true;
 	}
@@ -121,6 +116,10 @@
 	}
 	
 	function updateEntries() {
+		if (!timeValid) {
+			openTimeCheckView();
+			return;
+		}
 		let changedEntries: Entry[] = [];
 		const from = isFullDay ? '00:00' : startTime;
 		const to = isFullDay ? '24:00' : endTime;
@@ -241,14 +240,14 @@
 									onclick={setStartTime}>
 						<div class="flex w-full items-center justify-between">
 							<h1 class="truncate text-lg">{$_("Start time")}</h1>
-							<h1 class="truncate text-lg">{utils.hours2hours(startTime)}</h1> <!-- 00:00 notation -->
+							<h1 class="truncate text-lg {timeValid ? 'text-surface-50' : 'text-error-500'}">{utils.hours2hours(startTime)}</h1> <!-- 00:00 notation -->
 						</div>
 					</button>
 					<button class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
 									onclick={setEndTime}>
 						<div class="flex w-full items-center justify-between">
 							<h1 class="truncate text-lg">{$_("End time")}</h1>
-							<h1 class="truncate text-lg">{utils.hours2hours(endTime,true)}</h1> <!-- 00:00 notation -->
+							<h1 class="truncate text-lg {timeValid ? 'text-surface-50' : 'text-error-500'}">{utils.hours2hours(endTime,true)}</h1> <!-- 00:00 notation -->
 						</div>
 					</button>
 				</div>
@@ -285,4 +284,4 @@
 </Modal>
 <LbDayModePickerModal bind:view={dayModeView} {modes} {dayModes} onValueChange={(e:any)=>{ updateDayModes(e)}}/>
 <LbDateTimePickerModal date={dateTime} bind:view={dateTimeView} onValueChange={(e:any)=>{ updateTime(e)}}/>
-<LbGeneralModal bind:view={deleteView}/>
+<LbGeneralModal bind:view={popupView}/>
