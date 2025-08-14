@@ -34,7 +34,7 @@ or submit a [pull request](https://github.com/nufke/loxbuddy/pulls).
 | ClimateControllerUS      | Not started       |                             |
 | ColorPicker              | Not started       |                             |
 | ColorPickerV2            | Available         |                             |
-| Daytimer                 | Available         |                             |
+| Daytimer                 | Available         | Only digital for now        |
 | Dimmer                   | Available         |                             |
 | EIBDimmer                | Not started       |                             |
 | EnergyFlowMonitor        | Not started       |                             |
@@ -42,7 +42,7 @@ or submit a [pull request](https://github.com/nufke/loxbuddy/pulls).
 | EnergyManager            | Not started       |                             |
 | EnergyManager2           | Not started       |                             |
 | Fronius                  | Under development | No statistics planned       |
-| Gate                     | Under development |                             |
+| Gate                     | Available         |                             |
 | GateCentral              | Not started       |                             |
 | Heatmixer                | Not started       |                             |
 | Hourcounter              | Not started       |                             |
@@ -82,7 +82,7 @@ or submit a [pull request](https://github.com/nufke/loxbuddy/pulls).
 | PowerUnit                | Not started       |                             |
 | Presence                 | Not started       |                             |
 | PresenceController       | Not started       |                             |
-| PresenceDetector         | Under development |                             |
+| PresenceDetector         | Available         |                             |
 | PulseAt                  | Not started       |                             |
 | Pushbutton               | Available         |                             |
 | Radio                    | Available         |                             |
@@ -101,7 +101,7 @@ or submit a [pull request](https://github.com/nufke/loxbuddy/pulls).
 | SystemScheme             | Not started       |                             |
 | TextInput                | Not started       |                             |
 | TextState                | Available         |                             |
-| TimedSwitch              | Under development |                             |
+| TimedSwitch              | Available         |                             |
 | Tracker                  | Available         |                             |
 | UpDownAnalog             | Not started       |                             |
 | UpDownDigital            | Available         |                             |

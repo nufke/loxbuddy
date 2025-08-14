@@ -29,6 +29,7 @@ import LbUnknown from '$lib/components/lb-unknown.svelte';
 import LbGate from '$lib/components/lb-gate.svelte';
 import LbDimmer from '$lib/components/lb-dimmer.svelte';
 import LbTracker from '$lib/components/lb-tracker.svelte';
+import LbLoadManager from '$lib/components/lb-load-manager.svelte';
 import { loxiconsPath } from '$lib/helpers/paths';
 
 let componentList = [
@@ -62,7 +63,7 @@ let componentList = [
 	{ type: 'Gate', component: LbGate, defaultIcon: '' },
 	{ type: 'Dimmer', component: LbDimmer, defaultIcon: '' },
 	{ type: 'Tracker', component: LbTracker, defaultIcon: '' },
-	
+	{ type: 'LoadManager', component: LbLoadManager, defaultIcon: '' }
 ];
 
 export function getComponent(type: string) {

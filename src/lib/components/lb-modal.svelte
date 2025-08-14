@@ -2,6 +2,7 @@
 	import type { Control, ControlView, ControlOptions } from '$lib/types/models';
 	import LbIcon from '$lib/components/lb-icon-by-name.svelte';
 	import LbSimpleSlider from '$lib/components/lb-simple-slider.svelte';
+	import LbStatusBar from '$lib/components/lb-status-bar.svelte';
 	import { store } from '$lib/stores/store.svelte';
 	import { getComponent } from '$lib/helpers/components';
 	import { DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
@@ -23,7 +24,8 @@
 	let min = $derived(controlView.slider ? controlView.slider.min : 0);
 	let max = $derived(controlView.slider ? controlView.slider.max : 100);
 	let step = $derived(controlView.slider ? controlView.slider.step : 1);
-	let orientation = $derived(controlView.slider ? controlView.slider.orientation : '');
+	let orientation = $derived(controlView.slider ? controlView.slider.orientation : 'horizontal');
+	let locked = $derived(controlView.slider ? controlView.slider.locked : false);
 
 	function setPostion(position: any) {
 		let pos: number = position.length ? position[0] : position; // skeleton Slider returns array, select first one
@@ -146,7 +148,7 @@
 		<div class="container flex justify-center items-center m-2 p-0">
 		{#if controlView.control?.type=='Dimmer'}
 			<LbSimpleSlider classes='dimmer' {orientation}
-										{min} {max} {step} {value} onValueChange={(e: any) => {setPostion(e.value)}}/>
+										{min} {max} {step} {locked} {value} onValueChange={(e: any) => {setPostion(e.value)}}/>
 		{:else}
 			<Slider classes="mt-6 ml-2 mr-2 mb-2" thumbSize="size-5" name="example" {value} {min} {max} {step} onValueChange={(e: any) => setPostion(e.value)} markers={[min, max]}
 							markText="size-8" markersClasses="-mt-11 ml-2 -mr-2"/>
@@ -190,6 +192,11 @@
 				</div>
 			{/each}
 		</div>
+		{/if}
+		{#if controlView.modal && controlView.modal.details && controlView.modal.details.loadManager}
+			<LbStatusBar 	min={controlView.modal.details.loadManager.min}
+										max={controlView.modal.details.loadManager.max}
+										actual={controlView.modal.details.loadManager.actual} />
 		{/if}
 		{#if linkedControls}
 		<div class="container relative w-full">

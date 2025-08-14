@@ -48,7 +48,9 @@
   "__uuid__controls_Sunscreen_kitchen_states_position": "0.4",
   "__uuid__controls_Sunscreen_kitchen_states_shadePosition": "0",
 
-  "__uuid__controls_gate_states_position": "0",
+  "__uuid__controls_gate_1_states_position": "0",
+
+  "__uuid__controls_gate_2_states_position": "0",
 
   "__uuid__controls_battery_level_states_min": "0",
   "__uuid__controls_battery_level_statesu_max": "100",

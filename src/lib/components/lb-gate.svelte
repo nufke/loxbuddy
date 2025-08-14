@@ -12,16 +12,36 @@
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
 	let position = $derived(Number(store.getState(control.states.position)) * 100);
-	let type = control.details.animation
+	let type = Number(control.details.animation);
 
 	/* Gate types (based on animation detail )
 		0 = Garage Door
-		1 = Single Gate opening to the left
-		2 = Single Gate opening to the right
-		3 = Gate opening to both sides
-		4 = Folding door opening to the left
-		5 = Folding door opening to the right
+		1 = Single Gate opening to the left:  open |->  close |<-
+		2 = Single Gate opening to the right: open <-|  close ->|
+		3 = Gate opening to both sides:       open <|>  close >|<
+		4 = Folding door opening to the left:  open |->  close |<-
+		5 = Folding door opening to the right: open <-|  close ->|
 	*/
+
+	$effect( () => {
+		console.log('type', type);
+		switch (type) {
+			case 1:
+			case 4: buttons[0].iconName = '/icons/svg/arrow-left-to-line-close.svg';
+							buttons[1].iconName = '/icons/svg/arrow-right-to-line-open.svg';
+							break;
+			case 2:
+			case 5: buttons[0].iconName = '/icons/svg/arrow-right-to-line-close.svg';
+							buttons[1].iconName = '/icons/svg/arrow-left-to-line-open.svg';
+							break;
+			case 3: buttons[0].iconName = '/icons/svg/chevrons-right-left-close.svg';
+							buttons[1].iconName = '/icons/svg/chevrons-left-right-open.svg';
+							break;
+			default: buttons[0].iconName = 'ChevronDown';
+							buttons[1].iconName = 'ChevronUp';
+							break;
+		}
+	});
 
 	let buttons: SingleButtonView[] = $state([
 		{

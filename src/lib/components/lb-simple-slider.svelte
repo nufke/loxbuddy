@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { innerHeight } from 'svelte/reactivity/window';
 
-	let { min, max, step, value, orientation = '', classes='', style = '', onValueChange } = $props();
+	let { min, max, step, value, locked, orientation = '', classes='', style = '', onValueChange } = $props();
 
 	let mode = $state(localStorage.getItem('mode') || 'dark');
 	let viewport: any;
@@ -22,6 +22,12 @@
 			onValueChange({value: value});
 		}
 	}
+
+	$effect( () => {
+		if (locked) {
+			viewport.disabled = true;
+		}
+	});
 
 	function dimmerBackground() {
 		return mode == 'dark' ?
@@ -89,4 +95,10 @@
   	background-color: transparent;
 		border: none;
 	}
+
+	.dimmer[type="range"]:disabled {
+    opacity: 1;      /* disabled should not greyout element */
+		cursor: default; /* no pointer */
+	}
+
 </style>

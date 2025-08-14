@@ -457,6 +457,7 @@ export type SliderBar = {
   step: number;
 	position: number;
 	orientation?: string;
+	locked?: boolean;
 }
 
 export type ControlView = {

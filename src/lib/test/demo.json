@@ -628,10 +628,10 @@
         "events": "__uuid__controls_sunscreen_central_states_events"
       }
     },
-    "__uuid__controls_gate": {
+    "__uuid__controls_gate_1": {
       "name": "Garage door",
       "type": "Gate",
-      "uuidAction": "__uuid__controls_gate",
+      "uuidAction": "__uuid__controls_gate_1",
       "room": "__uuid__rooms_outside",
       "cat": "__uuid__cats_safety",
       "defaultRating": 0,
@@ -645,11 +645,35 @@
         "animation": 0
       },
       "states": {
-        "jLocked": "__uuid__controls_gate_states_jLocked",
-        "position": "__uuid__controls_gate_states_position",
-        "active": "__uuid__controls_gate_states_active",
-        "preventOpen": "__uuid__controls_gate_states_preventOpen",
-        "preventClose": "__uuid__controls_gate_states_preventClose"
+        "jLocked": "__uuid__controls_gate_1_states_jLocked",
+        "position": "__uuid__controls_gate_1_states_position",
+        "active": "__uuid__controls_gate_1_states_active",
+        "preventOpen": "__uuid__controls_gate_1_states_preventOpen",
+        "preventClose": "__uuid__controls_gate_1_states_preventClose"
+      }
+    },
+    "__uuid__controls_gate_2": {
+      "name": "Gate entry",
+      "type": "Gate",
+      "uuidAction": "__uuid__controls_gate_2",
+      "room": "__uuid__rooms_outside",
+      "cat": "__uuid__cats_safety",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": true,
+      "restrictions": 0,
+      "details": {
+        "jLockable": true,
+        "controlHistory": true,
+        "hasHistory": 20,
+        "animation": 5
+      },
+      "states": {
+        "jLocked": "__uuid__controls_gate_2_states_jLocked",
+        "position": "__uuid__controls_gate_2_states_position",
+        "active": "__uuid__controls_gate_2_states_active",
+        "preventOpen": "__uuid__controls_gate_2_states_preventOpen",
+        "preventClose": "__uuid__controls_gate_2_states_preventClose"
       }
     },
     "__uuid__controls_battery_level": {
@@ -1374,6 +1398,63 @@
         "entriesAndDefaultValue": "__uuid__controls_daytimer",
         "resetActive": "__uuid__controls_daytimer_states_resetActive"
       }
+    },
+    "__uuid__controls_loadmanager": {
+      "name": "Loadmanager",
+      "type": "LoadManager",
+      "uuidAction": "__uuid__controls_loadmanager",
+      "room": "__uuid__rooms_central",
+      "cat": "__uuid__cats_energy",
+      "defaultRating": 1,
+      "isFavorite": false,
+      "isSecured": false,
+      "restrictions": 0,
+      "details": {
+        "jLockable": true,
+        "loads": [
+          {
+            "id": 0,
+            "name": "Dishwasher",
+            "power": 2.1,
+            "maxOff": 0,
+            "minOn": 0,
+            "hasStatus": true
+          },
+          {
+            "id": 1,
+            "name": "Washing machine",
+            "power": 2.1,
+            "maxOff": 0,
+            "minOn": 0,
+            "hasStatus": true
+          },
+          {
+            "id": 2,
+            "name": "Oven",
+            "power": 2,
+            "maxOff": 0,
+            "minOn": 0,
+            "hasStatus": true
+          }
+        ],
+        "mode": 0
+      },
+      "states": {
+        "jLocked": "__uuid__controls_loadmanager_states_jLocked",
+        "currentPower": "__uuid__controls_loadmanager_states_currentPower",
+        "peakOverloadPower": "__uuid__controls_loadmanager_states_peakOverloadPower",
+        "maxPower": "__uuid__controls_loadmanager_states_maxPower",
+        "maxTp": "__uuid__controls_loadmanager_states_maxTp",
+        "maxPowerExceeded": "__uuid__controls_loadmanager_states_maxPowerExceeded",
+        "availablePower": "__uuid__controls_loadmanager_states_availablePower",
+        "lockedLoads": "__uuid__controls_loadmanager_states_lockedLoads",
+        "statusLoads": "__uuid__controls_loadmanager_states_statusLoads"
+      },
+      "links": [
+        "__uuid_unknonw",
+        "__uuid_unknonw",
+        "__uuid_unknonw"
+      ]
     }
   },
   "modes": {},
