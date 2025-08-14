@@ -36,27 +36,27 @@ class Test {
 
 		// Meter
 		setInterval(() => {
-			store.setState("__uuid_controls_PV_meter_states_actual", val[i]);
-			store.setState("__uuid_controls_Batterij_states_actual", val[2+i]);
-			store.setState("__uuid_controls_Net_states_actual", val[4+i]);
+			store.setState("__uuid_controls_pv_meter_states_actual", val[i]);
+			store.setState("__uuid_controls_battery_states_actual", val[2+i]);
+			store.setState("__uuid_controls_net_states_actual", val[4+i]);
 			if (i==2) { i = 0; } else { i++; }
 		}, 2000);
 
 		// Meter (battery)
 		setInterval(() => {
-			store.setState("__uuid_controls_Batterij_states_storage", soc[j]);
+			store.setState("__uuid_controls_battery_states_storage", soc[j]);
 			if (j==5) { j = 0; } else { j++; }
 		}, 1000);
 
 		// InfoOnlyAnalog
 		setInterval(() => {
-			store.setState("__uuid__controls_Fase_1", fase[m]);
+			store.setState("__uuid__controls_phase_1", fase[m]);
 			if (m==5) { m = 0; } else { m++; }
 		}, 2000);
 
 		// InfoOnlyDigital
 		setInterval(() => {
-			store.setState("__uuid__controls_Aanvraag_warmte", k ? "1": "0");
+			store.setState("__uuid__controls_heating_request", k ? "1": "0");
 			k = !k;
 		}, 1000);
 	}
