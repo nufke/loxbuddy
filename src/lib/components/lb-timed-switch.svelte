@@ -59,9 +59,7 @@
 			time += String(seconds) + ' s';
 			return time;
 		}
-		if (delay == -1) {
-			return $_('On');
-		}
+		return (delay == -1) ? $_('On') : $_('Off')
 	}
 
 	function setButtons() {
@@ -98,7 +96,7 @@
 		badgeIconColor: (deactivationDelay > 0) ? 'dark:bg-primary-500 bg-primary-700' : '',
 		textName: control.name,
 		statusName: formatTime(deactivationDelay),
-		statusColor: (deactivationDelay == -1 || deactivationDelay > 0) ? 'dark:text-primary-500 text-primary-700' : '',
+		statusColor: (deactivationDelay == -1 || deactivationDelay > 0) ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700',
 		buttons: controlButtons,
 		modal: {
 			...modal,

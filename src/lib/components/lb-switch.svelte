@@ -6,6 +6,7 @@
 	import LbModal from '$lib/components/lb-modal.svelte';
 	import { publishTopic } from '$lib/communication/mqttclient';
 	import { store } from '$lib/stores/store.svelte';
+	import { _ } from 'svelte-i18n';
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
@@ -33,6 +34,8 @@
 		isSubControl: controlOptions.isSubControl,
 		iconName: store.getIcon(control, controlOptions.isSubControl),
 		iconColor: buttonActive ? 'dark:fill-primary-500 fill-primary-700' : 'fill-surface-950 dark:fill-surface-50',
+		statusName: buttonActive ? $_('On') : $_('Off'),
+		statusColor: buttonActive ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700',
 		textName: control.name,
 		textColor: controlOptions.isSubControl && buttonActive ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-50 text-surface-950',
 		buttonState: buttonActive,

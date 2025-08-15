@@ -109,7 +109,7 @@
   "__uuid__controls_lightcontrollerv2_1/AI3_states_color": "hsv(144,33,82)",
   "__uuid__controls_lightcontrollerv2_1/AI4_states_color": "hsv(144,33,82)",
 
-  "__uuid__controls_lightcontrollerv2_2_active_states_MoodsNum": "778",
+  "__uuid__controls_lightcontrollerv2_2_states_activeMoodsNum": "778",
   "__uuid__controls_lightcontrollerv2_2_states_moodList": [
     {
         "name": "Default",
