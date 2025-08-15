@@ -1434,7 +1434,7 @@
             "power": 2,
             "maxOff": 0,
             "minOn": 0,
-            "hasStatus": true
+            "hasStatus": false
           }
         ],
         "mode": 0

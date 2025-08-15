@@ -43,7 +43,6 @@
 	}
 
 	function getScaleUnit(total: boolean = true) {
-
 		let format = total ? totalFormat.split(' ') : actualFormat.split(' ');
 		if (format.length<2) { /* no space found, so no scale and unit */
 			return { scale: 1, unit: ''}
@@ -71,18 +70,18 @@
 			return printValue(n, '', su.unit);
 		}
 
-		if (Math.abs(n) > 1E3/su.scale && Math.abs(n) < 1E6/su.scale) { 
+		if (Math.abs(n) >= 1E3/su.scale && Math.abs(n) < 1E6/su.scale) { 
 			n = Math.round(n * 10) / 10;
 			return printValue(n, 'k', su.unit);
 		}
 
-		if (Math.abs(n) > 1E6/su.scale && Math.abs(n) < 1E9/su.scale) {
+		if (Math.abs(n) >= 1E6/su.scale && Math.abs(n) < 1E9/su.scale) {
 			n /= 1E3;
 			n = Math.round(n * 100) / 100;
 			return printValue(n, 'M', su.unit);
 		}
 
-		if (Math.abs(n) > 1E9/su.scale) {
+		if (Math.abs(n) >= 1E9/su.scale) {
 			n /= 1E6;
 			n = Math.round(n * 100) / 100;
 			return printValue(n, 'G', su.unit);

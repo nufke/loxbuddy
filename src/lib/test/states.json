@@ -162,5 +162,14 @@
       "nightLight": false,
       "modes": [0,1,2,3,5]
     }
-  }
+  },
+
+  "__uuid__controls_loadmanager_states_currentPower": "3",
+  "__uuid__controls_loadmanager_states_peakOverloadPower": "0",
+  "__uuid__controls_loadmanager_states_maxPower": "12",
+  "__uuid__controls_loadmanager_states_maxTp": "0",
+  "__uuid__controls_loadmanager_states_maxPowerExceeded": "0",
+  "__uuid__controls_loadmanager_states_availablePower" : "8.25",
+  "__uuid__controls_loadmanager_states_lockedLoads": "0",
+  "__uuid__controls_loadmanager_states_statusLoads": "2"
 }

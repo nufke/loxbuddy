@@ -68,7 +68,7 @@ or submit a [pull request](https://github.com/nufke/loxbuddy/pulls).
 | LightControllerV2        | Available         |                             |
 | LightsceneRGB            | Not started       |                             |
 | LightV2                  | Not started       |                             |
-| LoadManager              | Not started       |                             |
+| LoadManager              | Under development |                             |
 | MailBox                  | Not started       |                             |
 | Media                    | Not started       |                             |
 | MediaClient              | Not started       |                             |

@@ -489,6 +489,7 @@ export type ModalView = {
 	state?: boolean;
 	class?: string;
 	buttons?: SingleButtonView[];
+	disableIcon?: boolean;
 	details?: any;
 	timeout?: any;			// timeout for screensaver
 	noBlur?: boolean;

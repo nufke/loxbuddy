@@ -5,9 +5,9 @@
 	import type { Control, ControlOptions, ControlView, ModalView } from '$lib/types/models';
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import { store } from '$lib/stores/store.svelte';
-	import fmt from 'sprintf-js';
 	import { _ } from 'svelte-i18n';
-
+	import { locale } from '$lib/helpers/utils';
+	
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
 	let loads = control.details.loads;
@@ -21,16 +21,14 @@
 	let lockedLoads = $derived(Number(store.getState(control.states.lockedLoads)));
 	let statusLoads = $derived(Number(store.getState(control.states.statusLoads)));
 
+	function getPowerLevel(n: number) {
+		return (n.toLocaleString(locale, { minimumFractionDigits: 1 })) + ' kW ' + $_('Available').toLowerCase();
+	}
+
 	let modal: ModalView = $state({
 		action: (state: boolean) => {modal.state = state},
 		state: false,
-		details: {
-			loadManager: {
-				min: 0,
-				max: 100,
-				actual: 20
-			}
-		}
+		disableIcon: true
 	});
 
 	let controlView: ControlView = $derived({
@@ -40,9 +38,19 @@
 		iconName: store.getIcon(control, controlOptions.isSubControl),
 		iconColor: (currentPower > 0) ? 'dark:fill-primary-500 fill-primary-700' : 'fill-surface-950 dark:fill-surface-50',
 		textName: control.name,
-		statusName: String(maxPower - currentPower) + ' kW available',
+		statusName: getPowerLevel(maxPower - currentPower),
 		statusColor: (currentPower > 0) ? 'dark:text-primary-500 text-primary-700' : 'text-surface-700 dark:text-surface-300',
-		modal: modal
+		modal: {
+			...modal,
+			details: {
+				loadManager: {
+					max: maxPower,
+					actual: currentPower,
+					loads: loads,
+					statusLoads: statusLoads
+				}
+			}
+		}
 	});
 </script>
 

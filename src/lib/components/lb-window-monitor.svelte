@@ -200,8 +200,8 @@
 							<div class="flex items-center truncate w-full">
 								<div class="mt-0 ml-2 mr-2 flex flex-row w-full justify-between truncate items-center">
 									<div class="flex flex-col">
-										<p class="leading-6 truncate text-lg {getStatusColor(index)}">{window.name}</p>
-										<p class="truncate bg-transparent text-left text-xs dark:text-surface-300 text-surface-700">{window.roomName}</p>
+										<p class="text-left leading-6 truncate text-lg {getStatusColor(index)}">{window.name}</p>
+										<p class="text-left truncate bg-transparent text-xs dark:text-surface-300 text-surface-700">{window.roomName}</p>
 									</div>
 									<p class="text-lg">
 										{#each getState(window.state) as state, i}

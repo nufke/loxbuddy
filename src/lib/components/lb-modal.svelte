@@ -17,6 +17,7 @@
 	import { format } from 'date-fns';
 	import { innerHeight } from 'svelte/reactivity/window';
 	import { tick } from 'svelte';
+	import { locale } from '$lib/helpers/utils';
 
 	let { controlView = $bindable() }: { controlView: ControlView } = $props();
 
@@ -41,7 +42,15 @@
 	function getIconColorHex(hexColor: string | undefined) {
 		return (hexColor && hexColor[0] == '#') ? 'fill: ' + hexColor : '';
 	}
-	
+
+	function getPowerLevel(n: number, status: boolean) {
+		return (n.toLocaleString(locale, { minimumFractionDigits: 1 })) + ' kW max.';
+	}
+
+	function getPowerStatus(mask: number) {
+		return (controlView.modal.details.loadManager.statusLoads & (mask+1)) ? $_('On') : $_('Off');
+	}
+
 	let linkedControls: Control[] = $derived(
 		store.controlList.filter((control) => controlView.links ? controlView.links.includes(control.uuidAction) : null)
 			.sort((a, b) => a.name.localeCompare(b.name)));
@@ -100,8 +109,9 @@
 	</header>
 	<div bind:this={modalViewport} class="flex flex-col items-center justify-center h-full">
 		<h2 class="flex h4 text-center items-center justify-center w-[80%]">{controlView.textName}</h2>
-		<div class="flex flex-col items-center justify-center mt-4">
-			<div class="relative inline-flex h-18 w-18 items-center justify-center overflow-hidden rounded-full border border-white/10 dark:bg-surface-950 bg-surface-50">
+		<div class="flex flex-col items-center justify-center">
+			{#if !controlView.modal.disableIcon}
+			<div class="mt-4 relative inline-flex h-18 w-18 items-center justify-center overflow-hidden rounded-full border border-white/10 dark:bg-surface-950 bg-surface-50">
 				<LbIcon class={controlView.iconColor} name={controlView.iconName} width="36" height="36"
 								style={getIconColorHex(controlView.iconColor)}/>
 				{#if controlView.badgeIconName?.length}
@@ -111,12 +121,14 @@
 					</div>
 				{/if}
 			</div>
+			{/if}
 			<div class="flex flex-col justify-center items-center m-2 truncate">
 				{#if controlView.statusName && !controlView.modal.details?.tracker} <!-- remove status when we show a tracker -->
 					<p class="text-lg truncate {controlView.statusColor}" style={getStatusColorHex(controlView.statusColor)}>{$_(controlView.statusName)}</p>
 				{/if}
 			</div>
 		</div>
+
 		{#if controlView.buttons.length && !controlView.slider && !controlView.modal.buttons}
 		<div class="container flex m-2 h-full overflow-y-auto">
 			{#each controlView.buttons as button, index}
@@ -194,9 +206,28 @@
 		</div>
 		{/if}
 		{#if controlView.modal && controlView.modal.details && controlView.modal.details.loadManager}
-			<LbStatusBar 	min={controlView.modal.details.loadManager.min}
-										max={controlView.modal.details.loadManager.max}
-										actual={controlView.modal.details.loadManager.actual} />
+			<div class="w-full m-2 p-2 dark:bg-surface-950 bg-surface-50 rounded-lg border border-white/15 hover:border-white/50">
+				<LbStatusBar	max={controlView.modal.details.loadManager.max}
+											actual={controlView.modal.details.loadManager.actual} />
+			</div>
+			<div class="flex flex-col overflow-y-auto space-y-2 w-full">
+				{#each controlView.modal.details.loadManager.loads as load,i}
+				<button class="w-full flex h-[60px] items-center justify-start rounded-lg border border-white/15 hover:border-white/50
+											dark:bg-surface-950 bg-surface-50 px-2 py-2">
+					<div class="relative flex truncate w-full">
+						<div class="mt-0 ml-2 mr-2 flex flex-row w-full justify-between truncate items-center h-[60px]">
+							<div class="flex flex-col">
+								<p class="leading-6 truncate text-lg text-left">{load.name}</p>
+								<p class="truncate text-left text-xs dark:text-surface-300 text-surface-700">{getPowerLevel(load.power)}</p>
+							</div>
+							{#if load.hasStatus}
+								<p class="text-left text-md dark:text-surface-300 text-surface-700">{getPowerStatus(i)}</p>
+							{/if}
+						</div>
+					</div>
+				</button>
+				{/each}
+			</div>
 		{/if}
 		{#if linkedControls}
 		<div class="container relative w-full">
