@@ -4,7 +4,6 @@
 	import LbMeterModal from '$lib/components/lb-meter-modal.svelte';
 	import type { Control, ControlOptions, ControlView, ModalView } from '$lib/types/models';
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
-	import { locale } from '$lib/helpers/utils';
 	import { store } from '$lib/stores/store.svelte';
 	import { _ } from 'svelte-i18n';
 
@@ -27,7 +26,7 @@
 	let totalNegYear = $derived(Number(store.getState(control.states.totalNegYear)));
 
 	function printValue(n: number, scale: string, unit: string) {
-		return [n.toLocaleString(locale), scale + unit];
+		return [n.toLocaleString(store.locale), scale + unit];
 	}
 
 	function getScale(s:string) {
@@ -96,7 +95,7 @@
 		'totalMonth': format(totalMonth),
 		'totalYear': format(totalYear),
 		'total': format(total),
-		'storage': (Math.round(storage * 10) / 10).toLocaleString(locale),
+		'storage': (Math.round(storage * 10) / 10).toLocaleString(store.locale),
 		'totalNegDay': format(totalNegDay),
 		'totalNegWeek': format(totalNegWeek),
 		'totalNegMonth': format(totalNegMonth),

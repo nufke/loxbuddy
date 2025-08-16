@@ -3,9 +3,10 @@
 	import { Tabs } from '@skeletonlabs/skeleton-svelte';
   import { Modal } from '@skeletonlabs/skeleton-svelte';
 	import type { Room, Category } from '$lib/types/models';
-	import { _ } from 'svelte-i18n';
+	import { _, locale } from 'svelte-i18n';
 	import { store } from '$lib/stores/store.svelte';
   import { ArrowLeft, X } from '@lucide/svelte';
+	import LbGeneralModal from '$lib/components/lb-general-modal.svelte';
 
   let openThemeModal = $state(false);
 	let openStartpageModal = $state(false);
@@ -13,14 +14,66 @@
 	let theme = $state(localStorage.getItem('theme') || 'LoxBuddy');
 	let mode = $state(localStorage.getItem('mode') || 'dark');
 	let startPage = $state(localStorage.getItem('startPage') || '/');
+ 	let group = $state('room');
+	let localeSettings = $derived(store.locale);
 
-	let group = $state('room');
+	const loc = ['nl', 'en', 'de'];
+	const language: any = {
+		nl: 'Dutch',
+		en: 'English',
+		de: 'German'
+	};
+
+	let lang = $derived(language[localeSettings]);
 
 	store.setNav({ label: 'ArrowLeft', href: '/', icon: ArrowLeft });
 
 	let other = [
 		{ name: 'Home', uuid: '/'}
 	];
+
+	async function setLocale(s: number) {
+		store.locale = loc[s];
+		localStorage.setItem('locale', store.locale);
+		locale.set(store.locale); // reset svelte-i18n
+		console.log('locale set to', store.locale);
+	}
+
+	type Button = {
+		name: string;
+		selected: boolean;
+	}
+
+	type LanguageSelectView = {
+		label: string;
+		openModal: boolean;
+		buttons: Button[]
+		cancel: any;
+		ok: any;
+	}
+
+	let languageSelectView: LanguageSelectView = $state({
+		label: $_('Select language'),
+		openModal: false,
+		buttons: [],
+		cancel: () => {},
+		ok: (e: any) => {setLocale(e)}
+	});
+
+	let languageSelectViewButtons = $derived([
+		{
+			name: language['nl'],
+			selected: language[localeSettings] == language.nl
+		},
+		{
+			name: language['en'],
+			selected: language[localeSettings] == language.en
+		},
+		{
+			name: language['de'],
+			selected: language[localeSettings] == language.de
+		}
+	]);
 
 	let rooms: Room[] = $derived(
 		store.roomList.filter((item) => store.controlList.map((control) => control.room)
@@ -45,6 +98,11 @@
 		openThemeModal = false;
 	};
 
+	function openLanguageSelectView() {
+		languageSelectView.buttons = languageSelectViewButtons;
+		languageSelectView.openModal = true;
+	}
+
 	function getStartpageName(startpageUrl: string) {
 		if (startPage == '/' || startPage.length < 3) return 'Home';
 		let p = startpageUrl.split('/');
@@ -67,7 +125,6 @@
 		localStorage.setItem('showStatus', showStatus);
 		store.showStatus = event.checked;
 	};
-
 </script>
 
 <div class="sticky container flex max-w-[1280px] flex-col">
@@ -87,6 +144,11 @@
 					onclick={() => {openThemeModal = true;}}>
 		<p>{$_("Theme")}</p>
 		<p>{theme}</p>
+	</button>
+	<button aria-current="true" type="button" class="flex w-full justify-between border-b dark:border-surface-900 border-surface-200 p-3 pr-5 pl-5 text-left text-lg"
+					onclick={openLanguageSelectView}>
+		<p>{$_("Language")}</p>
+		<p>{$_(lang)}</p>
 	</button>
 	<button aria-current="true" type="button" class="flex w-full justify-between border-b dark:border-surface-900 border-surface-200 p-3 pr-5 pl-5 text-left text-lg"
 					onclick={() => {openStartpageModal = true;}}>
@@ -497,3 +559,5 @@
 	</div>
 	{/snippet}
 </Modal>
+
+<LbGeneralModal bind:view={languageSelectView}/>

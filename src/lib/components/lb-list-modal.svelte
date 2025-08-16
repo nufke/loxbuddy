@@ -164,7 +164,7 @@
 		</div>
 		{/if}
 		{#if isLightController}
-		<div class="flex mt-6 mb-2">
+		<div class="relative w-full mt-6 mb-2">
 			<div class="grid max-w-lg {subControlsColorPicker.length ? 'grid-cols-3' : 'grid-cols-2'}">
 				<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==0 ? 'dark:text-primary-500 text-primary-700' : ''} " onclick={() => selectedTab=0}>
 					<Lightbulb/>

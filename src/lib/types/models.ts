@@ -472,8 +472,8 @@ export type ControlView = {
 	badgeIconColor?: string;
 	textName: string;
 	textColor?: string;
-	statusName?: string;
-	statusColor?: string;
+	statusName: string;
+	statusColor: string;
 	buttonState?: boolean;
 	buttons: SingleButtonView[];
 	slider?: SliderBar;

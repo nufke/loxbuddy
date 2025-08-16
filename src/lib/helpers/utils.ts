@@ -157,8 +157,26 @@ class Utils {
 	deserialize(item: string | null): any {
 		return item ? JSON.parse(item) : null;
 	}
+	
+	extractEntries(s: string) {
+		//console.log('raw entries', s);
+		if (!s || s.length == 0) return;
+		let _s: string = s;
+		_s = s.replaceAll('}\n{', '},\n{');											// fix array
+		_s = _s.replace(/([a-zA-Z]+)(: )/gm, '"$1"$2');					// key as string
+		_s = _s.replace(/(: )([a-zA-Z\-\d:]+)/gm, ': "$2"');		// value as string
+		return JSON.parse(_s);
+	}
+
+	extractDayModes(s: string) {
+		let obj: any = {};
+		const regex = /mode=(\d+);name=\\\"([a-z,A-Z,\s,/]+)/g;
+		for (const match of s.matchAll(regex)) {
+			obj[match[1]] = match[2];
+		}
+		return obj;
+	}
+
 }
 
 export const utils = new Utils();
-
-export const locale = window.navigator.language;

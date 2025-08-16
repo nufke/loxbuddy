@@ -102,6 +102,9 @@
 
 	store.resetLockScreenModalTimeout();
 
+	let localeSettings = localStorage.getItem('locale') || 'en';
+	store.locale = localeSettings;
+
 	let startPage = localStorage.getItem('startPage') || '/';
 	goto(startPage);
 </script>

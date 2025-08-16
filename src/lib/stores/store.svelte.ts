@@ -29,6 +29,7 @@ class Store {
 	notificationsMap: NotificationMap = $state({});
 	showStatus: boolean = $state(true);
 	startPage: string = $state('/');
+	locale: string = $state('en'); // default English
 
 	weatherModal: ModalView = $state({
 		action: () => {},

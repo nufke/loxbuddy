@@ -15,8 +15,7 @@
 		nightLight: entry.nightLight
 	});
 
-	let opModes = store.structure.operatingModes;
-
+	let opModes = $derived(store.structure.operatingModes);
 	let openModal = $state(false);
 	let daysFull = $_('DaysFull').split('|');
 	let weekDayNrs = $derived(Object.keys(opModes).filter( (key) => daysFull.includes(opModes[key].toLowerCase())));

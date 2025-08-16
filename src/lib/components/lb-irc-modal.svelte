@@ -10,8 +10,11 @@
 	import { fade200 } from '$lib/helpers/transition';
 	import { publishTopic } from '$lib/communication/mqttclient';
 	import LbCicleSlider from '$lib/components/lb-circle-slider.svelte';
+	import LbTempSlider from '$lib/components/lb-temp-slider.svelte';
+	import LbTimeGrid from '$lib/components/lb-time-grid.svelte';
 	import LbIcon from '$lib/components/lb-icon-by-name.svelte';
 	import LbDateTimePickerModal from '$lib/components/lb-date-time-picker-modal.svelte';
+	import LbCalendarModal from '$lib/components/lb-calendar-modal.svelte';
 	import Info from '$lib/components/lb-info.svelte';
 	import { utils } from '$lib/helpers/utils';
 	import { format } from 'date-fns';
@@ -67,14 +70,28 @@
 	let timerEndsV1 = $state(new SvelteDate());
 	let timerEndsV2 = $state(new SvelteDate());
 
+	let overrideDate = $state({start: new SvelteDate(), end: new SvelteDate(), active: false});
+	
 	let modalViewport: any = $state(); // TODO make HTMLDivElement
 	let windowHeight = $derived(innerHeight.current || 0);
 	let limitHeight = $state(false); 
+
+	let subControls = Object.values(controlView.control.subControls);
+
+	let entries = $derived(utils.extractEntries(store.getState(subControls[0].states.entriesAndDefaultValue)));
+	let modeList = $derived(String(store.getState(subControls[0].states.modeList))); 
+	let mode = $derived(Number(store.getState(subControls[0].states.mode))); 
+	let dayModes = $derived(utils.extractDayModes(modeList));
 
 	let dateTimeView = $state({
 		isDateView: true,
 		isMinuteView: false,
 		label: $_('Duration'),
+		openModal: false
+	});
+
+	let calendarView = $state({
+		control: controlView.control,
 		openModal: false
 	});
 
@@ -178,30 +195,40 @@
 	<div bind:this={modalViewport} class="flex flex-col items-center justify-center h-full">
 		<h2 class="h4 text-center items-center justify-center w-[80%]">{controlView.textName}</h2>
 		{#if selectedTab==0}
-			<button class="w-full mt-2" onclick={(e) => { e.stopPropagation()}}> <!-- workaround wrapper to stop propagation for slider -->
-				<LbCicleSlider min={10} max={30} step={0.5} target={tempTarget} manual={!isAutomatic} actual={tempActual} onValueChangeEnd={(e: any) => {updatePosition(e.value)}}/>
-			</button>
-			<div class="text-center">
-				<div class="relative flex items-center justify-center ml-2">
-					{#if isAutomatic}
-						<LbIcon class="fill-surface-50 mr-2" name={"/icons/svg/automatic.svg"} width="24" height="24"/>
-					{/if}
-					{#if isCooling}
-					<LbIcon class="fill-cyan-400 mr-2" name={"/icons/svg/mode_cool.svg"} width="24" height="24"/>
-					{/if}
-					{#if isHeating}
-					<Flame class="text-red-500 fill-red-500 mr-2"/>
-					{/if}
-					{#if isEco}
-					<Leaf class="text-green-500 mr-2"/>
-					{/if}
-					{#if override > 0}
-					<Timer class="text-purple-500 mr-2"/>
-					{/if}
+			<div class="w-full mt-4 m-2 p-2 dark:bg-surface-950 bg-surface-50 rounded-lg border border-white/15 hover:border-white/50">
+				<!--<LbCicleSlider min={10} max={30} step={0.5} target={tempTarget} manual={!isAutomatic} actual={tempActual} onValueChangeEnd={(e: any) => {updatePosition(e.value)}}/>-->
+				<div class="grid grid-cols-2">
+					<div>
+						<p class="pl-2 text-lg text-left truncate {controlView.statusColor}">{$_(controlView?.statusName)}</p>
+					</div>
+					<div class="relative flex items-center justify-end ">
+						{#if isAutomatic}
+							<LbIcon class="fill-surface-50 mr-2" name={"/icons/svg/automatic.svg"} width="24" height="24"/>
+						{/if}
+						{#if isCooling}
+						<LbIcon class="fill-cyan-400 mr-2" name={"/icons/svg/mode_cool.svg"} width="24" height="24"/>
+						{/if}
+						{#if isHeating}
+						<Flame class="text-red-500 fill-red-500 mr-2"/>
+						{/if}
+						{#if isEco}
+						<Leaf class="text-green-500 mr-2"/>
+						{/if}
+						{#if override > 0}
+						<Timer class="text-purple-500 mr-2"/>
+						{/if}
+					</div>
 				</div>
-				{#if controlView.statusName}
-				<p class="text-lg truncate mt-3 mb-2 {controlView.statusColor}">{$_(controlView.statusName)}</p>
-				{/if}
+				<div>
+					<LbTempSlider min={10} max={30} step={0.5} target={tempTarget} manual={!isAutomatic} actual={tempActual} onValueChangeEnd={(e: any) => {updatePosition(e.value)}}/>
+				</div>
+			</div>
+			<div class="w-full dark:bg-surface-950 bg-surface-50 rounded-lg border border-white/15 hover:border-white/50"
+						onclick={(e) => { e.stopPropagation(); e.preventDefault(); calendarView.openModal=true;}}>
+				<LbTimeGrid {mode} {entries} {overrideDate} {override}/>
+				<h2 class="m-2 text-md text-center dark:text-surface-50 text-surface-950">{dayModes[mode]}</h2>
+			</div>
+			<div class="text-center">
 				{#if override > 0}
 					<p class="mt-2 mb-2 text-lg">{$_("Duration")} { isV1 ? format(timerEndsV1, 'PPP p') : format(timerEndsV2, 'PPP p')} </p>
 					<button type="button" class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
@@ -234,7 +261,7 @@
 				</button>
 			</div>
 		{/if}
-		<div class="flex mt-6 mb-2">
+		<div class="relative w-full mt-6 mb-2">
 			<div class="grid h-full max-w-lg grid-cols-2 mx-auto">
 				<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==0 ? 'dark:text-primary-500 text-primary-700' : ''} " onclick={() => selectedTab=0}>
 					<LbIcon class={selectedTab==0 ? 'dark:fill-primary-500 fill-primary-700' : 'fill-surface-50'} name={"/icons/svg/thermostat.svg"} width="24" height="24"/>
@@ -251,5 +278,5 @@
 </Modal>
 
 <LbDateTimePickerModal date={date} bind:view={dateTimeView} onValueChange={(e:any)=>{ updateTimer(e)}}/>
-
 <Toaster {toaster}></Toaster>
+<LbCalendarModal bind:view={calendarView} {mode} {dayModes} {entries} {overrideDate}/>

@@ -17,7 +17,6 @@
 	import { format } from 'date-fns';
 	import { innerHeight } from 'svelte/reactivity/window';
 	import { tick } from 'svelte';
-	import { locale } from '$lib/helpers/utils';
 
 	let { controlView = $bindable() }: { controlView: ControlView } = $props();
 
@@ -43,12 +42,17 @@
 		return (hexColor && hexColor[0] == '#') ? 'fill: ' + hexColor : '';
 	}
 
-	function getPowerLevel(n: number, status: boolean) {
-		return (n.toLocaleString(locale, { minimumFractionDigits: 1 })) + ' kW max.';
+	function getPowerLevel(n: number) {
+		return (n.toLocaleString(store.locale, { minimumFractionDigits: 1 })) + ' kW max.';
 	}
 
 	function getPowerStatus(mask: number) {
-		return (controlView.modal.details.loadManager.statusLoads & (mask+1)) ? $_('On') : $_('Off');
+		const statusLoads = controlView.modal.details.loadManager.statusLoads & (mask+1);
+		const lockedLoads = controlView.modal.details.loadManager.lockedLoads & (mask+1);
+		return { 
+			name: lockedLoads ? $_('Locked') : (statusLoads ? $_('On') : $_('Off')),
+			color: lockedLoads ? 'dark:text-error-500 text-error-700' : (statusLoads ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700')
+		}
 	}
 
 	let linkedControls: Control[] = $derived(
@@ -221,7 +225,7 @@
 								<p class="truncate text-left text-xs dark:text-surface-300 text-surface-700">{getPowerLevel(load.power)}</p>
 							</div>
 							{#if load.hasStatus}
-								<p class="text-left text-md dark:text-surface-300 text-surface-700">{getPowerStatus(i)}</p>
+								<p class="text-left text-lg {getPowerStatus(i).color}">{getPowerStatus(i).name}</p>
 							{/if}
 						</div>
 					</div>

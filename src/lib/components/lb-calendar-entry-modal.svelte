@@ -16,7 +16,7 @@
 	let { view = $bindable(), entries, selectedEntry, dayModes } = $props();
 
 	let isAnalog = Boolean(view.control.details.analog);
-	let opModes = store.structure.operatingModes;
+	let opModes = $derived(store.structure.operatingModes);
 	
 	let isStartTime = $state(false);
 	let dateTime = $state();

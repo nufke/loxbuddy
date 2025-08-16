@@ -28,11 +28,11 @@
 	let valueFormatted = $derived(fmt.sprintf(control.details.format, value));
 
 	let mode = $derived(Number(store.getState(control.states.mode)));
-	let entries = $derived(extractEntries(store.getState(control.states.entriesAndDefaultValue))) as EntriesAndDefaultValue;
+	let entries = $derived(utils.extractEntries(store.getState(control.states.entriesAndDefaultValue))) as EntriesAndDefaultValue;
 	let modeList = $derived(String(store.getState(control.states.modeList))); 
 
 	let currentTime = $derived(store.time);
-	let dayModes = $derived(extractDayModes(modeList)) as WeekDays;
+	let dayModes = $derived(utils.extractDayModes(modeList)) as WeekDays;
 	let status = $derived(isAnalog ? valueFormatted : ( value ? control.details.text.on : control.details.text.off)) as string;
 	let override = $derived(Number(store.getState(control.states.override)));
 	let timeslot = $derived(calcStartEndTime(entries));
@@ -83,24 +83,6 @@
 			}
 		});
 		return {startTime: startTime, endTime: endTime};
-	}
-
-	function extractEntries(s: string) {
-		if (!s || s.length == 0) return;
-		let _s: string = s;
-		_s = s.replaceAll('}\n{', '},\n{');											// fix array
-		_s = _s.replace(/([a-zA-Z]+)(: )/gm, '"$1"$2');					// key as string
-		_s = _s.replace(/(: )([a-zA-Z\-\d:]+)/gm, ': "$2"');		// value as string
-		return JSON.parse(_s);
-	}
-
-	function extractDayModes(s: string) {
-		let obj: any = {};
-		const regex = /mode=(\d+);name=\\\"([a-z,A-Z,\s,/]+)/g;
-		for (const match of s.matchAll(regex)) {
-			obj[match[1]] = match[2];
-		}
-		return obj;
 	}
 
 	function startStopTimer() {

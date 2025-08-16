@@ -6,8 +6,7 @@
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import { store } from '$lib/stores/store.svelte';
 	import { _ } from 'svelte-i18n';
-	import { locale } from '$lib/helpers/utils';
-	
+
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
 	let loads = control.details.loads;
@@ -17,12 +16,19 @@
 	let maxPower = $derived(Number(store.getState(control.states.maxPower)));
 	let maxTp = $derived(Number(store.getState(control.states.maxTp)));
 	let maxPowerExceeded = $derived(Number(store.getState(control.states.maxPowerExceeded)));
-	let availablePower = $derived(Number(store.getState(control.states.availablePower)));
+	let availablePower = $derived(Number(store.getState(control.states.availablePower))); // remaining free power
 	let lockedLoads = $derived(Number(store.getState(control.states.lockedLoads)));
 	let statusLoads = $derived(Number(store.getState(control.states.statusLoads)));
 
 	function getPowerLevel(n: number) {
-		return (n.toLocaleString(locale, { minimumFractionDigits: 1 })) + ' kW ' + $_('Available').toLowerCase();
+		return (n.toLocaleString(store.locale, { maximumFractionDigits: 1, minimumFractionDigits: 1 })) + ' kW ' + $_('Available').toLowerCase();
+	}
+
+	function setColor(powerRatio: number, text: boolean) {
+		if (powerRatio == 0.01) return text ? 'dark:text-surface-300 text-surface-700' : 'fill-surface-950 dark:fill-surface-50';
+		if (powerRatio < 0.7) return text ? 'dark:text-primary-500 text-primary-700' : 'dark:fill-primary-500 fill-primary-700';
+		if (powerRatio < 0.9) return text ? 'dark:text-warning-500 text-warning-700' : 'dark:fill-warning-500 fill-warning-700';
+		return text ? 'dark:text-error-500 text-error-700' : 'dark:fill-error-500 fill-error-700';
 	}
 
 	let modal: ModalView = $state({
@@ -36,10 +42,10 @@
 		control: control,
 		isFavorite: controlOptions.isFavorite,
 		iconName: store.getIcon(control, controlOptions.isSubControl),
-		iconColor: (currentPower > 0) ? 'dark:fill-primary-500 fill-primary-700' : 'fill-surface-950 dark:fill-surface-50',
+		iconColor: setColor(currentPower/maxPower, false),
 		textName: control.name,
-		statusName: getPowerLevel(maxPower - currentPower),
-		statusColor: (currentPower > 0) ? 'dark:text-primary-500 text-primary-700' : 'text-surface-700 dark:text-surface-300',
+		statusName: getPowerLevel(availablePower),
+		statusColor: setColor(currentPower/maxPower, true),
 		modal: {
 			...modal,
 			details: {
@@ -47,7 +53,8 @@
 					max: maxPower,
 					actual: currentPower,
 					loads: loads,
-					statusLoads: statusLoads
+					statusLoads: statusLoads,
+					lockedLoads: lockedLoads
 				}
 			}
 		}

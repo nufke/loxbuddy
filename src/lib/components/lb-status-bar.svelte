@@ -1,13 +1,13 @@
 <script lang="ts">
 	import { _ } from 'svelte-i18n';
   import { Progress } from '@skeletonlabs/skeleton-svelte';
-	import { locale } from '$lib/helpers/utils';
+	import { store } from '$lib/stores/store.svelte';
 
 	let { max, actual } = $props();
 
 	let value = $derived(Math.floor(100*actual/max) || 0);
 	function printValue(n: number, scale: string, unit: string) {
-		return [(n.toLocaleString(locale, { minimumFractionDigits: 1 })), scale + unit];
+		return [(n.toLocaleString(store.locale, { minimumFractionDigits: 1 })), scale + unit];
 	}
 
 	function format(n: number) {
@@ -41,15 +41,41 @@
 
 <div class="w-full h-full mt-2 mb-2 flex align-center justify-center">
 	<div class="flex w-full flex-col ml-2 mr-2">
-		<div class="flex justify-end items-center mb-1 border-r-3 dark:border-surface-700 border-surface-300 pr-2 text-md h-[26px] w-full">Max. power {format(max).join(' ')}</div>
-		<Progress meterBg="bg-primary-500" value={value} max={100} height="h-10" />
+		<div class="flex justify-end items-center mb-1 border-r-3 dark:border-surface-700 border-surface-300 pr-2 text-md h-[26px] w-full">{$_('Max power')} {format(max).join(' ')}</div>
+		<Progress trackClasses="custom-track" meterClasses="custom-meter" value={100} max={100} height="h-10" />
 		{#if value < 50}
 			<div class="flex flex-row items-center">
-				<div class="mt-1 border-r-3 border-primary-500 text-left pr-2 text-md h-[26px]" style="width:{value}%"></div>
-				<p class="pl-2 text-md">Actual power {format(actual).join(' ')}</p>
+				<div class="mt-1 border-r-3 dark:border-surface-700 border-surface-300 text-left pr-2 text-md h-[26px]" style="width:{value}%"></div>
+				<p class="pl-2 text-md">{$_('Actual power')} {format(actual).join(' ')}</p>
 			</div>
 		{:else}
-			<div class="flex justify-end items-center mt-1 border-r-3 border-primary-500 pr-2 text-md h-[26px]" style="width:{value}%">Actual power {format(actual).join(' ')}</div>
+			<div class="flex justify-end items-center mt-1 border-r-3 dark:border-surface-700 border-surface-300 pr-2 text-md h-[26px]" style="width:{value}%">{$_('Actual power')} {format(actual).join(' ')}</div>
 		{/if}
 	</div>
 </div>
+
+<style>
+:global {
+	.custom-track {
+		position:relative;
+	}
+	.custom-meter {
+  	-webkit-mask:linear-gradient(#fff 0 0);
+    	      mask:linear-gradient(#fff 0 0);
+	}
+	.custom-meter::before {
+		content:"";
+		position:absolute;
+		top:0;
+		left:0;
+		right:0;
+		bottom:0;
+		background-image: linear-gradient(
+			90deg,
+			var(--color-primary-500) 0%,
+			var(--color-primary-500) 70%,
+			var(--color-warning-500) 80%,
+			var(--color-error-500) 97%);
+		}
+	}
+</style>
