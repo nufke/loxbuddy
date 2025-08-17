@@ -8,7 +8,7 @@
 	import { _ } from 'svelte-i18n';
 	import { store } from '$lib/stores/store.svelte';
 
-	let { view = $bindable(), mode, dayModes, entries, overrideDate } = $props();
+	let { view = $bindable(), mode, dayModes, entries, temperatureList = [] } = $props();
 
 	const notation = (num: number) => String(num).padStart(2, '0') + ':00'
 	const hours = [...Array(24).keys(), 0];
@@ -23,8 +23,21 @@
 		return opModes[Number(mode)];
 	}
 
-	function getColor(needActivate: string) {
+	function getDayTimerColor(needActivate: string) {
 		return needActivate == '0' ? 'dark:fill-primary-500 fill-primary-700' : 'dark:fill-tertiary-500 fill-tertiary-700'
+	}
+
+	function getIRCColor(mode: string) {
+		let fillColor = '';
+		switch(mode) {
+			case '1': // Comfort heating (green)
+			case '2': fillColor = 'dark:fill-primary-500 fill-primary-700'; break; // Comfort cooling (green)
+			case '3': fillColor = 'dark:fill-secondary-500 fill-secondary-700'; break; // Empty house / deep sleep (blue)
+			case '4': fillColor = 'dark:fill-warning-500 fill-warning-700'; break; // Heat protection (orange)
+			case '5': fillColor = 'dark:fill-error-500 fill-error-700'; break; // Increased heat  (red)
+			case '6': fillColor = 'dark:fill-purple-500 fill-purple-700'; break; // Party (purple)
+		}
+		return fillColor;
 	}
 
 	function getTextColor(type: string) {
@@ -33,6 +46,11 @@
 
 	function getTime(time: string) {
 		return utils.hours2dec(time);
+	}
+
+	function getTemperature(entry: Entry) {
+		let idx = temperatureList.findIndex( item => item.id == entry.value);
+		return (idx != -1) ? temperatureList[idx].value + '°' : '';
 	}
 
 	function getModeIndex(mode: string) {
@@ -106,6 +124,7 @@
 		</header>
 		<div class="mt-[36px]">
 			<div class="flex flex-row">
+				{#if entries.entry && entries.entry.length > 0}
 				<div>
 					<svg width="65" height="1050">
 						{#each hours as hour,j}
@@ -127,14 +146,22 @@
 						{/each}
 						{#each entries?.entry as entry}
 					 	 <g onclick={() => {updateEntry(entry)}}>
-				  		  <rect class={getColor(entry.needActivate)} x={0+getModeIndex(entry.mode)*156} y={55+getTime(entry.from)*40} width="150" height={(getTime(entry.to)-getTime(entry.from))*40} 
+				  		  {#if view.isIRC}
+									<rect class={getIRCColor(entry.value)} x={0+getModeIndex(entry.mode)*156} y={55+getTime(entry.from)*40} width="150" height={(getTime(entry.to)-getTime(entry.from))*40} 
 											rx="6"></rect>
-				 				 <!-- <text x={70+entry.day} y={75+entry.start*40} font-size="14" fill="white">{entry.temp} </text>-->
+								{:else}
+									<rect class={getDayTimerColor(entry.needActivate)} x={0+getModeIndex(entry.mode)*156} y={55+getTime(entry.from)*40} width="150" height={(getTime(entry.to)-getTime(entry.from))*40} 
+											rx="6"></rect>
+								{/if}
 								<text class={getTextColor(entry.type)} x={10+getModeIndex(entry.mode)*156} y={75+getTime(entry.from)*40} font-size="14">{showTime(entry)}</text>
-			  			</g>
+								{#if view.isIRC}
+				 					<text class={getTextColor(entry.type)} x={10+getModeIndex(entry.mode)*156} y={95+getTime(entry.from)*40} font-size="14">{getTemperature(entry)}</text>
+								{/if}
+							</g>
 						{/each}
 					</svg>
 				</div>
+				{/if}
 			</div>
 		</div>
 	{/snippet}

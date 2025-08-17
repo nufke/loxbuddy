@@ -23,7 +23,7 @@
 	let updatedEntries = $derived(entries.entry) as Entry[];
 	let startTime = $derived(selectedEntry.from); // TODO fix notation
 	let endTime = $derived(selectedEntry.to);
-	let isFullDay = $derived(startTime == '0:00' && endTime =='24:00');
+	let isFullDay = $derived((startTime == '0:00' || startTime == '00:00') && endTime =='24:00'); // TODO startTime notation
 	let needActivate = $derived(Number(selectedEntry.needActivate) == 1);
 	let sameEntries = $derived( updatedEntries && selectedEntry ? 
 			entries.entry.filter( (entry: Entry) => entry.from == selectedEntry.from &&

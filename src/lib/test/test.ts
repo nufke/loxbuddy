@@ -13,7 +13,7 @@ class Test {
 	_gate: any = {}
 	_daytimer: any = {};
 	_daytimerOldValue: any = {};
-	_irctimer: any = {};
+	_ircv1timer: any = {};
 
 	start() {
 		console.log('TEST MODE: Use demo structure');
@@ -91,7 +91,7 @@ class Test {
 			case 'Gate': this.gate(control, msg); break;
 			case 'Alarm': this.alarm(control, msg); break;
 			case 'AlarmClock': this.alarmClock(control, msg); break;
-			case 'IRoomController': this.irc(control, msg); break;
+			case 'IRoomController': this.ircv1(control, msg); break;
 			case 'Daytimer': this.daytimer(control, msg); break;
 			case 'Pushbutton': break; /* no action */
 			default: console.error('No TEST for Control', control.name, 'of type', control.type);
@@ -322,10 +322,43 @@ class Test {
 		return entry;
 	}
 
-	irc(control: Control, msg: string) {
-		console.error('Command', msg, 'not found for Control', control.uuidAction, control.type);
+	ircv1(control: Control, msg: string) {
+		let msgItems = msg.split('/');
+		let overrideId = control.states.override;
+		let ircDaytimer = Object.values(control.subControls);
+		let valueId = ircDaytimer[0].states.value; // TODO select relevant DayTimer
+		if (msg.includes('starttimer/')) {
+			this.startIRCV1Timer(control, msgItems);
+			return;
+		}
+		switch (msg) {
+			case 'stoptimer': clearInterval(this._ircv1timer[control.uuidAction]); store.setState(overrideId, '0'); store.setState(valueId, '0'); break;
+			default: console.error('Command', msg, 'not found for Control', control.uuidAction, control.type);
+		}
 	}
-	
+
+	startIRCV1Timer(control: Control, msgItems: string[]) {
+		let time = Number(msgItems[2])*60; // Override time given in minutes
+		let overrideId = control.states.override;
+		this._daytimerOldValue = store.getState(control.states.value);
+		let ircDaytimer = Object.values(control.subControls);
+		let valueId = ircDaytimer[0].states.value; // TODO select relevant DayTimer
+		let tempTargetId = control.states.tempTargetId;
+		clearInterval(this._ircv1timer[control.uuidAction]);
+		this._ircv1timer[control.uuidAction] = setInterval(() => {
+			if (time > 0) {
+				time--;
+				store.setState(overrideId, String(time));
+				store.setState(valueId, String(msgItems[1]));
+				store.setState(tempTargetId, '23.3'); // TODO check via schedule
+			} else {
+				store.setState(valueId, '0'); // TODO check schedule
+				store.setState(tempTargetId, '21.0'); // TODO check schedule
+				clearInterval(this._ircv1timer[control.uuidAction]);
+			}
+		}, 1000);
+	}
+
 	daytimer(control: Control, msg: string) {
 		let valueId = control.states.value;
 		let overrideId = control.states.override;

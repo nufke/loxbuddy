@@ -1457,6 +1457,97 @@
         "__uuid_unknonw",
         "__uuid_unknonw"
       ]
+    },
+    "__uuid__controls_irc_v2": {
+      "name": "Intelligent Room Controller v2",
+      "type": "IRoomControllerV2",
+      "uuidAction": "__uuid__controls_irc_v2",
+      "room": "__uuid__rooms_bedroom",
+      "cat": "__uuid__cats_heating",
+      "defaultRating": 2,
+      "isFavorite": false,
+      "isSecured": false,
+      "restrictions": 0,
+      "details": {
+        "jLockable": true,
+        "controlHistory": true,
+        "hasHistory": 20,
+        "timerModes": [
+          {
+            "name": "Comfort temperature",
+            "description": "Comfort",
+            "id": 1
+          },
+          {
+            "name": "Eco temperature",
+            "description": "Saving Mode",
+            "id": 0
+          },
+          {
+            "name": "Off (building protection)",
+            "description": "Building protection",
+            "id": 2
+          }
+        ],
+        "format": "%.1f°",
+        "connectedInputs": 0,
+        "possibleCapabilities": 0,
+        "singleComfortTemperature": false,
+        "linkedAcControls": []
+      },
+      "states": {
+        "jLocked": "__uuid__controls_irc_v2_states_jLocked",
+        "tempActual": "__uuid__controls_irc_v2_states_tempActual",
+        "tempTarget": "__uuid__controls_irc_v2_states_tempTarget",
+        "comfortTemperature": "__uuid__controls_irc_v2_states_comfortTemperature",
+        "comfortTemperatureCool": "__uuid__controls_irc_v2_states_comfortTemperatureCool",
+        "comfortTolerance": "__uuid__controls_irc_v2_states_comfortTolerance",
+        "absentMinOffset": "__uuid__controls_irc_v2_states_absentMinOffset",
+        "absentMaxOffset": "__uuid__controls_irc_v2_states_absentMaxOffset",
+        "frostProtectTemperature": "__uuid__controls_irc_v2_states_frostProtectTemperature",
+        "heatProtectTemperature": "__uuid__controls_irc_v2_states_heatProtectTemperature",
+        "shadingCoolTemp": "__uuid__controls_irc_v2_states_shadingCoolTemp",
+        "shadingHeatTemp": "__uuid__controls_irc_v2_states_shadingHeatTemp",
+        "co2": "__uuid__controls_irc_v2_states_co2",
+        "humidityActual": "__uuid__controls_irc_v2_states_humidityActual",
+        "actualOutdoorTemp": "__uuid__controls_irc_v2_states_actualOutdoorTemp",
+        "currentMode": "__uuid__controls_irc_v2_states_currentMode",
+        "shadingOut": "__uuid__controls_irc_v2_states_shadingOut",
+        "activeMode": "__uuid__controls_irc_v2_states_activeMode",
+        "comfortTemperatureOffset": "__uuid__controls_irc_v2_states_comfortTemperatureOffset",
+        "overrideEntries": "__uuid__controls_irc_v2_states_overrideEntries",
+        "prepareState": "__uuid__controls_irc_v2_states_prepareState",
+        "useOutdoor": "__uuid__controls_irc_v2_states_useOutdoor",
+        "operatingMode": "__uuid__controls_irc_v2_states_operatingMode",
+        "overrideReason": "__uuid__controls_irc_v2_states_overrideReason",
+        "excessEnergyTempOffset": "__uuid__controls_irc_v2_states_excessEnergyTempOffset",
+        "averageOutdoorTemp": "__uuid__controls_irc_v2_states_averageOutdoorTemp",
+        "temperatureBoundaryInfo": "__uuid__controls_irc_v2_states_temperatureBoundaryInfo",
+        "capabilities": "__uuid__controls_irc_v2_states_capabilities",
+        "openWindow": "__uuid__controls_irc_v2_states_jLocked"
+      },
+      "subControls": {
+        "__uuid__controls_irc_v2_subcontrols_heating_and_cooling": {
+          "name": "Heating and Cooling",
+          "type": "IRCV2Daytimer",
+          "uuidAction": "__uuid__controls_irc_v2_subcontrols_heating_and_cooling",
+          "defaultRating": 0,
+          "isFavorite": false,
+          "isSecured": false,
+          "restrictions": 0,
+          "details": {
+            "analog": true,
+            "format": "%.1f°"
+          },
+          "states": {
+            "entriesAndDefaultValue": "__uuid__controls_irc_v2_subcontrols_heating_and_cooling",
+            "mode": "__uuid__controls_irc_v2_subcontrols_heating_and_cooling_states_mode",
+            "modeList": "__uuid__controls_irc_v2_subcontrols_heating_and_cooling_states_modeList",
+            "value": "__uuid__controls_irc_v2_subcontrols_heating_and_cooling_states_value",
+            "needsActivation": "__uuid__controls_irc_v2_subcontrols_heating_and_cooling_states_needsActivation"
+          }
+        }
+      }
     }
   },
   "modes": {},

@@ -6,7 +6,6 @@
 
 	let isDragging = false;
 	let trackSelected = false;
-	let symbol = ' °C' // TODO Fahrenheit
 
 	let trackMin = 25;
 	let trackMax = 370;
@@ -22,10 +21,6 @@
 		if (!isDragging && !trackSelected) return;
 		let x = Math.max(trackMin, Math.min(e.offsetX, trackMax));
 		targetTempLimit = (x-trackMin)*trackRatio + min;
-	}
-
-	function format(temp: number) {
-		return temp.toLocaleString(store.locale, { maximumFractionDigits: 1, minimumFractionDigits: 1 }) + symbol;
 	}
 
 	function knobMouseDown(e: any) {
@@ -46,14 +41,12 @@
 	}
 </script>
 
-<div class="w-full h-full flex flex-col items-center justify-center mb-1">
-	<div class="mt-1 text-lg dark:text-surface-300 text-surface-700 ">Actual: {format(actualTempLimit)}</div>
+<div class="w-full">
 	<svg width="100%" height="48" onmouseup={mouseUp} onmousemove={mouseMove}>
 		<path class="track" d="M{trackMin} 25 H {trackMax}" onmousedown={trackMouseDown}/>
 		<circle class="set" cx={setPos} cy="25" r="12"/>
 		<circle class="knob" cx={knobPos} cy="25" r="12" onmousedown={knobMouseDown}/>
 	</svg>
-	<div class="text-lg dark:text-primary-500 text-primary-700">Target: {format(targetTempLimit)}</div>
 </div>
 
 <style>

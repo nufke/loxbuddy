@@ -446,8 +446,8 @@ export type ListItem = {
   id: number;
   name: string;
   value?: number;
-	abs?: number;
-	corr?: number
+	isAbsolute?: boolean; // used for temperatures
+	correction?: number; // used for absolute temperatures +/- correction 
   visible?: boolean;
 }
 

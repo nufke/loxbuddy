@@ -110,6 +110,7 @@
 
 	let calendarView = $state({
 		control: control,
+		isIRC: false,
 		openModal: false
 	});
 	
@@ -211,5 +212,5 @@
 	</Modal>
 	<LbDateTimePickerModal date={overrideDate.end} bind:view={dateTimeView} onValueChange={(e:any)=>{ updateTimer(e)}}/>
 	<Toaster {toaster}></Toaster>
-	<LbCalendarModal bind:view={calendarView} {mode} {dayModes} {entries} {overrideDate}/>
+	<LbCalendarModal bind:view={calendarView} {mode} {dayModes} {entries}/>
 </div>

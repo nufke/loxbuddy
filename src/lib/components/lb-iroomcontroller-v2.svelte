@@ -12,15 +12,38 @@
 
 	let tempActual = $derived(fmt.sprintf('%.1f', Number(store.getState(control.states.tempActual))));
 	let activeMode = $derived(Number(store.getState(control.states.activeMode)));
+	let operatingMode = $derived(Number(store.getState(control.states.operatingMode)));
+	let currentMode = $derived(Number(store.getState(control.states.currentMode)));
+	let comfortTemperature = $derived(Number(store.getState(control.states.comfortTemperature))); // Heating
+	let comfortTemperatureCool = $derived(Number(store.getState(control.states.comfortTemperatureCool)));
+	let frostProtectTemperature = $derived(Number(store.getState(control.states.frostProtectTemperature)));
+	let heatProtectTemperature = $derived(Number(store.getState(control.states.heatProtectTemperature)));
+	let absentMaxOffset = $derived(Number(store.getState(control.states.absentMaxOffset))); // max temp offset for eco mode
+	let absentMinOffset = $derived(Number(store.getState(control.states.absentMinOffset))); // min temp offset for eco mode
+	let isHeating = $derived((currentMode == 1) || (currentMode == 4));
+	let temperatureList = $derived(getTemperatureList(isHeating, false));
+	let mode = $derived((activeMode == 2) ? 4 : activeMode); // remapping
 
-	let activeModes : ListItem[] = [ /* active modes for V2 */
-		{ id: 0, name: 'Economy', value: 0, abs: 0, corr: 1, visible: true },
-		{ id: 1, name: 'Comfort temperature', value: 0, abs: 0, corr: 0, visible: true },
-		{ id: 2, name: 'Building protection', value: 0, abs: 0, corr: 0, visible: true },
-		{ id: 3, name: 'Manual', value: 0, abs: 0, corr: 0, visible: true },
-		{ id: 4, name: 'Off', value: 0, abs: 0, corr: 0, visible: true }
-	];
-
+	function getTemperatureList(isHeatingOn: boolean, isManual: boolean) {
+		let modes : ListItem[] = [ /* active modes for IRC V2 */
+			{ id: 0, name: 'Economy', value: 0, visible: true },
+			{ id: 1, name: 'Comfort temperature', value: 0, visible: true },
+			{ id: 2, name: 'Building protection', value: 0, visible: false },
+			{ id: 3, name: 'Manual', value: 0, visible: false },
+			{ id: 4, name: 'Off', value: 0, visible: true }
+		];
+		if (isHeatingOn) {
+			modes[0].value = comfortTemperature - absentMaxOffset;
+			modes[1].value = comfortTemperature;
+			modes[4].value = frostProtectTemperature;
+		} else { // Cooling
+			modes[0].value = comfortTemperatureCool - absentMaxOffset;
+			modes[1].value = comfortTemperatureCool;
+			modes[4].value = frostProtectTemperature;
+		}
+		return modes;
+	}
+		
 	function getTextName() {
 		let findName = $_('IRoomControllerV2').split(',').includes(control.name);
 		return (findName && store.rooms) ? store.rooms[control.room].name : control.name;
@@ -39,9 +62,9 @@
 		iconText: tempActual,
 		iconColor: 'fill-surface-950 dark:fill-surface-50',
 		textName: getTextName(),
-		statusName: activeModes[activeMode]?.name,
+		statusName:  temperatureList && temperatureList[mode] ? temperatureList[mode].name : '',
 		statusColor: 'dark:text-surface-300 text-surface-700', // TODO other colors for temperatures
-		list: activeModes,
+		list: temperatureList,
 		modal: modal
 	});
 </script>

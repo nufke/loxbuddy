@@ -38,10 +38,11 @@
 	/* this modal is used for V1 and V2, so we need to select the proper attributes */
 	let isV1 = controlView.control.type !== 'IRoomControllerV2'; 
 
-	let selectedItem = $derived(controlView.list ? controlView.list.findIndex( (item: ListItem) => { return item.name === controlView.statusName }) : 0);
+	let temperatureList = $derived(controlView.list ? controlView.list.filter( item => item.visible == true) : []); // hide items not marked as visible 
+	let selectedItem = $derived(temperatureList.findIndex( (item: ListItem) => { return item.name === controlView.statusName }));
 	let selectedTab = $state(0);
-	let tempActual = $derived(fmt.sprintf('%.1f', Number(store.getState(controlView.control?.states.tempActual))));
-	let tempTarget = $derived(fmt.sprintf('%.1f', Number(store.getState(controlView.control?.states.tempTarget))));
+	let tempActual = $derived(Number(store.getState(controlView.control?.states.tempActual)));
+	let tempTarget = $derived(Number(store.getState(controlView.control?.states.tempTarget)));
 	let date: SvelteDate = $state(new SvelteDate(Date.now() + 3600000));
 
 	let overrideV1 = $derived(Number(store.getState(controlView.control.states.override)));
@@ -77,10 +78,13 @@
 	let limitHeight = $state(false); 
 
 	let subControls = Object.values(controlView.control.subControls);
+	
+	let selectedSubControl = $derived(isV1 ? (subControls.find( subControl => subControl.name == (isHeating ? 'Heating' : 'Cooling')) || subControls[0] ):
+																	subControls[0]);
 
-	let entries = $derived(utils.extractEntries(store.getState(subControls[0].states.entriesAndDefaultValue)));
-	let modeList = $derived(String(store.getState(subControls[0].states.modeList))); 
-	let mode = $derived(Number(store.getState(subControls[0].states.mode))); 
+	let entries = $derived(utils.extractEntries(store.getState(selectedSubControl.states.entriesAndDefaultValue)));
+	let modeList = $derived(String(store.getState(selectedSubControl.states.modeList))); 
+	let mode = $derived(Number(store.getState(selectedSubControl.states.mode))); 
 	let dayModes = $derived(utils.extractDayModes(modeList));
 
 	let dateTimeView = $state({
@@ -92,6 +96,7 @@
 
 	let calendarView = $state({
 		control: controlView.control,
+		isIRC: true,
 		openModal: false
 	});
 
@@ -138,6 +143,10 @@
 		date = e.value;
 	}
 
+	function tempFormat(temp: number) {
+		return temp.toLocaleString(store.locale, { maximumFractionDigits: 1, minimumFractionDigits: 1 }) + ' °C' // TODO Fahrenheit
+	}
+
 	function getTimerEpoch(entries: any) {
 		if (!entries) return;
 		if (entries.length ==0) return;
@@ -150,15 +159,16 @@
       selectedTab = 0;
     }, 500);
 	}
-	
-	$effect( () => {
-		timerEndsV1 = new SvelteDate(store.time.valueOf() + overrideV1*1000);
-	});
+
+	function getTemperature(temp: number | undefined){
+		return ' ('+ temp?.toLocaleString(store.locale, { maximumFractionDigits: 1, minimumFractionDigits: 1 }) + '°)' // TODO Fahrenheit
+	}
 
 	$effect( () => {
+		timerEndsV1 = new SvelteDate(store.time.valueOf() + overrideV1*1000);
 		timerEndsV2 = new SvelteDate(getTimerEpoch(overrideEntriesV2));
 	});
-	
+
 	$effect( () => {
 		if (windowHeight && modalViewport) { /* trigger on windowHeight change */
 			limitHeight = false;
@@ -201,7 +211,7 @@
 					<div>
 						<p class="pl-2 text-lg text-left truncate {controlView.statusColor}">{$_(controlView?.statusName)}</p>
 					</div>
-					<div class="relative flex items-center justify-end ">
+					<div class="relative flex items-center justify-end">
 						{#if isAutomatic}
 							<LbIcon class="fill-surface-50 mr-2" name={"/icons/svg/automatic.svg"} width="24" height="24"/>
 						{/if}
@@ -219,9 +229,11 @@
 						{/if}
 					</div>
 				</div>
-				<div>
+				<div class="flex flex-col items-center justify-center">
+					<div class="text-lg dark:text-surface-300 text-surface-700">Actual: {tempFormat(tempActual)}</div>
 					<LbTempSlider min={10} max={30} step={0.5} target={tempTarget} manual={!isAutomatic} actual={tempActual} onValueChangeEnd={(e: any) => {updatePosition(e.value)}}/>
-				</div>
+					<div class="text-lg dark:text-primary-500 text-primary-700">Target: {tempFormat(tempTarget)}</div>
+					</div>
 			</div>
 			<div class="w-full dark:bg-surface-950 bg-surface-50 rounded-lg border border-white/15 hover:border-white/50"
 						onclick={(e) => { e.stopPropagation(); e.preventDefault(); calendarView.openModal=true;}}>
@@ -240,15 +252,16 @@
 		{/if} 
 		{#if selectedTab==1}
 			<div class="container mt-2 overflow-y-auto">
-				{#if controlView.list}
-					{#each controlView.list as listItem, index}
-						<button type="button" class="w-full mt-2 btn btn-lg {(index==selectedItem) ? 'dark:bg-surface-800 bg-surface-200' : 'dark:bg-surface-950 bg-surface-50' }
-									 shadow-sm rounded-lg border border-white/15 hover:border-white/50" 
-									onclick={(e) => { e.stopPropagation(); e.preventDefault(); setTempPresent(listItem.id)}}>
-							<span class="text-lg">{$_(listItem.name)}</span>
-						</button>
-					{/each}
-				{/if}
+				{#each temperatureList as listItem, index}
+					<button type="button" class="w-full mt-2 btn btn-lg {(index==selectedItem) ? 'dark:bg-surface-800 bg-surface-200' : 'dark:bg-surface-950 bg-surface-50' }
+								 shadow-sm rounded-lg border border-white/15 hover:border-white/50" 
+								onclick={(e) => { e.stopPropagation(); e.preventDefault(); setTempPresent(listItem.id)}}>
+						<div class="flex flex-row gap-2 items-center jusify-center">
+							<p class="text-lg dark:text-surface-50 text-surface-950">{$_(listItem.name)}</p>
+							<p class="text-lg dark:text-surface-300 text-surface-700">{getTemperature(listItem.value)}</p>
+						</div>
+					</button>
+				{/each}
 				<button class="w-full m-0 mt-4 flex min-h-[50px] items-center justify-start rounded-lg border border-white/15 hover:border-white/50
 								dark:bg-surface-950 bg-surface-50 px-2 py-2"
 								onclick={() => {dateTimeView.openModal=true}}>
@@ -279,4 +292,4 @@
 
 <LbDateTimePickerModal date={date} bind:view={dateTimeView} onValueChange={(e:any)=>{ updateTimer(e)}}/>
 <Toaster {toaster}></Toaster>
-<LbCalendarModal bind:view={calendarView} {mode} {dayModes} {entries} {overrideDate}/>
+<LbCalendarModal bind:view={calendarView} {mode} {dayModes} {entries} {temperatureList}/>
