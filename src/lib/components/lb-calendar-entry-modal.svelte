@@ -13,16 +13,16 @@
 	import { publishTopic } from '$lib/communication/mqttclient';
 	import { store } from '$lib/stores/store.svelte';
 
-	let { view = $bindable(), entries, selectedEntry, dayModes } = $props();
+	let { view = $bindable(), entries, selectedEntry, dayModes, temperatureList = [] } = $props();
 
 	let isAnalog = Boolean(view.control.details.analog);
 	let opModes = $derived(store.structure.operatingModes);
-	
 	let isStartTime = $state(false);
 	let dateTime = $state();
 	let updatedEntries = $derived(entries.entry) as Entry[];
 	let startTime = $derived(selectedEntry.from); // TODO fix notation
 	let endTime = $derived(selectedEntry.to);
+	let value = $derived(selectedEntry.value)
 	let isFullDay = $derived((startTime == '0:00' || startTime == '00:00') && endTime =='24:00'); // TODO startTime notation
 	let needActivate = $derived(Number(selectedEntry.needActivate) == 1);
 	let sameEntries = $derived( updatedEntries && selectedEntry ? 
@@ -36,6 +36,11 @@
 
 	function getDayModes() {
 		return Array.from(modes, (x) => opModes[x]).join(', ');
+	}
+
+	function getTemperature() {
+		let entry = temperatureList.find( item => item.id == value);
+		return entry ? (entry.name + ' (' + entry.value + '°)') : '';
 	}
 
 	function updateTime(e: any) {
@@ -64,24 +69,49 @@
 		openModal: false
 	});
 
-	let popupView = $state({
+	let itemDeleteView = $state({
 		label: '',
 		openModal: false,
 		cancel: () => {},
 		ok: () => {}
 	});
 
+	let temperatureView = $state({
+		label: $_('Select temperature'),
+		openModal: false,
+		buttons: [],
+		cancel: () => {},
+		ok: (e: any) => {}
+	});
+
+	/*
+	let temperatureSelectViewButtons = $derived([
+		{
+			name: language['nl'],
+			selected: true
+		},
+		{
+			name: language['en'],
+			selected: language[localeSettings] == language.en
+		},
+		{
+			name: language['de'],
+			selected: language[localeSettings] == language.de
+		}
+	]);
+*/
+
 	function openDeleteView() {
-		popupView.label = (modes.length > 1) ? ($_('Delete all entries') + '?') : ($_('Delete entry') + '?');
-		popupView.ok = () => {deleteEntries()};
-		popupView.openModal = true;
+		itemDeleteView.label = (modes.length > 1) ? ($_('Delete all entries') + '?') : ($_('Delete entry') + '?');
+		itemDeleteView.ok = () => {deleteEntries()};
+		itemDeleteView.openModal = true;
 	}
 
 	function openTimeCheckView() {
-		popupView.label = $_('End time should be later than start time');
-		popupView.cancel = () => {popupView.openModal = false};
-		popupView.ok = () => {popupView.openModal = false};
-		popupView.openModal = true;
+		itemDeleteView.label = $_('End time should be later than start time');
+		itemDeleteView.cancel = () => {itemDeleteView.openModal = false};
+		itemDeleteView.ok = () => {itemDeleteView.openModal = false};
+		itemDeleteView.openModal = true;
 	}
 
 	function setStartTime() {
@@ -114,7 +144,7 @@
 		publishTopic(view.control.uuidAction, cmd);
 		view.openModal = false;
 	}
-	
+
 	function updateEntries() {
 		if (!timeValid) {
 			openTimeCheckView();
@@ -191,7 +221,6 @@
 		mergedEntries.forEach( m => m.latest = false);  // reset priority flag
 		return mergedEntries;
 	}
-
 </script>
 
 <Modal
@@ -226,6 +255,15 @@
 						<p class="text-right text-xs max-w-55 text-wrap truncate line-clamp-2">{getDayModes()}</p>
 					</div>
 				</button>
+				{#if view.isIRC}
+				<button class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
+								onclick={(e) => { e.stopPropagation(); temperatureView.openModal=true;}}>
+					<div class="flex w-full items-center justify-between">
+						<h1 class="truncate text-lg">{$_("Temperature")}</h1>
+						<p class="text-right text-base max-w-55 text-wrap truncate line-clamp-2">{getTemperature()}</p>
+					</div>
+				</button>
+				{/if}
 				<button class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
 								onclick={(e) => { e.stopPropagation()}}>
 					<div class="flex w-full items-center justify-between">
@@ -252,6 +290,7 @@
 					</button>
 				</div>
 				{/if}
+				{#if !view.isIRC}
 				<button class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
 								onclick={(e) => { e.stopPropagation()}}>
 					<div class="flex w-full items-center justify-between">
@@ -260,6 +299,7 @@
 										controlInactive="preset-filled-surface-300-700" thumbInactive="bg-white" checked={needActivate} onCheckedChange={(e) => needActivate = e.checked} />
 					</div>
 				</button>
+				{/if}
 				<div class="flex grid {view.enableDelete ? 'grid-cols-5' : 'grid-cols-4'} gap-2 mt-2">
 					{#if view.enableDelete}
 					<button class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
@@ -284,4 +324,4 @@
 </Modal>
 <LbDayModePickerModal bind:view={dayModeView} {modes} {dayModes} onValueChange={(e:any)=>{ updateDayModes(e)}}/>
 <LbDateTimePickerModal date={dateTime} bind:view={dateTimeView} onValueChange={(e:any)=>{ updateTime(e)}}/>
-<LbGeneralModal bind:view={popupView}/>
+<LbGeneralModal bind:view={itemDeleteView}/>

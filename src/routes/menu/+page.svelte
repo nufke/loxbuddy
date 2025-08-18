@@ -2,7 +2,7 @@
 	import { Switch } from '@skeletonlabs/skeleton-svelte';
 	import { Tabs } from '@skeletonlabs/skeleton-svelte';
   import { Modal } from '@skeletonlabs/skeleton-svelte';
-	import type { Room, Category } from '$lib/types/models';
+	import type { Room, Category, Button } from '$lib/types/models';
 	import { _, locale } from 'svelte-i18n';
 	import { store } from '$lib/stores/store.svelte';
   import { ArrowLeft, X } from '@lucide/svelte';
@@ -37,11 +37,6 @@
 		localStorage.setItem('locale', store.locale);
 		locale.set(store.locale); // reset svelte-i18n
 		console.log('locale set to', store.locale);
-	}
-
-	type Button = {
-		name: string;
-		selected: boolean;
 	}
 
 	type LanguageSelectView = {

@@ -13,15 +13,24 @@
 	const notation = (num: number) => String(num).padStart(2, '0') + ':00'
 	const hours = [...Array(24).keys(), 0];
 
+	// these variables should not be reative, as we keep their initial state
+	let initialEntries: Entry[] = [];
+	let length = 0;
+	let initialModes: number[] = [];
+
+	let modeEntries: number[] = $derived(entries.entry.map( (m: Entry) => m.mode));
+	let modes = $derived(modeEntries.filter((mode, idx) => modeEntries.indexOf(mode) == idx));
 	let opModes = $derived(store.structure.operatingModes);
-	let modeEntries: number[] = $derived(entries ? entries.entry.map( (m: Entry) => m.mode) : []);
-	let modes = $derived(modeEntries.filter((mode, idx) => modeEntries.indexOf(mode) == idx)); // remove duplicates
-	let length = $derived(modes.length * 156 + 60);
+
 	let selectedEntry = $state();
 
-	function getName(mode: string) {
-		return opModes[Number(mode)];
-	}
+	$effect( () => {
+		if (entries && initialEntries.length < entries.entry.length) {
+			initialEntries = entries.entry;
+			initialModes = modes;
+			length = (initialEntries.length-1) * 156 + 60;
+		}
+	});
 
 	function getDayTimerColor(needActivate: string) {
 		return needActivate == '0' ? 'dark:fill-primary-500 fill-primary-700' : 'dark:fill-tertiary-500 fill-tertiary-700'
@@ -40,7 +49,7 @@
 		return fillColor;
 	}
 
-	function getTextColor(type: string) {
+	function getTextColor() {
 		return 'dark:fill-surface-950 fill-surface-50';
 	}
 
@@ -84,8 +93,14 @@
 		calendarEntryView.openModal = true;
 	}
 
+	function close() {
+		initialEntries = [];
+		view.openModal = false;
+	}
+
 	let calendarEntryView = $state({
 		control: view.control,
+		isIRC: view.isIRC,
 		label: '',
 		enableDelete: true,
 		openModal: false
@@ -98,7 +113,7 @@
 	transitionsBackdropOut = {fade200}
 	transitionsPositionerIn = {fade200}
 	transitionsPositionerOut = {fade200}
-	onOpenChange={()=>{view.openModal = false}}
+	onOpenChange={close}
 	triggerBase=""
 	contentBase="container mx-auto max-w-full w-full overflow-auto h-full"
 	positionerPadding="p-2"
@@ -110,7 +125,7 @@
 		<header class="fixed w-full top-0 left-0 preset-filled-surface-100-900 z-1 shadow-md">
 			<div class="grid grid-cols-2 text-center items-center m-auto h-[60px]">
 				<div class="flex flex-row text-center items-center gap-3">
-					<button class="btn-icon w-auto ml-4 mr-0 text-left" onclick={() => {view.openModal = false}}>
+					<button class="btn-icon w-auto ml-4 mr-0 text-left" onclick={close}>
 						<ArrowLeft/>
 					</button>
 					<p class="text-lg">{$_("Calendar")}</p>
@@ -124,7 +139,6 @@
 		</header>
 		<div class="mt-[36px]">
 			<div class="flex flex-row">
-				{#if entries.entry && entries.entry.length > 0}
 				<div>
 					<svg width="65" height="1050">
 						{#each hours as hour,j}
@@ -135,8 +149,8 @@
 				<div class="overflow-x-auto">
 					<svg width={length-80} height="1050">
 						<rect class="dark:fill-surface-900 fill-surface-100" x={0+getModeIndex(mode)*156} y="55" width="150" height="960" fill="currentColor"></rect>
-						{#each entries?.entry as entry,i}
-							<text class="dark:fill-surface-50 fill-surface-950" font-size="15px" text-anchor="middle" x={75+i*156} y="40">{getName(entry.mode)}</text>
+						{#each initialModes as mode,i}
+							<text class="dark:fill-surface-50 fill-surface-950" font-size="15px" text-anchor="middle" x={75+i*156} y="40">{opModes[mode]}</text>
 						{/each}
 						{#each hours as hour,j}
 							<path class="stroke-surface-500" stroke-width="1" stroke-dasharray="150 6" d="m 0 {55+j*40} H {length}"></path>
@@ -153,18 +167,17 @@
 									<rect class={getDayTimerColor(entry.needActivate)} x={0+getModeIndex(entry.mode)*156} y={55+getTime(entry.from)*40} width="150" height={(getTime(entry.to)-getTime(entry.from))*40} 
 											rx="6"></rect>
 								{/if}
-								<text class={getTextColor(entry.type)} x={10+getModeIndex(entry.mode)*156} y={75+getTime(entry.from)*40} font-size="14">{showTime(entry)}</text>
+								<text class={getTextColor()} x={10+getModeIndex(entry.mode)*156} y={75+getTime(entry.from)*40} font-size="14">{showTime(entry)}</text>
 								{#if view.isIRC}
-				 					<text class={getTextColor(entry.type)} x={10+getModeIndex(entry.mode)*156} y={95+getTime(entry.from)*40} font-size="14">{getTemperature(entry)}</text>
+				 					<text class={getTextColor()} x={10+getModeIndex(entry.mode)*156} y={95+getTime(entry.from)*40} font-size="14">{getTemperature(entry)}</text>
 								{/if}
 							</g>
 						{/each}
 					</svg>
 				</div>
-				{/if}
 			</div>
 		</div>
 	{/snippet}
 </Modal>
 
-<LbCalendarEntryModal bind:view={calendarEntryView} {entries} {selectedEntry} {dayModes}/>
+<LbCalendarEntryModal bind:view={calendarEntryView} {entries} {selectedEntry} {dayModes} {temperatureList}/>

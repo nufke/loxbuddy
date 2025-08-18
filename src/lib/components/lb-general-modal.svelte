@@ -2,11 +2,12 @@
 	import { Modal } from '@skeletonlabs/skeleton-svelte';
 	import { _ } from 'svelte-i18n';
 	import { fade200 } from '$lib/helpers/transition';
+	import type { Button } from '$lib/types/models';
 
 	let { view = $bindable() } = $props();
 
 	let returnObj: any; // Modal can return any object
-	let selectedButton: any = $derived(view.buttons.map(b => b.selected));
+	let selectedButton: any = $derived(view.buttons.map( (b: Button) => b.selected));
 
 	function buttonSelect(i: number) {
 		selectedButton = {};

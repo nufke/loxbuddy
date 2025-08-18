@@ -612,3 +612,8 @@ export type WindowListItem = {
 	state: number;
 	prio: number;
 }
+
+export type Button = {
+	name: string;
+	selected: boolean;
+}
