@@ -2,7 +2,7 @@
 	import { Modal } from '@skeletonlabs/skeleton-svelte';
 	import { Toaster, createToaster } from '@skeletonlabs/skeleton-svelte';
 	import { SvelteDate } from 'svelte/reactivity';
-	import type { ControlView, ListItem } from '$lib/types/models';
+	import type { Control, ControlView, ListItem } from '$lib/types/models';
 	import { store } from '$lib/stores/store.svelte';	
 	import { X, Timer, Leaf, Flame, List } from '@lucide/svelte';
 	import { _ } from 'svelte-i18n';
@@ -94,7 +94,14 @@
 		openModal: false
 	});
 
-	let calendarView = $state({
+	type CalendarView = {
+		control: Control;
+		subControl?: Control;
+		isIRC: boolean;
+		openModal: boolean;
+	}
+
+	let calendarView: CalendarView = $state({
 		control: controlView.control,
 		isIRC: true,
 		openModal: false
@@ -158,6 +165,11 @@
     setTimeout(() => {
       selectedTab = 0;
     }, 500);
+	}
+
+	function openCalendarView() {
+		calendarView.subControl = selectedSubControl;
+		calendarView.openModal=true;
 	}
 
 	function getTemperature(temp: number | undefined){
@@ -236,7 +248,7 @@
 					</div>
 			</div>
 			<div class="w-full dark:bg-surface-950 bg-surface-50 rounded-lg border border-white/15 hover:border-white/50"
-						onclick={(e) => { e.stopPropagation(); e.preventDefault(); calendarView.openModal=true;}}>
+						onclick={(e) => { e.stopPropagation(); e.preventDefault(); openCalendarView();}}>
 				<LbTimeGrid {mode} {entries} {overrideDate} {override}/>
 				<h2 class="m-2 text-md text-center dark:text-surface-50 text-surface-950">{dayModes[mode]}</h2>
 			</div>

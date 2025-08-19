@@ -2,7 +2,7 @@
 	import { Switch } from '@skeletonlabs/skeleton-svelte';
 	import { Tabs } from '@skeletonlabs/skeleton-svelte';
   import { Modal } from '@skeletonlabs/skeleton-svelte';
-	import type { Room, Category, Button } from '$lib/types/models';
+	import type { Room, Category, Button, GeneralView } from '$lib/types/models';
 	import { _, locale } from 'svelte-i18n';
 	import { store } from '$lib/stores/store.svelte';
   import { ArrowLeft, X } from '@lucide/svelte';
@@ -39,16 +39,8 @@
 		console.log('locale set to', store.locale);
 	}
 
-	type LanguageSelectView = {
-		label: string;
-		openModal: boolean;
-		buttons: Button[]
-		cancel: any;
-		ok: any;
-	}
-
-	let languageSelectView: LanguageSelectView = $state({
-		label: $_('Select language'),
+	let languageSelectView: GeneralView = $state({
+		title: $_('Select language'),
 		openModal: false,
 		buttons: [],
 		cancel: () => {},

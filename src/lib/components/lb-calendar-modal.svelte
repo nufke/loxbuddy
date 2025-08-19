@@ -3,7 +3,7 @@
 	import { fade200 } from '$lib/helpers/transition';
 	import { utils } from '$lib/helpers/utils';
 	import { Plus, ArrowLeft } from '@lucide/svelte';
-	import type { Entry } from '$lib/types/models';
+	import type { Control, Entry } from '$lib/types/models';
 	import LbCalendarEntryModal from '$lib/components/lb-calendar-entry-modal.svelte';
 	import { _ } from 'svelte-i18n';
 	import { store } from '$lib/stores/store.svelte';
@@ -28,7 +28,7 @@
 		if (entries && initialEntries.length < entries.entry.length) {
 			initialEntries = entries.entry;
 			initialModes = modes;
-			length = (initialEntries.length-1) * 156 + 60;
+			length = initialEntries.length * 156 + 60;
 		}
 	});
 
@@ -89,6 +89,8 @@
 	function updateEntry(entry: Entry) {
 		selectedEntry = entry;
 		calendarEntryView.label = $_('Update switching times');
+		calendarEntryView.control = view.control;
+		calendarEntryView.subControl = view.subControl;
 		calendarEntryView.enableDelete = true;
 		calendarEntryView.openModal = true;
 	}
@@ -98,8 +100,18 @@
 		view.openModal = false;
 	}
 
-	let calendarEntryView = $state({
+	type CalendarEntryView = {
+		control: Control;
+		subControl: Control;
+		isIRC: boolean;
+		label: string;
+		enableDelete: boolean;
+		openModal: boolean;
+	}
+
+	let calendarEntryView: CalendarEntryView = $state({
 		control: view.control,
+		subControl: view.subControl,
 		isIRC: view.isIRC,
 		label: '',
 		enableDelete: true,

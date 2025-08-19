@@ -24,7 +24,6 @@
 	*/
 
 	$effect( () => {
-		console.log('type', type);
 		switch (type) {
 			case 1:
 			case 4: buttons[0].iconName = '/icons/svg/arrow-left-to-line-close.svg';

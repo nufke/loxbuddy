@@ -617,3 +617,11 @@ export type Button = {
 	name: string;
 	selected: boolean;
 }
+
+export type GeneralView = {
+	title: string;
+	openModal: boolean
+	buttons: Button[];
+	cancel: any;
+	ok: any;
+}

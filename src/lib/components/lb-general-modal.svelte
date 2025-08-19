@@ -25,14 +25,17 @@
 	onOpenChange={()=>{}}
 	triggerBase="btn bg-surface-600"
 	contentBase="card bg-surface-100-900 p-4 shadow-sm rounded-lg border border-white/5 hover:border-white/10
-								md:max-w-9/10 md:max-h-9/10 w-[320px]"
+								md:max-w-9/10 md:max-h-9/10 w-[350px]"
 	backdropClasses="backdrop-blur-sm"
 	backdropBackground="">
 	{#snippet content()}
 	<!-- TODO better method to create multiple modal overlays with backdrop?-->
 	<div class="fixed w-full h-full top-0 left-0 right-0 bottom-0 -z-10 bg-surface-50/75 dark:bg-surface-950/75" onclick={()=>{view.openModal=false}}></div> 
+		<h2 class="flex w-full h4 items-center justify-center mb-2">{view.title}</h2>
 		<div class="flex flex-col items-center justify-center">
-			<p class="m-2 text-lg text-center">{view.label}</p>
+			{#if view.label}
+				<p class="m-2 text-lg text-center">{view.label}</p>
+			{/if}
 			<div class="w-full mt-2 mb-2 grid gap-2">
 					{#if view.buttons && view.buttons.length}
 					{#each view.buttons as button, i}

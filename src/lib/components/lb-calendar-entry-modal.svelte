@@ -7,7 +7,7 @@
 	import LbDateTimePickerModal from '$lib/components/lb-date-time-picker-modal.svelte';
 	import LbDayModePickerModal from '$lib/components/lb-day-mode-picker-modal.svelte';
 	import LbGeneralModal from '$lib/components/lb-general-modal.svelte';
-	import type { Entry } from '$lib/types/models';
+	import type { Entry, Button, GeneralView } from '$lib/types/models';
 	import { _ } from 'svelte-i18n';
 	import { slide } from 'svelte/transition'
 	import { publishTopic } from '$lib/communication/mqttclient';
@@ -76,30 +76,27 @@
 		ok: () => {}
 	});
 
-	let temperatureView = $state({
-		label: $_('Select temperature'),
+	let temperatureView: GeneralView = $state({
+		title: $_('Select temperature'),
 		openModal: false,
 		buttons: [],
 		cancel: () => {},
 		ok: (e: any) => {}
 	});
 
-	/*
-	let temperatureSelectViewButtons = $derived([
-		{
-			name: language['nl'],
-			selected: true
-		},
-		{
-			name: language['en'],
-			selected: language[localeSettings] == language.en
-		},
-		{
-			name: language['de'],
-			selected: language[localeSettings] == language.de
-		}
-	]);
-*/
+	function openTemperatureView() {
+		let buttons: Button[] = [];
+		temperatureList.forEach( item => {
+			buttons.push({
+				name: item.name + ' (' + item.value + '°)',
+				selected: item.id == Number(selectedEntry.mode)
+			});
+		});
+		temperatureView.cancel = () => {};
+		temperatureView.ok = (e: any) => {value = e};
+		temperatureView.buttons = buttons;
+		temperatureView.openModal = true;
+	}
 
 	function openDeleteView() {
 		itemDeleteView.label = (modes.length > 1) ? ($_('Delete all entries') + '?') : ($_('Delete entry') + '?');
@@ -140,8 +137,9 @@
 			utils.hours2min(entry.to) + ';' +
 			entry.needActivate + ';' + entry.value
 		});
-		//console.log('cmd', cmd);
-		publishTopic(view.control.uuidAction, cmd);
+
+		let control = view.isIRC ? view.subControl.uuidAction : view.control.uuidAction; // for IRC we need to use the subControl
+		publishTopic(control, cmd);
 		view.openModal = false;
 	}
 
@@ -154,7 +152,7 @@
 		const from = isFullDay ? '00:00' : startTime;
 		const to = isFullDay ? '24:00' : endTime;
 		const needsActivation = needActivate ? '1' : '0';
-		const valueOfEntry = (isAnalog ? '1' : '0'); // TODO set analog value, always 0 for digital daytimers
+		const valueOfEntry = ((isAnalog || view.isIRC) ? value : '0'); // TODO set analog value, always 0 for digital daytimers
 		modes.forEach( (mode) => {
 			changedEntries.push({ 
 				mode: mode, 
@@ -257,7 +255,7 @@
 				</button>
 				{#if view.isIRC}
 				<button class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
-								onclick={(e) => { e.stopPropagation(); temperatureView.openModal=true;}}>
+								onclick={(e) => { e.stopPropagation(); openTemperatureView();}}>
 					<div class="flex w-full items-center justify-between">
 						<h1 class="truncate text-lg">{$_("Temperature")}</h1>
 						<p class="text-right text-base max-w-55 text-wrap truncate line-clamp-2">{getTemperature()}</p>
@@ -325,3 +323,4 @@
 <LbDayModePickerModal bind:view={dayModeView} {modes} {dayModes} onValueChange={(e:any)=>{ updateDayModes(e)}}/>
 <LbDateTimePickerModal date={dateTime} bind:view={dateTimeView} onValueChange={(e:any)=>{ updateTime(e)}}/>
 <LbGeneralModal bind:view={itemDeleteView}/>
+<LbGeneralModal bind:view={temperatureView}/>
