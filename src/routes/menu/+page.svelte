@@ -49,14 +49,17 @@
 
 	let languageSelectViewButtons = $derived([
 		{
+			id: 0,
 			name: language['nl'],
 			selected: language[localeSettings] == language.nl
 		},
 		{
+			id: 1,
 			name: language['en'],
 			selected: language[localeSettings] == language.en
 		},
 		{
+			id: 2,
 			name: language['de'],
 			selected: language[localeSettings] == language.de
 		}

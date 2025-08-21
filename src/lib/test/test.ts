@@ -62,11 +62,11 @@ class Test {
 	}
 
 	exec(uuid: string, topic: string, msg: string) {
-		let control = store.controls[uuid];
-		if (!control) {
-			let subControl = uuid.split('/');
-			if (subControl && subControl[0] && store.controls[subControl[0]]) {
-				control = store.controls[subControl[0]].subControls[uuid];
+		let control: Control = store.controls[uuid];
+		if (!control) { // if no control found, check if the uuid is a subcontrol
+			let parentControl = store.controlList.find( control => control.subControls && control.subControls[uuid])
+			if (parentControl) {
+				control = parentControl.subControls[uuid];
 			}
 		}
 		if (control) {
@@ -93,6 +93,8 @@ class Test {
 			case 'AlarmClock': this.alarmClock(control, msg); break;
 			case 'IRoomController': this.ircv1(control, msg); break;
 			case 'Daytimer': this.daytimer(control, msg); break;
+			case 'IRCDaytimer': this.daytimer(control, msg); break; /* reuse DayTimer */
+			case 'IRCV2Daytimer': this.daytimer(control, msg); break; /* reuse DayTimer */
 			case 'Pushbutton': break; /* no action */
 			default: console.error('No TEST for Control', control.name, 'of type', control.type);
 		}

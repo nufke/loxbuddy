@@ -21,9 +21,9 @@
 	let dateTime = $state();
 	let updatedEntries = $derived(entries.entry) as Entry[];
 	let startTime = $derived(selectedEntry.from); // TODO fix notation
-	let endTime = $derived(selectedEntry.to);
+	let endTime = $derived(selectedEntry.to == '0:00' || selectedEntry.to == '00:00' ? '24:00' : selectedEntry.to );
 	let value = $derived(selectedEntry.value)
-	let isFullDay = $derived((startTime == '0:00' || startTime == '00:00') && endTime =='24:00'); // TODO startTime notation
+	let isFullDay = $derived((startTime == '0:00' || startTime == '00:00') && endTime == '24:00'); // TODO startTime notation
 	let needActivate = $derived(Number(selectedEntry.needActivate) == 1);
 	let sameEntries = $derived( updatedEntries && selectedEntry ? 
 			entries.entry.filter( (entry: Entry) => entry.from == selectedEntry.from &&
@@ -81,17 +81,18 @@
 		openModal: false,
 		buttons: [],
 		cancel: () => {},
-		ok: (e: any) => {}
+		ok: () => {}
 	});
 
 	function openTemperatureView() {
 		let buttons: Button[] = [];
-		temperatureList.forEach( item => {
+		for (let i = 1; i < temperatureList.length; i++) { // we skip i=0, eco mode
 			buttons.push({
-				name: item.name + ' (' + item.value + '°)',
-				selected: item.id == Number(selectedEntry.mode)
+				id: temperatureList[i].id,
+				name: temperatureList[i].name + ' (' + temperatureList[i].value + '°)',
+				selected: temperatureList[i].id == Number(value)
 			});
-		});
+		}
 		temperatureView.cancel = () => {};
 		temperatureView.ok = (e: any) => {value = e};
 		temperatureView.buttons = buttons;
@@ -227,7 +228,7 @@
 	transitionsBackdropOut = {fade200}
 	transitionsPositionerIn = {fade200}
 	transitionsPositionerOut = {fade200}
-	onOpenChange={()=>{view.openModal = false}}
+	onOpenChange={()=>{}}
 	triggerBase=""
 	contentBase="card bg-surface-100-900 p-4 shadow-sm rounded-lg border border-white/5 hover:border-white/10
 								md:max-w-9/10 md:max-h-9/10 w-[450px]"

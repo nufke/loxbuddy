@@ -7,12 +7,12 @@
 	let { view = $bindable() } = $props();
 
 	let returnObj: any; // Modal can return any object
-	let selectedButton: any = $derived(view.buttons.map( (b: Button) => b.selected));
+	let selectedButton: any = $derived(view.buttons ? view.buttons.find( (b: Button) => b.selected): null);
 
-	function buttonSelect(i: number) {
+	function buttonSelect(id: number) {
 		selectedButton = {};
-		selectedButton[i] = true;
-		returnObj = i; // store selected button
+		selectedButton.id = id;
+		returnObj = id; // store selected button
 	}
 </script>
 
@@ -38,10 +38,10 @@
 			{/if}
 			<div class="w-full mt-2 mb-2 grid gap-2">
 					{#if view.buttons && view.buttons.length}
-					{#each view.buttons as button, i}
-					<button type="button" class="w-full h-[48px] btn btn-lg { selectedButton[i] ? 'dark:bg-surface-800 bg-surface-200' : 'dark:bg-surface-950 bg-surface-50' }
+					{#each view.buttons as button}
+					<button type="button" class="w-full h-[48px] btn btn-lg { selectedButton.id == button.id ? 'dark:bg-surface-800 bg-surface-200' : 'dark:bg-surface-950 bg-surface-50' }
 								 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
-									onclick={(e) => { e.stopPropagation(); e.preventDefault(); buttonSelect(i)}}>
+									onclick={(e) => { e.stopPropagation(); e.preventDefault(); buttonSelect(button.id)}}>
 								<span class="text-lg">{$_(button.name)}</span>
 					</button>
 					{/each}

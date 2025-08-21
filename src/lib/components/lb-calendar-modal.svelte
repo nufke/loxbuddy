@@ -62,8 +62,8 @@
 		return (idx != -1) ? temperatureList[idx].value + '°' : '';
 	}
 
-	function getModeIndex(mode: string) {
-		return modes.findIndex(item => item == Number(mode));
+	function getModeIndex(mode: string) { // check index using the initial modes, as entries could have been removed
+		return initialModes.findIndex(item => item == Number(mode));
 	}
 
 	// although we calculate with 24:00 for the graphics, we use 00:00 notation to display time 
@@ -74,12 +74,13 @@
 	}
 
 	function addEntry() {
+		let isCooling = view.subControl.name == 'Cooling' ? 2 : 1;
 		selectedEntry = {
 			mode: String(mode),
 			from: utils.epoch2TimeStrNextHour(Date.now()/1000),
 			to: utils.epoch2TimeStrNextHour((Date.now()/1000)+3600),
 			needActivate: '0',
-			value: '0',
+			value: view.isIRC && temperatureList && temperatureList[isCooling].id ? temperatureList[isCooling].id : '0',
 		}
 		calendarEntryView.label = $_('Add switching times');
 		calendarEntryView.enableDelete = false;
@@ -88,7 +89,7 @@
 
 	function updateEntry(entry: Entry) {
 		selectedEntry = entry;
-		calendarEntryView.label = $_('Update switching times');
+		calendarEntryView.label = view.isIRC ? $_('Temperature settings') : $_('Switching times');
 		calendarEntryView.control = view.control;
 		calendarEntryView.subControl = view.subControl;
 		calendarEntryView.enableDelete = true;

@@ -44,7 +44,7 @@
 		hideEntries = !hideEntries;
 	}
 
-	async function cancel() {
+	function cancel() {
 		view.openModal = false;
 	}
 
@@ -63,7 +63,7 @@
 	transitionsBackdropOut={fade200}
 	transitionsPositionerIn={fade200}
 	transitionsPositionerOut={fade200}
-	onOpenChange={cancel}
+	onOpenChange={()=>{}}
 	triggerBase="btn bg-surface-600"
 	contentBase="card bg-surface-100-900 p-4 shadow-sm rounded-lg border border-white/5 hover:border-white/10
 							md:max-w-9/10 md:max-h-9/10 w-[340px] { limitHeight ? 'h-full': '' }"
@@ -105,7 +105,7 @@
 				</button>
 				<button type="button"
 					class="btn btn-lg dark:bg-surface-950 bg-surface-50 w-full rounded-lg border border-white/15 shadow-sm hover:border-white/50"
-					onclick={() => { view.openModal = false; onValueChange({modes: newDayModes});}}>
+					onclick={() => { onValueChange({modes: newDayModes}); cancel();}}>
 					<span class="text-lg">{$_('OK')}</span>
 				</button>
 			</div>

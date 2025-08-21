@@ -33,22 +33,24 @@
 
 	function getTemperatureList(isHeatPeriod: boolean, isManual: boolean) {
 		let Idlist: ListItem[] = [
-			{ id: 0, name: 'Economy', value: 0, isAbsolute: false, correction: 1, visible: true },
-			{ id: 1, name: 'Comfort heating', value: 0, isAbsolute: false, correction: 1, visible: true },
-			{ id: 2, name: 'Comfort cooling', value: 0, isAbsolute: false, correction: 1, visible: true },
-			{ id: 3, name: 'Empty house', value: 0, isAbsolute: false, correction: 1, visible: true },
-			{ id: 4, name: 'Heat protection', value: 0, isAbsolute: false, correction: 1, visible: true },
-			{ id: 5, name: 'Increased heat', value: 0, isAbsolute: false, correction: 1, visible: true },
-			{ id: 6, name: 'Party', value: 0, isAbsolute: false, correction: -1, visible: true },
-			{ id: 7, name: 'Manual', value: 0, isAbsolute: false, correction: -1, visible: false }
+			{ id: 0, name: 'Economy', value: 0, isAbsolute: false, correctionHeating: -1, correctionCooling: 1,  visible: true },
+			{ id: 1, name: 'Comfort heating', value: 0, isAbsolute: false, correctionHeating: 1, correctionCooling: 1, visible: true },
+			{ id: 2, name: 'Comfort cooling', value: 0, isAbsolute: false, correctionHeating: 1, correctionCooling: 1, visible: true },
+			{ id: 3, name: 'Empty house', value: 0, isAbsolute: false, correctionHeating: 1, correctionCooling: 1, visible: true },
+			{ id: 4, name: 'Heat protection', value: 0, isAbsolute: false, correctionHeating: 1, correctionCooling: 1, visible: true },
+			{ id: 5, name: 'Increased heat', value: 0, isAbsolute: false, correctionHeating: 1, correctionCooling: 1, visible: true },
+			{ id: 6, name: 'Party', value: 0, isAbsolute: false, correctionHeating: -1, correctionCooling: -1, visible: true },
+			{ id: 7, name: 'Manual', value: 0, isAbsolute: false, correctionHeating: -1, correctionCooling: -1, visible: false }
 		];
 		Idlist.forEach( (item: ListItem, index: number) => {
 			if (index < 7) { //skip manual
 				item.isAbsolute = temperatureDetails[index].isAbsolute; // update based on control details
-				let corr = item.correction || 1;
-				item.value = item.isAbsolute ? temperatures[index] : (isHeatPeriod ? temperatures[1] + temperatures[index] * corr : temperatures[2] + temperatures[index] * corr);
+				let corr = (isHeatPeriod ? item.correctionHeating : item.correctionCooling ) || 1;
+				item.value = item.isAbsolute ? temperatures[index] : 
+										(isHeatPeriod ? temperatures[1] + temperatures[index] * corr : temperatures[2] + temperatures[index] * corr);
 			}
 		});
+
 		if (isHeatPeriod) { // Heating period, hide item 2
 			Idlist[2].visible = false;
 		} else { // Cooling period, hide item 1

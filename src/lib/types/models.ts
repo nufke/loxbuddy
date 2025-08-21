@@ -447,7 +447,8 @@ export type ListItem = {
   name: string;
   value?: number;
 	isAbsolute?: boolean; // used for temperatures
-	correction?: number; // used for absolute temperatures +/- correction 
+	correctionHeating?: number; // correction heating period 
+	correctionCooling?: number; // correction cooling period
   visible?: boolean;
 }
 
@@ -614,6 +615,7 @@ export type WindowListItem = {
 }
 
 export type Button = {
+	id: number;
 	name: string;
 	selected: boolean;
 }
