@@ -627,3 +627,12 @@ export type GeneralView = {
 	cancel: any;
 	ok: any;
 }
+
+export type CalendarView = {
+	control: Control;
+	subControl?: Control;
+	isIRC: boolean;
+	isIRCV1: boolean;
+	isCooling: boolean;
+	openModal: boolean;
+}

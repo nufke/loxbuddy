@@ -340,11 +340,14 @@ class Test {
 	}
 
 	startIRCV1Timer(control: Control, msgItems: string[]) {
+		let mode = store.getState(control.states.mode);
+		let isCooling = (mode == 2 || mode == 4 || mode == 6);
 		let time = Number(msgItems[2])*60; // Override time given in minutes
 		let overrideId = control.states.override;
 		this._daytimerOldValue = store.getState(control.states.value);
 		let ircDaytimer = Object.values(control.subControls);
-		let valueId = ircDaytimer[0].states.value; // TODO select relevant DayTimer
+		let ircDaytimerSelected = ircDaytimer.find( item => item.name == (isCooling ? 'Cooling' : 'Heating'));
+		let valueId = ircDaytimerSelected?.states.value;
 		let tempTargetId = control.states.tempTargetId;
 		clearInterval(this._ircv1timer[control.uuidAction]);
 		this._ircv1timer[control.uuidAction] = setInterval(() => {
@@ -370,6 +373,10 @@ class Test {
 			return;
 		}
 		if (msg.includes('set/')) {
+			this.setDayTimer(control, msgItems);
+			return;
+		}
+		if (msg.includes('setc/')) { // IRCV1 cooling
 			this.setDayTimer(control, msgItems);
 			return;
 		}

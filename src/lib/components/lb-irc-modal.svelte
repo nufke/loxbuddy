@@ -2,9 +2,9 @@
 	import { Modal } from '@skeletonlabs/skeleton-svelte';
 	import { Toaster, createToaster } from '@skeletonlabs/skeleton-svelte';
 	import { SvelteDate } from 'svelte/reactivity';
-	import type { Control, ControlView, ListItem } from '$lib/types/models';
+	import type { Control, ControlView, ListItem, CalendarView, Entry } from '$lib/types/models';
 	import { store } from '$lib/stores/store.svelte';	
-	import { X, Timer, Leaf, Flame, List } from '@lucide/svelte';
+	import { X, Timer, Leaf, Flame, List, CalendarClock } from '@lucide/svelte';
 	import { _ } from 'svelte-i18n';
 	import fmt from 'sprintf-js';
 	import { fade200 } from '$lib/helpers/transition';
@@ -38,8 +38,9 @@
 	/* this modal is used for V1 and V2, so we need to select the proper attributes */
 	let isV1 = controlView.control.type !== 'IRoomControllerV2'; 
 
+	let opModes = $derived(store.structure.operatingModes);
 	let temperatureList = $derived(controlView.list ? controlView.list.filter( item => item.visible == true) : []); // hide items not marked as visible 
-	let selectedItem = $derived(temperatureList.findIndex( (item: ListItem) => { return item.name === controlView.statusName }));
+	let selectedItem = $derived(temperatureList.find( (item: ListItem) => { return item.name === controlView.statusName }));
 	let selectedTab = $state(0);
 	let tempActual = $derived(Number(store.getState(controlView.control?.states.tempActual)));
 	let tempTarget = $derived(Number(store.getState(controlView.control?.states.tempTarget)));
@@ -54,7 +55,7 @@
 	let isAutomaticV1 = $derived(modeIdV1<5);
 	let isHeatingV1 = $derived(modeIdV1==1 || modeIdV1==3 || modeIdV1==5);
 	let isCoolingV1 = $derived(modeIdV1==2 || modeIdV1==4 || modeIdV1==6);
-	let isEcoV1 = $derived(selectedItem==0);
+	let isEcoV1 = $derived(selectedItem?.id == 0);
 
 	let modeV2 = $derived(Number(store.getState(controlView.control.states.currentMode)));
 	let isAutomaticV2 = $derived(Number(store.getState(controlView.control.states.operatingMode))<3);
@@ -86,7 +87,9 @@
 	let modeList = $derived(String(store.getState(selectedSubControl.states.modeList))); 
 	let mode = $derived(Number(store.getState(selectedSubControl.states.mode))); 
 	let dayModes = $derived(utils.extractDayModes(modeList));
-
+	let modeEntries: number[] = $derived(entries.entry.map( (m: Entry) => m.mode));
+	let modes = $derived(modeEntries.filter((mode, idx) => modeEntries.indexOf(mode) == idx));
+	
 	let dateTimeView = $state({
 		isDateView: true,
 		isMinuteView: false,
@@ -94,34 +97,29 @@
 		openModal: false
 	});
 
-	type CalendarView = {
-		control: Control;
-		subControl?: Control;
-		isIRC: boolean;
-		openModal: boolean;
-	}
-
 	let calendarView: CalendarView = $state({
 		control: controlView.control,
 		isIRC: true,
+		isIRCV1: isV1,
+		isCooling: false, // will be updated when modal is opened
 		openModal: false
 	});
 
-	function setTempPresent(id: number) {
-		if (!isV1 && id == 3) { /* manual mode only exists in IRCv2 */
-			setTempManual(id);
+	function setTemperature(item: ListItem) {
+		if (!isV1 && item.id == 3) { /* manual mode only exists in IRCv2 */
+			setTempManual();
 		} else {
-			setTimerOverride(id);
+			setTimerOverride(item);
 		}
 	}
 
-	function setTempManual(id: number) {
+	function setTempManual() {
 		let cmd = isCooling ? 'setComfortTemperatureCool/' : 'setComfortTemperature/';
 		cmd += tempTarget;
 	  publishTopic(controlView.control.uuidAction, cmd);
 	}
 
-	function setTimerOverride(id: number) {
+	function setTimerOverride(item: ListItem) {
 		let coeff = 1000 * 60; // round to minute
 		let overrideTimeSec = Math.round((date.getTime() - Date.now())/coeff)*coeff/1000;
     if (overrideTimeSec > 60 && controlView.control) {// TODO define minimum time of 1 minute
@@ -129,7 +127,7 @@
 			overrideTimeSec += (isV1 ? 0 : Math.round((Date.now() - utils.loxTimeRef)/1000)); // V2 starts to count from 1-1-2009
 			overrideTimeSec += (!isV1 && utils.isDST(date) ? -3600 : 0); // DST correction for V2
 			overrideTimeSec = (isV1 ? Math.round(overrideTimeSec/60) : overrideTimeSec); // V1 in minutes!!
-			cmd += String(id) + '/' + String(overrideTimeSec);
+			cmd += String(item.id) + '/' + String(overrideTimeSec);
 			publishTopic(controlView.control.uuidAction, cmd);
     } else {
 			console.error('IRC: timer period to low:', overrideTimeSec);
@@ -144,6 +142,11 @@
 	}
 
 	function updatePosition(e: any) { // TODO
+	}
+
+	function getTemperatureMode(mode: number) {
+		let t = temperatureList.find( item => item.id == mode);
+		return t ? t.name : '';
 	}
 
 	function updateTimer(e: any) {
@@ -169,6 +172,7 @@
 
 	function openCalendarView() {
 		calendarView.subControl = selectedSubControl;
+		calendarView.isCooling = isCooling;
 		calendarView.openModal=true;
 	}
 
@@ -182,7 +186,7 @@
 	});
 
 	$effect( () => {
-		if (windowHeight && modalViewport) { /* trigger on windowHeight change */
+		if (windowHeight && modalViewport && selectedTab) { /* trigger on windowHeight, available modalViewport and tab selection */
 			limitHeight = false;
 			tick().then( () => {
 				limitHeight = (windowHeight * 0.9 - modalViewport.getBoundingClientRect().bottom - 10) < 0;
@@ -206,7 +210,7 @@
 	{#snippet content()}
 	<!-- TODO better method to create multiple modal overlays with backdrop? -->
 	<div class="fixed w-full h-full top-0 left-0 right-0 bottom-0 -z-10 bg-surface-50/75 dark:bg-surface-950/75" onclick={() => {controlView.modal.action(false); resetTab();}}></div> 
-	<Info control={controlView.control}/>
+	<!--<Info control={controlView.control}/>-->
 	<header class="relative">
 		<div class="absolute top-0 right-0">
 			<button type="button" aria-label="close" class="btn-icon w-auto" onclick={() => controlView.modal.action(false)}>
@@ -264,10 +268,10 @@
 		{/if} 
 		{#if selectedTab==1}
 			<div class="container mt-2 overflow-y-auto">
-				{#each temperatureList as listItem, index}
-					<button type="button" class="w-full mt-2 btn btn-lg {(index==selectedItem) ? 'dark:bg-surface-800 bg-surface-200' : 'dark:bg-surface-950 bg-surface-50' }
+				{#each temperatureList as listItem}
+					<button type="button" class="w-full mt-2 btn btn-lg {(listItem.id == selectedItem?.id) ? 'dark:bg-surface-800 bg-surface-200' : 'dark:bg-surface-950 bg-surface-50' }
 								 shadow-sm rounded-lg border border-white/15 hover:border-white/50" 
-								onclick={(e) => { e.stopPropagation(); e.preventDefault(); setTempPresent(listItem.id)}}>
+								onclick={(e) => { e.stopPropagation(); e.preventDefault(); setTemperature(listItem)}}>
 						<div class="flex flex-row gap-2 items-center jusify-center">
 							<p class="text-lg dark:text-surface-50 text-surface-950">{$_(listItem.name)}</p>
 							<p class="text-lg dark:text-surface-300 text-surface-700">{getTemperature(listItem.value)}</p>
@@ -286,8 +290,27 @@
 				</button>
 			</div>
 		{/if}
+		{#if selectedTab==2}
+			<div class="container mt-2 overflow-y-auto">
+				{#each modes as mode}
+					<p class="ml-2 mt-1 mb-1 text-lg dark:text-surface-300 text-surface-700">{opModes[mode]}</p>
+					<div class="flex flex-col space-y-2">
+					{#each entries.entry.filter( (item: Entry) => item.mode == String(mode)) as entry}
+						<button type="button" class="w-full dark:bg-surface-950 bg-surface-50
+								 shadow-sm rounded-lg border border-white/15 hover:border-white/50 h-[65px]"
+								onclick={(e) => { e.stopPropagation(); e.preventDefault(); }}>
+								<div class="pl-3 flex flex-col justify-center text-left">
+									<p class="text-lg truncate dark:text-surface-50 text-surface-950">{getTemperatureMode(entry.value)}</p>
+									<p class="text-xs dark:text-surface-300 text-surface-700">{entry.from} - {entry.to} </p>
+								</div>
+						</button>
+					{/each}
+					</div>
+				{/each}
+			</div>
+		{/if}
 		<div class="relative w-full mt-6 mb-2">
-			<div class="grid h-full max-w-lg grid-cols-2 mx-auto">
+			<div class="grid h-full max-w-lg grid-cols-3 mx-auto">
 				<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==0 ? 'dark:text-primary-500 text-primary-700' : ''} " onclick={() => selectedTab=0}>
 					<LbIcon class={selectedTab==0 ? 'dark:fill-primary-500 fill-primary-700' : 'fill-surface-50'} name={"/icons/svg/thermostat.svg"} width="24" height="24"/>
 					<span class="mt-1 text-xs">{$_("Control")}</span>
@@ -295,6 +318,10 @@
 				<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==1 ? 'dark:text-primary-500 text-primary-700' : ''} " onclick={() => selectedTab=1}>
 					<List/>
 					<span class="mt-1 text-xs">{$_("Preset")}</span>
+				</button>
+				<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==2 ? 'dark:text-primary-500 text-primary-700' : ''} " onclick={() => selectedTab=2}>
+					<CalendarClock/>
+					<span class="mt-1 text-xs">{$_("Switching times")}</span>
 				</button>
 			</div>
 		</div>

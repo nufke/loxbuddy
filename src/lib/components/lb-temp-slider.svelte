@@ -14,8 +14,8 @@
 	let targetTempLimit = $derived(Math.max(min, Math.min(target, max)));
 	let actualTempLimit = $derived(Math.max(min, Math.min(actual, max)));
 	
-	let knobPos = $derived((targetTempLimit-min)/trackRatio + trackMin);
-	let setPos = $derived((actualTempLimit-min)/trackRatio + trackMin);
+	let knobPos = $derived(((targetTempLimit-min)/trackRatio + trackMin) || 0);
+	let setPos = $derived(((actualTempLimit-min)/trackRatio + trackMin) || 0);
 
 	function mouseMove(e: any)	{
 		if (!isDragging && !trackSelected) return;

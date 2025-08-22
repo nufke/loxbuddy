@@ -20,7 +20,18 @@
 	let tc = 'dark:fill-surface-50 fill-surface-950'; // text color
 
 	function co(t:any) {
-		return t.needActivate == '0' ? 'dark:fill-primary-500 fill-primary-700' : 'dark:fill-tertiary-500 fill-tertiary-700';
+		let fillColor = '';
+		switch(t.value) {
+			case '0': // Digital switch active (green)
+			case '1': // Comfort heating (green)
+			case '2': fillColor = 'dark:fill-primary-500 fill-primary-700'; break; // Comfort cooling (green)
+			case '3': fillColor = 'dark:fill-secondary-500 fill-secondary-700'; break; // Empty house / deep sleep (blue)
+			case '4': fillColor = 'dark:fill-warning-500 fill-warning-700'; break; // Heat protection (orange)
+			case '5': fillColor = 'dark:fill-error-500 fill-error-700'; break; // Increased heat  (red)
+			case '6': fillColor = 'dark:fill-purple-500 fill-purple-700'; break; // Party (purple)
+		}
+		if (t.needActivate == '1') fillColor = 'dark:fill-tertiary-500 fill-tertiary-700';
+		return fillColor;
 	}
 
 	// calculate width

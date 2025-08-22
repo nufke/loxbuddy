@@ -74,7 +74,7 @@
 	}
 
 	function addEntry() {
-		let isCooling = view.subControl.name == 'Cooling' ? 2 : 1;
+		let isCooling = view.isCooling ? 2 : 1;
 		selectedEntry = {
 			mode: String(mode),
 			from: utils.epoch2TimeStrNextHour(Date.now()/1000),
@@ -83,6 +83,10 @@
 			value: view.isIRC && temperatureList && temperatureList[isCooling].id ? temperatureList[isCooling].id : '0',
 		}
 		calendarEntryView.label = $_('Add switching times');
+		calendarEntryView.control = view.control;
+		calendarEntryView.subControl = view.subControl;
+		calendarEntryView.isIRC = view.isIRC;
+		calendarEntryView.isCooling = view.isCooling;
 		calendarEntryView.enableDelete = false;
 		calendarEntryView.openModal = true;
 	}
@@ -92,8 +96,17 @@
 		calendarEntryView.label = view.isIRC ? $_('Temperature settings') : $_('Switching times');
 		calendarEntryView.control = view.control;
 		calendarEntryView.subControl = view.subControl;
+		calendarEntryView.isIRC = view.isIRC;
+		calendarEntryView.isCooling = view.isCooling;
 		calendarEntryView.enableDelete = true;
 		calendarEntryView.openModal = true;
+	}
+
+	function getCoolingDayTimerInfo() {
+		if (view.isIRCV1) {
+			return ' (' + (view.isCooling ? $_("Cooling") : $_("Heating") ) + ')';
+		}
+		return '';
 	}
 
 	function close() {
@@ -105,6 +118,7 @@
 		control: Control;
 		subControl: Control;
 		isIRC: boolean;
+		isCooling: boolean;
 		label: string;
 		enableDelete: boolean;
 		openModal: boolean;
@@ -113,7 +127,8 @@
 	let calendarEntryView: CalendarEntryView = $state({
 		control: view.control,
 		subControl: view.subControl,
-		isIRC: view.isIRC,
+		isIRC: false, // updated when Modal is opened
+		isCooling: false, // updated when Modal is opened
 		label: '',
 		enableDelete: true,
 		openModal: false
@@ -141,7 +156,7 @@
 					<button class="btn-icon w-auto ml-4 mr-0 text-left" onclick={close}>
 						<ArrowLeft/>
 					</button>
-					<p class="text-lg">{$_("Calendar")}</p>
+					<p class="text-lg">{$_("Calendar")} {getCoolingDayTimerInfo()}</p>
 				</div>
 				<div class="mr-3 flex flex-row gap-3 justify-end">
 					<button type="button" aria-label="close" class="btn-icon w-auto" onclick={addEntry}>

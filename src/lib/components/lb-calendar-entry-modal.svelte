@@ -132,7 +132,7 @@
 	}
 
 	function publishEntries() {
-		let cmd = 'set/' + updatedEntries.length;
+		let cmd = (view.isCooling ? 'setc/' : 'set/') + updatedEntries.length;
 		updatedEntries.forEach( (entry: Entry) => { cmd += '/' + entry.mode + ';' +
 			utils.hours2min(entry.from) + ';' + 
 			utils.hours2min(entry.to) + ';' +
