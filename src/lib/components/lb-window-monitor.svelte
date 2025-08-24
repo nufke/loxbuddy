@@ -79,8 +79,8 @@
 				prio: Math.min(prio[0], prio[1], prio[2], prio[3], prio[4], prio[5])
 			};
 		}
-		list.sort((a, b) => a.name.localeCompare(b.name))
-			.sort((a, b) => a.roomName.localeCompare(b.roomName))
+		list.sort((a, b) => a.name.localeCompare(b.name, store.locale))
+			.sort((a, b) => a.roomName.localeCompare(b.roomName, store.locale))
 			.sort((a, b) => a.prio - b.prio);
 		return list;
 	}

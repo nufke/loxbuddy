@@ -22,7 +22,7 @@ export type Structure = {
 	msInfo: MsInfo;
 	partnerInfo: PartnerInfo;
 	globalStates: GlobalStates;
-	operatingModes: operatingModesMap;
+	operatingModes: OperatingModesMap;
 	rooms: RoomsMap;
 	cats: CategoriesMap;
 	modes: ModesMap;
@@ -55,8 +55,8 @@ export type CategoriesMap = {
 	[key: string]: Category;
 }
 
-export type operatingModesMap = {
-	[key: string]: String;
+export type OperatingModesMap = {
+	[key: string]: string;
 }
 
 export type RoomsMap = {
@@ -379,7 +379,7 @@ export type MediaServer = {
 export type SystemStatus = {
 	isLimitedUser: boolean;
 	entries: SystemStatusEntry[];
-	activeEntryUuid: String | null;
+	activeEntryUuid: string | null;
 	controlUUID: string;
 }
 
@@ -634,5 +634,15 @@ export type CalendarView = {
 	isIRC: boolean;
 	isIRCV1: boolean;
 	isCooling: boolean;
+	openModal: boolean;
+}
+
+export type CalendarEntryView = {
+	control: Control;
+	subControl: Control;
+	isIRC: boolean;
+	isCooling: boolean;
+	label: string;
+	enableDelete: boolean;
 	openModal: boolean;
 }

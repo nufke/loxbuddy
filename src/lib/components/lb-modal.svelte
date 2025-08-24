@@ -57,7 +57,7 @@
 
 	let linkedControls: Control[] = $derived(
 		store.controlList.filter((control) => controlView.links ? controlView.links.includes(control.uuidAction) : null)
-			.sort((a, b) => a.name.localeCompare(b.name)));
+			.sort((a, b) => a.name.localeCompare(b.name, store.locale)));
 
 	let controlOptions: ControlOptions = $derived({...DEFAULT_CONTROLOPTIONS, isLink: true});
 

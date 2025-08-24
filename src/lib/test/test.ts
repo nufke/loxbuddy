@@ -92,6 +92,7 @@ class Test {
 			case 'Alarm': this.alarm(control, msg); break;
 			case 'AlarmClock': this.alarmClock(control, msg); break;
 			case 'IRoomController': this.ircv1(control, msg); break;
+			case 'IRoomControllerV2': this.ircv2(control, msg); break;
 			case 'Daytimer': this.daytimer(control, msg); break;
 			case 'IRCDaytimer': this.daytimer(control, msg); break; /* reuse DayTimer */
 			case 'IRCV2Daytimer': this.daytimer(control, msg); break; /* reuse DayTimer */
@@ -362,6 +363,11 @@ class Test {
 				clearInterval(this._ircv1timer[control.uuidAction]);
 			}
 		}, 1000);
+	}
+
+	ircv2(control: Control, msg: string) {
+		// TODO
+		console.error('Command', msg, 'not found for Control', control.uuidAction, control.type);
 	}
 
 	daytimer(control: Control, msg: string) {

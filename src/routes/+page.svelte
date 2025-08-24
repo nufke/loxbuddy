@@ -10,13 +10,13 @@
 
 	let filteredControls = $derived(
 		store.controlList.filter((control) => control.isFavorite === true)
-			.sort((a, b) => a.name.localeCompare(b.name)));
+			.sort((a, b) => a.name.localeCompare(b.name, store.locale)));
 
 	let room = $derived(store.roomList.find( (room) => room.name == $_('General')));
 
 	let centralControls = $derived(
 		store.controlList.filter((control) => (control.room === room?.uuid && control.defaultRating > 0) )
-			.sort((a, b) => a.name.localeCompare(b.name)));
+			.sort((a, b) => a.name.localeCompare(b.name, store.locale)));
 
 	let controlOptions: ControlOptions = $derived(DEFAULT_CONTROLOPTIONS);
 </script>

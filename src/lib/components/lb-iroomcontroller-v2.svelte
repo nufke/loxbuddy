@@ -28,22 +28,24 @@
 		let modes : ListItem[] = [ /* active modes for IRC V2 */
 			{ id: 0, name: 'Economy', value: 0, visible: true },
 			{ id: 1, name: 'Comfort temperature', value: 0, visible: true },
-			{ id: 2, name: 'Building protection', value: 0, visible: false },
+			{ id: 2, name: 'Building protection', value: 0, visible: true },
 			{ id: 3, name: 'Manual', value: 0, visible: false },
 			{ id: 4, name: 'Off', value: 0, visible: true }
 		];
 		if (isHeatingOn) {
 			modes[0].value = comfortTemperature - absentMaxOffset;
 			modes[1].value = comfortTemperature;
+			modes[2].value = frostProtectTemperature;
 			modes[4].value = frostProtectTemperature;
 		} else { // Cooling
 			modes[0].value = comfortTemperatureCool - absentMaxOffset;
 			modes[1].value = comfortTemperatureCool;
+			modes[2].value = frostProtectTemperature;
 			modes[4].value = frostProtectTemperature;
 		}
 		return modes;
 	}
-		
+
 	function getTextName() {
 		let findName = $_('IRoomControllerV2').split(',').includes(control.name);
 		return (findName && store.rooms) ? store.rooms[control.room].name : control.name;
@@ -62,8 +64,8 @@
 		iconText: tempActual,
 		iconColor: 'fill-surface-950 dark:fill-surface-50',
 		textName: getTextName(),
-		statusName:  temperatureList && temperatureList[mode] ? temperatureList[mode].name : '',
-		statusColor: 'dark:text-surface-300 text-surface-700', // TODO other colors for temperatures
+		statusName:  temperatureList && temperatureList[mode] ? $_(temperatureList[mode].name) : '',
+		statusColor: temperatureList && temperatureList[mode] && temperatureList[mode].id > 0 && temperatureList[mode].id != 4 ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700', // TODO other colors for temperatures
 		list: temperatureList,
 		modal: modal
 	});

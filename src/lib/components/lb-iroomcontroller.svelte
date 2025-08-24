@@ -75,8 +75,8 @@
 		iconText: tempActual,
 		iconColor: 'fill-surface-950 dark:fill-surface-50',
 		textName: $_('IRoomController').split(',').includes(control.name) ? store.rooms[control.room].name : control.name,
-		statusName: temperatureIdsList && temperatureIdsList[value] ? temperatureIdsList[value].name : '',
-		statusColor: 'dark:text-surface-300 text-surface-700', // TODO other colors for temperatures
+		statusName: temperatureIdsList && temperatureIdsList[value] ? $_(temperatureIdsList[value].name) : '',
+		statusColor: temperatureIdsList && temperatureIdsList[value] && temperatureIdsList[value].id > 0 ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700', // TODO other colors for temperatures
 		list: temperatureIdsList,
 		modal: modal
 	});

@@ -3,7 +3,7 @@
 	import { fade200 } from '$lib/helpers/transition';
 	import { utils } from '$lib/helpers/utils';
 	import { Plus, ArrowLeft } from '@lucide/svelte';
-	import type { Control, Entry } from '$lib/types/models';
+	import type { Entry, CalendarEntryView } from '$lib/types/models';
 	import LbCalendarEntryModal from '$lib/components/lb-calendar-entry-modal.svelte';
 	import { _ } from 'svelte-i18n';
 	import { store } from '$lib/stores/store.svelte';
@@ -38,13 +38,20 @@
 
 	function getIRCColor(mode: string) {
 		let fillColor = '';
-		switch(mode) {
-			case '1': // Comfort heating (green)
-			case '2': fillColor = 'dark:fill-primary-500 fill-primary-700'; break; // Comfort cooling (green)
-			case '3': fillColor = 'dark:fill-secondary-500 fill-secondary-700'; break; // Empty house / deep sleep (blue)
-			case '4': fillColor = 'dark:fill-warning-500 fill-warning-700'; break; // Heat protection (orange)
-			case '5': fillColor = 'dark:fill-error-500 fill-error-700'; break; // Increased heat  (red)
-			case '6': fillColor = 'dark:fill-purple-500 fill-purple-700'; break; // Party (purple)
+		let mode_ = Number(mode);
+		mode_ = view.isIRCV1 ? mode_ : (mode_ + 10); // differentiate between IRC V1 and V2
+		switch(mode_) {
+			case 1: // Comfort heating (green)
+			case 2: fillColor = 'dark:fill-primary-500 fill-primary-700'; break; 			// V1 cComfort cooling (green)
+			case 3: fillColor = 'dark:fill-secondary-500 fill-secondary-700'; break;	// V1 Empty house / deep sleep (blue)
+			case 4: fillColor = 'dark:fill-warning-500 fill-warning-700'; break;			// V1 Heat protection (orange)
+			case 5: fillColor = 'dark:fill-error-500 fill-error-700'; break;					// V1 Increased heat  (red)
+			case 6: fillColor = 'dark:fill-purple-500 fill-purple-700'; break;				// V1 Party (purple)
+			case 11: fillColor = 'dark:fill-primary-500 fill-primary-700'; break;			// V2 Comfort temperature (green)
+			case 12: fillColor = 'dark:fill-secondary-500 fill-secondary-700'; break;	// V2 Building protection (blue)
+			case 13: fillColor = 'dark:fill-gray-500 fill-gray-700'; break;						// V2 Manual (gray)
+			case 14: fillColor = 'dark:fill-secondary-500 fill-secondary-700'; break;	// V2 Off (blue)
+			default: ''; // V1 and V2 Eco (blank) for 0 and 10
 		}
 		return fillColor;
 	}
@@ -112,16 +119,6 @@
 	function close() {
 		initialEntries = [];
 		view.openModal = false;
-	}
-
-	type CalendarEntryView = {
-		control: Control;
-		subControl: Control;
-		isIRC: boolean;
-		isCooling: boolean;
-		label: string;
-		enableDelete: boolean;
-		openModal: boolean;
 	}
 
 	let calendarEntryView: CalendarEntryView = $state({
@@ -195,9 +192,9 @@
 									<rect class={getDayTimerColor(entry.needActivate)} x={0+getModeIndex(entry.mode)*156} y={55+getTime(entry.from)*40} width="150" height={(getTime(entry.to)-getTime(entry.from))*40} 
 											rx="6"></rect>
 								{/if}
-								<text class={getTextColor()} x={10+getModeIndex(entry.mode)*156} y={75+getTime(entry.from)*40} font-size="14">{showTime(entry)}</text>
+								<text class={getTextColor()} x={5+getModeIndex(entry.mode)*156} y={70+getTime(entry.from)*40} font-size="14">{showTime(entry)}</text>
 								{#if view.isIRC}
-				 					<text class={getTextColor()} x={10+getModeIndex(entry.mode)*156} y={95+getTime(entry.from)*40} font-size="14">{getTemperature(entry)}</text>
+				 					<text class={getTextColor()} x={5+getModeIndex(entry.mode)*156} y={90+getTime(entry.from)*40} font-size="14">{getTemperature(entry)}</text>
 								{/if}
 							</g>
 						{/each}

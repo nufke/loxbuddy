@@ -68,12 +68,12 @@
 	let rooms: Room[] = $derived(
 		store.roomList.filter((item) => store.controlList.map((control) => control.room)
 			.indexOf(item.uuid) > -1)
-			.sort((a, b) => a.name.localeCompare(b.name)));
+			.sort((a, b) => a.name.localeCompare(b.name, store.locale)));
 
 	let categories: Category[] = $derived(
 		store.categoryList.filter((item) => store.controlList.map((control) => control.cat)
 			.indexOf(item.uuid) > -1)
-			.sort((a, b) => a.name.localeCompare(b.name)));
+			.sort((a, b) => a.name.localeCompare(b.name, store.locale)));
 
 	const onDarkModeChange = (event: { checked: boolean }) => {
 		mode = event.checked ? 'dark' : 'light';

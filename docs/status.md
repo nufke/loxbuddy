@@ -52,8 +52,8 @@ or submit a [pull request](https://github.com/nufke/loxbuddy/pulls).
 | InfoView                 | Not started       |                             |
 | Intercom                 | Under development | No SIP communication yet    |
 | IntercomV2               | Not started       |                             |
-| IRCDaytimer              | Not started       |                             |
-| IRCV2Daytimer            | Not started       |                             |
+| IRCDaytimer              | Under development |                             |
+| IRCV2Daytimer            | Under development |                             |
 | IRoom                    | Not started       |                             |
 | IRoomController          | Under development |                             |
 | IRoomControllerV2        | Under development |                             |

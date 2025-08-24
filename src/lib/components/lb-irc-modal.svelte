@@ -2,11 +2,10 @@
 	import { Modal } from '@skeletonlabs/skeleton-svelte';
 	import { Toaster, createToaster } from '@skeletonlabs/skeleton-svelte';
 	import { SvelteDate } from 'svelte/reactivity';
-	import type { Control, ControlView, ListItem, CalendarView, Entry } from '$lib/types/models';
+	import type { ControlView, ListItem, CalendarView, Entry, CalendarEntryView } from '$lib/types/models';
 	import { store } from '$lib/stores/store.svelte';	
 	import { X, Timer, Leaf, Flame, List, CalendarClock } from '@lucide/svelte';
 	import { _ } from 'svelte-i18n';
-	import fmt from 'sprintf-js';
 	import { fade200 } from '$lib/helpers/transition';
 	import { publishTopic } from '$lib/communication/mqttclient';
 	import LbCicleSlider from '$lib/components/lb-circle-slider.svelte';
@@ -14,6 +13,7 @@
 	import LbTimeGrid from '$lib/components/lb-time-grid.svelte';
 	import LbIcon from '$lib/components/lb-icon-by-name.svelte';
 	import LbDateTimePickerModal from '$lib/components/lb-date-time-picker-modal.svelte';
+	import LbCalendarEntryModal from '$lib/components/lb-calendar-entry-modal.svelte';
 	import LbCalendarModal from '$lib/components/lb-calendar-modal.svelte';
 	import Info from '$lib/components/lb-info.svelte';
 	import { utils } from '$lib/helpers/utils';
@@ -40,8 +40,8 @@
 
 	let opModes = $derived(store.structure.operatingModes);
 	let temperatureList = $derived(controlView.list ? controlView.list.filter( item => item.visible == true) : []); // hide items not marked as visible 
-	let selectedItem = $derived(temperatureList.find( (item: ListItem) => { return item.name === controlView.statusName }));
-	let selectedTab = $state(0);
+	let selectedItem = $derived(temperatureList.find( (item: ListItem) => $_(item.name) === controlView.statusName ));
+	let selectedTab = $state(1);
 	let tempActual = $derived(Number(store.getState(controlView.control?.states.tempActual)));
 	let tempTarget = $derived(Number(store.getState(controlView.control?.states.tempTarget)));
 	let date: SvelteDate = $state(new SvelteDate(Date.now() + 3600000));
@@ -83,13 +83,13 @@
 	let selectedSubControl = $derived(isV1 ? (subControls.find( subControl => subControl.name == (isHeating ? 'Heating' : 'Cooling')) || subControls[0] ):
 																	subControls[0]);
 
+	let selectedEntry = $state();
+
 	let entries = $derived(utils.extractEntries(store.getState(selectedSubControl.states.entriesAndDefaultValue)));
 	let modeList = $derived(String(store.getState(selectedSubControl.states.modeList))); 
 	let mode = $derived(Number(store.getState(selectedSubControl.states.mode))); 
 	let dayModes = $derived(utils.extractDayModes(modeList));
-	let modeEntries: number[] = $derived(entries.entry.map( (m: Entry) => m.mode));
-	let modes = $derived(modeEntries.filter((mode, idx) => modeEntries.indexOf(mode) == idx));
-	
+
 	let dateTimeView = $state({
 		isDateView: true,
 		isMinuteView: false,
@@ -104,6 +104,40 @@
 		isCooling: false, // will be updated when modal is opened
 		openModal: false
 	});
+
+	let calendarEntryView: CalendarEntryView = $state({
+		control: controlView.control,
+		subControl: controlView.control, // updated when Modal is opened
+		isIRC: false, // updated when Modal is opened
+		isCooling: false, // updated when Modal is opened
+		label: '', // updated when Modal is opened
+		enableDelete: true, // updated when Modal is opened
+		openModal: false // updated when Modal is opened
+	});
+
+	function getOperatingMode(s: string) {
+		let obj = Object.entries(opModes).find ( e => e[1] == s );
+		return obj ? obj[0] : '';
+	}
+
+	function updateEntry(item: CalendarListItem) {
+		selectedEntry = entries.entry.find( (entry: Entry) =>
+			entry.to == item.to && 
+			entry.from == item.from && 
+			entry.needActivate == item.needActivate &&
+			entry.value == item.value &&
+			entry.mode == getOperatingMode(item.name[0])
+		)
+		if (selectedEntry) {
+			calendarEntryView.label = $_('Temperature settings');
+			calendarEntryView.control = controlView.control;
+			calendarEntryView.subControl = selectedSubControl;
+			calendarEntryView.isIRC = true;
+			calendarEntryView.isCooling = isCooling;
+			calendarEntryView.enableDelete = true;
+			calendarEntryView.openModal = true;
+		}
+	}
 
 	function setTemperature(item: ListItem) {
 		if (!isV1 && item.id == 3) { /* manual mode only exists in IRCv2 */
@@ -144,17 +178,26 @@
 	function updatePosition(e: any) { // TODO
 	}
 
-	function getTemperatureMode(mode: number) {
-		let t = temperatureList.find( item => item.id == mode);
-		return t ? t.name : '';
+	function getTemperatureMode(item: any) {
+		const mode = Number(item.value);
+		let obj = temperatureList.find( item => item.id == mode);
+		return obj && obj.name ? $_(obj.name) : '';
 	}
 
 	function updateTimer(e: any) {
 		date = e.value;
 	}
 
-	function tempFormat(temp: number) {
-		return temp.toLocaleString(store.locale, { maximumFractionDigits: 1, minimumFractionDigits: 1 }) + ' °C' // TODO Fahrenheit
+	function tempFormat(temp: number | undefined) {
+		return temp?.toLocaleString(store.locale, { maximumFractionDigits: 1, minimumFractionDigits: 1 }) + ' °C';
+	}
+
+	function getTemperature(item: any) {
+		const mode = Number(item.value);
+		let obj = temperatureList.find( item => item.id == mode);
+		return (obj && obj.value) ? 
+			' ('+ obj.value.toLocaleString(store.locale, { maximumFractionDigits: 1, minimumFractionDigits: 1 }) + '°)' // TODO Fahrenheit
+			: '';
 	}
 
 	function getTimerEpoch(entries: any) {
@@ -164,9 +207,10 @@
 		return utils.isDST(new Date(timerDate)) ? timerDate+3600000 : timerDate;
 	}
 
-	function resetTab() {
-    setTimeout(() => {
-      selectedTab = 0;
+	function close() {
+		controlView.modal.action(false);
+		setTimeout(() => {
+      selectedTab = 1;
     }, 500);
 	}
 
@@ -176,8 +220,33 @@
 		calendarView.openModal=true;
 	}
 
-	function getTemperature(temp: number | undefined){
-		return ' ('+ temp?.toLocaleString(store.locale, { maximumFractionDigits: 1, minimumFractionDigits: 1 }) + '°)' // TODO Fahrenheit
+	type CalendarListItem = {
+		name: string[];
+		to: string;
+		from: string;
+		needActivate: string;
+		value: string;
+	}
+
+	function filteredEntries() {
+		let list: CalendarListItem[] = [];
+		entries.entry.forEach( (entry: Entry) => {
+			let itemFound = list.find( item => entry.from == item.from && 
+				entry.to == item.to &&
+				entry.needActivate == item.needActivate &&
+				entry.value == item.value);
+			if (itemFound) { // entry exists, only add dayMode
+				itemFound.name.push(', '+ opModes[entry.mode]);
+			} else { // new entry
+				list.push({ 
+					name: [opModes[entry.mode]],
+					to: entry.to,
+					from: entry.from,
+					needActivate: entry.needActivate,
+					value: entry.value});
+			}
+		});
+		return list.sort((a, b) => Number(a.value) - Number(b.value));
 	}
 
 	$effect( () => {
@@ -209,18 +278,18 @@
 	backdropBackground="">
 	{#snippet content()}
 	<!-- TODO better method to create multiple modal overlays with backdrop? -->
-	<div class="fixed w-full h-full top-0 left-0 right-0 bottom-0 -z-10 bg-surface-50/75 dark:bg-surface-950/75" onclick={() => {controlView.modal.action(false); resetTab();}}></div> 
-	<!--<Info control={controlView.control}/>-->
+	<div class="fixed w-full h-full top-0 left-0 right-0 bottom-0 -z-10 bg-surface-50/75 dark:bg-surface-950/75" onclick={close}></div> 
+	<Info control={controlView.control}/>
 	<header class="relative">
 		<div class="absolute top-0 right-0">
-			<button type="button" aria-label="close" class="btn-icon w-auto" onclick={() => controlView.modal.action(false)}>
+			<button type="button" aria-label="close" class="btn-icon w-auto" onclick={close}>
 				<X />
 			</button>
 		</div>
 	</header>
 	<div bind:this={modalViewport} class="flex flex-col items-center justify-center h-full">
 		<h2 class="h4 text-center items-center justify-center w-[80%]">{controlView.textName}</h2>
-		{#if selectedTab==0}
+		{#if selectedTab==1}
 			<div class="w-full mt-4 m-2 p-2 dark:bg-surface-950 bg-surface-50 rounded-lg border border-white/15 hover:border-white/50">
 				<!--<LbCicleSlider min={10} max={30} step={0.5} target={tempTarget} manual={!isAutomatic} actual={tempActual} onValueChangeEnd={(e: any) => {updatePosition(e.value)}}/>-->
 				<div class="grid grid-cols-2">
@@ -249,14 +318,16 @@
 					<div class="text-lg dark:text-surface-300 text-surface-700">Actual: {tempFormat(tempActual)}</div>
 					<LbTempSlider min={10} max={30} step={0.5} target={tempTarget} manual={!isAutomatic} actual={tempActual} onValueChangeEnd={(e: any) => {updatePosition(e.value)}}/>
 					<div class="text-lg dark:text-primary-500 text-primary-700">Target: {tempFormat(tempTarget)}</div>
-					</div>
+				</div>
 			</div>
-			<div class="w-full dark:bg-surface-950 bg-surface-50 rounded-lg border border-white/15 hover:border-white/50"
+				<div class="w-full dark:bg-surface-950 bg-surface-50 rounded-lg border border-white/15 hover:border-white/50"
 						onclick={(e) => { e.stopPropagation(); e.preventDefault(); openCalendarView();}}>
-				<LbTimeGrid {mode} {entries} {overrideDate} {override}/>
-				<h2 class="m-2 text-md text-center dark:text-surface-50 text-surface-950">{dayModes[mode]}</h2>
-			</div>
-			<div class="text-center">
+					<div>
+						<LbTimeGrid {mode} {entries} {overrideDate} {override}/>
+						<h2 class="m-2 text-md text-center dark:text-surface-50 text-surface-950">{dayModes[mode]}</h2>
+					</div>
+				</div>
+			<div class="text-center">{overrideEntriesV2}
 				{#if override > 0}
 					<p class="mt-2 mb-2 text-lg">{$_("Duration")} { isV1 ? format(timerEndsV1, 'PPP p') : format(timerEndsV2, 'PPP p')} </p>
 					<button type="button" class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
@@ -266,15 +337,17 @@
 				{/if}
 			</div>
 		{/if} 
-		{#if selectedTab==1}
+		{#if selectedTab==2}
 			<div class="container mt-2 overflow-y-auto">
 				{#each temperatureList as listItem}
-					<button type="button" class="w-full mt-2 btn btn-lg {(listItem.id == selectedItem?.id) ? 'dark:bg-surface-800 bg-surface-200' : 'dark:bg-surface-950 bg-surface-50' }
+					<button type="button" class="w-full mt-2 pr-4 btn btn-lg {(listItem.id == selectedItem?.id) ? 'dark:bg-surface-800 bg-surface-200' : 'dark:bg-surface-950 bg-surface-50' }
 								 shadow-sm rounded-lg border border-white/15 hover:border-white/50" 
 								onclick={(e) => { e.stopPropagation(); e.preventDefault(); setTemperature(listItem)}}>
-						<div class="flex flex-row gap-2 items-center jusify-center">
-							<p class="text-lg dark:text-surface-50 text-surface-950">{$_(listItem.name)}</p>
-							<p class="text-lg dark:text-surface-300 text-surface-700">{getTemperature(listItem.value)}</p>
+						<div class="w-full flex items-center truncate">
+							<div class="mr-0 flex w-full justify-between truncate">
+								<p class="truncate text-lg dark:text-surface-50 text-surface-950">{$_(listItem.name)}</p>
+								<p class="text-lg dark:text-surface-300 text-surface-700">{tempFormat(listItem.value)}</p>
+							</div>
 						</div>
 					</button>
 				{/each}
@@ -282,7 +355,7 @@
 								dark:bg-surface-950 bg-surface-50 px-2 py-2"
 								onclick={() => {dateTimeView.openModal=true}}>
 					<div class="w-full flex items-center truncate">
-						<div class="mt-0 ml-2 mr-2 flex w-full justify-between truncate">
+						<div class="mt-0 ml-3 mr-2 flex w-full justify-between truncate">
 							<p class="truncate text-lg">{$_("Duration")}</p>
 							<p class="text-lg">{format(date, 'PPP p')}</p>
 						</div>
@@ -290,36 +363,37 @@
 				</button>
 			</div>
 		{/if}
-		{#if selectedTab==2}
+		{#if selectedTab==3}
 			<div class="container mt-2 overflow-y-auto">
-				{#each modes as mode}
-					<p class="ml-2 mt-1 mb-1 text-lg dark:text-surface-300 text-surface-700">{opModes[mode]}</p>
-					<div class="flex flex-col space-y-2">
-					{#each entries.entry.filter( (item: Entry) => item.mode == String(mode)) as entry}
+				<div class="flex flex-col space-y-2">
+					{#each filteredEntries() as entry}
 						<button type="button" class="w-full dark:bg-surface-950 bg-surface-50
-								 shadow-sm rounded-lg border border-white/15 hover:border-white/50 h-[65px]"
-								onclick={(e) => { e.stopPropagation(); e.preventDefault(); }}>
-								<div class="pl-3 flex flex-col justify-center text-left">
-									<p class="text-lg truncate dark:text-surface-50 text-surface-950">{getTemperatureMode(entry.value)}</p>
+								 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
+								onclick={(e) => { updateEntry(entry) }}>
+								<div class="pl-3 p-1 flex flex-col justify-center text-left">
+									<div class="flex flex-row gap-2">
+										<p class="text-base dark:text-surface-50 text-surface-950">{getTemperatureMode(entry)}</p>
+										<p class="text-base dark:text-surface-300 text-surface-700">{getTemperature(entry)}</p>
+									</div>
+									<p class="text-xs truncate dark:text-surface-300 text-surface-700">{entry.name}</p>
 									<p class="text-xs dark:text-surface-300 text-surface-700">{entry.from} - {entry.to} </p>
 								</div>
 						</button>
 					{/each}
-					</div>
-				{/each}
+				</div>
 			</div>
 		{/if}
 		<div class="relative w-full mt-6 mb-2">
 			<div class="grid h-full max-w-lg grid-cols-3 mx-auto">
-				<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==0 ? 'dark:text-primary-500 text-primary-700' : ''} " onclick={() => selectedTab=0}>
-					<LbIcon class={selectedTab==0 ? 'dark:fill-primary-500 fill-primary-700' : 'fill-surface-50'} name={"/icons/svg/thermostat.svg"} width="24" height="24"/>
+				<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==1 ? 'dark:text-primary-500 text-primary-700' : ''} " onclick={() => selectedTab=1}>
+					<LbIcon class={selectedTab==1 ? 'dark:fill-primary-500 fill-primary-700' : 'fill-surface-50'} name={"/icons/svg/thermostat.svg"} width="24" height="24"/>
 					<span class="mt-1 text-xs">{$_("Control")}</span>
 				</button>
-				<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==1 ? 'dark:text-primary-500 text-primary-700' : ''} " onclick={() => selectedTab=1}>
+				<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==2 ? 'dark:text-primary-500 text-primary-700' : ''} " onclick={() => selectedTab=2}>
 					<List/>
 					<span class="mt-1 text-xs">{$_("Preset")}</span>
 				</button>
-				<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==2 ? 'dark:text-primary-500 text-primary-700' : ''} " onclick={() => selectedTab=2}>
+				<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==3 ? 'dark:text-primary-500 text-primary-700' : ''} " onclick={() => selectedTab=3}>
 					<CalendarClock/>
 					<span class="mt-1 text-xs">{$_("Switching times")}</span>
 				</button>
@@ -332,3 +406,4 @@
 <LbDateTimePickerModal date={date} bind:view={dateTimeView} onValueChange={(e:any)=>{ updateTimer(e)}}/>
 <Toaster {toaster}></Toaster>
 <LbCalendarModal bind:view={calendarView} {mode} {dayModes} {entries} {temperatureList}/>
+<LbCalendarEntryModal bind:view={calendarEntryView} {entries} {selectedEntry} {dayModes} {temperatureList}/>

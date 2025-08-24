@@ -14,7 +14,7 @@
 
 	let filteredControls: Control[] = $derived(
 		store.controlList.filter((control) => (control.cat === data.uuid) && ((control.restrictions & 1) != 1))
-			.sort((a, b) => a.name.localeCompare(b.name)));
+			.sort((a, b) => a.name.localeCompare(b.name, store.locale)));
 
 	let favorites: Control[] = $derived(
 		filteredControls.filter((control) => control.defaultRating > 0));
@@ -22,7 +22,7 @@
 	let labels: Room[] = $derived(
 		store.roomList.filter((item) => filteredControls.map((control) => control.room)
 			.indexOf(item.uuid) > -1)
-			.sort((a, b) => a.name.localeCompare(b.name)));
+			.sort((a, b) => a.name.localeCompare(b.name, store.locale)));
 
 	let pageTitle: Category | undefined =  $derived(
 		store.categoryList.find((item) => filteredControls[0].cat == item.uuid)
