@@ -38,6 +38,7 @@
 	/* this modal is used for V1 and V2, so we need to select the proper attributes */
 	let isV1 = controlView.control.type !== 'IRoomControllerV2'; 
 
+	let dayOfTheWeek = $derived(format(store.time, 'eeee'));
 	let opModes = $derived(store.structure.operatingModes);
 	let temperatureList = $derived(controlView.list ? controlView.list.filter( item => item.visible == true) : []); // hide items not marked as visible 
 	let selectedItem = $derived(temperatureList.find( (item: ListItem) => $_(item.name) === controlView.statusName ));
@@ -324,7 +325,7 @@
 						onclick={(e) => { e.stopPropagation(); e.preventDefault(); openCalendarView();}}>
 					<div>
 						<LbTimeGrid {mode} {entries} {overrideDate} {override}/>
-						<h2 class="m-2 text-md text-center dark:text-surface-50 text-surface-950">{dayModes[mode]}</h2>
+						<h2 class="m-2 text-md text-center dark:text-surface-50 text-surface-950">{dayOfTheWeek}</h2>
 					</div>
 				</div>
 			<div class="text-center">{overrideEntriesV2}

@@ -217,6 +217,27 @@
     }
   },
   "controls": {
+    "__uuid__controls_status": {
+      "name": "Status",
+      "type": "TextState",
+      "uuidAction": "__uuid__controls_status",
+      "room": "__uuid__rooms_central",
+      "cat": "__uuid__cats_lighting",
+      "defaultRating": 0,
+      "isFavorite": true,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/central.svg",
+      "restrictions": 0,
+      "states": {
+        "textAndIcon": "__uuid__controls_status",
+        "iconAndColor": "__uuid__controls_status_states_iconAndColor"
+      },
+      "links": [
+        "__uuid__controls_switch",
+        "__uuid__controls_pv_meter",
+        "__uuid__controls_window_monitor"
+      ]
+    },
     "__uuid__controls_switch": {
       "name": "Switch",
       "type": "Switch",

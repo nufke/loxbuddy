@@ -23,6 +23,8 @@
 
 	const toaster = createToaster({duration: 1500});
 
+	let dayOfTheWeek = $derived(format(store.time, 'eeee'));
+
 	let isAnalog = Boolean(control.details.analog);
 	let value = $derived(Number(store.getState(control.states.value)));
 	let valueFormatted = $derived(fmt.sprintf(control.details.format, value));
@@ -181,7 +183,7 @@
 			<div class="w-full m-2 dark:bg-surface-950 bg-surface-50 rounded-lg border border-white/15 hover:border-white/50"
 						onclick={(e) => { e.stopPropagation(); e.preventDefault(); calendarView.openModal=true;}}>
 				<LbTimeGrid {mode} {entries} {overrideDate} {override}/>
-				<h2 class="m-2 text-md text-center dark:text-surface-50 text-surface-950">{dayModes[mode]}</h2>
+				<h2 class="m-2 text-md text-center dark:text-surface-50 text-surface-950">{dayOfTheWeek}</h2>
 			</div>
 		</div>
 		<div class="flex flex-col items-center justify-center">

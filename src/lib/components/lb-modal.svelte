@@ -72,16 +72,19 @@
 
 	function parseScroll() {
 		hasScroll = viewport?.scrollHeight > viewport?.clientHeight;
-    showScrollTop = hasScroll && (viewport?.scrollTop > 20);
-		showScrollBottom = hasScroll && (viewport.scrollTop + viewport?.clientHeight < (viewport?.scrollHeight - 20));
-  }
+    showScrollTop = limitHeight && hasScroll && (viewport?.scrollTop > 10);
+		showScrollBottom = limitHeight && hasScroll && (viewport.scrollTop + viewport?.clientHeight < (viewport?.scrollHeight - 10));
+	}
 
 	$effect( () => {
 		parseScroll();
+	});
+
+	$effect( () => {
 		if (windowHeight && modalViewport) { /* trigger on windowHeight change */
-			limitHeight = false; 
+			limitHeight = false;
 			tick().then( () => {
-				limitHeight = (windowHeight * 0.9 - modalViewport.getBoundingClientRect().bottom - 12) < 0;
+				limitHeight = (windowHeight * 0.9 - modalViewport.getBoundingClientRect().bottom) < 0;
 			});
 		}
 	});
@@ -97,7 +100,9 @@
 	triggerBase="btn bg-surface-600"
 	contentBase="card bg-surface-100-900 p-4 shadow-sm rounded-lg border border-white/5 hover:border-white/10
 								md:max-w-9/10 md:max-h-9/10 {controlView.modal.size?.width || 'w-[450px]'}
-							 {linkedControls.length > 1 ? 'lg:w-[760px]': ''} {limitHeight ? 'h-full': '' }"
+							 {linkedControls.length > 1 ? 'lg:w-[874px]' : ''}
+							 {linkedControls.length > 2 ? 'xl:w-[1300px]' : ''}
+							 {limitHeight ? 'h-full': '' }"
 	backdropClasses={ controlView.modal.noBlur ? "" : "backdrop-blur-sm"}
 	backdropBackground="">
 	{#snippet content()}
@@ -132,7 +137,6 @@
 				{/if}
 			</div>
 		</div>
-
 		{#if controlView.buttons.length && !controlView.slider && !controlView.modal.buttons}
 		<div class="container flex m-2 h-full overflow-y-auto">
 			{#each controlView.buttons as button, index}
@@ -234,14 +238,17 @@
 			</div>
 		{/if}
 		{#if linkedControls}
-		<div class="container relative w-full">
+		<div class="flex flex-col relative w-full overflow-y-auto h-full mt-2">
 			{#if showScrollTop}
-				<div class="absolute z-10 left-[50%] lb-center top-3 text-surface-500" transition:fade={{ duration: 300 }}><ChevronUp size="30"/></div>
+				<div class="absolute z-10 left-[50%] lb-center top-[11px] text-surface-500" transition:fade={{ duration: 300 }}><ChevronUp size="30"/></div>
 			{/if}
 			{#if showScrollBottom}
-				<div class="absolute z-10 left-[50%] lb-center -mb-4 bottom-0 text-surface-500" transition:fade={{ duration: 300 }}><ChevronDown size="30"/></div>
+				<div class="absolute z-10 left-[50%] lb-center -bottom-[19px] text-surface-500" transition:fade={{ duration: 300 }}><ChevronDown size="30"/></div>
 			{/if}
-			<div bind:this={viewport} onscroll={parseScroll} class="relative grid grid-cols-1 { linkedControls.length > 1 ? 'lg:grid-cols-2' : ''} gap-2 max-h-[415px] overflow-y-auto">
+			<div class="grid grid-cols-1 gap-2
+				{linkedControls.length > 1 ? 'lg:grid-cols-2' : ''}
+				{linkedControls.length > 2 ? 'xl:grid-cols-3' : ''}
+				lg:flex-wrap overflow-y-auto h-full" bind:this={viewport} onscroll={parseScroll}>
 				{#each linkedControls as control}
 					{@const Component = getComponent(control.type)}
 					<Component {control} controlOptions={controlOptions}/>

@@ -9,7 +9,7 @@
 	let { entry, onValueChange, label } = $props();
 
 	// use temprary entry object till OK is pressed
-	let setEntry = $derived({
+	let setEntry = $state({
 		modes: entry.modes,
 		daily: entry.daily,
 		nightLight: entry.nightLight
@@ -17,7 +17,7 @@
 
 	let opModes = $derived(store.structure.operatingModes);
 	let openModal = $state(false);
-	let daysFull = $_('DaysFull').split('|');
+	let daysFull = $_('DaysFull').toLowerCase().split('|');
 	let weekDayNrs = $derived(Object.keys(opModes).filter( (key) => daysFull.includes(opModes[key].toLowerCase())));
 	let filteredWeekDayNrs = $derived(weekDayNrs.filter( (key) => entry.modes.includes(Number(key))));
 
@@ -25,7 +25,7 @@
 		if (setEntry.modes.includes(i)) {
 			setEntry.modes = setEntry.modes.filter( (n: number) => n != i); // remove item
 		} else {
-			setEntry.modes = [...setEntry.modes, i]; // add item
+			setEntry.modes = [...setEntry.modes, i].sort(); // add item and sort
 		}
 	}
 

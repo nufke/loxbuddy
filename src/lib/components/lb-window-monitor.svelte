@@ -20,7 +20,6 @@
   let showScrollTop = $state(false);
 	let showScrollBottom = $state(true);
 
-
 	let windowList: WindowListItem[] = control.details.windows;
 	let windowStates = $derived(String(store.getState(control.states.windowStates)));
 	let windowStatesList = $derived(getSortedWindowList(windowStates.split(',')));
@@ -36,16 +35,17 @@
 	let modalViewport: any = $state(); // TODO make HTMLDivElement
 	let windowHeight = $derived(innerHeight.current || 0);
 	let limitHeight = $state(false); 
+	let summary  = $derived(getSummary(numOpen, numTilted, numUnlocked));
 
 	// TODO check what the summary is
-	function getSummary() {
+	function getSummary(open: number, tilted: number, unlocked: number) {
 		let summary: any = [];
-		if (numOpen) { summary.push({ name: String(numOpen) + ' ' + $_('Open'), color: true}) }
+		if (open) { summary.push({ name: String(open) + ' ' + $_('Open'), color: true}) }
 		//if (numClosed) { summary.push({ name: String(numClosed) + ' ' + $_('Closed'), color: false}) }
-		if (numTilted) { summary.push({ name: String(numClosed) + ' ' + $_('Tilted'), color: true}) }
+		if (tilted) { summary.push({ name: String(tilted) + ' ' + $_('Tilted'), color: true}) }
 		//if (numOffline) { summary.push({ name: String(numClosed) + ' ' + $_('Offline'), color: false}) }
 		//if (numLocked) { summary.push({ name: String(numClosed) + ' ' + $_('Locked'), color: false}) }
-		if (numUnlocked) { summary.push({ name: String(numClosed) + ' ' + $_('Unlocked'), color: true}) }
+		if (unlocked) { summary.push({ name: String(unlocked) + ' ' + $_('Unlocked'), color: true}) }
 		return summary;
 	}
 
@@ -97,7 +97,7 @@
 		if (allClosed) { 
 			return $_('All closed');
 		}
-		let str: string = getSummary().map( (i:any) => ' ' + i.name ).toString()
+		let str: string = summary.map( (i:any) => ' ' + i.name ).toString()
 		return str.toLowerCase();
 	}
 
@@ -119,14 +119,17 @@
 
 	function parseScroll() {
 		hasScroll = viewport?.scrollHeight > viewport?.clientHeight;
-    showScrollTop = hasScroll && (viewport?.scrollTop > 20);
-		showScrollBottom = hasScroll && (viewport.scrollTop + viewport?.clientHeight < (viewport?.scrollHeight - 20));
+    showScrollTop = limitHeight && hasScroll && (viewport?.scrollTop > 10);
+		showScrollBottom = limitHeight && hasScroll && (viewport.scrollTop + viewport?.clientHeight < (viewport?.scrollHeight - 10));
   }
 
 	$effect( () => {
 		parseScroll();
-		if (windowHeight && modalViewport) { /* trigger on windowHeight change */
-			limitHeight = false; 
+	});
+
+	$effect( () => {
+		if (windowHeight && modalViewport && summary) { /* trigger on windowHeight and summary change */
+			limitHeight = false;
 			tick().then( () => {
 				limitHeight = (windowHeight * 0.9 - modalViewport.getBoundingClientRect().bottom - 3) < 0;
 			});
@@ -177,21 +180,21 @@
 				</button>
 			</div>
 		</header>
-		<div bind:this={modalViewport} class="flex flex-col h-full items-center justify-center">
-			<h2 class="flex h4 text-center items-center justify-center w-[80%]">{controlView.textName}</h2>
+		<div bind:this={modalViewport} class="flex flex-col items-center justify-center h-full">
+			<h2 class="h4 text-center items-center justify-center w-[80%]">{controlView.textName}</h2>
 			<h2 class="flex relative text-lg text-center mt-2 mb-2">
-				{#each getSummary() as state, i}
-					{@const isLast = i === getSummary().length - 1}
+				{#each summary as state, i}
+					{@const isLast = i === summary.length - 1}
 						<span class={ state.color ? 'text-orange-500' : 'dark:text-primary-500 text-primary-700'}>{state.name}</span>{#if !isLast }
 							<span>,&nbsp;</span>{/if}
 				{/each}
 			</h2>
 			<div class="flex flex-col relative w-full overflow-y-auto h-full">
 				{#if showScrollTop}
-					<div class="absolute z-10 left-[50%] lb-center top-[16px] text-surface-500" transition:fade={{ duration: 300 }}><ChevronUp size="30"/></div>
+					<div class="absolute z-10 left-[50%] lb-center top-[17px] text-surface-500" transition:fade={{ duration: 300 }}><ChevronUp size="30"/></div>
 				{/if}
 				{#if showScrollBottom}
-					<div class="absolute z-10 left-[50%] lb-center -bottom-[16px] text-surface-500" transition:fade={{ duration: 300 }}><ChevronDown size="30"/></div>
+					<div class="absolute z-10 left-[50%] lb-center -bottom-[20px] text-surface-500" transition:fade={{ duration: 300 }}><ChevronDown size="30"/></div>
 				{/if}
 				<div class="flex flex-col space-y-2 overflow-y-auto w-full h-full mt-2"  bind:this={viewport} onscroll={parseScroll}>
 					{#each windowStatesList as window, index}

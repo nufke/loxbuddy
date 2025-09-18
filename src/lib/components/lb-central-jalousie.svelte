@@ -48,12 +48,15 @@
 
 	function parseScroll() {
 		hasScroll = viewport?.scrollHeight > viewport?.clientHeight;
-    showScrollTop = hasScroll && (viewport?.scrollTop > 20);
-		showScrollBottom = hasScroll && (viewport.scrollTop + viewport?.clientHeight < (viewport?.scrollHeight - 20));
+    showScrollTop = limitHeight && hasScroll && (viewport?.scrollTop > 10);
+		showScrollBottom = limitHeight && hasScroll && (viewport.scrollTop + viewport?.clientHeight < (viewport?.scrollHeight - 10));
   }
 
 	$effect( () => {
 		parseScroll();
+	});
+
+	$effect( () => {
 		if (windowHeight && modalViewport) { /* trigger on windowHeight change */
 			limitHeight = false;
 			tick().then( () => {
@@ -187,7 +190,7 @@
 		transitionsBackdropOut = {fade200}
 		transitionsPositionerIn = {fade200}
 		transitionsPositionerOut = {fade200}
-		onOpenChange={() => controlView.modal.action(false)}
+		onOpenChange={() => {}}
 		triggerBase="btn bg-surface-600"
 		contentBase="card bg-surface-100-900 p-4 shadow-sm rounded-lg border border-white/5 hover:border-white/10
 									md:max-w-9/10 md:max-h-9/10 w-[450px] { limitHeight ? 'h-full': '' }"
@@ -226,10 +229,10 @@
 			</div>
 			<div class="relative flex flex-col overflow-y-auto w-full h-full">
 				{#if showScrollTop}
-					<div class="absolute z-10 left-[50%] lb-center top-[16px] text-surface-500" transition:fade={{ duration: 300 }}><ChevronUp size="30"/></div>
+					<div class="absolute z-10 left-[50%] lb-center top-[10px] text-surface-500" transition:fade={{ duration: 300 }}><ChevronUp size="30"/></div>
 				{/if}
 				{#if showScrollBottom}
-					<div class="absolute z-10 left-[50%] lb-center -bottom-[16px] text-surface-500" transition:fade={{ duration: 300 }}><ChevronDown size="30"/></div>
+					<div class="absolute z-10 left-[50%] lb-center -bottom-[19px] text-surface-500" transition:fade={{ duration: 300 }}><ChevronDown size="30"/></div>
 				{/if}
 				<div class="flex flex-col overflow-y-auto space-y-2" bind:this={viewport} onscroll={parseScroll}>
 					{#each screenControls as control}

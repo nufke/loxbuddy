@@ -1,5 +1,5 @@
 import { store } from '$lib/stores/store.svelte';
-import type { Control, AlarmClockEntry } from '$lib/types/models';
+import type { Control, AlarmClockEntries } from '$lib/types/models';
 import { utils } from '$lib/helpers/utils';
 import demo from '$lib/test/demo.json';
 import states from '$lib/test/states.json';
@@ -271,14 +271,14 @@ class Test {
 	alarmClock(control: Control, msg: string) {
 		let entryListId = control.states.entryList;
 		let nextEntryTimeId = control.states.nextEntryTime;
-		let entryList = store.getState(entryListId);
+		let entryList = store.getState(entryListId) as AlarmClockEntries; // note: proxy object!
 		let msgItems = msg.split('/');
 		if (msg.includes('entryList/put')) {
 			if (entryList && entryList[msgItems[2]]) { // entry exists
 				if (entryList[msgItems[2]].nightLight) { // alarm is nightlight
 					entryList[msgItems[2]] = {
 						name: msgItems[3],
-						alarmTime: msgItems[4],
+						alarmTime: Number(msgItems[4]),
 						isActive: msgItems[5] == '1' ? true : false,
 						nightLight: true,
 						daily: msgItems[6] == '1' ? true : false
@@ -286,18 +286,22 @@ class Test {
 				} else { // other alarm clocks
 					entryList[msgItems[2]] = {
 						name: msgItems[3],
-						alarmTime: msgItems[4],
+						alarmTime: Number(msgItems[4]),
 						isActive: msgItems[5] == '1' ? true : false,
 						nightLight: false,
 						modes: msgItems[6].split(',').map(Number) // "1,2,3" -> [1,2,3]
 					}
 				}
 			} else { // new entry
-				let newEntry: AlarmClockEntry = this.alarmClockAddEntry(msgItems[3]);
-				entryList[msgItems[2]] = newEntry;
-				store.setState(nextEntryTimeId, String(new Date().valueOf()/1000 - 1230764400 + 3600)); // TODO
-				store.setState(entryListId, entryList);
+				entryList[msgItems[2]] = {
+						name: msgItems[3],
+						alarmTime: Number(msgItems[4]),
+						isActive: msgItems[5] == '1' ? true : false,
+						nightLight: false,
+						modes: msgItems[6].split(',').map(Number) // "1,2,3" -> [1,2,3]
+					}
 			}
+			store.setState(nextEntryTimeId, String(new Date().valueOf()/1000 - 1230764400 + 3600)); // TODO
 			return;
 		}
 		if (msg.includes('entryList/delete')) {
@@ -307,22 +311,6 @@ class Test {
 			return;
 		}
 		console.error('Command', msg, 'not found for Control', control.uuidAction, control.type);
-	}
-
-	alarmClockAddEntry(name: string) {
-		let day = format(new Date(), 'eeee');
-		let opModes = store.structure.operatingModes;
-		let idx = Object.keys(opModes).find( (key) => opModes[key].toLowerCase() == day);
-		let date = new Date();
-		let entry: AlarmClockEntry = {
-			name: name,
-			alarmTime: utils.hours2sec(format(date, 'p')),
-			isActive: true,
-			modes: [Number(idx)], 
-			nightLight: false,
-			daily: false
-		};
-		return entry;
 	}
 
 	ircv1(control: Control, msg: string) {

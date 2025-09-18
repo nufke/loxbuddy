@@ -49,12 +49,15 @@
 
 	function parseScroll() {
 		hasScroll = viewport?.scrollHeight > viewport?.clientHeight;
-    showScrollTop = hasScroll && (viewport?.scrollTop > 20);
-		showScrollBottom = hasScroll && (viewport.scrollTop + viewport?.clientHeight < (viewport?.scrollHeight - 20));
+    showScrollTop = limitHeight && hasScroll && (viewport?.scrollTop > 10);
+		showScrollBottom = limitHeight && hasScroll && (viewport.scrollTop + viewport?.clientHeight < (viewport?.scrollHeight - 10));
   }
 
 	$effect( () => {
 		parseScroll();
+	});
+
+	$effect( () => {
 		if (windowHeight && modalViewport) { /* trigger on windowHeight change */
 			limitHeight = false;
 			tick().then( () => {
@@ -205,10 +208,10 @@
 			</div>
 			<div class="relative flex flex-col overflow-y-auto w-full h-full">
 				{#if showScrollTop}
-					<div class="absolute z-10 left-[50%] lb-center top-[9px] text-surface-500" transition:fade={{ duration: 300 }}><ChevronUp size="30"/></div>
+					<div class="absolute z-10 left-[50%] lb-center top-[10px] text-surface-500" transition:fade={{ duration: 300 }}><ChevronUp size="30"/></div>
 				{/if}
 				{#if showScrollBottom}
-					<div class="absolute z-10 left-[50%] lb-center -bottom-[18px] text-surface-500" transition:fade={{ duration: 300 }}><ChevronDown size="30"/></div>
+					<div class="absolute z-10 left-[50%] lb-center -bottom-[19px] text-surface-500" transition:fade={{ duration: 300 }}><ChevronDown size="30"/></div>
 				{/if}
 				<div class="flex flex-col space-y-2 overflow-y-auto" bind:this={viewport} onscroll={parseScroll}>
 					{#each lightControls as control}

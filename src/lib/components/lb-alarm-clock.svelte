@@ -59,8 +59,8 @@
 	});
 
 	function newId() {
-		let max = entryIds.length ? Math.max(...entryIds) : 0;
-		for( let i = 0; i <= max; i++) {
+		let max = entryIds.length ? Math.max(...entryIds) : 1;
+		for( let i = 1; i <= max; i++) {
 			if (!entryIds.includes(i)) return i;
 		}
 		return max + 1; // new ID
@@ -68,10 +68,10 @@
 
 	function publishEntry(entry: AlarmClockEntry, i: number = -1) {
 		let id = (i == -1) ? newId() : entryIds[i]; /* -1 is new entry */
-		let n = (i == -1) ? id : ''; /* extend name for new entries */
-		let setting = entry.nightLight ? (entry.daily ? '1' : '0') : entry.modes.map(s => s.toString());
+		let extName = (i == -1) ? ' ' + String(id) : ''; /* extend name for new entries */
+		let setting = entry.nightLight ? (entry.daily ? '1' : '0') : entry.modes?.map(s => s.toString());
 		let cmd = 'entryList/put/' + String(id) + '/' +
-		    entry.name + String(n) + '/' + entry.alarmTime + '/' + 
+		    entry.name + extName + '/' + entry.alarmTime + '/' + 
 				(entry.isActive ? '1' : '0') + '/' + setting;
 		//console.log('cmd', cmd, id, entryListIds);
 		publishTopic(control.uuidAction, cmd);
@@ -107,7 +107,7 @@
 
 	function addEntry() {
 		if (entryIds.length > 15) return; // limit to 16 entries
-		let day = format(new Date(), 'eeee');
+		let day = format(new Date(), 'eeee').toLowerCase();
 		let opModes = store.structure.operatingModes;
 		let idx = Object.keys(opModes).find( (key) => opModes[key].toLowerCase() == day);
 		let entry: AlarmClockEntry = {
@@ -151,6 +151,15 @@
 			});
 		}
   });
+
+	$effect( () => {
+		if (windowHeight && modalViewport) { /* trigger on windowHeight change */
+			limitHeight = false;
+			tick().then( () => {
+				limitHeight = (windowHeight * 0.9 - modalViewport.getBoundingClientRect().bottom - 10) < 0;
+			});
+		}
+	});
 
 	$effect( () => {
 		if (prevEntryListLength > entryIds.length) { /* trigger when list gets shorter */

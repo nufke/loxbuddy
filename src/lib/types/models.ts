@@ -594,10 +594,10 @@ export type WeekDays = {
 export type AlarmClockEntry = {
 	name: string;
 	isActive: boolean;
-	alarmTime: number; // sec counted from 0:00 26100
+	alarmTime: number;	// seconds counted from midmight (0:00)
 	nightLight?: boolean;
-	daily?: boolean;
-	modes: number[]; // days based on operating modes
+	daily?: boolean;		// daily or once, nighlight only
+	modes?: number[];		// days based on operating modes, non-nighlight only
 }
 
 export type AlarmClockEntries = {

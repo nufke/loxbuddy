@@ -45,19 +45,24 @@
 
 	function parseScrollTab0() {
 		hasScrollTab0 = viewportTab0?.scrollHeight > viewportTab0?.clientHeight;
-    showScrollTopTab0 = hasScrollTab0 && (viewportTab0?.scrollTop > 20);
-		showScrollBottomTab0 = hasScrollTab0 && (viewportTab0.scrollTop + viewportTab0?.clientHeight < (viewportTab0?.scrollHeight - 20));
+    showScrollTopTab0 = limitHeight && hasScrollTab0 && (viewportTab0?.scrollTop > 10);
+		showScrollBottomTab0 = limitHeight && hasScrollTab0 && (viewportTab0.scrollTop + viewportTab0?.clientHeight < (viewportTab0?.scrollHeight - 10));
   }
 
 		function parseScrollTab1() {
 		hasScrollTab1 = viewportTab1?.scrollHeight > viewportTab1?.clientHeight;
-    showScrollTopTab1 = hasScrollTab1 && (viewportTab1?.scrollTop > 20);
-		showScrollBottomTab1 = hasScrollTab1 && (viewportTab1.scrollTop + viewportTab1?.clientHeight < (viewportTab1?.scrollHeight - 20));
+    showScrollTopTab1 = limitHeight && hasScrollTab1 && (viewportTab1?.scrollTop > 10);
+		showScrollBottomTab1 = limitHeight && hasScrollTab1 && (viewportTab1.scrollTop + viewportTab1?.clientHeight < (viewportTab1?.scrollHeight - 10));
   }
-
 	$effect( () => {
 		parseScrollTab0();
+	});
+
+	$effect( () => {
 		parseScrollTab1();
+	});
+
+	$effect( () => {
 		if (windowHeight && modalViewport) { /* trigger on windowHeight change */
 			limitHeight = false;
 			tick().then( () => {
@@ -99,22 +104,22 @@
 	<div bind:this={modalViewport} class="flex flex-col items-center justify-center h-full">
 		<h2 class="flex mb-4 h4 text-center items-center justify-center w-[80%]">{controlView.textName}</h2>
 		{#if selectedTab==0} <!-- scenes -->
-		<div class="flex flex-col justify-center">
+		<div class="flex flex-col items-center justify-center">
 			<div class="relative inline-flex h-18 w-18 items-center justify-center overflow-hidden rounded-full border border-white/5 dark:bg-surface-950">
 				<LbIcon class={controlView.iconColor} name={controlView.iconName} width="36" height="36"/>
 			</div>
+			<div class="flex items-center justify-center mt-2">
+				<p class="text-lg truncate {controlView.statusColor}">{controlView.statusName}</p>
+			</div>
 		</div>
-		<div class="flex items-center justify-center truncate mt-4">
-			<p class="text-lg truncate {controlView.statusColor}">{controlView.statusName}</p>
-		</div>
-		<div class="container flex flex-col w-full overflow-y-scroll h-full mt-2">
-			<div class="relative flex flex-col overflow-y-scroll w-full max-h-[405px]" bind:this={viewportTab0} onscroll={parseScrollTab0}>
+		<div class="flex flex-col relative w-full overflow-y-auto h-full mt-2">
 				{#if showScrollTopTab0}
-					<div class="absolute z-10 left-[50%] lb-center top-3 text-surface-500" transition:fade={{ duration: 300 }}><ChevronUp size="30"/></div>
+					<div class="absolute z-10 left-[50%] lb-center top-[17px] text-surface-500" transition:fade={{ duration: 300 }}><ChevronUp size="30"/></div>
 				{/if}
 				{#if showScrollBottomTab0}
-					<div class="absolute z-10 left-[50%] lb-center -mb-4 bottom-0 text-surface-500" transition:fade={{ duration: 300 }}><ChevronDown size="30"/></div>
+					<div class="absolute z-10 left-[50%] lb-center -bottom-[19px] text-surface-500" transition:fade={{ duration: 300 }}><ChevronDown size="30"/></div>
 				{/if}
+			<div class="flex flex-col overflow-y-auto w-full h-full" bind:this={viewportTab0} onscroll={parseScrollTab0}>
 				{#if controlView.list}
 					{#each controlView.list as listItem, index}
 					<button type="button" class="w-full mt-2 btn btn-lg {(index==selectedItem) ? 'dark:bg-surface-800 bg-surface-200' : 'dark:bg-surface-950 bg-surface-50' }
@@ -128,14 +133,14 @@
 		</div>
 		{/if}
 		{#if selectedTab==1} <!-- control -->
-		<div class="relative w-full overflow-y-scroll">
-		<div class="relative overflow-y-scroll h-full" bind:this={viewportTab1} onscroll={parseScrollTab1}>
+		<div class="flex flex-col relative w-full overflow-y-auto h-full">
 			{#if showScrollTopTab1}
-				<div class="absolute z-10 left-[50%] lb-center top-3 text-surface-500" transition:fade={{ duration: 300 }}><ChevronUp size="30"/></div>
+				<div class="absolute z-10 left-[50%] lb-center top-[17px] text-surface-500" transition:fade={{ duration: 300 }}><ChevronUp size="30"/></div>
 			{/if}
 			{#if showScrollBottomTab1}
-				<div class="absolute z-10 left-[50%] lb-center -mb-4 bottom-0 text-surface-500" transition:fade={{ duration: 300 }}><ChevronDown size="30"/></div>
+				<div class="absolute z-10 left-[50%] lb-center -bottom-[19px] text-surface-500" transition:fade={{ duration: 300 }}><ChevronDown size="30"/></div>
 			{/if}
+		<div class="flex flex-col overflow-y-auto h-full" bind:this={viewportTab1} onscroll={parseScrollTab1}>
 			{#each subControls as subControl,index}
 				{#if index > 0}
 					<div class="mt-2"></div>
