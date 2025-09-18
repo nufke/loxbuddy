@@ -1,4 +1,4 @@
-export function longpress(node, threshold = 500) {
+export function longpress(node: any, threshold: number = 500) {
   const handle_mousedown = () => {
     let start = Date.now();
 

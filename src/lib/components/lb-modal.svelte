@@ -76,6 +76,10 @@
 		showScrollBottom = limitHeight && hasScroll && (viewport.scrollTop + viewport?.clientHeight < (viewport?.scrollHeight - 10));
 	}
 
+	function close() {
+		controlView.modal.action(false);
+	}
+
 	$effect( () => {
 		parseScroll();
 	});
@@ -99,19 +103,20 @@
 	onOpenChange={()=>{}}
 	triggerBase="btn bg-surface-600"
 	contentBase="card bg-surface-100-900 p-4 shadow-sm rounded-lg border border-white/5 hover:border-white/10
-								md:max-w-9/10 md:max-h-9/10 {controlView.modal.size?.width || 'w-[450px]'}
-							 {linkedControls.length > 1 ? 'lg:w-[874px]' : ''}
-							 {linkedControls.length > 2 ? 'xl:w-[1300px]' : ''}
-							 {limitHeight ? 'h-full': '' }"
+								md:max-w-9/10 md:max-h-9/10
+								{controlView.modal.size?.width || 'w-[450px]'}
+								{linkedControls.length > 1 ? 'lg:w-[874px]' : ''}
+								{linkedControls.length > 2 ? 'xl:w-[1300px]' : ''}
+								{limitHeight ? 'h-full': '' }"
 	backdropClasses={ controlView.modal.noBlur ? "" : "backdrop-blur-sm"}
 	backdropBackground="">
 	{#snippet content()}
 	<!-- TODO better method to create multiple modal overlays with backdrop?-->
-	<div class="fixed w-full h-full top-0 left-0 right-0 bottom-0 -z-10 bg-surface-50/75 dark:bg-surface-950/75" onclick={()=>controlView.modal.action(false)}></div> 
+	<div class="fixed w-full h-full top-0 left-0 right-0 bottom-0 -z-10 bg-surface-50/75 dark:bg-surface-950/75" onclick={close}></div> 
 	<Info control={controlView.control}/>
 	<header class="relative">
 		<div class="absolute right-0 top-0">
-			<button type="button" aria-label="close" class="btn-icon w-auto" onclick={()=>controlView.modal.action(false)}>
+			<button type="button" aria-label="close" class="btn-icon w-auto" onclick={close}>
 				<X/>
 			</button>
 		</div>
@@ -138,7 +143,7 @@
 			</div>
 		</div>
 		{#if controlView.buttons.length && !controlView.slider && !controlView.modal.buttons}
-		<div class="container flex m-2 h-full overflow-y-auto">
+		<div class="container flex h-full overflow-y-auto">
 			{#each controlView.buttons as button, index}
 				{#if index > 0}
 					<div class="ml-2"></div>
@@ -176,7 +181,7 @@
 		</div>
 		{/if}
 		{#if controlView && controlView.modal && controlView.modal.buttons}
-		<div class="container flex flex-col grid grid-cols-1 {controlView.modal.class} gap-2 m-2 h-full overflow-y-auto">
+		<div class="container flex flex-col grid grid-cols-1 {controlView.modal.class} gap-2 h-full overflow-y-auto">
 			{#each controlView.modal.buttons as button}
 				{#if button.type === 'button' && button.click}
 					<button type="button" class="w-full {button.class} btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50" 
@@ -237,7 +242,7 @@
 				{/each}
 			</div>
 		{/if}
-		{#if linkedControls}
+		{#if linkedControls.length}
 		<div class="flex flex-col relative w-full overflow-y-auto h-full mt-2">
 			{#if showScrollTop}
 				<div class="absolute z-10 left-[50%] lb-center top-[11px] text-surface-500" transition:fade={{ duration: 300 }}><ChevronUp size="30"/></div>

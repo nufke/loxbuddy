@@ -135,8 +135,8 @@
   
   "__uuid__controls_tracker": "2025-07-17 21:00:00 Sunset: Sunset|2025-07-17 21:40:00 Twilight: Twilight|2025-07-18 04:58:00 Dawn: Dawn|2025-07-18 05:38:00 Sunrise: Sunrise|2025-07-18 21:00:00 Sunset: Sunset|2025-07-18 21:39:00 Twilight: Twilight|2025-07-19 04:59:00 Dawn: Dawn|2025-07-19 05:39:00 Sunrise: Sunrise|2025-07-19 20:59:00 Sunset: Sunset|2025-07-19 21:38:00 Twilight: Twilight|2025-07-20 05:00:00 Dawn: Dawn|2025-07-20 05:40:00 Sunrise: Sunrise|2025-07-20 20:58:00 Sunset: Sunset|2025-07-20 21:37:00 Twilight: Twilight|2025-07-21 05:02:00 Dawn: Dawn|2025-07-21 05:41:00 Sunrise: Sunrise|2025-07-21 20:57:00 Sunset: Sunset|2025-07-21 21:36:00 Twilight: Twilight|2025-07-22 05:03:00 Dawn: Dawn|2025-07-22 05:42:00 Sunrise: Sunrise|2025-07-22 20:56:00 Sunset: Sunset|2025-07-22 21:35:00 Twilight: Twilight|2025-07-23 05:04:00 Dawn: Dawn|2025-07-23 05:43:00 Sunrise: Sunrise|2025-07-23 20:55:00 Sunset: Sunset|2025-07-23 21:34:00 Twilight: Twilight|2025-07-24 05:05:00 Dawn: Dawn|2025-07-24 05:44:00 Sunrise: Sunrise",
 
-  "__uuid__controls_irc_v1_states_tempActual": "21.2",
-  "__uuid__controls_irc_v1_states_tempTarget": "21.1",
+  "__uuid__controls_irc_v1_states_tempActual": "19.8",
+  "__uuid__controls_irc_v1_states_tempTarget": "21.0",
   "__uuid__controls_irc_v1_states_mode": "2",
   "__uuid__controls_irc_v1_temp0": "2",
   "__uuid__controls_irc_v1_temp1": "21",

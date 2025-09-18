@@ -5,6 +5,7 @@
 	import { _ } from 'svelte-i18n';
 	import { fade200 } from '$lib/helpers/transition';
 	import Info from '$lib/components/lb-info.svelte';
+	import { tick } from 'svelte';
 
 	let { controlView = $bindable() }: { controlView: ControlView } = $props();
 
@@ -36,10 +37,10 @@
 					controlView.details.lastBellEventImages.hasOwnProperty(image) ? controlView.details.lastBellEventImages[image] : '';
 	}
 
-	function resetTab() {
-    setTimeout(() => {
-      selectedTab = 0;
-    }, 500);
+	async function close() {
+		controlView.modal.action(false);
+		await tick();
+		selectedTab = 0;
 	}
 </script>
 
@@ -49,7 +50,7 @@
 	transitionsBackdropOut = {fade200}
 	transitionsPositionerIn = {fade200}
 	transitionsPositionerOut = {fade200}
-	onOpenChange={()=>controlView.modal.action(false)}
+	onOpenChange={()=>{}}
 	triggerBase="btn bg-surface-600"
 	contentBase="card bg-surface-100-900 pt-4 space-y-4 shadow-sm rounded-lg border border-white/5
 							md:max-w-9/10 md:max-h-9/10 w-[680px] lg:w-[800px]"
@@ -57,14 +58,14 @@
 	backdropBackground="">
 	{#snippet content()}
 	<!-- TODO better method to create multiple modal overlays with backdrop? -->
-	<div class="fixed w-full h-full top-0 left-0 right-0 bottom-0 -z-10 bg-surface-50/75 dark:bg-surface-950/75" onclick={() => {controlView.modal.action(false); resetTab();}}></div> 
+	<div class="fixed w-full h-full top-0 left-0 right-0 bottom-0 -z-10 bg-surface-50/75 dark:bg-surface-950/75" onclick={close}></div> 
 	<Info control={controlView.control}/>
 	<header class="relative flex">
 		<div class="flex justify-center m-auto w-[80%]">
 			<p class="h4 truncate">{controlView.textName}</p>
 		</div>
 		<div class="absolute top-0 right-3">
-			<button type="button" aria-label="close" class="btn-icon w-auto" onclick={() => {controlView.modal.action(false); resetTab();}}>
+			<button type="button" aria-label="close" class="btn-icon w-auto" onclick={close}>
 				<X/>
 			</button>
 		</div>

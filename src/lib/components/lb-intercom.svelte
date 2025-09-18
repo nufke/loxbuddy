@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Control, ControlOptions, ControlView, ModalView } from '$lib/types/models';
+	import type { Control, ControlOptions, ControlView, ModalView, BellDetailsView } from '$lib/types/models';
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import LbControl from '$lib/components/lb-control.svelte';
 	import LbWidget from '$lib/components/lb-widget.svelte';
@@ -10,26 +10,24 @@
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
+	let events = $derived(String(store.getState(control.states.lastBellEvents)));
+	let lastBellEvents = $derived(events.includes('|') ? events.split('|'): []);
+	let lastBellEventImages = $derived(store.getLastBellEventImages(control.uuidAction));
+
 	function requestLastImages() {
 		publishTopic(control.uuidAction + '/lastBellEventImages', '1');
 	}
 
 	let modal: ModalView = $state({
-		action: (state: boolean) => {modal.state = state; if (state) { requestLastImages(); } },
+		action: (state: boolean) => {
+				modal.state = state; 
+				if (state) { requestLastImages();
+			} 
+		},
 		state: false,
 	});
 
-	type DetailsView = {
-		hasLastBellEventImages: Boolean;
-		lastBellEvents: string[];
-		lastBellEventImages: any;
-	}
-
-	let events = $derived(String(store.getState(control.states.lastBellEvents)));
-	let lastBellEvents = $derived(events.includes('|') ? events.split('|'): []);
-	let lastBellEventImages = $derived(store.getLastBellEventImages(control.uuidAction));
-
-	let	details: DetailsView = $derived({
+	let	details: BellDetailsView = $derived({
 		hasLastBellEventImages: control.details.lastBellEventImages,
 		lastBellEvents: lastBellEvents,
 		lastBellEventImages: lastBellEventImages

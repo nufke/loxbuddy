@@ -44,7 +44,7 @@
 		hideEntries = !hideEntries;
 	}
 
-	function cancel() {
+	function close() {
 		view.openModal = false;
 	}
 
@@ -71,10 +71,10 @@
 	backdropBackground="">
 	{#snippet content()}
 		<!-- TODO better method to create multiple modal overlays with backdrop? -->
-		<div class="fixed w-full h-full top-0 left-0 right-0 bottom-0 -z-10 bg-surface-50/75 dark:bg-surface-950/75" onclick={cancel}></div>
+		<div class="fixed w-full h-full top-0 left-0 right-0 bottom-0 -z-10 bg-surface-50/75 dark:bg-surface-950/75" onclick={close}></div>
 		<header class="relative">
 			<div class="absolute top-0 right-0">
-				<button type="button" aria-label="close" class="btn-icon w-auto" onclick={cancel}>
+				<button type="button" aria-label="close" class="btn-icon w-auto" onclick={close}>
 					<X />
 				</button>
 			</div>
@@ -100,12 +100,12 @@
 			<div class="mt-4 flex grid grid-cols-2 gap-2">
 				<button type="button"
 					class="btn btn-lg dark:bg-surface-950 bg-surface-50 w-full rounded-lg border border-white/15 shadow-sm hover:border-white/50"
-					onclick={cancel}>
+					onclick={close}>
 					<span class="text-lg">{$_('Cancel')}</span>
 				</button>
 				<button type="button"
 					class="btn btn-lg dark:bg-surface-950 bg-surface-50 w-full rounded-lg border border-white/15 shadow-sm hover:border-white/50"
-					onclick={() => { onValueChange({modes: newDayModes}); cancel();}}>
+					onclick={() => { onValueChange({modes: newDayModes}); close();}}>
 					<span class="text-lg">{$_('OK')}</span>
 				</button>
 			</div>

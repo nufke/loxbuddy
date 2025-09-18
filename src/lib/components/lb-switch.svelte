@@ -1,7 +1,7 @@
 <script lang="ts">
 	import LbControl from '$lib/components/lb-control.svelte';
 	import LbWidget from '$lib/components/lb-widget.svelte';
-	import type { Control, ControlOptions, ControlView, SingleButtonView } from '$lib/types/models';
+	import type { Control, ControlOptions, ControlView, SingleButtonView, ModalView } from '$lib/types/models';
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import LbModal from '$lib/components/lb-modal.svelte';
 	import { publishTopic } from '$lib/communication/mqttclient';
@@ -22,7 +22,7 @@
 		}
 	]);
 
-	let modal = $state({
+	let modal: ModalView = $state({
 		action: (state: boolean) => {modal.state = state},
 		state: false
 	});

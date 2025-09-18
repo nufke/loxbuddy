@@ -29,7 +29,7 @@
 		}
 	}
 
-	async function cancel() {
+	async function close() {
 		openModal = false;
 		await tick();
 		setEntry.modes = entry.modes; // restore latest accepted modes
@@ -63,7 +63,7 @@
 	transitionsBackdropOut={fade200}
 	transitionsPositionerIn={fade200}
 	transitionsPositionerOut={fade200}
-	onOpenChange={cancel}
+	onOpenChange={()=>{}}
 	triggerBase="btn bg-surface-600"
 	contentBase="card bg-surface-100-900 p-4 shadow-sm rounded-lg border border-white/5 hover:border-white/10
 							md:max-w-9/10 md:max-h-9/10 overflow-auto w-[340px]"
@@ -71,10 +71,10 @@
 	backdropBackground="">
 	{#snippet content()}
 		<!-- TODO better method to create multiple modal overlays with backdrop? -->
-		<div class="fixed w-full h-full top-0 left-0 right-0 bottom-0 -z-10 bg-surface-50/75 dark:bg-surface-950/75" onclick={cancel}></div>
+		<div class="fixed w-full h-full top-0 left-0 right-0 bottom-0 -z-10 bg-surface-50/75 dark:bg-surface-950/75" onclick={close}></div>
 		<header class="relative">
 			<div class="absolute top-0 right-0">
-				<button type="button" aria-label="close" class="btn-icon w-auto" onclick={cancel}>
+				<button type="button" aria-label="close" class="btn-icon w-auto" onclick={close}>
 					<X />
 				</button>
 			</div>
@@ -106,12 +106,12 @@
 		<div class="mt-6 flex grid grid-cols-2 gap-2">
 			<button type="button"
 				class="btn btn-lg dark:bg-surface-950 bg-surface-50 w-full rounded-lg border border-white/15 shadow-sm hover:border-white/50"
-				onclick={cancel}>
+				onclick={close}>
 				<span class="text-lg">{$_('Cancel')}</span>
 			</button>
 			<button type="button"
 				class="btn btn-lg dark:bg-surface-950 bg-surface-50 w-full rounded-lg border border-white/15 shadow-sm hover:border-white/50"
-				onclick={() => { openModal = false; onValueChange({value: entry.nightLight ? setEntry.daily : setEntry.modes});}}>
+				onclick={() => {onValueChange({value: entry.nightLight ? setEntry.daily : setEntry.modes}); close();}}>
 				<span class="text-lg">{$_('OK')}</span>
 			</button>
 		</div>

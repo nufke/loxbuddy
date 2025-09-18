@@ -646,3 +646,9 @@ export type CalendarEntryView = {
 	enableDelete: boolean;
 	openModal: boolean;
 }
+
+export type BellDetailsView = {
+	hasLastBellEventImages: Boolean;
+	lastBellEvents: string[];
+	lastBellEventImages: any;
+}

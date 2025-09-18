@@ -141,6 +141,10 @@
 
 		let control = view.isIRC ? view.subControl.uuidAction : view.control.uuidAction; // for IRC we need to use the subControl
 		publishTopic(control, cmd);
+		close();
+	}
+
+	function close() {
 		view.openModal = false;
 	}
 
@@ -236,10 +240,10 @@
 	backdropBackground="">
 	{#snippet content()}
 		<!-- TODO better method to create multiple modal overlays with backdrop? -->
-		<div class="fixed w-full h-full top-0 left-0 right-0 bottom-0 -z-10 bg-surface-50/75 dark:bg-surface-950/75 backdrop-blur-xs" onclick={(e) => { view.openModal = false;}}></div> 
+		<div class="fixed w-full h-full top-0 left-0 right-0 bottom-0 -z-10 bg-surface-50/75 dark:bg-surface-950/75 backdrop-blur-xs" onclick={close}></div> 
 		<header class="relative">
 			<div class="absolute top-0 right-0">
-				<button type="button" aria-label="close" class="btn-icon w-auto" onclick={() => {view.openModal = false;}}>
+				<button type="button" aria-label="close" class="btn-icon w-auto" onclick={close}>
 					<X />
 				</button>
 			</div>
@@ -309,7 +313,7 @@
 					</button>
 					{/if}
 					<button class="w-full col-span-2 btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
-									onclick={() => {view.openModal = false}}>
+									onclick={close}>
 						<p class="truncate text-lg">{$_("Cancel")}</p>
 					</button>
 					<button class="w-full col-span-2 btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50"

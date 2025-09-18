@@ -208,11 +208,10 @@
 		return utils.isDST(new Date(timerDate)) ? timerDate+3600000 : timerDate;
 	}
 
-	function close() {
+	async function close() {
 		controlView.modal.action(false);
-		setTimeout(() => {
-      selectedTab = 1;
-    }, 500);
+		await tick();
+    selectedTab = 1;
 	}
 
 	function openCalendarView() {
@@ -271,7 +270,7 @@
 	transitionsBackdropOut = {fade200}
 	transitionsPositionerIn = {fade200}
 	transitionsPositionerOut = {fade200}
-	onOpenChange={()=>controlView.modal.action(false)}
+	onOpenChange={()=>{}}
 	triggerBase="btn bg-surface-600"
 	contentBase="card bg-surface-100-900 p-4 shadow-sm rounded-lg border border-white/5 hover:border-white/10
 							md:max-w-9/10 md:max-h-9/10 w-[450px] { limitHeight ? 'h-full': '' }"
@@ -293,9 +292,9 @@
 		{#if selectedTab==1}
 			<div class="w-full mt-4 m-2 p-2 dark:bg-surface-950 bg-surface-50 rounded-lg border border-white/15 hover:border-white/50">
 				<!--<LbCicleSlider min={10} max={30} step={0.5} target={tempTarget} manual={!isAutomatic} actual={tempActual} onValueChangeEnd={(e: any) => {updatePosition(e.value)}}/>-->
-				<div class="grid grid-cols-2">
+				<div class="flex flex-row items-center justify-between">
 					<div>
-						<p class="pl-2 text-lg text-left truncate {controlView.statusColor}">{$_(controlView?.statusName)}</p>
+						<p class="pl-2 text-lg text-left truncate {controlView.statusColor}">{$_(controlView?.statusName)} ({tempFormat(selectedItem?.value)})</p>
 					</div>
 					<div class="relative flex items-center justify-end">
 						{#if isAutomatic}
@@ -315,10 +314,9 @@
 						{/if}
 					</div>
 				</div>
-				<div class="flex flex-col items-center justify-center">
-					<div class="text-lg dark:text-surface-300 text-surface-700">Actual: {tempFormat(tempActual)}</div>
-					<LbTempSlider min={10} max={30} step={0.5} target={tempTarget} manual={!isAutomatic} actual={tempActual} onValueChangeEnd={(e: any) => {updatePosition(e.value)}}/>
-					<div class="text-lg dark:text-primary-500 text-primary-700">Target: {tempFormat(tempTarget)}</div>
+				<div class="flex flex-col items-center justify-center" onclick={(e) => {e.stopPropagation(); }}> <!-- workaround wrapper to stop propagation -->
+					<LbTempSlider min={5} max={28} step={0.1} target={tempTarget} manual={!isAutomatic} actual={tempActual} onValueChange={(e: any) => {updatePosition(e.value)}}/>
+					<div class="text-md dark:text-surface-50 text-surface-950">Actual: {tempFormat(tempActual)}</div>
 				</div>
 			</div>
 				<div class="w-full dark:bg-surface-950 bg-surface-50 rounded-lg border border-white/15 hover:border-white/50"

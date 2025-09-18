@@ -81,17 +81,17 @@
 			return status;
 	}
 
-	function resetState() {
+	function close() {
 		lightList.forEach( item => item.selected = false ); // empty selected lights
+		scenesEnabled = false;
 		selectedControl = undefined;
 		selectedControlOptions = undefined;
+		controlView.modal.action(false);
 	}
 
 	let modal: ModalView = $state({
 		action: (state: boolean) => {
-			modal.state = state;
-			if (!state) resetState()
-		},
+			modal.state = state; },
 		state: false
 	});
 
@@ -162,7 +162,6 @@
 		let light = lightList.find( item => item.selected);
 		let control: Control | undefined = store.controlList.find( (control: Control) => control.uuidAction == light?.uuid);
 		if (control) {
-			//controlView.modal.action(false); // TODO should we close the central overview or not?
 			selectedControl = control;
 			selectedControlOptions = {...DEFAULT_CONTROLOPTIONS, showModal: true, showControl: false};
 		}
@@ -178,7 +177,7 @@
 		transitionsBackdropOut = {fade200}
 		transitionsPositionerIn = {fade200}
 		transitionsPositionerOut = {fade200}
-		onOpenChange={() => controlView.modal.action(false)}
+		onOpenChange={()=>{}}
 		triggerBase="btn bg-surface-600"
 		contentBase="card bg-surface-100-900 p-4 shadow-sm rounded-lg border border-white/5 hover:border-white/10
 									md:max-w-9/10 md:max-h-9/10 w-[450px] { limitHeight ? 'h-full': '' }"
@@ -186,11 +185,11 @@
 		backdropBackground="">
 		{#snippet content()}
 		<!-- TODO better method to create multiple modal overlays with backdrop? -->
-		<div class="fixed w-full h-full top-0 left-0 right-0 bottom-0 -z-10 bg-surface-50/75 dark:bg-surface-950/75" onclick={()=>controlView.modal.action(false)}></div> 
+		<div class="fixed w-full h-full top-0 left-0 right-0 bottom-0 -z-10 bg-surface-50/75 dark:bg-surface-950/75" onclick={close}></div> 
 		<Info control={controlView.control}/>
 		<header class="relative">
 			<div class="absolute top-0 right-0">
-				<button type="button" aria-label="close" class="btn-icon w-auto" onclick={() => {scenesEnabled=false; controlView.modal.action(false)}}>
+				<button type="button" aria-label="close" class="btn-icon w-auto" onclick={close}>
 					<X />
 				</button>
 			</div>

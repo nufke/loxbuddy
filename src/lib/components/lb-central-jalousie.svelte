@@ -95,7 +95,6 @@
 		let screen = screenList.find( item => item.selected);
 		let control: Control | undefined = store.controlList.find( (control: Control) => control.uuidAction == screen?.uuid);
 		if (control) {
-			//controlView.modal.action(false); // TODO should we close the central overview or not?
 			selectedControl = control;
 			selectedControlOptions = {...DEFAULT_CONTROLOPTIONS, showModal: true, showControl: false};
 		}
@@ -104,7 +103,6 @@
 	let modal: ModalView = $state({
 		action: (state: boolean) => {
 			modal.state = state;
-			if (!state) resetState()
 		},
 		state: false
 	});
@@ -130,16 +128,18 @@
 		return position > 1 ? 'dark:text-primary-500 text-primary-700' : 'text-surface-950 dark:text-surface-50';
 	}
 
-	function resetState() {
+	function close() {
 		screenList.forEach( item => item.selected = false ); // clear selected screens
+		screenSelected = false;
 		selectedControl = undefined;
 		selectedControlOptions = undefined;
+		controlView.modal.action(false);
 	}
 
 	function screenAction(action: string) {
 		screenList.forEach( screen => { 
 			if (screen.selected) {
-				publishTopic(screen.uuid, action)
+				publishTopic(screen.uuid, action);
 			}
 		});
 	}
@@ -190,7 +190,7 @@
 		transitionsBackdropOut = {fade200}
 		transitionsPositionerIn = {fade200}
 		transitionsPositionerOut = {fade200}
-		onOpenChange={() => {}}
+		onOpenChange={()=>{}}
 		triggerBase="btn bg-surface-600"
 		contentBase="card bg-surface-100-900 p-4 shadow-sm rounded-lg border border-white/5 hover:border-white/10
 									md:max-w-9/10 md:max-h-9/10 w-[450px] { limitHeight ? 'h-full': '' }"
@@ -198,11 +198,11 @@
 		backdropBackground="">
 		{#snippet content()}
 		<!-- TODO better method to create multiple modal overlays with backdrop? -->
-		<div class="fixed w-full h-full top-0 left-0 right-0 bottom-0 -z-10 bg-surface-50/75 dark:bg-surface-950/75" onclick={()=>controlView.modal.action(false)}></div> 
+		<div class="fixed w-full h-full top-0 left-0 right-0 bottom-0 -z-10 bg-surface-50/75 dark:bg-surface-950/75" onclick={close}></div> 
 		<Info control={controlView.control}/>
 		<header class="relative">
 			<div class="absolute top-0 right-0">
-				<button type="button" aria-label="close" class="btn-icon w-auto" onclick={() => controlView.modal.action(false)}>
+				<button type="button" aria-label="close" class="btn-icon w-auto" onclick={close}>
 					<X />
 				</button>
 			</div>

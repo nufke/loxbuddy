@@ -32,6 +32,15 @@
 		return (findName && store.rooms) ? store.rooms[control.room].name : control.name;
 	}
 
+	function getStatus() {
+		if (activeMoodsNum < 0) return $_('Manual');
+		if (moodList) {
+			let moodObj = moodList.find((item: MoodList) => item.id == activeMoodsNum);
+			if (moodObj) return moodObj.name;
+		}
+		return '';
+	}
+
 	let buttons: SingleButtonView[] = $state([
 		{
 			iconName: 'Plus',
@@ -55,7 +64,7 @@
 		iconName: store.getIcon(control, controlOptions.isSubControl),
 		iconColor: activeMoodsNum != 778 ? 'dark:fill-primary-500 fill-primary-700' : 'fill-surface-950 dark:fill-surface-50',
 		textName: getTextName(),
-		statusName: activeMoodsNum < 0 ? $_('Manual') : moodList?.find((item: MoodList) => item.id == activeMoodsNum)?.name,
+		statusName: getStatus(),
 		statusColor: activeMoodsNum != 778 ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700',
 		list: moodList,
 		buttons: buttons,

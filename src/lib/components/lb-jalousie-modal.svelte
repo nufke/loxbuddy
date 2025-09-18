@@ -13,6 +13,9 @@
 
 	let autoActive = $derived(Number(store.getState(controlView.control.states.autoActive)));
 
+	function close() {
+		controlView.modal.action(false);
+	}
 </script>
 
 <Modal
@@ -21,7 +24,7 @@
 	transitionsBackdropOut = {fade200}
 	transitionsPositionerIn = {fade200}
 	transitionsPositionerOut = {fade200}
-	onOpenChange={()=>controlView.modal.action(false)}
+	onOpenChange={()=>{}}
 	triggerBase="btn bg-surface-600"
 	contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-sm rounded-lg border border-white/5 hover:border-white/10
 							md:max-w-9/10 md:max-h-9/10 overflow-auto w-[450px]"
@@ -29,7 +32,7 @@
 	backdropBackground="">
 	{#snippet content()}
 	<!-- TODO better method to create multiple modal overlays with backdrop? -->
-	<div class="fixed w-full h-full top-0 left-0 right-0 bottom-0 -z-10 bg-surface-50/75 dark:bg-surface-950/75" onclick={()=>controlView.modal.action(false)}></div> 
+	<div class="fixed w-full h-full top-0 left-0 right-0 bottom-0 -z-10 bg-surface-50/75 dark:bg-surface-950/75" onclick={close}></div> 
 	<Info control={controlView.control}/>
 	<header class="relative">
 		<div class="flex justify-center">
@@ -44,7 +47,7 @@
 			</div>
 		</div>
 		<div class="absolute right-0 top-0">
-			<button type="button" aria-label="close" class="btn-icon w-auto" onclick={()=>controlView.modal.action(false)}>
+			<button type="button" aria-label="close" class="btn-icon w-auto" onclick={close}>
 				<X/>
 			</button>
 		</div>
@@ -60,7 +63,7 @@
 		<div class="mt-2 truncate">
 			<p class="text-lg truncate {controlView.statusColor}">{controlView.statusName}</p>
 		</div>
-		<div class="container flex grid grid-cols-2 gap-2 mt-6 m-2">
+		<div class="container flex grid grid-cols-2 gap-2 mt-6">
 		{#if controlView.modal && controlView.modal.buttons}
 			{#each controlView.modal.buttons as button}
 				{#if button.type === 'button'}

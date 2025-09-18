@@ -138,7 +138,7 @@
 	transitionsBackdropOut = {fade200}
 	transitionsPositionerIn = {fade200}
 	transitionsPositionerOut = {fade200}
-	onOpenChange={close}
+	onOpenChange={()=>{}}
 	triggerBase=""
 	contentBase="container mx-auto max-w-full w-full overflow-auto h-full"
 	positionerPadding="p-2"

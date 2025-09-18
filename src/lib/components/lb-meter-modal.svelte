@@ -22,6 +22,10 @@
 		let startOfWeek = format(d.setDate(today - currentDay), 'd-L');
 		return startOfWeek + ' . . ' + now; 
 	}
+
+	function close() {
+		controlView.modal.action(false);
+	}
 </script>
 
 <Modal
@@ -38,14 +42,14 @@
 	backdropBackground="">
 	{#snippet content()}
 	<!-- TODO better method to create multiple modal overlays with backdrop?-->
-	<div class="fixed w-full h-full top-0 left-0 right-0 bottom-0 -z-10 bg-surface-50/75 dark:bg-surface-950/75" onclick={()=>controlView.modal.action(false)}></div> 
+	<div class="fixed w-full h-full top-0 left-0 right-0 bottom-0 -z-10 bg-surface-50/75 dark:bg-surface-950/75" onclick={close}></div> 
 	<Info control={controlView.control}/>
 	<header class="relative">
 		<div>
 			<h2 class="h4 text-center">{controlView.textName}</h2>
 		</div>
 		<div class="absolute right-0 top-0">
-			<button type="button" aria-label="close" class="btn-icon w-auto" onclick={()=>controlView.modal.action(false)}>
+			<button type="button" aria-label="close" class="btn-icon w-auto" onclick={close}>
 				<X/>
 			</button>
 		</div>
