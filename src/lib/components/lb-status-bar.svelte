@@ -2,38 +2,42 @@
 	import { _ } from 'svelte-i18n';
   import { Progress } from '@skeletonlabs/skeleton-svelte';
 	import { store } from '$lib/stores/store.svelte';
+	import { Bell } from '@lucide/svelte';
 
-	let { max, actual } = $props();
+	let { maxPower, currentPower, mode } = $props();
 
-	let value = $derived(Math.floor(100*actual/max) || 0);
-	function printValue(n: number, scale: string, unit: string) {
-		return [(n.toLocaleString(store.locale, { minimumFractionDigits: 1 })), scale + unit];
+	let value = $derived(Math.floor(100 * currentPower / maxPower) || 0);
+
+	function printValue(n: number, scale: string, unit: string, mode: number = -1) {
+		// 0 = Overload Manager, 1 = Peak Manager, 2 = Peak Overload Manager
+		let label = (mode > -1) ? ((mode == 1) ? $_('Average power') : $_('Current power')) : '';
+		return [label, (n.toLocaleString(store.locale, { minimumFractionDigits: 1 })), scale + unit].join(' ');
 	}
 
-	function format(n: number) {
+	function format(n: number, mode: number = -1) {
 		let su = {scale: 1E3, unit: 'W'};
 
 		if (Math.abs(n) < 1E3/su.scale) { 
 			n *= 1E3;
 			n = Math.round(n);
-			return printValue(n, '', su.unit);
+			return printValue(n, '', su.unit, mode);
 		}
 
 		if (Math.abs(n) >= 1E3/su.scale && Math.abs(n) < 1E6/su.scale) { 
 			n = Math.round(n * 10) / 10;
-			return printValue(n, 'k', su.unit);
+			return printValue(n, 'k', su.unit, mode);
 		}
 
 		if (Math.abs(n) >= 1E6/su.scale && Math.abs(n) < 1E9/su.scale) {
 			n /= 1E3;
 			n = Math.round(n * 100) / 100;
-			return printValue(n, 'M', su.unit);
+			return printValue(n, 'M', su.unit, mode);
 		}
 
 		if (Math.abs(n) >= 1E9/su.scale) {
 			n /= 1E6;
 			n = Math.round(n * 100) / 100;
-			return printValue(n, 'G', su.unit);
+			return printValue(n, 'G', su.unit, mode);
 		}
 		return printValue(0, '', '');
 	}
@@ -41,15 +45,20 @@
 
 <div class="w-full h-full mt-2 mb-2 flex align-center justify-center">
 	<div class="flex w-full flex-col ml-2 mr-2">
-		<div class="flex justify-end items-center mb-1 border-r-3 dark:border-surface-700 border-surface-300 pr-2 text-md h-[26px] w-full">{$_('Max power')} {format(max).join(' ')}</div>
+		<div class="flex justify-end items-center mb-1 border-r-3 dark:border-surface-700 border-surface-300
+								pr-2 text-md h-[26px] w-full">
+			{$_('Max power')} {format(maxPower)}
+		</div>
 		<Progress trackClasses="custom-track" meterClasses="custom-meter" value={100} max={100} height="h-10" />
 		{#if value < 50}
 			<div class="flex flex-row items-center">
-				<div class="mt-1 border-r-3 dark:border-surface-700 border-surface-300 text-left pr-2 text-md h-[26px]" style="width:{value}%"></div>
-				<p class="pl-2 text-md">{$_('Actual power')} {format(actual).join(' ')}</p>
+				<div class="mt-1 border-r-3 dark:border-surface-700 border-surface-300 text-left pr-2 text-md h-[26px]" 
+						style="width:{value}%"></div>
+				<p class="pl-2 text-md">{format(currentPower, mode)}</p>
 			</div>
 		{:else}
-			<div class="flex justify-end items-center mt-1 border-r-3 dark:border-surface-700 border-surface-300 pr-2 text-md h-[26px]" style="width:{value}%">{$_('Actual power')} {format(actual).join(' ')}</div>
+			<div class="flex justify-end items-center mt-1 border-r-3 dark:border-surface-700 border-surface-300 pr-2 text-md h-[26px]" 
+						style="width:{value}%">{format(currentPower, mode)}</div>
 		{/if}
 	</div>
 </div>

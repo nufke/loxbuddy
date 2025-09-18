@@ -62,7 +62,7 @@
 	<Info control={controlView.control}/>
 	<header class="relative flex">
 		<div class="flex justify-center m-auto w-[80%]">
-			<p class="h4 truncate">{controlView.textName}</p>
+			<p class="h5 truncate">{controlView.textName}</p>
 		</div>
 		<div class="absolute top-0 right-3">
 			<button type="button" aria-label="close" class="btn-icon w-auto" onclick={close}>

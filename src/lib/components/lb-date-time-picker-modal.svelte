@@ -47,7 +47,7 @@
 		<div class="fixed w-full h-full top-0 left-0 right-0 bottom-0 -z-10 bg-surface-50/75 dark:bg-surface-950/75" onclick={close}></div> 
 			<header class="relative flex">
 				<div class="flex justify-center text-center m-auto">
-					<h2 class="h4 truncate">{view.label}</h2>
+					<p class="h5 truncate">{view.label}</p>
 				</div>
 				<div class="absolute top-0 right-0">
 					<button type="button" aria-label="close" class="btn-icon w-auto" onclick={close}>

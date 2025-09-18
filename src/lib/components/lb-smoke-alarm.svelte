@@ -136,7 +136,7 @@
 			<Info2 control={controlView.control}/>
 			<header class="relative flex">
 				<div class="flex justify-center text-center w-[300px]">
-					<h2 class="h4 truncate">{controlView.textName}</h2>
+					<p class="h5 truncate">{controlView.textName}</p>
 				</div>
 				<div class="absolute top-0 right-0">
 					<button type="button" aria-label="close" class="btn-icon w-auto" onclick={close}>
@@ -153,7 +153,7 @@
 			{/if}
 			{#if selectedTab==1}
 			<div class="justify-center text-center">
-				<p class="h4 text-lg dark:text-surface-300 text-surface-700">{$_("Duration servicemode")} ({$_("Uren").toLocaleLowerCase()} : {$_("Minuten").toLocaleLowerCase()})</p>
+				<p class="h5 text-lg dark:text-surface-300 text-surface-700">{$_("Duration servicemode")} ({$_("Uren").toLocaleLowerCase()} : {$_("Minuten").toLocaleLowerCase()})</p>
 			</div>
 			<div class="w-[100px] m-auto justify-center text-center">
 				<div class="grid grid-cols-3">

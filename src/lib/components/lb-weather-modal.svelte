@@ -79,7 +79,7 @@
 	</header>
 	{#if loaded}
 	<div class="-mt-2 justify-center text-center" onscroll={() => {store.setWeatherModalTimeout()}} onmousemove={() => {store.setWeatherModalTimeout()}}>
-		<p class="h4">{current.location}</p>
+		<p class="h5">{current.location}</p>
 		<p class="text-lg">{format(time, "PPP p")}</p>
 		<div class="grid grid-cols-2 mb-5">
 			<div>

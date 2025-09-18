@@ -495,7 +495,7 @@
 	{#snippet content()}
 	<header class="relative">
 		<div class="flex justify-center mb-3">
-			<h2 class="h4 text-center">{$_("Startpage")}</h2>
+			<p class="h4 text-center">{$_("Startpage")}</p>
 		</div>
 		<div class="absolute right-0 top-0">
 			<button type="button" aria-label="close" class="btn-icon w-auto" onclick={() => { openStartpageModal = false; }}>

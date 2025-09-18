@@ -124,7 +124,7 @@
 		</header>
 		<div class="flex flex-col items-center justify-center mt-2">
 			<div>
-				<h2 class="h4 text-center">{@html selectedEntry?.title}</h2>
+				<p class="h4 text-center">{@html selectedEntry?.title}</p>
 			</div>
 			<div class="m-2 w-[350px]">
 				<p class="text-lg text-center text-wrap">{@html selectedEntry?.affectedName}</p>

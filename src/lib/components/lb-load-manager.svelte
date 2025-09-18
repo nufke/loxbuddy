@@ -10,13 +10,14 @@
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
 	let loads = control.details.loads;
+	let mode = control.details.mode;
 
 	let currentPower = $derived(Number(store.getState(control.states.currentPower)));
 	let peakOverloadPower = $derived(Number(store.getState(control.states.peakOverloadPower)));
 	let maxPower = $derived(Number(store.getState(control.states.maxPower)));
-	let maxTp = $derived(Number(store.getState(control.states.maxTp)));
-	let maxPowerExceeded = $derived(Number(store.getState(control.states.maxPowerExceeded)));
 	let availablePower = $derived(Number(store.getState(control.states.availablePower))); // remaining free power
+	let maxPowerExceeded = $derived(Number(store.getState(control.states.maxPowerExceeded)));
+	let maxTp = $derived(Number(store.getState(control.states.maxTp)));
 	let lockedLoads = $derived(Number(store.getState(control.states.lockedLoads)));
 	let statusLoads = $derived(Number(store.getState(control.states.statusLoads)));
 
@@ -50,11 +51,15 @@
 			...modal,
 			details: {
 				loadManager: {
-					max: maxPower,
-					actual: currentPower,
 					loads: loads,
+					mode: mode,
+					currentPower: currentPower,
+					peakOverloadPower: peakOverloadPower,
+					maxPower: maxPower,
+					availablePower: availablePower,
+					maxPowerExceeded: maxPowerExceeded,
+					lockedLoads: lockedLoads,
 					statusLoads: statusLoads,
-					lockedLoads: lockedLoads
 				}
 			}
 		}

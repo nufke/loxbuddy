@@ -130,7 +130,7 @@
 			entry.mode == getOperatingMode(item.name[0])
 		)
 		if (selectedEntry) {
-			calendarEntryView.label = $_('Temperature settings');
+			calendarEntryView.label = $_('Update entry');
 			calendarEntryView.control = controlView.control;
 			calendarEntryView.subControl = selectedSubControl;
 			calendarEntryView.isIRC = true;
@@ -138,6 +138,24 @@
 			calendarEntryView.enableDelete = true;
 			calendarEntryView.openModal = true;
 		}
+	}
+
+	function addEntry() {
+		let coolingNr = isCooling ? 2 : 1;
+		selectedEntry = {
+			mode: String(mode),
+			from: utils.epoch2TimeStrNextHour(Date.now()/1000),
+			to: utils.epoch2TimeStrNextHour((Date.now()/1000)+3600),
+			needActivate: '0',
+			value: temperatureList && temperatureList[coolingNr].id ? temperatureList[coolingNr].id : '0',
+		}
+		calendarEntryView.label = $_('Add entry');
+		calendarEntryView.control = controlView.control;
+		calendarEntryView.subControl = selectedSubControl;
+		calendarEntryView.isIRC = true;
+		calendarEntryView.isCooling = isCooling;
+		calendarEntryView.enableDelete = false;
+		calendarEntryView.openModal = true;
 	}
 
 	function setTemperature(item: ListItem) {
@@ -190,7 +208,7 @@
 	}
 
 	function tempFormat(temp: number | undefined) {
-		return temp?.toLocaleString(store.locale, { maximumFractionDigits: 1, minimumFractionDigits: 1 }) + ' °C';
+		return temp?.toLocaleString(store.locale, { maximumFractionDigits: 1, minimumFractionDigits: 1 }) + '°';
 	}
 
 	function getTemperature(item: any) {
@@ -288,7 +306,7 @@
 		</div>
 	</header>
 	<div bind:this={modalViewport} class="flex flex-col items-center justify-center h-full">
-		<h2 class="h4 text-center items-center justify-center w-[80%]">{controlView.textName}</h2>
+		<p class="h5 text-center items-center justify-center w-[80%]">{controlView.textName}</p>
 		{#if selectedTab==1}
 			<div class="w-full mt-4 m-2 p-2 dark:bg-surface-950 bg-surface-50 rounded-lg border border-white/15 hover:border-white/50">
 				<!--<LbCicleSlider min={10} max={30} step={0.5} target={tempTarget} manual={!isAutomatic} actual={tempActual} onValueChangeEnd={(e: any) => {updatePosition(e.value)}}/>-->
@@ -363,7 +381,7 @@
 			</div>
 		{/if}
 		{#if selectedTab==3}
-			<div class="container mt-2 overflow-y-auto">
+			<div class="container mt-2 mb-3 overflow-y-auto">
 				<div class="flex flex-col space-y-2">
 					{#each filteredEntries() as entry}
 						<button type="button" class="w-full dark:bg-surface-950 bg-surface-50
@@ -380,6 +398,16 @@
 						</button>
 					{/each}
 				</div>
+			</div>
+			<div class="container grid grid-cols-2 gap-2">
+				<button type="button" class="w-full btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50 shadow-sm text-surface-950-50
+																			rounded-lg border border-white/15 hover:border-white/50" onclick={openCalendarView}>
+					<span class="text-base">{$_("Open calendar")}</span>
+				</button>
+				<button type="button" class="w-full btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50 shadow-sm text-surface-950-50
+																			rounded-lg border border-white/15 hover:border-white/50" onclick={addEntry}>
+					<span class="text-base">{$_("Add entry")}</span>
+				</button>
 			</div>
 		{/if}
 		<div class="relative w-full mt-6 mb-2">

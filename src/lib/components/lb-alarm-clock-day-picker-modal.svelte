@@ -80,7 +80,7 @@
 			</div>
 		</header>
 		<div class="flex flex-col items-center justify-center">
-			<h2 class="h4 text-center items-center justify-center w-[80%]">{label}</h2>
+			<p class="h5 text-center items-center justify-center w-[80%]">{label}</p>
 			{#if setEntry.nightLight}
 				<form class="mt-4 space-y-2">
 				  <label class="flex items-center space-x-2">

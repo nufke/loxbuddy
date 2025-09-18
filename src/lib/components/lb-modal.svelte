@@ -122,7 +122,7 @@
 		</div>
 	</header>
 	<div bind:this={modalViewport} class="flex flex-col items-center justify-center h-full">
-		<h2 class="flex h4 text-center items-center justify-center w-[80%]">{controlView.textName}</h2>
+		<p class="h5 flex text-center items-center justify-center w-[80%]">{controlView.textName}</p>
 		<div class="flex flex-col items-center justify-center">
 			{#if !controlView.modal.disableIcon}
 			<div class="mt-4 relative inline-flex h-18 w-18 items-center justify-center overflow-hidden rounded-full border border-white/10 dark:bg-surface-950 bg-surface-50">
@@ -220,8 +220,9 @@
 		{/if}
 		{#if controlView.modal && controlView.modal.details && controlView.modal.details.loadManager}
 			<div class="w-full m-2 p-2 dark:bg-surface-950 bg-surface-50 rounded-lg border border-white/15 hover:border-white/50">
-				<LbStatusBar	max={controlView.modal.details.loadManager.max}
-											actual={controlView.modal.details.loadManager.actual} />
+				<LbStatusBar	maxPower={controlView.modal.details.loadManager.maxPower}
+											currentPower={controlView.modal.details.loadManager.currentPower}
+											mode={controlView.modal.details.loadManager.mode} />
 			</div>
 			<div class="flex flex-col overflow-y-auto space-y-2 w-full">
 				{#each controlView.modal.details.loadManager.loads as load,i}

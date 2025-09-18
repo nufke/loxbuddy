@@ -208,8 +208,8 @@
 			</div>
 		</header>
 		<div bind:this={modalViewport} class="flex flex-col items-center justify-center h-full">
-			<h2 class="h4 text-center items-center justify-center w-[80%]">{controlView.textName}</h2>
-			<h2 class="mt-2 mb-4 text-lg text-center {screensClosed.length ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700'}">{getActiveScreens()}</h2>
+			<p class="h5 text-center items-center justify-center w-[80%]">{controlView.textName}</p>
+			<p class="mt-2 mb-4 text-lg text-center {screensClosed.length ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700'}">{getActiveScreens()}</p>
 			<div class="container grid grid-cols-5 gap-2 mb-2">
 				<button type="button" class="btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50 shadow-sm text-surface-950-50
 																			rounded-lg border border-white/10 hover:border-white/50" onclick={() => screenAction("FullDown")}>

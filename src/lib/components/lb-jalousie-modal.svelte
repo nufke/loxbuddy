@@ -54,7 +54,7 @@
 	</header>
 	<div class="flex flex-col items-center justify-center mt-2">
 		<div>
-			<h2 class="h4 text-center">{controlView.textName}</h2>
+			<p class="h5 text-center">{controlView.textName}</p>
 		</div>
 		<div class="mt-2 truncate">
 			<p class="text-lg truncate {autoActive ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700'}">

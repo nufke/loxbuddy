@@ -202,7 +202,7 @@
 			</div>
 		</header>
 		<div bind:this={modalViewport} class="flex flex-col items-center justify-center h-full">
-			<h2 class="h4 text-center items-center justify-center w-[80%]">{controlView.textName}</h2>
+			<p class="h5 text-center items-center justify-center w-[80%]">{controlView.textName}</p>
 		<div bind:this={viewport} class="container mt-2 overflow-y-auto w-full">
 			{#each entryList as entry, i}
 				<div class="mt-2 p-4 dark:bg-surface-950 bg-surface-50 rounded-lg">

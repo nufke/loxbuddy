@@ -102,7 +102,7 @@
 		</div>
 	</header>
 	<div bind:this={modalViewport} class="flex flex-col items-center justify-center h-full">
-		<h2 class="flex mb-4 h4 text-center items-center justify-center w-[80%]">{controlView.textName}</h2>
+		<p class="h5 flex mb-4 text-center items-center justify-center w-[80%]">{controlView.textName}</p>
 		{#if selectedTab==0} <!-- scenes -->
 		<div class="flex flex-col items-center justify-center">
 			<div class="relative inline-flex h-18 w-18 items-center justify-center overflow-hidden rounded-full border border-white/5 dark:bg-surface-950">

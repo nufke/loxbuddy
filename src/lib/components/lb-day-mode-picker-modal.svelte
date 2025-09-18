@@ -80,7 +80,7 @@
 			</div>
 		</header>
 		<div bind:this={modalViewport} class="flex flex-col items-center justify-center h-full">
-			<h2 class="h4 text-center items-center justify-center w-[80%]">{view.label}</h2>
+			<p class="h5 text-center items-center justify-center w-[80%]">{view.label}</p>
 			<div class="mt-4 overflow-y-auto h-full">
 				<form class="space-y-2 p-2 w-[220px]">
 					{#each entries as item}

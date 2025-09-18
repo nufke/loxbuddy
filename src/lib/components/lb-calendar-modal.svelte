@@ -89,7 +89,7 @@
 			needActivate: '0',
 			value: view.isIRC && temperatureList && temperatureList[isCooling].id ? temperatureList[isCooling].id : '0',
 		}
-		calendarEntryView.label = $_('Add switching times');
+		calendarEntryView.label = $_('Add entry');
 		calendarEntryView.control = view.control;
 		calendarEntryView.subControl = view.subControl;
 		calendarEntryView.isIRC = view.isIRC;
@@ -100,7 +100,7 @@
 
 	function updateEntry(entry: Entry) {
 		selectedEntry = entry;
-		calendarEntryView.label = view.isIRC ? $_('Temperature settings') : $_('Switching times');
+		calendarEntryView.label = $_('Update entry');
 		calendarEntryView.control = view.control;
 		calendarEntryView.subControl = view.subControl;
 		calendarEntryView.isIRC = view.isIRC;

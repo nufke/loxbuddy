@@ -185,14 +185,14 @@
 			</div>
 		</header>
 		<div bind:this={modalViewport} class="flex flex-col items-center justify-center h-full">
-			<h2 class="h4 text-center items-center justify-center w-[80%]">{controlView.textName}</h2>
-			<h2 class="flex relative text-lg text-center mt-2 mb-2">
+			<p class="h5 text-center items-center justify-center w-[80%]">{controlView.textName}</p>
+			<p class="flex relative text-lg text-center mt-2 mb-2">
 				{#each summary as state, i}
 					{@const isLast = i === summary.length - 1}
 						<span class={ state.color ? 'text-orange-500' : 'dark:text-primary-500 text-primary-700'}>{state.name}</span>{#if !isLast }
 							<span>,&nbsp;</span>{/if}
 				{/each}
-			</h2>
+			</p>
 			<div class="flex flex-col relative w-full overflow-y-auto h-full">
 				{#if showScrollTop}
 					<div class="absolute z-10 left-[50%] lb-center top-[17px] text-surface-500" transition:fade={{ duration: 300 }}><ChevronUp size="30"/></div>

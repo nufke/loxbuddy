@@ -249,12 +249,12 @@
 			</div>
 		</header>
 		<div class="flex flex-col items-center justify-center">
-			<h2 class="h4 text-center items-center justify-center w-[80%]">{view.label}</h2>
+			<p class="h5 text-center items-center justify-center w-[80%]">{view.label}</p>
 			<div class="mt-4 space-y-2 w-full">
 				<button class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
 								onclick={(e) => { e.stopPropagation(); dayModeView.openModal=true;}}>
 					<div class="flex w-full items-center justify-between">
-						<h1 class="truncate text-lg">{$_("Dag / mode")}</h1>
+						<h1 class="truncate text-lg">{$_("Day / mode")}</h1>
 						<p class="text-right text-xs max-w-55 text-wrap truncate line-clamp-2">{getDayModes()}</p>
 					</div>
 				</button>

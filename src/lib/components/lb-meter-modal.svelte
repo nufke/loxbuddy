@@ -46,7 +46,7 @@
 	<Info control={controlView.control}/>
 	<header class="relative">
 		<div>
-			<h2 class="h4 text-center">{controlView.textName}</h2>
+			<p class="h5 text-center">{controlView.textName}</p>
 		</div>
 		<div class="absolute right-0 top-0">
 			<button type="button" aria-label="close" class="btn-icon w-auto" onclick={close}>

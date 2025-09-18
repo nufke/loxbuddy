@@ -174,10 +174,10 @@
 			</div>
 		</header>
 		<div class="flex flex-col items-center justify-center">
-			<h2 class="h4 text-center items-center justify-center w-[80%]">{controlView.textName}</h2>
-			<h2 class="text-lg mt-2 text-center {(value > 0 ) ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700'}">
+			<p class="h5 text-center items-center justify-center w-[80%]">{controlView.textName}</p>
+			<p class="text-lg mt-2 text-center {(value > 0 ) ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700'}">
 				{status + getDuration()}
-			</h2>
+			</p>
 			{#if override > 0}
 				<div class="flex flex-row items-center justify-center">
 					<span class="dark:text-purple-400 text-purple-800"><Timer size="16"/></span>
