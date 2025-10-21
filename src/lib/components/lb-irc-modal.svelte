@@ -7,7 +7,7 @@
 	import { X, Timer, Leaf, Flame, List, CalendarClock } from '@lucide/svelte';
 	import { _ } from 'svelte-i18n';
 	import { fade200 } from '$lib/helpers/transition';
-	import { publishTopic } from '$lib/communication/mqttclient';
+	import { msControl } from '$lib/communication/msclient';
 	import LbCicleSlider from '$lib/components/lb-circle-slider.svelte';
 	import LbTempSlider from '$lib/components/lb-temp-slider.svelte';
 	import LbTimeGrid from '$lib/components/lb-time-grid.svelte';
@@ -169,7 +169,7 @@
 	function setTempManual() {
 		let cmd = isCooling ? 'setComfortTemperatureCool/' : 'setComfortTemperature/';
 		cmd += tempTarget;
-	  publishTopic(controlView.control.uuidAction, cmd);
+	  msControl(controlView.control.uuidAction, cmd);
 	}
 
 	function setTimerOverride(item: ListItem) {
@@ -181,7 +181,7 @@
 			overrideTimeSec += (!isV1 && utils.isDST(date) ? -3600 : 0); // DST correction for V2
 			overrideTimeSec = (isV1 ? Math.round(overrideTimeSec/60) : overrideTimeSec); // V1 in minutes!!
 			cmd += String(item.id) + '/' + String(overrideTimeSec);
-			publishTopic(controlView.control.uuidAction, cmd);
+			msControl(controlView.control.uuidAction, cmd);
     } else {
 			console.error('IRC: timer period to low:', overrideTimeSec);
 			toaster.info({ title: 'Timer period invalid!'});
@@ -190,7 +190,7 @@
 
 	function cancelOverride() {
 		if (controlView.control) {
-			publishTopic(controlView.control.uuidAction, isV1 ? 'stoptimer' : 'stopOverride');
+			msControl(controlView.control.uuidAction, isV1 ? 'stoptimer' : 'stopOverride');
 		}
 	}
 

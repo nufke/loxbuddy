@@ -4,7 +4,7 @@
 	import type { Control, ControlOptions, ControlView, SingleButtonView, ModalView } from '$lib/types/models';
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import LbModal from '$lib/components/lb-modal.svelte';
-	import { publishTopic } from '$lib/communication/mqttclient';
+	import { msControl } from '$lib/communication/msclient';
 	import { store } from '$lib/stores/store.svelte';
 	import { _ } from 'svelte-i18n';
 
@@ -17,7 +17,7 @@
 			name: buttonActive ? 'Switch off' : 'Switch on',
 			type: 'switch',
 			click: (e: any) => {
-				publishTopic(control.uuidAction, e.checked ? 'on' : 'off');
+				msControl(control.uuidAction, e.checked ? 'on' : 'off');
 			}
 		}
 	]);

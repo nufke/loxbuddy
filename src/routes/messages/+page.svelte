@@ -3,7 +3,7 @@
 	import { Modal } from '@skeletonlabs/skeleton-svelte';
 	import type { SystemStatus, SystemStatusEntry } from '$lib/types/models';
 	import LbIcon from '$lib/components/lb-icon-by-name.svelte';
-	import { publishTopic } from '$lib/communication/mqttclient';
+	import { msControl } from '$lib/communication/msclient';
 	import { X } from '@lucide/svelte';
 	import { store } from '$lib/stores/store.svelte';
 	import { fade200 } from '$lib/helpers/transition';
@@ -44,7 +44,7 @@
 			let cmd = 'action/' + actionOK.actionId + '/' + (actionOK.isSecured ? '1' : '0');
 			// TODO check command for action 
 			//console.log('confirm', cmd);
-			//publishTopic(messageCenter.uuidAction, cmd);
+			//msControl(messageCenter.uuidAction, cmd);
 		}
 	}
 </script>

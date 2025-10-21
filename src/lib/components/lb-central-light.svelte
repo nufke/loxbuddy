@@ -9,7 +9,7 @@
 	import { X, ChevronUp, ChevronDown } from '@lucide/svelte';
 	import { _ } from 'svelte-i18n';
 	import { fade } from 'svelte/transition';
-	import { publishTopic } from '$lib/communication/mqttclient';
+	import { msControl } from '$lib/communication/msclient';
 	import fmt from 'sprintf-js';
 	import { fade200 } from '$lib/helpers/transition';
 	import Info from '$lib/components/lb-info.svelte';
@@ -117,6 +117,7 @@
 
 	function getStatusName(control: Control) {
 		let moodList = store.getState(control.states.moodList) as MoodList[];
+		console.log('control', control, moodList)
 		let activeMoodsNum = Number(store.getState(control.states.activeMoodsNum));
 		return (activeMoodsNum < 0) ? $_('Manual') : moodList?.find((item:MoodList) => item.id == activeMoodsNum)?.name;
 	}
@@ -151,7 +152,7 @@
 					default: /* none */
 				}
 				if (control && moodList && moodCmd) {
-					publishTopic(control.uuidAction, 'changeTo/' + moodCmd);
+					msControl(control.uuidAction, 'changeTo/' + moodCmd);
 				}
 			}
 		});

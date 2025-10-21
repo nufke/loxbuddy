@@ -6,10 +6,12 @@ import { test } from '$lib/test/test';
 
 let connected: boolean;
 let topicPrefix = 'loxone'; // TODO configure prefix in GUI
-let weatherPrefix = 'weather4lox'; // TODO configure prefix in GUI
+const weatherPrefix = 'weather4lox'; // TODO configure prefix in GUI
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export let mqttclient: any = null;
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const mqttConnect = (env: any) => {
 	const mqttOptions = {
 		hostname: env.MQTT_HOSTNAME || 'localhost',
@@ -28,6 +30,7 @@ export const mqttConnect = (env: any) => {
 
 	mqttclient.on('message', onMessage);
 
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	mqttclient.on('error', (error: any) => {
 		console.error('MQTT error ', error);
 		mqttclient.end();
@@ -51,6 +54,7 @@ const onConnect = () => {
 		weatherPrefix + '/#'
 	];
 
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	mqttclient.subscribe(registerTopics, function (error: any) {
 		if (error) {
 			console.error(error);
@@ -61,6 +65,7 @@ const onConnect = () => {
 };
 
 //TODO check type of arguments
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const onMessage = (topic: string, message: any) => {
 	//console.log('MQTT: message received for topic ', topic);
 	const msg = message.toString();
@@ -77,6 +82,8 @@ export async function reconnect() {
 }
 
 export const publishTopic = (uuid: string, msg: string, retain: boolean = false) => {
+	console.log('publishTopic disabled')
+	/*
 	const qos = 1; // TODO add to configuration?
 	const serialNr = store.structure.msInfo.serialNr;
 	const topic = topicPrefix + '/' + serialNr + '/' + uuid + '/cmd';
@@ -87,6 +94,7 @@ export const publishTopic = (uuid: string, msg: string, retain: boolean = false)
 		console.log('TEST publish:', topic, msg);
 		test.exec(uuid, topic, msg);
 	}
+		*/
 };
 
 function monitorStructure(topic: string, msg: string) {
@@ -120,7 +128,7 @@ function monitorSecuredDetails(topic: string, msg: string) {
 	const regex = new RegExp(topicPrefix + '/(.*)/securedDetails');
 	const found = topic.match(regex);
 	if (found && found[1]) {
-		let obj = JSON.parse(msg);
+		const obj = JSON.parse(msg);
 		store.setSecuredDetails(found[1].split('/')[1], obj);
 	}
 }
@@ -139,7 +147,7 @@ function monitorStates(topic: string, msg: string) {
 	const regex = new RegExp(topicPrefix + '/(.+)/(.*)');
 	const found = topic.match(regex);
 	if (found && found[1] && found[2]) {
-		let obj = utils.isValidJSONObject(msg) ? JSON.parse(msg) : msg;
+		const obj = utils.isValidJSONObject(msg) ? JSON.parse(msg) : msg;
 		//console.log('setState: ', found[2], obj);
 		store.setState(found[2], obj);
 	}

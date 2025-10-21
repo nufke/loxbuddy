@@ -6,7 +6,7 @@
 	import LbIntercomModal from '$lib/components/lb-intercom-modal.svelte';
 	import fmt from 'sprintf-js';
 	import { store } from '$lib/stores/store.svelte';
-	import { publishTopic } from '$lib/communication/mqttclient';
+	import { msControl } from '$lib/communication/msclient';
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
@@ -15,7 +15,7 @@
 	let lastBellEventImages = $derived(store.getLastBellEventImages(control.uuidAction));
 
 	function requestLastImages() {
-		publishTopic(control.uuidAction + '/lastBellEventImages', '1');
+		msControl(control.uuidAction + '/lastBellEventImages', '1');
 	}
 
 	let modal: ModalView = $state({

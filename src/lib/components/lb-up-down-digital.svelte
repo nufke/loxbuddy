@@ -3,7 +3,7 @@
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import LbControl from '$lib/components/lb-control.svelte';
 	import LbWidget from '$lib/components/lb-widget.svelte';
-	import { publishTopic } from '$lib/communication/mqttclient';
+	import { msControl } from '$lib/communication/msclient';
 	import LbModal from '$lib/components/lb-modal.svelte';
 	import { store } from '$lib/stores/store.svelte';
 
@@ -14,13 +14,13 @@
 			iconName: 'ChevronDown',
 			type: 'button',
 			color: '',
-			click: () => publishTopic(control.uuidAction, 'PulseDown')
+			click: () => msControl(control.uuidAction, 'PulseDown')
 		},
 		{
 			iconName: 'ChevronUp',
 			type: 'button',
 			color: '',
-			click: () => publishTopic(control.uuidAction, 'PulseUp')
+			click: () => msControl(control.uuidAction, 'PulseUp')
 		}
 	]);
 

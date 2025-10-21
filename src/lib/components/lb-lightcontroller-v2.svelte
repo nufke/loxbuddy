@@ -3,7 +3,7 @@
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import LbControl from '$lib/components/lb-control.svelte';
 	import LbWidget from '$lib/components/lb-widget.svelte';
-	import { publishTopic } from '$lib/communication/mqttclient';
+	import { msControl } from '$lib/communication/msclient';
 	import LbListModal from '$lib/components/lb-list-modal.svelte';
 	import { _ } from 'svelte-i18n';
 	import { store } from '$lib/stores/store.svelte';
@@ -24,7 +24,7 @@
 		} else {
 			moodIndex = e.checked;
 		}
-		publishTopic(control.uuidAction, 'changeTo/' + String(moodList[moodIndex].id));
+		msControl(control.uuidAction, 'changeTo/' + String(moodList[moodIndex].id));
 	}
 
 	function getTextName() {

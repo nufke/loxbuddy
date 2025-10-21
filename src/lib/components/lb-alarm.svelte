@@ -5,7 +5,7 @@
 	import type { Control, ControlOptions, ControlView, ModalView, SingleButtonView } from '$lib/types/models';
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import { store } from '$lib/stores/store.svelte';
-	import { publishTopic } from '$lib/communication/mqttclient';
+	import { msControl } from '$lib/communication/msclient';
 	import { _ } from 'svelte-i18n';
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
@@ -16,12 +16,12 @@
   function setUnsetAlarm(delay: boolean = false) {
 		let cmd = armed ? 'off' : (delay ? 'delayedon/' : 'on/');
 		cmd += armed ? '' : (disabledMove ? '0' : '1');
-    publishTopic(control.uuidAction, cmd);
+    msControl(control.uuidAction, cmd);
   }
 
 	function setUnsetMmovement(e: any) {
 		let cmd = 'dismv/' + (e.checked ? '0' : '1');
-		publishTopic(control.uuidAction, cmd);
+		msControl(control.uuidAction, cmd);
 	}
 
 	let buttons: SingleButtonView[] = $derived([

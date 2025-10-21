@@ -5,7 +5,7 @@
 	import LbWidget from '$lib/components/lb-widget.svelte';
 	import LbModal from '$lib/components/lb-modal.svelte';
 	import { store } from '$lib/stores/store.svelte';
-	import { publishTopic } from '$lib/communication/mqttclient';
+	import { msControl } from '$lib/communication/msclient';
 	import fmt from 'sprintf-js';
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
@@ -21,7 +21,7 @@
 		let newValue = value + step * isUp;
 		if (newValue > max) newValue = max;
 		if (newValue < min) newValue = min;
-		publishTopic(control.uuidAction, String(newValue));
+		msControl(control.uuidAction, String(newValue));
 	}
 
 	let buttonMinus: SingleButtonView[] = $state([

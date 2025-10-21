@@ -4,13 +4,13 @@
 
 LoxBuddy is a modern and fast (Web)App to control your [Loxone](https://www.loxone.com/) and [LoxBerry](https://wiki.loxberry.de/start) based Smart Home.
 
-LoxBuddy uses MQTT for monitoring and control. All devices available via MQTT can be controlled using LoxBuddy. The [Lox2MQTT](https://github.com/nufke/LoxBerry-Plugin-Lox2MQTT) plugin for LoxBerry is recommended for a seamless integration of your Loxone Miniserver using MQTT.
+LoxBuddy establishes a WebSocket connection to your Miniserver to control and monitor the state of the available controls. In addition, LoxBuddy can interface with LoxBerry using MQTT.
 
 **WARNING: The LoxBuddy App is in early developement, thus unstable and incomplete, and may impact the stability of your Smart Home. Use it at your own risk.**
 
 ## Development environment
 
-To help in the development of this App, you need a NodeJS installation on your desktop. Requirement is node &ge; v20.11.1. The application is based on [Svelte](https://svelte.dev/), [SvelteKit](https://kit.svelte.dev/) and [Skeleton](https://www.skeleton.dev/). 
+To help in the development of this App, you need a Node.js installation on your desktop. Requirement is Node.js &ge; v22.20.0 (LTS). The LoxBuddy application is based on [Svelte](https://svelte.dev/), [SvelteKit](https://kit.svelte.dev/) and [Skeleton](https://www.skeleton.dev/). 
 
 ```bash
 # install
@@ -18,7 +18,7 @@ git clone https://github.com/nufke/loxbuddy.git
 cd loxbuddy
 npm install
 
-# update environment variables (MQTT settings)
+# update environment variables (Miniserver login and MQTT settings)
 cp .env.example .env.local
 code .env.local
 
@@ -32,17 +32,6 @@ npm run dev
 # launch the browser 
 firefox http://localhost:5173/
 ```
-
-## Install the Lox2MQTT plugin
-
-It is recommended to use the [Lox2MQTT](https://github.com/nufke/LoxBerry-Plugin-Lox2MQTT) plugin for LoxBerry for a seamless integration into your Loxone system. Lox2MQTT version 0.8.1 or later is required.
-
-Make sure you enable the following options in Lox2MQTT:
-
-* Publish structure: this is required to load the controls in LoxBuddy
-* Publish control state changes: this is required to get control updates
-* Retain published control states: this is required to capture the latest published states
-* Subscribe to MQTT to control the Miniserver: this is required to control your Miniserver using LoxBuddy
 
 ## Deployment to a webserver
 
@@ -61,6 +50,10 @@ Special thanks and credits to:
  * [iro.js](https://github.com/jaames/iro.js) of James Daniel
  * [Svelty Picker](https://github.com/mskocik/svelty-picker) of Martin Skočík
  * [Meteocons](https://github.com/basmilius/weather-icons) of Bas Milius
+
+## Disclaimer
+
+Although the developer followed the [official documentation](https://www.loxone.com/wp-content/uploads/datasheets/StructureFile.pdf), use this application at your own risk.
 
 ## Buy Me A Coffee
 

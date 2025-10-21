@@ -6,7 +6,7 @@
 	import LbModal from '$lib/components/lb-modal.svelte';
 	import { store } from '$lib/stores/store.svelte';
 	import { _ } from 'svelte-i18n';
-	import { publishTopic } from '$lib/communication/mqttclient';
+	import { msControl } from '$lib/communication/msclient';
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
@@ -24,7 +24,7 @@
 			type: 'button',
 			color: '',
 			click: (e: any) => {
-				publishTopic(control.uuidAction, (deactivationDelay == 0) ? 'on' : ( (deactivationDelay == -1) ? 'off' : 'on' ));
+				msControl(control.uuidAction, (deactivationDelay == 0) ? 'on' : ( (deactivationDelay == -1) ? 'off' : 'on' ));
 			}
 		}
 	);
@@ -35,7 +35,7 @@
 			type: 'button',
 			color: '',
 			click: () => {
-				publishTopic(control.uuidAction, (deactivationDelay == 0) ? 'pulse' : 'off');
+				msControl(control.uuidAction, (deactivationDelay == 0) ? 'pulse' : 'off');
 			}
 		}
 	);
@@ -46,7 +46,7 @@
 			type: 'button',
 			color: '',
 			click: () => {
-				publishTopic(control.uuidAction, 'pulse');
+				msControl(control.uuidAction, 'pulse');
 			}
 		}
 	);
@@ -76,7 +76,7 @@
 			type: 'button',
 			iconColor: 'dark:fill-surface-50 fill-surface-950',
 			click: () => {
-				publishTopic(control.uuidAction, 'pulse');
+				msControl(control.uuidAction, 'pulse');
 			}
 		}
 	]);

@@ -6,7 +6,7 @@
 	import LbJalousieModal from '$lib/components/lb-jalousie-modal.svelte';
 	import fmt from 'sprintf-js';
 	import { _ } from 'svelte-i18n';
-	import { publishTopic } from '$lib/communication/mqttclient';
+	import { msControl } from '$lib/communication/msclient';
 	import { store } from '$lib/stores/store.svelte';
 	
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
@@ -32,13 +32,13 @@
 			iconName: 'ChevronDown',
 			type: 'button',
 			color: '',
-			click: () => publishTopic(control.uuidAction, 'FullDown')
+			click: () => msControl(control.uuidAction, 'FullDown')
 		},
 		{
 			iconName: 'ChevronUp',
 			type: 'button',
 			color: '',
-			click: () => publishTopic(control.uuidAction, 'FullUp')
+			click: () => msControl(control.uuidAction, 'FullUp')
 		}
 	]);
 
@@ -51,22 +51,22 @@
 				type: 'button',
 				color: '',
 				click: () => {},  // do nothing
-				mousedown: () => { publishTopic(control.uuidAction, 'down')},
-				mouseup: () => { publishTopic(control.uuidAction, 'DownOff')}
+				mousedown: () => { msControl(control.uuidAction, 'down')},
+				mouseup: () => { msControl(control.uuidAction, 'DownOff')}
 			},
 			{
 				iconName: 'ChevronUp',
 				type: 'button',
 				color: '',
 				click: () => {}, // do nothing
-				mousedown: () => publishTopic(control.uuidAction, 'up'),
-				mouseup: () => publishTopic(control.uuidAction, 'UpOff')
+				mousedown: () => msControl(control.uuidAction, 'up'),
+				mouseup: () => msControl(control.uuidAction, 'UpOff')
 			},
 			{
 				iconName: 'ArrowDownToLine',
 				type: 'button',
 				color: '',
-				click: () => publishTopic(control.uuidAction, 'FullDown'),
+				click: () => msControl(control.uuidAction, 'FullDown'),
 				mousedown: () => {}, // do nothing
 				mouseup: () => {} // do nothing
 			},
@@ -74,7 +74,7 @@
 				iconName: 'ArrowUpToLine',
 				type: 'button',
 				color: '',
-				click: () => publishTopic(control.uuidAction, 'FullUp'),
+				click: () => msControl(control.uuidAction, 'FullUp'),
 				mousedown: () => {}, // do nothing
 				mouseup: () => {} // do nothing
 			},
@@ -83,7 +83,7 @@
 				type: 'button',
 				color: '',
 				class: 'col-span-2',
-				click: () => publishTopic(control.uuidAction, 'shade'),
+				click: () => msControl(control.uuidAction, 'shade'),
 				mousedown: () => {}, // do nothing
 				mouseup: () => {} // do nothing
 			}

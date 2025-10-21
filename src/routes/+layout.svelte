@@ -7,6 +7,7 @@
   import { Home, FileText, Grid2x2, Menu, LayoutList, Circle, Square, type Icon as IconType } from '@lucide/svelte';
 	import type { Route } from '$lib/types/models';
 	import { mqttConnect } from '$lib/communication/mqttclient';
+	import { msConnect } from '$lib/communication/msclient';
 	import { store } from '$lib/stores/store.svelte';
 	import { weatherStore } from '$lib/stores/weather-store.svelte';
 	import { _ } from 'svelte-i18n';
@@ -27,7 +28,9 @@
 		test.start();
 	} else {
 		/* start MQTT client */
-		mqttConnect(page.data.mqtt);
+		//mqttConnect(page.data.mqtt);
+		/* start WebSocket client to Miniserver */
+		msConnect(page.data.miniserver);
 	}
 
 	let { children } = $props();

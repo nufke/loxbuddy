@@ -5,7 +5,7 @@
 	import LbWidget from '$lib/components/lb-widget.svelte';
 	import LbModal from '$lib/components/lb-modal.svelte';
 	import { store } from '$lib/stores/store.svelte';
-	import { publishTopic } from '$lib/communication/mqttclient';
+	import { msControl } from '$lib/communication/msclient';
 	import { _ } from 'svelte-i18n';
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
@@ -32,7 +32,7 @@
 		} else { // is slider
 			newPosition = e.sliderPosition;
 		}
-		publishTopic(control.uuidAction, String(newPosition));
+		msControl(control.uuidAction, String(newPosition));
 	}
 
 	let plusMinusButtons: SingleButtonView[] = $state([
@@ -56,7 +56,7 @@
 			type: 'button',
 			class: 'col-span-2',
 			click: (e: any) => {
-				publishTopic(control.uuidAction, (position == 0) ? 'on' : 'off');
+				msControl(control.uuidAction, (position == 0) ? 'on' : 'off');
 			}
 		}
 	);

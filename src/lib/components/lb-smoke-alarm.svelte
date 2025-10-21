@@ -5,7 +5,7 @@
 	import LbControl from '$lib/components/lb-control.svelte';
 	import LbWidget from '$lib/components/lb-widget.svelte';
 	import { store } from '$lib/stores/store.svelte';
-	import { publishTopic } from '$lib/communication/mqttclient';
+	import { msControl } from '$lib/communication/msclient';
 	import { fade200 } from '$lib/helpers/transition';
 	import { _ } from 'svelte-i18n';
 	import { X, Wrench, Info, ChevronUp, ChevronDown } from '@lucide/svelte';
@@ -59,7 +59,7 @@
 
 	function stopService() {
 		if (timeServiceMode > 0) { // only stop if servicemode is running
-			publishTopic(control.uuidAction, 'servicemode/0');
+			msControl(control.uuidAction, 'servicemode/0');
 		}
 		duration = '';
 	}
@@ -67,7 +67,7 @@
 	function startService() {
     if (serviceTime > 0) { // TODO minimal time for service
       let cmd = 'servicemode/' + String(serviceTime);
-      publishTopic(control.uuidAction, cmd);
+      msControl(control.uuidAction, cmd);
     }
 	}
 
