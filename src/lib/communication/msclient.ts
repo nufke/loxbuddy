@@ -12,11 +12,13 @@ export const msConnect = async (env: any) => {
 
 	// subscribe to basic events
 	loxWsClient.on('connected', () => {
-		console.warn('LoxClient connected to Miniserver');
+		console.info('LoxClient connected to Miniserver');
+		store.updateHostUrl(env.MS_HOST);
+		store.updateCredentials(env.MS_USERNAME + ':' + env.MS_PASSWORD);
 	});
 
 	loxWsClient.on('disconnected', () => {
-		console.warn('LoxClient disconnected from Miniserver');
+		console.info('LoxClient disconnected from Miniserver');
 	});
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -45,6 +47,8 @@ export const msConnect = async (env: any) => {
 	});
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	loxWsClient.on("event_text", (event: any) => {
+		if (event.detail.uuid.stringValue == '0f5aea9c-030a-7bdf-ffff9fbd670c23f7')
+			console.log('now');
 		const text = event.detail.text;
 		const objOrText = utils.isValidJSONObject(text) ? JSON.parse(text) : text;
 		store.setState(event.detail.uuid.stringValue, objOrText);
@@ -53,10 +57,10 @@ export const msConnect = async (env: any) => {
 
 export const msControl = async (uuid: string, value: string) => {
 	if (store.isTest) {
-		console.log('TEST msControl:', uuid, value);
+		console.info('TEST msControl:', uuid, value);
 		//test.exec(uuid, topic, msg);
 	} else {
-		console.log('LoxClient msControl:', uuid, value);
+		console.info('LoxClient msControl:', uuid, value);
 		await loxWsClient.control(uuid, value);
 	}
 }

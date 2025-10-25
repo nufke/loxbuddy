@@ -5,42 +5,50 @@
 	import { _ } from 'svelte-i18n';
 	import { fade200 } from '$lib/helpers/transition';
 	import Info from '$lib/components/lb-info.svelte';
+	import { store } from '$lib/stores/store.svelte';
 	import { tick } from 'svelte';
 
 	let { controlView = $bindable() }: { controlView: ControlView } = $props();
 
-	let img: any = $state();
-	let selectedTab = $state(0);
-	let image: number = $state(0);
-	let imageHeight = $state(400);
+	let events = $derived(String(store.getState(controlView.control.states.lastBellEvents)));
+	let lastBellEvents = $derived((events.includes('|') ? events.split('|'): []));
+	let selectedTab = $state(1);
+	let lastEvent = $derived(lastBellEvents[lastBellEvents.length-1]); // number represents date
+	let dialogHeight = $state(500);
+	let imageHeight = $state(200);
+	let history = $derived(lastBellEvents.length);
+	let video = $derived(fetchVideo(store.hostUrl, store.credentials)); // note: returns Promise
+	let stream = $state('');
 
-	let dates = $derived(controlView.details.lastBellEvents);
-	let history = $derived(controlView.details.hasLastBellEventImages && dates.length);
-	let stream = $derived(controlView.securedDetails && controlView.securedDetails.videoInfo ? controlView.securedDetails.videoInfo.streamUrl : null);
-
-	function handleImageLoad() {
-		image = image || dates[dates.length-1];
-		imageHeight = img?.height || 400;
-  }
-
-	function sortDates(i: number[]) {
-		return i.sort( (a, b) => b-a);
+	async function fetchVideo(hostUrl: string, credentials: string) {
+		if (stream) return; // only call when no stream is available
+		const resp = await fetch(`http://${hostUrl}/jdev/sps/io/${controlView.control.uuidAction}/securedDetails`,
+		{ method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+				'Authorization': 'Basic ' + credentials
+			}
+		});
+		const data = await resp.json();
+		const s = JSON.parse(data.LL.value); // TODO add check
+		if (resp.ok) {
+			stream = s.videoInfo.streamUrl;
+			return stream;
+		} else {
+			throw new Error(data);
+		}
 	}
 
-	function formatDate(i: number) {
-		let s = String(i);
+	function formatDate(event: string) {
+		let s = event;
 		return s.slice(6,8) + '-' + s.slice(4,6) + '-' + s.slice(0,4) + '  ' + s.slice(8,10) + ":" + s.slice(10,12);
-	}
-
-	function getImage(image: number) {
-		return controlView.details.lastBellEventImages && 
-					controlView.details.lastBellEventImages.hasOwnProperty(image) ? controlView.details.lastBellEventImages[image] : '';
 	}
 
 	async function close() {
 		controlView.modal.action(false);
 		await tick();
-		selectedTab = 0;
+		selectedTab = 1;
+		lastEvent = lastBellEvents[lastBellEvents.length-1];
 	}
 </script>
 
@@ -71,65 +79,55 @@
 		</div>
 	</header>
 	<div class="relative w-full">
-		{#if selectedTab==0} 
-			<div class="relative" style="height: {imageHeight}px;">
-				<div class="absolute inset-0 flex items-center justify-center z-1">
-					<p class="dark:text-surface-50 text-surface-950 text-xl">Loading video...</p>
-				</div>
-				<img class="absolute z-2" style="max-height: 560px;" bind:this={img} src={stream} width="100%" onload={handleImageLoad} alt=""/>
-			</div>
-		{/if}
 		{#if selectedTab==1}
-			<div class="relative" style="height: {imageHeight}px">
-		 		<img class="w-full" style="max-height: 560px;" height={imageHeight} src={'data:image/jpeg;charset=utf-8;base64,' + getImage(image)} alt="">
-				<div class="absolute inset-0 bg-gray-700 opacity-20"></div>
-  			<div class="absolute bottom-4 left-4">
-					<p class="text-surface-50 text-xl">{formatDate(image)}</p>
-				</div>
+			<div class="relative" style="height: {dialogHeight}px;">
+				{#await video then data}
+					<img class="absolute z-2" style="max-height: 560px;" height={imageHeight} src={stream} width="100%" alt={data}/>
+				{/await}
 			</div>
 		{/if}
 		{#if selectedTab==2}
-			<div class="overflow-auto pl-2 pr-2 grid gap-5 grid-cols-2" style="height: {imageHeight}px">
-				{#each sortDates(dates) as item}
-					<button class="relative" onclick={() => {image=item; selectedTab=1;}}>
-		  	  	<img class="" src={'data:image/jpeg;charset=utf-8;base64,' + getImage(item)} alt="">
+			<div class="relative" style="height: {dialogHeight}px">
+				<img class="w-full" style="max-height: 560px;" height={imageHeight} src={`http://${store.hostUrl}/camimage/${controlView.control.uuidAction}/${lastEvent}`} alt=""/>
+				<div class="absolute inset-0 bg-gray-700 opacity-20"></div>
+  			<div class="absolute bottom-4 left-4">
+					<p class="text-surface-50 text-xl">{formatDate(lastEvent)}</p>
+				</div>
+			</div>
+		{/if}
+		{#if selectedTab==3}
+			<div class="overflow-auto pl-2 pr-2 grid gap-5 grid-cols-2" style="height: {dialogHeight}px">
+				{#each lastBellEvents as event}
+					<button class="relative" onclick={() => {lastEvent=event; selectedTab=2;}}>
+						<img class="w-full" fetchpriority="high" src={`http://${store.hostUrl}/camimage/${controlView.control.uuidAction}/${event}`} alt=""/>
 						<div class="absolute inset-0 bg-gray-700 opacity-20"></div>
    			 		<div class="absolute bottom-2 left-2">
-							<p class="text-surface-50 text-xm">{formatDate(item)}</p>
+							<p class="text-surface-50 text-xm">{formatDate(event)}</p>
 						</div>
 					</button>
 				{/each}
 			</div>
 		{/if}
-		<!--{#if selectedTab==3}
-			<div class="" style="height: {imageHeight}px">
-			</div>
-		{/if}-->
 	</div>
 	<div class="sticky bottom-0 left-0 w-full h-16 pb-2">
 		<div class="grid h-full max-w-lg lg:max-w-xl { history ? 'grid-cols-3' : 'grid-cols-2'} mx-auto">
 			<button type="button" class="inline-flex flex-col items-center justify-center px-5
-							group {selectedTab==0 ? 'dark:text-primary-500 text-primary-700' : ''} " onclick={() => selectedTab=0}>
+							group {selectedTab==1 ? 'dark:text-primary-500 text-primary-700' : ''} " onclick={() => selectedTab=1}>
 				<Video/>
 				<span class="mt-1 text-xs">{$_("Video")}</span>
 			</button>
 			{#if history}
 				<button type="button" class="inline-flex flex-col items-center justify-center px-5
-								group {selectedTab==1 ? 'dark:text-primary-500 text-primary-700' : ''} " onclick={() => selectedTab=1}>
+								group {selectedTab==2 ? 'dark:text-primary-500 text-primary-700' : ''} " onclick={() => selectedTab=2}>
 					<Camera/>
 					<span class="mt-1 text-xs">{$_("Image")}</span>
 				</button>
 				<button type="button" class="inline-flex flex-col items-center justify-center px-5
-								group {selectedTab==2 ? 'dark:text-primary-500 text-primary-700' : ''} " onclick={() => selectedTab=2}>
+								group {selectedTab==3 ? 'dark:text-primary-500 text-primary-700' : ''} " onclick={() => selectedTab=3}>
 					<History/>
 					<span class="mt-1 text-xs">{$_("History")}</span>
 				</button>
 			{/if}
-			<!--<button type="button" class="inline-flex flex-col items-center justify-center px-5
-							group {selectedTab==3 ? 'dark:text-primary-500 text-primary-700' : ''} " onclick={() => selectedTab=3}>
-				<Settings/>
-				<span class="mt-1 text-xs">{$_("Settings")}</span>
-			</button>-->
 		</div>
 	</div>
 	{/snippet}

@@ -11,7 +11,7 @@ class Utils {
 		const s = s_ / 100;
 		const v = v_ / 100;
 		const clampround = (num: number, a: number, b: number) => Math.round(Math.max(Math.min(num, Math.max(a, b)), Math.min(a, b)));
-		let f = (n: any, k = (n + h / 60) % 6) => v - v * s * Math.max(Math.min(k, 4 - k, 1), 0);
+		const f = (n: number, k = (n + h / 60) % 6) => v - v * s * Math.max(Math.min(k, 4 - k, 1), 0);
 		return [
 			clampround(f(5) * 255, 0, 255),
 			clampround(f(3) * 255, 0, 255),
@@ -21,9 +21,9 @@ class Utils {
 
 	// input: r,g,b in [0-255,0-255,0-255], output: h in [0,360] and s,v in [0-100]
 	rgb2hsv(r: number, g: number, b: number) {
-		let rabs: number;
-		let gabs: number;
-		let babs: number;
+		const rabs: number = r / 255;
+		const gabs: number = g / 255;
+		const babs: number = b / 255;
 		let rr: number;
 		let gg: number;
 		let bb: number;
@@ -32,10 +32,6 @@ class Utils {
 		let v: number;
 		let diff;
 		let diffc;
-		let percentRoundFn: number;
-		rabs = r / 255;
-		gabs = g / 255;
-		babs = b / 255;
 		v = Math.max(rabs, gabs, babs),
 			diff = v - Math.min(rabs, gabs, babs);
 		diffc = (c: number) => (v - c) / 6 / diff + 1 / 2;
@@ -79,62 +75,62 @@ class Utils {
 	}
 
 	hours2dec(t: string) {
-		let hhmm = t.split(':'); // HH:mm notation
+		const hhmm = t.split(':'); // HH:mm notation
 		return Number((Number(hhmm[0]) + Number(hhmm[1]) / 60).toFixed(2));
 	}
 
 	hours2sec(t: string) {
-		let hhmm = t.split(':'); // HH:mm notation
+		const hhmm = t.split(':'); // HH:mm notation
 		return Number((Number(hhmm[0]) * 3600 + Number(hhmm[1]) * 60));
 	}
 
 	hours2min(t: string) {
-		let hhmm = t.split(':'); // HH:mm notation
+		const hhmm = t.split(':'); // HH:mm notation
 		return Number((Number(hhmm[0]) * 60 + Number(hhmm[1])));
 	}
 
 	dec2hours(i: number) {
-		let hrs = Math.floor(i/3600);
-		let min = Math.round((Number(i/3600)-hrs) * 60);
+		const hrs = Math.floor(i/3600);
+		const min = Math.round((Number(i/3600)-hrs) * 60);
 		return hrs + ':' + (min < 10 ? '0' + min : min);
 	}
 
 	min2hours(i: number) {
-		let hrs = Math.floor(i/60);
-		let min = i - (hrs * 60);
+		const hrs = Math.floor(i/60);
+		const min = i - (hrs * 60);
 		return hrs + ':' + (min < 10 ? '0' + min : min);
 	}
 	
 	isDST(d: Date) { // correction for daylight saving time
-		let jan = new Date(d.getFullYear(), 0, 1).getTimezoneOffset();
-		let jul = new Date(d.getFullYear(), 6, 1).getTimezoneOffset();
+		const jan = new Date(d.getFullYear(), 0, 1).getTimezoneOffset();
+		const jul = new Date(d.getFullYear(), 6, 1).getTimezoneOffset();
 		return Math.max(jan, jul) !== d.getTimezoneOffset();    
 	}
 
 	decTime2date(t: number) {
-		let hrs = Math.floor(t/3600);
-		let min = Math.round((Number(t/3600)-hrs) * 60);
-		let date = new Date();
+		const hrs = Math.floor(t/3600);
+		const min = Math.round((Number(t/3600)-hrs) * 60);
+		const date = new Date();
 		return new Date(date.getFullYear(), date.getMonth(), date.getDate(), hrs, min);
 	}
 
 	hours2date(t: string) {
-		let hhmm = t.split(':'); // HH:mm notation
-		let date = new Date();
+		const hhmm = t.split(':'); // HH:mm notation
+		const date = new Date();
 		return new Date(date.getFullYear(), date.getMonth(), date.getDate(), Number(hhmm[0]), Number(hhmm[1]));
 	}
 
 	hours2hours(t: string, correction: boolean = false) { // enable HH:mm notation (avoid H:mm)
-		let hhmm = t.split(':'); // HH:mm notation
-		let hrs = (Number(hhmm[0]) == 24 && correction) ? 0 : Number(hhmm[0]); // possible conversion 24:00 -> 00:00
-		let min = Number(hhmm[1]);
+		const hhmm = t.split(':'); // HH:mm notation
+		const hrs = (Number(hhmm[0]) == 24 && correction) ? 0 : Number(hhmm[0]); // possible conversion 24:00 -> 00:00
+		const min = Number(hhmm[1]);
 		return fmt.sprintf('%02i:%02i', hrs, min); 
 	}
 
 	time2epoch(dateEpoch: number, time: string) {
-		let hhmm = time.split(':'); // HH:mm:ss notation, we ignore seconds
-		let date = new Date(dateEpoch);
-		let dayStart = new Date(date.getFullYear(), date.getMonth(), date.getDate(), Number(hhmm[0]), Number(hhmm[1]));
+		const hhmm = time.split(':'); // HH:mm:ss notation, we ignore seconds
+		const date = new Date(dateEpoch);
+		const dayStart = new Date(date.getFullYear(), date.getMonth(), date.getDate(), Number(hhmm[0]), Number(hhmm[1]));
 		return dayStart.valueOf();
 	}
 
@@ -169,7 +165,7 @@ class Utils {
 	}
 
 	extractDayModes(s: string) {
-		let obj: any = {};
+		const obj: any = {};
 		const regex = /mode=(\d+);name=\\\"([a-z,A-Z,\s,/]+)/g;
 		for (const match of s.matchAll(regex)) {
 			obj[match[1]] = match[2];

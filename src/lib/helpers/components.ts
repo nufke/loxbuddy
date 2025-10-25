@@ -32,7 +32,7 @@ import LbTracker from '$lib/components/lb-tracker.svelte';
 import LbLoadManager from '$lib/components/lb-load-manager.svelte';
 import { loxiconsPath } from '$lib/helpers/paths';
 
-let componentList = [
+const componentList = [
 	{ type: 'UpDownDigital', component: LbUpDownDigital, defaultIcon: '' },
 	{ type: 'TextState', component: LbTextState, defaultIcon: '' },
 	{ type: 'InfoOnlyAnalog', component: LbInfoOnlyAnalog, defaultIcon: '' },

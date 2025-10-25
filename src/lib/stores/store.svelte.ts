@@ -19,8 +19,6 @@ class Store {
 	controlList: Control[] = $derived(Object.values(this.structure.controls));
 	categoryList: Category[] = $derived(Object.values(this.structure.cats));
 	roomList: Room[] = $derived(Object.values(this.structure.rooms));
-	securedDetails: SvelteMap<string, any> = new SvelteMap();
-	lastBellEventImages: SvelteMap<string, any> = new SvelteMap();
 	time: Date = $state(new Date());
 	mqttStatus: number = $state(0); // 0=disconnected (grey), 1=connected/ok/info (green), 2=warning/issue (yellow), 3=error (red)
 	msAlive: boolean = $state(false);
@@ -30,6 +28,8 @@ class Store {
 	showStatus: boolean = $state(true);
 	startPage: string = $state('/');
 	locale: string = $state('en'); // default English
+	hostUrl: string = $state('');
+	credentials: string = $state('');
 
 	weatherModal: ModalView = $state({
 		action: () => {},
@@ -66,10 +66,18 @@ class Store {
 		}
   }
 
+	updateHostUrl(url: string) {
+		this.hostUrl = url;
+	}
+
+	updateCredentials(cred: string) {
+		this.credentials = btoa(cred); // base64 conversion
+	}
+
 	updateNotificationStorage() {
 		if (this.notifications) {
 			this.notificationsMap = utils.deserialize(localStorage.getItem('notifications')) || {};
-			let msg = this.notifications as NotificationMessage;
+			const msg = this.notifications as NotificationMessage;
 			if (msg.uid) {
 				this.notificationsMap[msg.uid] = {
 					status: (this.notificationsMap[msg.uid] && this.notificationsMap[msg.uid].status) ? this.notificationsMap[msg.uid].status : 1,
@@ -77,7 +85,7 @@ class Store {
 				};
 				localStorage.setItem('notifications', utils.serialize(this.notificationsMap));
 			}
-			let msgList= this.notifications as NotificationList;
+			const msgList= this.notifications as NotificationList;
 			if (msgList.uids) {
 				msgList.uids.forEach( (uid) => console.log('uid:', this.controlState.get(uid))); // TODO check what to do with uids
 			}
@@ -97,21 +105,12 @@ class Store {
 		Object.assign(this.structure, data);
 	}
 
-	getSecuredDetails(uuid: string) {
-		const s = this.securedDetails.get(uuid);
-		if (s) {
-			return s;
-		} else {
-			return {};
-		}
-	}
-
 	getMessages() {
 		return this.controlState.get('systemStatus');
 	}
 
 	getSystemCode() { // 0=no status (disconnected), 1=info, 2=warning, 3=error
-		let status = this.controlState.get('systemStatus') as SystemStatus;
+		const status = this.controlState.get('systemStatus') as SystemStatus;
 		if (status && status.entries) {
 			return Math.max(...status.entries.filter( item => item.isHistoric == false).map( item => item.severity));
 		}
@@ -124,7 +123,7 @@ class Store {
 
 	setState(key: string, data: any) {
 		//console.log('setState', key, data);
-		let item = $state(data);
+		const item = $state(data);
 		this.controlState.set(key, item);
 		clearTimeout(this._stateUpdate);
 		this.msAlive = true;
@@ -132,40 +131,18 @@ class Store {
 
 	setInitialStates(data: any) {
 		Object.keys(data).forEach( (key) => {
-			let item = $state(data[key]);
-			let obj = utils.isValidJSONObject(item) ? JSON.parse(item) : item;
+			const item = $state(data[key]);
+			const obj = utils.isValidJSONObject(item) ? JSON.parse(item) : item;
 			this.controlState.set(key, obj);
 		});
 	}
 
-	setSecuredDetails(key: string, data: any) {
-		//console.log('setSecuredDetails', key, data);
-		let item = $state(data);
-		this.securedDetails.set(key, item);
-	}
-
-	setLastBellEventImage(uuid: string, date: string, base64image: string) {
-		let item: any = $state();
-		let oldContent: any = this.lastBellEventImages.get(uuid);
-		if (oldContent) {
-			item = {...oldContent, [date]: base64image}; // add/replace item
-		} else {
-			item = {[date]: base64image}; // first item
-		}
-		this.lastBellEventImages.set(uuid, item);
-	}
-
-	getLastBellEventImages(uuid: string) {
-		let images =  this.lastBellEventImages.get(uuid);
-		//console.log('getLastBellEventImages', images);
-		return images || [];
-	}
 
 	getIcon(control: Control, isSubControl: boolean | undefined, textState: any = null) {
 		if (textState && textState.icon) return  loxiconsPath + textState.icon; /* used for TextState icon */
 		if (control.defaultIcon) return  loxiconsPath + control.defaultIcon;
 		if (!isSubControl) { 
-			let icon = getDefaultIcon(control.type);
+			const icon = getDefaultIcon(control.type);
 			if (icon.length ) {
 				return icon;
 			} 

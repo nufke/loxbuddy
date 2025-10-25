@@ -71,8 +71,6 @@ const onMessage = (topic: string, message: any) => {
 	const msg = message.toString();
 	monitorStructure(topic, msg);
 	monitorInitialStates(topic, msg);
-	monitorSecuredDetails(topic, msg);
-	monitorLastBellEventImages(topic, msg);
 	monitorStates(topic, msg);
 	monitorWeatherStates(topic, msg);
 };
@@ -121,25 +119,6 @@ function monitorInitialStates(topic: string, msg: string) {
 		const regex2 = new RegExp(topicPrefix + '/' + found[1] + '/', 'g'); // TODO replace stored states at server 
 		msg = msg.replace(regex2, '');
 		store.setInitialStates(JSON.parse(msg));
-	}
-}
-
-function monitorSecuredDetails(topic: string, msg: string) {
-	const regex = new RegExp(topicPrefix + '/(.*)/securedDetails');
-	const found = topic.match(regex);
-	if (found && found[1]) {
-		const obj = JSON.parse(msg);
-		store.setSecuredDetails(found[1].split('/')[1], obj);
-	}
-}
-
-function monitorLastBellEventImages(topic: string, msg: string) {
-	const regex = new RegExp(topicPrefix + '/(.*)/lastBellEventImage/(.*)');
-	const found = topic.match(regex);
-	if (found && found[1] && found[2]) {
-		const uuid = found[1].split('/')[1];
-		const date = found[2];
-		store.setLastBellEventImage(uuid, date, msg);
 	}
 }
 

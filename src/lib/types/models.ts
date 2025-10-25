@@ -480,7 +480,6 @@ export type ControlView = {
 	slider?: SliderBar;
 	list?: ListItem[];
 	links?: string[];
-	securedDetails?: any;
 	details?: any;
 	modal: ModalView;
 }
@@ -645,10 +644,4 @@ export type CalendarEntryView = {
 	label: string;
 	enableDelete: boolean;
 	openModal: boolean;
-}
-
-export type BellDetailsView = {
-	hasLastBellEventImages: Boolean;
-	lastBellEvents: string[];
-	lastBellEventImages: any;
 }
