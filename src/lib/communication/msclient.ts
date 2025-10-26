@@ -8,7 +8,7 @@ export let loxWsClient: any = null;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const msConnect = async (env: any) => {
 
-	loxWsClient = new LoxClient(env.MS_HOST, env.MS_USERNAME, env.MS_PASSWORD, env.APP_ID);
+	loxWsClient = new LoxClient(env.MS_HOST, env.MS_USERNAME, env.MS_PASSWORD, env.APP_ID, {logLevel: env.MS_LOGLEVEL});
 
 	// subscribe to basic events
 	loxWsClient.on('connected', () => {
@@ -63,4 +63,8 @@ export const msControl = async (uuid: string, value: string) => {
 		console.info('LoxClient msControl:', uuid, value);
 		await loxWsClient.control(uuid, value);
 	}
+}
+
+export const msGetFile = async (filename: string) => {
+	return await loxWsClient.sendFileCommand(filename);
 }

@@ -10,18 +10,18 @@
 
   let openThemeModal = $state(false);
 	let openStartpageModal = $state(false);
-	let showStatus = $state(localStorage.getItem('showStatus') || '1');
+	let showStatus = $state(localStorage.getItem('showStatus') || '0');
 	let theme = $state(localStorage.getItem('theme') || 'LoxBuddy');
 	let mode = $state(localStorage.getItem('mode') || 'dark');
 	let startPage = $state(localStorage.getItem('startPage') || '/');
  	let group = $state('room');
 	let localeSettings = $derived(store.locale);
 
-	const loc = ['nl', 'en', 'de'];
+	const loc = ['en', 'de', 'nl'];
 	const language: any = {
-		nl: 'Dutch',
 		en: 'English',
-		de: 'German'
+		de: 'German',
+		nl: 'Dutch'
 	};
 
 	let lang = $derived(language[localeSettings]);
@@ -50,18 +50,18 @@
 	let languageSelectViewButtons = $derived([
 		{
 			id: 0,
-			name: language['nl'],
-			selected: language[localeSettings] == language.nl
-		},
-		{
-			id: 1,
 			name: language['en'],
 			selected: language[localeSettings] == language.en
 		},
 		{
-			id: 2,
+			id: 1,
 			name: language['de'],
 			selected: language[localeSettings] == language.de
+		},
+		{
+			id: 2,
+			name: language['nl'],
+			selected: language[localeSettings] == language.nl
 		}
 	]);
 

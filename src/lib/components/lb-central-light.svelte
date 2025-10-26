@@ -117,7 +117,6 @@
 
 	function getStatusName(control: Control) {
 		let moodList = store.getState(control.states.moodList) as MoodList[];
-		console.log('control', control, moodList)
 		let activeMoodsNum = Number(store.getState(control.states.activeMoodsNum));
 		return (activeMoodsNum < 0) ? $_('Manual') : moodList?.find((item:MoodList) => item.id == activeMoodsNum)?.name;
 	}

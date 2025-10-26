@@ -14,6 +14,7 @@ export async function load() {
 			MS_HOST: env.MS_HOST,
 			MS_USERNAME: env.MS_USERNAME,
 			MS_PASSWORD: env.MS_PASSWORD,
+			MS_LOGLEVEL: env.MS_LOGLEVEL,
 			APP_ID: env.APP_ID
 		}
 	}

@@ -7,37 +7,67 @@
 	import Info from '$lib/components/lb-info.svelte';
 	import { store } from '$lib/stores/store.svelte';
 	import { tick } from 'svelte';
+	import { SvelteMap } from 'svelte/reactivity';
+	import { msGetFile } from '$lib/communication/msclient';
 
 	let { controlView = $bindable() }: { controlView: ControlView } = $props();
 
+	let imageIdx = 0; // image cache index
+	let img: any = $state();
 	let events = $derived(String(store.getState(controlView.control.states.lastBellEvents)));
-	let lastBellEvents = $derived((events.includes('|') ? events.split('|'): []));
+	let lastBellEvents = $derived((events.includes('|') ? events.split('|').reverse(): []));
 	let selectedTab = $state(1);
-	let lastEvent = $derived(lastBellEvents[lastBellEvents.length-1]); // number represents date
+	let lastEvent = $derived(lastBellEvents[0]); // select latest (first) event
 	let dialogHeight = $state(500);
 	let imageHeight = $state(200);
 	let history = $derived(lastBellEvents.length);
-	let video = $derived(fetchVideo(store.hostUrl, store.credentials)); // note: returns Promise
-	let stream = $state('');
+	let securedDetails: any = $state();
+	let bellImages = $derived(new SvelteMap<string, string>());
 
-	async function fetchVideo(hostUrl: string, credentials: string) {
-		if (stream) return; // only call when no stream is available
-		const resp = await fetch(`http://${hostUrl}/jdev/sps/io/${controlView.control.uuidAction}/securedDetails`,
+	async function fetchSecuredDetails(hostUrl: string, credentials: string) {
+		if (securedDetails) return; // only call when no securedDetails are loaded
+		return fetch(`http://${hostUrl}/jdev/sps/io/${controlView.control.uuidAction}/securedDetails`,
 		{ method: 'GET',
 			headers: {
 				'Content-Type': 'application/json',
 				'Authorization': 'Basic ' + credentials
 			}
+		})
+		.then( resp => {
+			if (!resp.ok) {
+				console.error('fetchSecuredDetails not OK!');
+			}
+			return resp.json();
+		})
+		.then( data => securedDetails = JSON.parse(data.LL.value))
+		.catch(error => {
+			throw new Error('fetchSecuredDetails error', error);
 		});
-		const data = await resp.json();
-		const s = JSON.parse(data.LL.value); // TODO add check
-		if (resp.ok) {
-			stream = s.videoInfo.streamUrl;
-			return stream;
-		} else {
-			throw new Error(data);
-		}
 	}
+
+	function arrayBufferToBase64(buffer: ArrayBuffer) {
+		return btoa(String.fromCharCode(...new Uint8Array(buffer)));
+	}
+
+	function getImages() {
+		if (lastBellEvents.length) {
+			// Miniserver Gen1 needs time to fetch these images, therefore we introduce a serious delay (200ms)
+			setInterval( async () => { 
+				if (imageIdx < lastBellEvents.length) {
+					const event = lastBellEvents[imageIdx++];
+					console.info('get intercom image', event);
+					const file = await msGetFile(`camimage/${controlView.control.uuidAction}/${event}`);
+  				const url = `data:image/jpeg;base64,${arrayBufferToBase64(file.data)}`;
+					bellImages.set(event, url);
+				}
+			}, 300);
+	 	}
+		return true;
+	}
+
+	function handleImageLoad() {
+		imageHeight = img?.height || 400;
+  }
 
 	function formatDate(event: string) {
 		let s = event;
@@ -48,7 +78,7 @@
 		controlView.modal.action(false);
 		await tick();
 		selectedTab = 1;
-		lastEvent = lastBellEvents[lastBellEvents.length-1];
+		lastEvent = lastBellEvents[0];
 	}
 </script>
 
@@ -79,33 +109,35 @@
 		</div>
 	</header>
 	<div class="relative w-full">
-		{#if selectedTab==1}
-			<div class="relative" style="height: {dialogHeight}px;">
-				{#await video then data}
-					<img class="absolute z-2" style="max-height: 560px;" height={imageHeight} src={stream} width="100%" alt={data}/>
+		{#if selectedTab==1 && getImages()}
+			<div class="relative" style="height: {imageHeight}px;">
+				{#await fetchSecuredDetails(store.hostUrl, store.credentials) then _}
+					<img class="absolute z-2" style="max-height: 560px;" bind:this={img} height={imageHeight} 
+						src={securedDetails.videoInfo.streamUrl} width="100%" onload={handleImageLoad} alt=""/>
 				{/await}
 			</div>
 		{/if}
 		{#if selectedTab==2}
 			<div class="relative" style="height: {dialogHeight}px">
-				<img class="w-full" style="max-height: 560px;" height={imageHeight} src={`http://${store.hostUrl}/camimage/${controlView.control.uuidAction}/${lastEvent}`} alt=""/>
-				<div class="absolute inset-0 bg-gray-700 opacity-20"></div>
-  			<div class="absolute bottom-4 left-4">
+				<img class="w-full" style="max-height: 560px;" height={imageHeight} src={bellImages.get(lastEvent)||''} alt=""/>
+				<div class="absolute bottom-4 left-4">
 					<p class="text-surface-50 text-xl">{formatDate(lastEvent)}</p>
 				</div>
 			</div>
 		{/if}
 		{#if selectedTab==3}
 			<div class="overflow-auto pl-2 pr-2 grid gap-5 grid-cols-2" style="height: {dialogHeight}px">
-				{#each lastBellEvents as event}
-					<button class="relative" onclick={() => {lastEvent=event; selectedTab=2;}}>
-						<img class="w-full" fetchpriority="high" src={`http://${store.hostUrl}/camimage/${controlView.control.uuidAction}/${event}`} alt=""/>
-						<div class="absolute inset-0 bg-gray-700 opacity-20"></div>
-   			 		<div class="absolute bottom-2 left-2">
-							<p class="text-surface-50 text-xm">{formatDate(event)}</p>
-						</div>
-					</button>
-				{/each}
+					{#each lastBellEvents as event}
+						{#if bellImages.get(event)}
+						<button class="relative" onclick={() => {lastEvent=event; selectedTab=2;}}>
+							<img class="w-full" style="max-height: 560px;" height={imageHeight} src={bellImages.get(event)||''} alt=""/>
+							<div class="absolute inset-0 bg-gray-700 opacity-20"></div>
+					 		<div class="absolute bottom-2 left-2">
+								<p class="text-surface-50 text-xm">{formatDate(event)}</p>
+							</div>
+						</button>
+						{/if}
+					{/each}
 			</div>
 		{/if}
 	</div>

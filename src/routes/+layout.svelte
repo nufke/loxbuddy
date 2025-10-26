@@ -114,11 +114,13 @@
 
 <svelte:head>
   <script>
-    mode = localStorage.getItem('mode') || 'light';
+    mode = localStorage.getItem('mode') || 'dark';
     document.documentElement.setAttribute('data-mode', mode);
-    theme = localStorage.getItem('theme') || 'Cerebus';
+    theme = localStorage.getItem('theme') || 'LoxBuddy';
     document.documentElement.setAttribute('data-theme', theme.toLowerCase());
-  </script>
+		locale = localStorage.getItem('locale') || 'en';
+		document.documentElement.setAttribute('lang', locale);
+</script>
 </svelte:head>
 
 <!-- click activity resets timeout for lockscreen -->
