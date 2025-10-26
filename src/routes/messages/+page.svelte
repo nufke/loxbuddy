@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Tabs } from '@skeletonlabs/skeleton-svelte';
 	import { Modal } from '@skeletonlabs/skeleton-svelte';
-	import type { SystemStatus, SystemStatusEntry } from '$lib/types/models';
+	import type { SystemStatus, SystemStatusEntry, NotificationMessage } from '$lib/types/models';
 	import LbIcon from '$lib/components/lb-icon-by-name.svelte';
 	import { msControl } from '$lib/communication/msclient';
 	import { X } from '@lucide/svelte';
@@ -11,7 +11,7 @@
 	import { format } from 'date-fns';
 
 	let group = $state('1');
-	let messages = $derived(store.getMessages()) as SystemStatus;
+	let messages = $state() as SystemStatus;
 	let messageCenter = $derived(store.messageCenterList[0]); // select first message center
 	let activeMessages = $derived(messages && messages.entries ? messages.entries.filter( entry => entry.isHistoric == false) : []);
 	let pastMessages = $derived(messages && messages.entries ? messages.entries.filter( entry => entry.isHistoric == true) : []);
@@ -21,12 +21,30 @@
 	let selectedEntry: SystemStatusEntry | undefined = $state();
 	let openModal = $state(false);
 
-	store.updateNotificationStorage();
-
 	let severity = ['', 'Info', 'Warning', 'Error'];
 
-	function didRead(uid: string) {
-		store.updateNotificationReadStatus(uid);
+	async function getSystemStatus() {
+		return fetch(`http://${store.hostUrl}/jdev/sps/io/${messageCenter.uuidAction}/getEntries/2`,
+		{ method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+				'Authorization': 'Basic ' + store.credentials
+			}
+		})
+		.then( resp => {
+			if (!resp.ok) {
+				console.error('getSystemStatus not OK!');
+			}
+			return resp.json();
+		})
+		.then( data => {messages = JSON.parse(data.LL.value); return messages})
+		.catch(error => {
+			throw new Error('getSystemStatus error', error);
+		});
+	}
+
+	function didRead(notification: NotificationMessage) {
+		store.updateNotificationMap(notification, 2);
 	}
 
 	function getRoomName(entry: SystemStatusEntry) {
@@ -50,9 +68,12 @@
 </script>
 
 <div class="container mx-auto max-w-[1280px] space-y-3 p-3">
+	{#await getSystemStatus() then data}
+	<!--<p>*{JSON.stringify(notifications)}*</p>-->
+	{/await}
 	<Tabs value={group} onValueChange={(e) => (group = e.value)} fluid>
-		{#snippet list()}
-			<Tabs.Control labelBase="text-lg" stateLabelActive="dark:text-primary-500 text-primary-700" value="1">{$_("Notifications")}</Tabs.Control>
+		{#snippet list() }
+			<Tabs.Control labelBase="text-lg " stateLabelActive="dark:text-primary-500 text-primary-700" value="1">{$_("Notifications")}</Tabs.Control>
 			<Tabs.Control labelBase="text-lg" stateLabelActive="dark:text-primary-500 text-primary-700" value="2">{$_("System status")}</Tabs.Control>
 			<Tabs.Control labelBase="text-lg" stateLabelActive="dark:text-primary-500 text-primary-700" value="3">{$_("History")}</Tabs.Control>
 		{/snippet}
@@ -60,7 +81,7 @@
 			<Tabs.Panel value="1">
 				{#each activeNotifications as notification}
 				<div class="{notification.status == 2 ? 'pl-[13px]' : 'pl-2 border-l-5 dark:border-l-primary-500'} border-b dark:border-surface-900 border-surface-200 cursor-pointer pt-3 pb-3 pr-3"
-							onclick={()=>{didRead(notification.message.uid)}}>
+							onclick={()=>{didRead(notification.message)}}>
 					<p class="text-md dark:text-surface-300 text-surface-700">{format(new Date(notification.message.ts*1000), "PPP p")}</p>
 					<p class="text-lg">{notification.message.title}</p>
 					<p class="text-md">{notification.message.message}</p>
@@ -78,6 +99,9 @@
 					<p class="text-md">{@html entry.affectedName}</p>
 				</div>
 				{/each}
+				{#if activeMessages.length==0}
+				<p class="text-lg flex items-center justify-center mt-10">No active System status messages</p>
+				{/if}
 			</Tabs.Panel>
 			<Tabs.Panel value="3">
 				{#each pastMessages.toReversed() as entry}

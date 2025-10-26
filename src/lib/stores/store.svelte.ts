@@ -24,7 +24,7 @@ class Store {
 	msAlive: boolean = $state(false);
 	msStatus: number = $derived(this.getSystemCode());
 	notifications: NotificationMessage | NotificationList = $derived(this.getState(this.structure.globalStates.notifications));
-	notificationsMap: NotificationMap = $state({});
+	notificationsMap: NotificationMap = $derived(this.updateNotificationMap(this.notifications));
 	showStatus: boolean = $state(true);
 	startPage: string = $state('/');
 	locale: string = $state('en'); // default English
@@ -56,14 +56,7 @@ class Store {
   	}, 1000);
 
 		this.notificationsMap = utils.deserialize(localStorage.getItem('notifications')) || {};
-		
 		this.showStatus = localStorage.getItem('showStatus') == '1' ? true : false;
-
-		if ($effect.tracking()) { // TODO check coreect use of method, see https://webjose.hashnode.dev/svelte-reactivity-lets-talk-about-effects
-			$effect(() => {
-				this.updateNotificationStorage();
-			});
-		}
   }
 
 	updateHostUrl(url: string) {
@@ -74,27 +67,24 @@ class Store {
 		this.credentials = btoa(cred); // base64 conversion
 	}
 
-	updateNotificationStorage() {
-		if (this.notifications) {
-			this.notificationsMap = utils.deserialize(localStorage.getItem('notifications')) || {};
-			const msg = this.notifications as NotificationMessage;
-			if (msg.uid) {
-				this.notificationsMap[msg.uid] = {
-					status: (this.notificationsMap[msg.uid] && this.notificationsMap[msg.uid].status) ? this.notificationsMap[msg.uid].status : 1,
-			  	message: msg
-				};
-				localStorage.setItem('notifications', utils.serialize(this.notificationsMap));
-			}
-			const msgList= this.notifications as NotificationList;
-			if (msgList.uids) {
-				msgList.uids.forEach( (uid) => console.log('uid:', this.controlState.get(uid))); // TODO check what to do with uids
-			}
+	updateNotificationMap(notifications: NotificationMessage | NotificationList, statusOverride: number = 0 ) {
+		const map: NotificationMap = utils.deserialize(localStorage.getItem('notifications')) || {};
+		const msg = notifications as NotificationMessage;
+		if (msg && msg.uid) {
+			map[msg.uid] = {
+				status: statusOverride || (map[msg.uid].status || 1),
+		  	message: msg
+			};
+			localStorage.setItem('notifications', utils.serialize(map));
 		}
-	}
-
-	updateNotificationReadStatus(uid: string) {
-		this.notificationsMap[uid].status = 2;
-		localStorage.setItem('notifications', utils.serialize(this.notificationsMap));
+		const msgList = notifications as NotificationList;
+		if (msg && msgList.uids) {
+			msgList.uids.forEach( (uid) => console.log('uid:', this.controlState.get(uid))); // TODO check what to do with uids
+		}
+		return map;
+		/*
+		*"{\"uids\":[\"1fa23e87-00f0-47cf-ffff504f9410a1fd\",\"1fa24183-01ec-47dd-ffff504f9410a1fd\"],\"type\":\u000b}"*
+		*/
 	}
 
 	setNav(route: Route) {
@@ -103,10 +93,6 @@ class Store {
 
 	initStructure(data: Structure) {
 		Object.assign(this.structure, data);
-	}
-
-	getMessages() {
-		return this.controlState.get('systemStatus');
 	}
 
 	getSystemCode() { // 0=no status (disconnected), 1=info, 2=warning, 3=error
