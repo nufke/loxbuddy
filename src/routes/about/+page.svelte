@@ -7,7 +7,7 @@
 	store.setNav({ label: 'ArrowLeft', href: '/', icon: ArrowLeft });
 </script>
 
-<div class="container mx-auto max-w-[1280px] p-3 mt-20">
+<div class="container mx-auto max-w-[1280px] p-2">
 	<div class="flex flex-col justify-center text-center items-center m-auto">
 		<p class="m-5 h4">{$_("About")}</p>
 		<img src="/icons/svg/loxbuddy.svg" width="150" alt="about"/>

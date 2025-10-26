@@ -23,9 +23,17 @@
 	let history = $derived(lastBellEvents.length);
 	let securedDetails: any = $state();
 	let bellImages = $derived(new SvelteMap<string, string>());
+	let isJpgVideo = $derived(securedDetails?.videoInfo?.streamUrl.match(/.jpg$/) ? 1 : 0);
 
-	async function fetchSecuredDetails(hostUrl: string, credentials: string) {
-		if (securedDetails) return; // only call when no securedDetails are loaded
+	$effect( () => {
+		if (isJpgVideo) {
+			setInterval( () => {
+				fetchSecuredDetails(store.hostUrl, store.credentials, true)}, 1000);
+			}
+	});
+
+	async function fetchSecuredDetails(hostUrl: string, credentials: string, reload: boolean = false) {
+		if (securedDetails && !reload) return; // only call when no securedDetails are loaded or for reload
 		return fetch(`http://${hostUrl}/jdev/sps/io/${controlView.control.uuidAction}/securedDetails`,
 		{ method: 'GET',
 			headers: {
@@ -51,7 +59,7 @@
 
 	function getImages() {
 		if (lastBellEvents.length) {
-			// Miniserver Gen1 needs time to fetch these images, therefore we introduce a serious delay (200ms)
+			// Miniserver Gen1 needs time to fetch these images, therefore we introduce a serious delay (300ms)
 			setInterval( async () => { 
 				if (imageIdx < lastBellEvents.length) {
 					const event = lastBellEvents[imageIdx++];
@@ -112,7 +120,7 @@
 		{#if selectedTab==1 && getImages()}
 			<div class="relative" style="height: {imageHeight}px;">
 				{#await fetchSecuredDetails(store.hostUrl, store.credentials) then _}
-					<img class="absolute z-2" style="max-height: 560px;" bind:this={img} height={imageHeight} 
+					<img class="absolute z-2" style="max-height: 560px;" bind:this={img} height={imageHeight}
 						src={securedDetails.videoInfo.streamUrl} width="100%" onload={handleImageLoad} alt=""/>
 				{/await}
 			</div>
