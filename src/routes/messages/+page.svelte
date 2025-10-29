@@ -15,6 +15,7 @@
 	let messageCenter = $derived(store.messageCenterList[0]); // select first message center
 	let activeMessages = $derived(messages && messages.entries ? messages.entries.filter( entry => entry.isHistoric == false) : []);
 	let pastMessages = $derived(messages && messages.entries ? messages.entries.filter( entry => entry.isHistoric == true) : []);
+	let notifications = $derived(store.notifications);
 	let notificationList = $derived(Object.values(store.notificationsMap).sort((a, b) => b.message.ts - a.message.ts));
 	let activeNotifications = $derived(notificationList.filter( items => items.status < 3)); // new or read
 	let archivedNotifications = $derived(notificationList.filter( items => items.status == 3)); // new or read

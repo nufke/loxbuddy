@@ -8,6 +8,7 @@ import { loxiconsPath } from '$lib/helpers/paths';
 import { Menu } from '@lucide/svelte';
 
 class Store {
+	appId: string = $state('');
 	isTest: boolean = $state(false);
   controlState: SvelteMap<string, any> = new SvelteMap();
 	nav: Route = $state({ label: 'Menu', href: '/menu', icon: Menu });
@@ -30,6 +31,7 @@ class Store {
 	locale: string = $state('en'); // default English
 	hostUrl: string = $state('');
 	credentials: string = $state('');
+	userSettings: any = $state();
 
 	weatherModal: ModalView = $state({
 		action: () => {},
@@ -55,12 +57,16 @@ class Store {
     	console.error("No state update received from Miniserver") 
   	}, 1000);
 
+		this.appId = localStorage.getItem('appId') || utils.generateUuid();
+		localStorage.setItem('appId', this.appId);
+
 		this.notificationsMap = utils.deserialize(localStorage.getItem('notifications')) || {};
 		this.showStatus = localStorage.getItem('showStatus') == '1' ? true : false;
   }
 
 	updateHostUrl(url: string) {
 		this.hostUrl = url;
+		//this.getUserSettings(this.hostUrl);
 	}
 
 	updateCredentials(cred: string) {
@@ -164,6 +170,26 @@ class Store {
 		this.lockScreenModal.timeout = setTimeout(() => {
 			this.lockScreenModal.state = true;
 		}, 60000); // 60s TODO add to configuration
+	}
+	
+	getUserSettings(hostUrl: string) {
+		return fetch(`http://${store.hostUrl}/jdev/sps/getusersettings`,
+		{ method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+				'Authorization': 'Basic ' + store.credentials
+			}
+		})
+		.then( resp => {
+			if (!resp.ok) {
+				console.error('getSystemStatus not OK!');
+			}
+			return resp.json();
+		})
+		.then( data => this.userSettings = JSON.parse(data))
+		.catch(error => {
+			throw new Error('getSystemStatus error', error);
+		});
 	}
 }
 

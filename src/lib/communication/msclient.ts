@@ -8,8 +8,11 @@ export let loxWsClient: any = null;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const msConnect = async (env: any) => {
 
-	loxWsClient = new LoxClient(env.MS_HOST, env.MS_USERNAME, env.MS_PASSWORD, env.APP_ID, {logLevel: env.MS_LOGLEVEL});
+	if (!store.appId) {
+		console.error('Invalid App ID, cannot connect to Miniserver');
+	}
 
+	loxWsClient = new LoxClient(env.MS_HOST, env.MS_USERNAME, env.MS_PASSWORD, store.appId, {logLevel: env.MS_LOGLEVEL});
 	// subscribe to basic events
 	loxWsClient.on('connected', () => {
 		console.info('LoxClient connected to Miniserver');

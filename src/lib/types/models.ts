@@ -248,7 +248,7 @@ export type Control = {
 	states?: any;									// control states
 	preset?: any;									// control presets
 	links?: string[];							// UUID links for TextState control
-	securedDetails?: any;					// secured details (optional)
+	securedDetails?: SecuredDetails; // secured details (optional)
 	subControls: {
 		[key: string]: Control;			// subControls
 	}
@@ -644,4 +644,26 @@ export type CalendarEntryView = {
 	label: string;
 	enableDelete: boolean;
 	openModal: boolean;
+}
+
+export type SecuredDetails = {
+	LL: {
+		control: string;
+		value: string; // "
+    Code: string;
+	}
+}
+
+export type SecuredDetailsValue = {
+	videoInfo: {
+		alertImage: string;
+		streamUrl: string;
+		deviceUuid: string;
+		user: string;
+		pass: string;
+	},
+	audioInfo: {
+		host: string;
+		user: string;
+	}
 }

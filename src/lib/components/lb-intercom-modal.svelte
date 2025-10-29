@@ -1,9 +1,10 @@
 <script lang="ts">
 	import { Modal } from '@skeletonlabs/skeleton-svelte';
-  import { type ControlView } from '$lib/types/models';
+  import { type ControlView, type SecuredDetails, type SecuredDetailsValue } from '$lib/types/models';
 	import { X, Video, Camera, History } from '@lucide/svelte';
 	import { _ } from 'svelte-i18n';
 	import { fade200 } from '$lib/helpers/transition';
+	import { getResource } from '$lib/helpers/resource.svelte';
 	import Info from '$lib/components/lb-info.svelte';
 	import { store } from '$lib/stores/store.svelte';
 	import { tick } from 'svelte';
@@ -11,6 +12,8 @@
 	import { msGetFile } from '$lib/communication/msclient';
 
 	let { controlView = $bindable() }: { controlView: ControlView } = $props();
+
+	let uuid = controlView.control.uuidAction; // no updates of uuidAction
 
 	let imageIdx = 0; // image cache index
 	let img: any = $state();
@@ -21,36 +24,24 @@
 	let dialogHeight = $state(500);
 	let imageHeight = $state(200);
 	let history = $derived(lastBellEvents.length);
-	let securedDetails: any = $state();
+	let resource = $derived(getResource(`jdev/sps/io/${uuid}/securedDetails`));
+	let	securedDetails = $derived(getSecuredDetails(resource));
 	let bellImages = $derived(new SvelteMap<string, string>());
 	let isJpgVideo = $derived(securedDetails?.videoInfo?.streamUrl.match(/.jpg$/) ? 1 : 0);
 
 	$effect( () => {
 		if (isJpgVideo) {
 			setInterval( () => {
-				fetchSecuredDetails(store.hostUrl, store.credentials, true)}, 1000);
+				getSecuredDetails(resource)}, 1000); // TODO replace by getResource / fetch
 			}
 	});
 
-	async function fetchSecuredDetails(hostUrl: string, credentials: string, reload: boolean = false) {
-		if (securedDetails && !reload) return; // only call when no securedDetails are loaded or for reload
-		return fetch(`http://${hostUrl}/jdev/sps/io/${controlView.control.uuidAction}/securedDetails`,
-		{ method: 'GET',
-			headers: {
-				'Content-Type': 'application/json',
-				'Authorization': 'Basic ' + credentials
-			}
-		})
-		.then( resp => {
-			if (!resp.ok) {
-				console.error('fetchSecuredDetails not OK!');
-			}
-			return resp.json();
-		})
-		.then( data => securedDetails = JSON.parse(data.LL.value))
-		.catch(error => {
-			throw new Error('fetchSecuredDetails error', error);
-		});
+	function getSecuredDetails(res: any) {
+		if (!res?.value) return;
+		console.log('x')
+		if (res?.value?.LL?.value) {
+			return JSON.parse(res?.value?.LL?.value);
+		}
 	}
 
 	function arrayBufferToBase64(buffer: ArrayBuffer) {
@@ -119,10 +110,8 @@
 	<div class="relative w-full">
 		{#if selectedTab==1 && getImages()}
 			<div class="relative" style="height: {imageHeight}px;">
-				{#await fetchSecuredDetails(store.hostUrl, store.credentials) then _}
-					<img class="absolute z-2" style="max-height: 560px;" bind:this={img} height={imageHeight}
-						src={securedDetails.videoInfo.streamUrl} width="100%" onload={handleImageLoad} alt=""/>
-				{/await}
+				<img class="absolute z-2" style="max-height: 560px;" bind:this={img} height={imageHeight}
+					src={securedDetails?.videoInfo?.streamUrl} width="100%" onload={handleImageLoad} alt=""/>
 			</div>
 		{/if}
 		{#if selectedTab==2}
