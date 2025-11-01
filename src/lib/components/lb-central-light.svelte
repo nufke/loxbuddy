@@ -9,7 +9,7 @@
 	import { X, ChevronUp, ChevronDown } from '@lucide/svelte';
 	import { _ } from 'svelte-i18n';
 	import { fade } from 'svelte/transition';
-	import { msControl } from '$lib/communication/msclient';
+	import { loxWsClient } from '$lib/communication/loxwsclient';
 	import fmt from 'sprintf-js';
 	import { fade200 } from '$lib/helpers/transition';
 	import Info from '$lib/components/lb-info.svelte';
@@ -151,7 +151,7 @@
 					default: /* none */
 				}
 				if (control && moodList && moodCmd) {
-					msControl(control.uuidAction, 'changeTo/' + moodCmd);
+					loxWsClient.control(control.uuidAction, 'changeTo/' + moodCmd);
 				}
 			}
 		});

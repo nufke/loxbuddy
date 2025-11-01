@@ -4,12 +4,12 @@
 	import { X, Video, Camera, History } from '@lucide/svelte';
 	import { _ } from 'svelte-i18n';
 	import { fade200 } from '$lib/helpers/transition';
-	import { getResource } from '$lib/helpers/resource.svelte';
+	import { fetchUrl } from '$lib/helpers/resource.svelte';
 	import Info from '$lib/components/lb-info.svelte';
 	import { store } from '$lib/stores/store.svelte';
 	import { tick } from 'svelte';
 	import { SvelteMap } from 'svelte/reactivity';
-	import { msGetFile } from '$lib/communication/msclient';
+	import { loxWsClient } from '$lib/communication/loxwsclient';
 
 	let { controlView = $bindable() }: { controlView: ControlView } = $props();
 
@@ -24,25 +24,18 @@
 	let dialogHeight = $state(500);
 	let imageHeight = $state(200);
 	let history = $derived(lastBellEvents.length);
-	let resource = $derived(getResource(`jdev/sps/io/${uuid}/securedDetails`));
-	let	securedDetails = $derived(getSecuredDetails(resource));
+	let resource = $derived(fetchUrl<string>(`jdev/sps/io/${uuid}/securedDetails`));
+	let	securedDetails = $derived(resource.value ? JSON.parse(resource.value) : {});
 	let bellImages = $derived(new SvelteMap<string, string>());
-	let isJpgVideo = $derived(securedDetails?.videoInfo?.streamUrl.match(/.jpg$/) ? 1 : 0);
+	let isJpgVideo = $derived(securedDetails?.videoInfo?.streamUrl.match(/.cgi$/) ? 1 : 0);
 
 	$effect( () => {
 		if (isJpgVideo) {
 			setInterval( () => {
-				getSecuredDetails(resource)}, 1000); // TODO replace by getResource / fetch
-			}
-	});
-
-	function getSecuredDetails(res: any) {
-		if (!res?.value) return;
-		console.log('x')
-		if (res?.value?.LL?.value) {
-			return JSON.parse(res?.value?.LL?.value);
+				securedDetails = resource.value ? JSON.parse(resource.value) : {};
+			}, 1000); // refresh resource every second
 		}
-	}
+	});
 
 	function arrayBufferToBase64(buffer: ArrayBuffer) {
 		return btoa(String.fromCharCode(...new Uint8Array(buffer)));
@@ -55,7 +48,7 @@
 				if (imageIdx < lastBellEvents.length) {
 					const event = lastBellEvents[imageIdx++];
 					console.info('get intercom image', event);
-					const file = await msGetFile(`camimage/${controlView.control.uuidAction}/${event}`);
+					const file = await loxWsClient.getFile(`camimage/${controlView.control.uuidAction}/${event}`);
   				const url = `data:image/jpeg;base64,${arrayBufferToBase64(file.data)}`;
 					bellImages.set(event, url);
 				}

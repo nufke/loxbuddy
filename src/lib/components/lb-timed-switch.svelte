@@ -6,7 +6,7 @@
 	import LbModal from '$lib/components/lb-modal.svelte';
 	import { store } from '$lib/stores/store.svelte';
 	import { _ } from 'svelte-i18n';
-	import { msControl } from '$lib/communication/msclient';
+	import { loxWsClient } from '$lib/communication/loxwsclient';
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
@@ -24,7 +24,7 @@
 			type: 'button',
 			color: '',
 			click: (e: any) => {
-				msControl(control.uuidAction, (deactivationDelay == 0) ? 'on' : ( (deactivationDelay == -1) ? 'off' : 'on' ));
+				loxWsClient.control(control.uuidAction, (deactivationDelay == 0) ? 'on' : ( (deactivationDelay == -1) ? 'off' : 'on' ));
 			}
 		}
 	);
@@ -35,7 +35,7 @@
 			type: 'button',
 			color: '',
 			click: () => {
-				msControl(control.uuidAction, (deactivationDelay == 0) ? 'pulse' : 'off');
+				loxWsClient.control(control.uuidAction, (deactivationDelay == 0) ? 'pulse' : 'off');
 			}
 		}
 	);
@@ -46,7 +46,7 @@
 			type: 'button',
 			color: '',
 			click: () => {
-				msControl(control.uuidAction, 'pulse');
+				loxWsClient.control(control.uuidAction, 'pulse');
 			}
 		}
 	);
@@ -76,7 +76,7 @@
 			type: 'button',
 			iconColor: 'dark:fill-surface-50 fill-surface-950',
 			click: () => {
-				msControl(control.uuidAction, 'pulse');
+				loxWsClient.control(control.uuidAction, 'pulse');
 			}
 		}
 	]);

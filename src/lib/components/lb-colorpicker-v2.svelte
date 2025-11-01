@@ -4,7 +4,7 @@
 	import type { Control, ColorType } from '$lib/types/models';
 	import { store } from '$lib/stores/store.svelte';
 	import { utils } from '$lib/helpers/utils';
-	import { msControl } from '$lib/communication/msclient';
+	import { loxWsClient } from '$lib/communication/loxwsclient';
 	import { _ } from 'svelte-i18n';
 
 	let { control }: { control: Control } = $props();
@@ -156,7 +156,7 @@
 	  const timeElapsed = currentTimestamp - lastRequestTimestamp;
 
   	if (timeElapsed > desiredPublishInterval) {
-			msControl(control.uuidAction, data);
+			loxWsClient.control(control.uuidAction, data);
 			lastRequestTimestamp = Date.now();
  	 }
 	}

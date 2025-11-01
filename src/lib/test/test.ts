@@ -16,14 +16,14 @@ class Test {
 	_ircv1timer: any = {};
 
 	start() {
-		console.log('TEST MODE: Use demo structure');
+		console.info('TEST MODE: Use demo structure');
 		let i = 0;
 		let j = 0;
 		let k = false; // used for InfoOnlyDigital
 		let m = 0; // used for InfoOnlyAnalog
-		let val = [ "0.0234", "0", "0", "0.500", "-0.400", "0", "2", "-2", "0"];
-		let soc = [ "100", "80", "60", "40", "20", "0"];
-		let fase = [ "0.1", "0.2", "0.3", "0.4", "-0.2", "-0.1"];
+		const val = [ "0.0234", "0", "0", "0.500", "-0.400", "0", "2", "-2", "0"];
+		const soc = [ "100", "80", "60", "40", "20", "0"];
+		const fase = [ "0.1", "0.2", "0.3", "0.4", "-0.2", "-0.1"];
 
 		// loadding of structure and states delayed to test uninitialized variables
 		setTimeout( () => {
@@ -64,7 +64,7 @@ class Test {
 	exec(uuid: string, topic: string, msg: string) {
 		let control: Control = store.controls[uuid];
 		if (!control) { // if no control found, check if the uuid is a subcontrol
-			let parentControl = store.controlList.find( control => control.subControls && control.subControls[uuid])
+			const parentControl = store.controlList.find( control => control.subControls && control.subControls[uuid])
 			if (parentControl) {
 				control = parentControl.subControls[uuid];
 			}
@@ -102,7 +102,7 @@ class Test {
 	}
 
 	switch(control: Control, msg: string) {
-		let stateId = control.states.active;
+		const stateId = control.states.active;
 		let val;
 		if (msg == 'on') val = '1';
 		if (msg == 'off') val = '0';
@@ -110,13 +110,13 @@ class Test {
 	}
 
 	radio(control: Control, msg: string) {
-		let stateId = control.states.activeOutput;
-		let val = msg =='reset' ? 0 : msg;
+		const stateId = control.states.activeOutput;
+		const val = msg =='reset' ? 0 : msg;
 		store.setState(stateId, val);
 	}
 
 	dimmer(control: Control, msg: string) {
-		let stateId = control.states.position;
+		const stateId = control.states.position;
 		if (Number(msg) > 0) {
 			this._dimmer[control.uuidAction] = msg; // store last value;
 		}
@@ -127,28 +127,28 @@ class Test {
 	}
 
 	colorPickerV2(control: Control, msg: string) {
-		let stateId = control.states.color;
+		const stateId = control.states.color;
 		store.setState(stateId, msg);
 	}
 
 	valueSelector(control: Control, msg: string) {
-		let stateId = control.states.value;
+		const stateId = control.states.value;
 		store.setState(stateId, msg);
 	}
 
 	slider(control: Control, msg: string) {
-		let stateId = control.states.value;
+		const stateId = control.states.value;
 		store.setState(stateId, msg);
 	}
 
 	infoOnlyDigital(control: Control, msg: string) {
-		let stateId = control.states.active;
+		const stateId = control.states.active;
 		store.setState(stateId, msg);
 	}
 
 	lightControllerV2(control: Control, msg: string) {
-		let stateId = control.states.activeMoodsNum;
-		let val = msg.split('/');
+		const stateId = control.states.activeMoodsNum;
+		const val = msg.split('/');
 		store.setState(stateId, val[1]);
 	}
 
@@ -166,9 +166,9 @@ class Test {
 		if (this._gate[control.uuidAction]) {
 			clearInterval(this._gate[control.uuidAction]);
 		}
-		let posId = control.states.position;
+		const posId = control.states.position;
 		let pos: number = Number(store.getState(posId));
-		let direction = Math.sign(endState-pos);
+		const direction = Math.sign(endState-pos);
 		this._gate[control.uuidAction] = setInterval(() => {
 			if (pos <= 1 && pos >= 0 ) {
 				pos += 0.1 * direction;
@@ -198,7 +198,7 @@ class Test {
 		if (this._jalousie[control.uuidAction]) {
 			clearInterval(this._jalousie[control.uuidAction]);
 		}
-		let posId = control.states.position;
+		const posId = control.states.position;
 		let pos: number = Number(store.getState(posId));
 		this._jalousie[control.uuidAction] = setInterval(() => {
 			if (pos <= 1 && pos >= 0 ) {
@@ -213,7 +213,7 @@ class Test {
 	}
 
 	timedSwitch(control: Control, msg: string) {
-		let stateId= control.states.deactivationDelay;
+		const stateId= control.states.deactivationDelay;
 		let val: number = 0;
 		switch (msg) {
 			case 'on': clearInterval(this._timedSwitch[control.uuidAction]); val = -1; store.setState(stateId, String(val)); break;
@@ -225,7 +225,7 @@ class Test {
 
 	startTimedSwitch(control: Control) {
 		let val = store.getState(control.states.deactivationDelayTotal);
-		let stateId = control.states.deactivationDelay;
+		const stateId = control.states.deactivationDelay;
 		clearInterval(this._timedSwitch[control.uuidAction]);
 		this._timedSwitch[control.uuidAction] = setInterval(() => {
 			if (val > 0) {
@@ -236,7 +236,7 @@ class Test {
 	}
 
 	alarm(control: Control, msg: string) {
-		let msgItems = msg.split('/');
+		const msgItems = msg.split('/');
 		if (msg.includes('dismv/')) {
 			switch (msgItems[1]) {
 				case '0' : store.setState(control.states.disabledMove, '0'); break;
@@ -269,10 +269,10 @@ class Test {
 	}
 
 	alarmClock(control: Control, msg: string) {
-		let entryListId = control.states.entryList;
-		let nextEntryTimeId = control.states.nextEntryTime;
-		let entryList = store.getState(entryListId) as AlarmClockEntries; // note: proxy object!
-		let msgItems = msg.split('/');
+		const entryListId = control.states.entryList;
+		const nextEntryTimeId = control.states.nextEntryTime;
+		const entryList = store.getState(entryListId) as AlarmClockEntries; // note: proxy object!
+		const msgItems = msg.split('/');
 		if (msg.includes('entryList/put')) {
 			if (entryList && entryList[msgItems[2]]) { // entry exists
 				if (entryList[msgItems[2]].nightLight) { // alarm is nightlight
@@ -314,10 +314,10 @@ class Test {
 	}
 
 	ircv1(control: Control, msg: string) {
-		let msgItems = msg.split('/');
-		let overrideId = control.states.override;
-		let ircDaytimer = Object.values(control.subControls);
-		let valueId = ircDaytimer[0].states.value; // TODO select relevant DayTimer
+		const msgItems = msg.split('/');
+		const overrideId = control.states.override;
+		const ircDaytimer = Object.values(control.subControls);
+		const valueId = ircDaytimer[0].states.value; // TODO select relevant DayTimer
 		if (msg.includes('starttimer/')) {
 			this.startIRCV1Timer(control, msgItems);
 			return;
@@ -329,15 +329,15 @@ class Test {
 	}
 
 	startIRCV1Timer(control: Control, msgItems: string[]) {
-		let mode = store.getState(control.states.mode);
-		let isCooling = (mode == 2 || mode == 4 || mode == 6);
+		const mode = store.getState(control.states.mode);
+		const isCooling = (mode == 2 || mode == 4 || mode == 6);
 		let time = Number(msgItems[2])*60; // Override time given in minutes
-		let overrideId = control.states.override;
+		const overrideId = control.states.override;
 		this._daytimerOldValue = store.getState(control.states.value);
-		let ircDaytimer = Object.values(control.subControls);
-		let ircDaytimerSelected = ircDaytimer.find( item => item.name == (isCooling ? 'Cooling' : 'Heating'));
-		let valueId = ircDaytimerSelected?.states.value;
-		let tempTargetId = control.states.tempTargetId;
+		const ircDaytimer = Object.values(control.subControls);
+		const ircDaytimerSelected = ircDaytimer.find( item => item.name == (isCooling ? 'Cooling' : 'Heating'));
+		const valueId = ircDaytimerSelected?.states.value;
+		const tempTargetId = control.states.tempTargetId;
 		clearInterval(this._ircv1timer[control.uuidAction]);
 		this._ircv1timer[control.uuidAction] = setInterval(() => {
 			if (time > 0) {
@@ -359,9 +359,9 @@ class Test {
 	}
 
 	daytimer(control: Control, msg: string) {
-		let valueId = control.states.value;
-		let overrideId = control.states.override;
-		let msgItems = msg.split('/');
+		const valueId = control.states.value;
+		const overrideId = control.states.override;
+		const msgItems = msg.split('/');
 		if (msg.includes('startOverride/')) {
 			this.startDaytimer(control, msgItems);
 			return;
@@ -382,9 +382,9 @@ class Test {
 
 	startDaytimer(control: Control, msgItems: string[]) {
 		let time = Number(msgItems[2]);
-		let overrideId = control.states.override;
+		const overrideId = control.states.override;
 		this._daytimerOldValue = store.getState(control.states.value);
-		let valueId = control.states.value;
+		const valueId = control.states.value;
 		clearInterval(this._daytimer[control.uuidAction]);
 		this._daytimer[control.uuidAction] = setInterval(() => {
 			if (time > 0) {
@@ -399,11 +399,11 @@ class Test {
 	}
 	
 	setDayTimer(control: Control, msgItems: string[]) {
-		let entriesId = control.states.entriesAndDefaultValue;
+		const entriesId = control.states.entriesAndDefaultValue;
 		let entries = '{defValue: 0, entries: ' + msgItems[1] + ', entry: [\n';
-		let modeList: string[] = [];
+		const modeList: string[] = [];
 		for( let i = 0; i < Number(msgItems[1]); i++) {
-			let item = msgItems[i+2].split(';');
+			const item = msgItems[i+2].split(';');
 			entries += '{mode: ' + item[0];
 			entries += ', from: ' + utils.min2hours(Number(item[1]));
 			entries += ', to: ' + utils.min2hours(Number(item[2]));
@@ -418,10 +418,10 @@ class Test {
 	}
 	
 	setDayTimerModes(control: Control, modeList: string[]) {
-		let modeListId = control.states.modeList;
-		let opModes = store.structure.operatingModes;
-		let list = modeList.map( i => Number(i));
-		let modes = list.filter((item, index) => list.indexOf(item) === index).sort();
+		const modeListId = control.states.modeList;
+		const opModes = store.structure.operatingModes;
+		const list = modeList.map( i => Number(i));
+		const modes = list.filter((item, index) => list.indexOf(item) === index).sort();
 		let modeListStr = "";
 		let i = 0;
 		modes.forEach( mode => {

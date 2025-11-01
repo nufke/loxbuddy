@@ -1,10 +1,10 @@
 import { store } from '$lib/stores/store.svelte';
 
-export const getResource = (
+export const fetchUrl = <T>(
 	url: string,
-	initialValue?: any) => {
+	initialValue?: T) => {
 
-	const _rune = $state<{ value: any | undefined }>({value: initialValue});
+	const _rune = $state<{ value: T | undefined }>({value: initialValue});
 	let req: Request;
 
 	$effect(() => {
@@ -16,12 +16,14 @@ export const getResource = (
 					'Authorization': 'Basic ' + store.credentials
 				}
 			});
+			fetch(req)
+				.then((response) => response.json())
+				.then((data) => {
+					if (data?.LL?.value) {
+						_rune.value = data.LL.value;
+					}
+				});
 		}
-		fetch(req)
-			.then((response) => response.json())
-			.then((data) => {
-				_rune.value = data;
-			});
 	});
 
 	return _rune;

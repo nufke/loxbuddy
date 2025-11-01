@@ -6,9 +6,9 @@
 	import { fade } from 'svelte/transition';
   import { Home, FileText, Grid2x2, Menu, LayoutList, Circle, Square, type Icon as IconType } from '@lucide/svelte';
 	import type { Route } from '$lib/types/models';
-	import { mqttConnect } from '$lib/communication/mqttclient';
-	import { msConnect } from '$lib/communication/msclient';
+	import { mqttClient } from '$lib/communication/mqttclient';
 	import { store } from '$lib/stores/store.svelte';
+	import { loxWsClient } from '$lib/communication/loxwsclient';
 	import { weatherStore } from '$lib/stores/weather-store.svelte';
 	import { _ } from 'svelte-i18n';
 	import { page } from '$app/state';
@@ -21,16 +21,17 @@
 	import { goto } from '$app/navigation';
 	import { test } from '$lib/test/test';
 
-	store.isTest = page.data.test; 
-
-	if (store.isTest) {
+	const env = page.data.env;
+	const isTest = Number(env.TEST) ? true : false;
+ 
+	if (isTest) {
 		/* load test demo structure */
 		test.start();
 	} else {
-		/* start MQTT client */
-		//mqttConnect(page.data.mqtt);
-		/* start WebSocket client to Miniserver */
-		msConnect(page.data.miniserver);
+		// connect to MQTT server
+		mqttClient.connect(env.MQTT_HOSTNAME, env.MQTT_PORT, env.MQTT_USERNAME, env.MQTT_PASSWORD, env.MQTT_TOPIC, isTest);
+		// connect to Miniserver via WebSocket
+		loxWsClient.connect(env.MS_HOST, env.MS_USERNAME, env.MS_PASSWORD, store.appId, 0, isTest);
 	}
 
 	let { children } = $props();

@@ -36,7 +36,7 @@
 		store.locale = loc[s];
 		localStorage.setItem('locale', store.locale);
 		locale.set(store.locale); // reset svelte-i18n
-		console.log('Set locale to', store.locale);
+		console.info('Set locale to', store.locale);
 	}
 
 	let languageSelectView: GeneralView = $state({

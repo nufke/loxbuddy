@@ -3,16 +3,17 @@
 	import { Modal } from '@skeletonlabs/skeleton-svelte';
 	import type { SystemStatus, SystemStatusEntry, NotificationMessage } from '$lib/types/models';
 	import LbIcon from '$lib/components/lb-icon-by-name.svelte';
-	import { msControl } from '$lib/communication/msclient';
 	import { X } from '@lucide/svelte';
 	import { store } from '$lib/stores/store.svelte';
 	import { fade200 } from '$lib/helpers/transition';
 	import { _ } from 'svelte-i18n';
 	import { format } from 'date-fns';
+	import { fetchUrl } from '$lib/helpers/resource.svelte';
 
 	let group = $state('1');
-	let messages = $state() as SystemStatus;
 	let messageCenter = $derived(store.messageCenterList[0]); // select first message center
+	let resource = $derived(fetchUrl<string>(`jdev/sps/io/${messageCenter?.uuidAction}/getEntries/2`));
+	let	messages = $derived(resource.value ? JSON.parse(resource.value) : {}) as SystemStatus;
 	let activeMessages = $derived(messages && messages.entries ? messages.entries.filter( entry => entry.isHistoric == false) : []);
 	let pastMessages = $derived(messages && messages.entries ? messages.entries.filter( entry => entry.isHistoric == true) : []);
 	let notifications = $derived(store.notifications);
@@ -23,26 +24,6 @@
 	let openModal = $state(false);
 
 	let severity = ['', 'Info', 'Warning', 'Error'];
-
-	async function getSystemStatus() {
-		return fetch(`http://${store.hostUrl}/jdev/sps/io/${messageCenter.uuidAction}/getEntries/2`,
-		{ method: 'GET',
-			headers: {
-				'Content-Type': 'application/json',
-				'Authorization': 'Basic ' + store.credentials
-			}
-		})
-		.then( resp => {
-			if (!resp.ok) {
-				console.error('getSystemStatus not OK!');
-			}
-			return resp.json();
-		})
-		.then( data => {messages = JSON.parse(data.LL.value); return messages})
-		.catch(error => {
-			throw new Error('getSystemStatus error', error);
-		});
-	}
 
 	function didRead(notification: NotificationMessage) {
 		store.updateNotificationMap(notification, 2);
@@ -69,9 +50,6 @@
 </script>
 
 <div class="container mx-auto max-w-[1280px] space-y-3 p-3">
-	{#await getSystemStatus() then data}
-	<!--<p>*{JSON.stringify(notifications)}*</p>-->
-	{/await}
 	<Tabs value={group} onValueChange={(e) => (group = e.value)} fluid>
 		{#snippet list() }
 			<Tabs.Control labelBase="text-lg " stateLabelActive="dark:text-primary-500 text-primary-700" value="1">{$_("Notifications")}</Tabs.Control>

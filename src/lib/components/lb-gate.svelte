@@ -5,7 +5,7 @@
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import LbModal from '$lib/components/lb-modal.svelte';
 	import { store } from '$lib/stores/store.svelte';
-	import { msControl } from '$lib/communication/msclient';
+	import { loxWsClient } from '$lib/communication/loxwsclient';
 	import { _ } from 'svelte-i18n';
 	import fmt from 'sprintf-js';
 
@@ -47,13 +47,13 @@
 			iconName: 'ChevronDown',
 			type: 'button',
 			color: '',
-			click: () => msControl(control.uuidAction, 'close')
+			click: () => loxWsClient.control(control.uuidAction, 'close')
 		},
 		{
 			iconName: 'ChevronUp',
 			type: 'button',
 			color: '',
-			click: () => msControl(control.uuidAction, 'open')
+			click: () => loxWsClient.control(control.uuidAction, 'open')
 		}
 	]);
 
@@ -66,20 +66,20 @@
 				name: $_('Closing'),
 				type: 'button',
 				color: '',
-				click: () => msControl(control.uuidAction, 'close'),
+				click: () => loxWsClient.control(control.uuidAction, 'close'),
 			},
 			{
 				name: $_('Opening'),
 				type: 'button',
 				color: '',
-				click: () => msControl(control.uuidAction, 'open'),
+				click: () => loxWsClient.control(control.uuidAction, 'open'),
 			},
 			{
 				name: $_('Open partially'),
 				type: 'button',
 				color: '',
 				class: 'col-span-2',
-				click: () => msControl(control.uuidAction, 'partiallyOpen'),
+				click: () => loxWsClient.control(control.uuidAction, 'partiallyOpen'),
 			}
 		]
 	});

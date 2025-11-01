@@ -4,7 +4,7 @@
 	import LbControl from '$lib/components/lb-control.svelte';
 	import LbWidget from '$lib/components/lb-widget.svelte';
 	import LbModal from '$lib/components/lb-modal.svelte';
-	import { msControl } from '$lib/communication/msclient';
+	import { loxWsClient } from '$lib/communication/loxwsclient';
 	import { store } from '$lib/stores/store.svelte';
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
@@ -21,7 +21,7 @@
 			type: 'button',
 			color: '',
 			click: () => {
-				msControl(control.uuidAction, 'pulse');
+				loxWsClient.control(control.uuidAction, 'pulse');
 			}
 		}
 	]);

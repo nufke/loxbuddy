@@ -3,7 +3,7 @@
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import LbControl from '$lib/components/lb-control.svelte';
 	import LbWidget from '$lib/components/lb-widget.svelte';
-	import { msControl } from '$lib/communication/msclient';
+	import { loxWsClient } from '$lib/communication/loxwsclient';
 	import LbModal from '$lib/components/lb-modal.svelte';
 	import { store } from '$lib/stores/store.svelte';
 
@@ -14,13 +14,13 @@
 			iconName: 'ChevronDown',
 			type: 'button',
 			color: '',
-			click: () => msControl(control.uuidAction, 'PulseDown')
+			click: () => loxWsClient.control(control.uuidAction, 'PulseDown')
 		},
 		{
 			iconName: 'ChevronUp',
 			type: 'button',
 			color: '',
-			click: () => msControl(control.uuidAction, 'PulseUp')
+			click: () => loxWsClient.control(control.uuidAction, 'PulseUp')
 		}
 	]);
 

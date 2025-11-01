@@ -5,7 +5,7 @@
 	import LbControl from '$lib/components/lb-control.svelte';
 	import LbWidget from '$lib/components/lb-widget.svelte';
 	import { store } from '$lib/stores/store.svelte';
-	import { msControl } from '$lib/communication/msclient';
+	import { loxWsClient } from '$lib/communication/loxwsclient';
 	import { fade200 } from '$lib/helpers/transition';
 	import { _ } from 'svelte-i18n';
 	import { X, Wrench, Info, ChevronUp, ChevronDown } from '@lucide/svelte';
@@ -59,7 +59,7 @@
 
 	function stopService() {
 		if (timeServiceMode > 0) { // only stop if servicemode is running
-			msControl(control.uuidAction, 'servicemode/0');
+			loxWsClient.control(control.uuidAction, 'servicemode/0');
 		}
 		duration = '';
 	}
@@ -67,7 +67,7 @@
 	function startService() {
     if (serviceTime > 0) { // TODO minimal time for service
       let cmd = 'servicemode/' + String(serviceTime);
-      msControl(control.uuidAction, cmd);
+      loxWsClient.control(control.uuidAction, cmd);
     }
 	}
 
