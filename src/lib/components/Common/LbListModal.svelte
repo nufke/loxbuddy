@@ -1,7 +1,7 @@
 <script lang="ts">
 	import LbIcon from '$lib/components/Common/LbIconByName.svelte';
 	import { Modal } from '@skeletonlabs/skeleton-svelte';
-  import type { Control, ControlView, ListItem } from '$lib/types/models';
+	import type { Control, ControlView, ListItem } from '$lib/types/models';
 	import { fade } from 'svelte/transition';
 	import LbSwitch from '$lib/components/Switch/LbSwitch.svelte';
 	import LbLightDimmer from '$lib/components/LightController/LbLightDimmer.svelte';
@@ -21,16 +21,16 @@
 
 	let selectedTab = $state(0);
 	let isLightController = $derived(controlView.control?.type=='LightControllerV2' || controlView.control?.type=='LightController');
-  let id = $derived(subControls.findIndex( subControl => subControl.type === 'ColorPickerV2')); // select first color subControl
+	let id = $derived(subControls.findIndex( subControl => subControl.type === 'ColorPickerV2')); // select first color subControl
 
 	let viewportTab0: any = $state(); // TODO make HTMLDivElement
 	let hasScrollTab0 = $state(true);
-  let showScrollTopTab0 = $state(false);
+	let showScrollTopTab0 = $state(false);
 	let showScrollBottomTab0 = $state(true);
 
 	let viewportTab1: any = $state(); // TODO make HTMLDivElement
 	let hasScrollTab1 = $state(true);
-  let showScrollTopTab1 = $state(false);
+	let showScrollTopTab1 = $state(false);
 	let showScrollBottomTab1 = $state(true);
 
 	let modalViewport: any = $state(); // TODO make HTMLDivElement
@@ -45,15 +45,16 @@
 
 	function parseScrollTab0() {
 		hasScrollTab0 = viewportTab0?.scrollHeight > viewportTab0?.clientHeight;
-    showScrollTopTab0 = limitHeight && hasScrollTab0 && (viewportTab0?.scrollTop > 10);
+		showScrollTopTab0 = limitHeight && hasScrollTab0 && (viewportTab0?.scrollTop > 10);
 		showScrollBottomTab0 = limitHeight && hasScrollTab0 && (viewportTab0.scrollTop + viewportTab0?.clientHeight < (viewportTab0?.scrollHeight - 10));
-  }
+	}
 
-		function parseScrollTab1() {
+	function parseScrollTab1() {
 		hasScrollTab1 = viewportTab1?.scrollHeight > viewportTab1?.clientHeight;
-    showScrollTopTab1 = limitHeight && hasScrollTab1 && (viewportTab1?.scrollTop > 10);
+		showScrollTopTab1 = limitHeight && hasScrollTab1 && (viewportTab1?.scrollTop > 10);
 		showScrollBottomTab1 = limitHeight && hasScrollTab1 && (viewportTab1.scrollTop + viewportTab1?.clientHeight < (viewportTab1?.scrollHeight - 10));
-  }
+	}
+
 	$effect( () => {
 		parseScrollTab0();
 	});

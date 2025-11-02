@@ -28,7 +28,7 @@
 		state: false
 	});
 
-  let controlView: ControlView = $derived({
+	let controlView: ControlView = $derived({
 		...DEFAULT_CONTROLVIEW,
 		control: control,
 		isFavorite: controlOptions.isFavorite,

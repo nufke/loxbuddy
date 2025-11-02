@@ -40,22 +40,22 @@
 		}
 	}
 
-  function updatePosition(e: any) {
+	function updatePosition(e: any) {
 		let newPosition = Math.round(e);
 		if (newPosition == position) return; // same position, do not update
 
-    if (control.type === 'Dimmer') {
-      loxWsClient.control(control.uuidAction, String(e));
-    }
+		if (control.type === 'Dimmer') {
+			loxWsClient.control(control.uuidAction, String(e));
+		}
 
-    if (control.type === 'ColorPickerV2') {
-      let hsv = color.match(/hsv\(([0-9]*),([0-9]*),([0-9]*)\)/);
+		if (control.type === 'ColorPickerV2') {
+			let hsv = color.match(/hsv\(([0-9]*),([0-9]*),([0-9]*)\)/);
 			if (hsv) {
-        let newColor = 'hsv(' + hsv[1] + ',' + hsv[2] + ',' + String(e) + ')';
-			  loxWsClient.control(control.uuidAction, newColor);
+				let newColor = 'hsv(' + hsv[1] + ',' + hsv[2] + ',' + String(e) + ')';
+				loxWsClient.control(control.uuidAction, newColor);
 			}
-    }
-  }
+		}
+	}
 
 	let controlView: ControlView = $derived({
 		...DEFAULT_CONTROLVIEW,
@@ -68,7 +68,7 @@
 </script>
 
 <div role="button" tabindex="0" onkeydown={()=>{}} aria-label="card" onclick={() => {controlOptions.action ? controlOptions.action() : controlView.modal.state = true}}
-     class="card m-0 flex min-h-[70px] items-center justify-start rounded-lg border border-white/5
+		class="card m-0 flex min-h-[70px] items-center justify-start rounded-lg border border-white/5
 						{controlOptions.isSubControl ? 'bg-surface-200-800' : 'bg-surface-100-900'} px-2 py-2 hover:border-white/10">
 	<div class="w-full ">
 		<div class="flex justify-between mt-0 mb-3 ml-2 mr-2">

@@ -205,14 +205,14 @@
 		</div>
 		{#each pos as p, i (p.val)}
 			<button type="button" class="lb-ticks {ts} absolute text-center rounded-full border-0 cursor-pointer translate-x-[-50%] translate-y-[-50%]"
-			        style={`left:${p.x}px; top:${p.y}px;`} class:outer-tick={isMinuteView}
+					tyle={`left:${p.x}px; top:${p.y}px;`} class:outer-tick={isMinuteView}
 				transition:fade={{ duration: 200 }} data-value={p.val} 
 				class:is-selected={isSelected(selectedHour, p.val, i)}>{p.val}
 			</button>
 		{/each}
 		{#each innerHours as p, i}
 			<button type="button" class="lb-ticks {ts} absolute text-center rounded-full border-0 cursor-pointer translate-x-[-50%] translate-y-[-50%]" 
-			  style={`left:${p.x}px; top:${p.y}px;`} class:outer-tick={showMeridian && !isMinuteView}
+				style={`left:${p.x}px; top:${p.y}px;`} class:outer-tick={showMeridian && !isMinuteView}
 				transition:fade={{ duration: 200 }} data-value={p.val} 
 				class:is-selected={isSelected(isMinuteView ? selectedMinutes : selectedHour, p.val, i)}>{p.val}
 			</button>

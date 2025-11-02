@@ -12,11 +12,11 @@
 	let armed = $derived(Number(store.getState(control.states.armed))==1);
 	let disabledMove = $derived(Number(store.getState(control.states.disabledMove))==1);
 
-  function setUnsetAlarm(delay: boolean = false) {
+	function setUnsetAlarm(delay: boolean = false) {
 		let cmd = armed ? 'off' : (delay ? 'delayedon/' : 'on/');
 		cmd += armed ? '' : (disabledMove ? '0' : '1');
-    loxWsClient.control(control.uuidAction, cmd);
-  }
+		loxWsClient.control(control.uuidAction, cmd);
+	}
 
 	function setUnsetMmovement(e: any) {
 		let cmd = 'dismv/' + (e.checked ? '0' : '1');
@@ -37,7 +37,7 @@
 			type: armed ? '' : 'button',
 			color: '',
 			click: () => {
-				setUnsetAlarm(true);  // with delay
+				setUnsetAlarm(true); // with delay
 			}
 		},
 		{
@@ -61,7 +61,7 @@
 		return status;
 	}
 
-  let controlView: ControlView = $derived({
+	let controlView: ControlView = $derived({
 		...DEFAULT_CONTROLVIEW,
 		control: control,
 		isFavorite: controlOptions.isFavorite,

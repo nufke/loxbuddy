@@ -48,10 +48,10 @@
 				<span class="text-4xl truncate">{currentWeather.airTemperature}°</span>
 			</div>
 			{/if}
-	  	<div class="m-auto">
+			<div class="m-auto">
 				<p class="mt-2 pl-3 text-7xl font-bold">{format(time, "p")}</p>
 				<p class="mt-2 pl-3 text-4xl font-bold">{format(time, "eeee PPP")}</p>
-	  	</div>
+			</div>
 		</div>
 	{/snippet}
 </Modal>

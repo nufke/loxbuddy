@@ -11,13 +11,14 @@
 	let { data }: PageProps = $props();
 
 	let key = 'category';
+	let room = 'room';
 	let userSettings = $derived(store.userSettings);
 
 	store.setNav({ label: 'ArrowLeft', href: '/category', icon: ArrowLeft }); // TODO change navigation concept
 
 	let filteredControls: Control[] = $derived(
 		store.controlList.filter((control) => (control.cat === data.uuid) && ((control.restrictions & 1) != 1))
-		//.sort((a, b) => a.name.localeCompare(b.name, store.locale))
+		.sort((a, b) => a.name.localeCompare(b.name, store.locale))
 		.sort((a, b) => getPosition(userSettings.userDefaultStructure, a, key + '/' + a.room) - getPosition(userSettings.userDefaultStructure, b, key + '/' + b.room))
 	);
 
@@ -25,8 +26,9 @@
 		filteredControls.filter((control) => control.defaultRating > 0));
 
 	let favorites: Control[] = $derived(
-		filteredControls.filter((control) => isFavorite(userSettings.userDefaultStructure, control, key))
-		.sort((a, b) => getPosition(userSettings.userDefaultStructure, a, key + '/' + a.room) - getPosition(userSettings.userDefaultStructure, b, key + '/' + b.room))
+		filteredControls.filter((control) => isFavorite(userSettings.userDefaultStructure, control, room))
+		.sort((a, b) => a.name.localeCompare(b.name, store.locale))
+		.sort((a, b) => getPosition(userSettings.userDefaultStructure, a, room) - getPosition(userSettings.userDefaultStructure, b, room))
 	);
 
 	function isFavorite(obj: any, control: Control, key: string) {
@@ -35,7 +37,7 @@
 	}
 
 	function getPosition(obj: any, control: Control, key: string) {
-		let pos = obj[control.uuidAction] ? obj[control.uuidAction][key] ? obj[control.uuidAction][key].position : 0 : 0;
+		let pos = obj[control.uuidAction] ? obj[control.uuidAction][key] ? obj[control.uuidAction][key].position : 999 : 999;
 		//console.log('control.uuidAction]', obj[control.uuidAction], control.name, pos )
 		return pos;
 	}
@@ -46,7 +48,7 @@
 			.sort((a, b) => a.name.localeCompare(b.name, store.locale))
 	);
 
-	let pageTitle: Category | undefined =  $derived(
+	let pageTitle: Category | undefined = $derived(
 		store.categoryList.find((item) => filteredControls[0].cat == item.uuid)
 	);
 

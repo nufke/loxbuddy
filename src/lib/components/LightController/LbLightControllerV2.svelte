@@ -17,9 +17,9 @@
 		if (e && e.checked == undefined) { // no mood given, select next mood
 			moodIndex = moodList.findIndex((item:any) => { return item.id == activeMoodsNum });
 			moodIndex++;
-    	if (moodIndex > moodList.length-1) {
+			if (moodIndex > moodList.length-1) {
 				moodIndex = 0;
-    	}
+			}
 		} else {
 			moodIndex = e.checked;
 		}

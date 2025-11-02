@@ -16,7 +16,7 @@
 
 	let viewport: any = $state(); // TODO make HTMLDivElement
 	let hasScroll = $state(true);
-  let showScrollTop = $state(false);
+	let showScrollTop = $state(false);
 	let showScrollBottom = $state(true);
 
 	let windowList: WindowListItem[] = control.details.windows;
@@ -34,7 +34,7 @@
 	let modalViewport: any = $state(); // TODO make HTMLDivElement
 	let windowHeight = $derived(innerHeight.current || 0);
 	let limitHeight = $state(false); 
-	let summary  = $derived(getSummary(numOpen, numTilted, numUnlocked));
+	let summary = $derived(getSummary(numOpen, numTilted, numUnlocked));
 
 	// TODO check what the summary is
 	function getSummary(open: number, tilted: number, unlocked: number) {
@@ -88,7 +88,7 @@
 		if (windowList[i] && windowList[i].room && store.rooms[windowList[i].room]) {
 			return store.rooms[windowList[i].room].name;
 		} else {
-		  return '';
+			return '';
 		} 
 	}
 
@@ -118,9 +118,9 @@
 
 	function parseScroll() {
 		hasScroll = viewport?.scrollHeight > viewport?.clientHeight;
-    showScrollTop = limitHeight && hasScroll && (viewport?.scrollTop > 10);
+		showScrollTop = limitHeight && hasScroll && (viewport?.scrollTop > 10);
 		showScrollBottom = limitHeight && hasScroll && (viewport.scrollTop + viewport?.clientHeight < (viewport?.scrollHeight - 10));
-  }
+	}
 
 	$effect( () => {
 		parseScroll();
@@ -198,7 +198,7 @@
 				{#if showScrollBottom}
 					<div class="absolute z-10 left-[50%] lb-center -bottom-[20px] text-surface-500" transition:fade={{ duration: 300 }}><ChevronDown size="30"/></div>
 				{/if}
-				<div class="flex flex-col space-y-2 overflow-y-auto w-full h-full mt-2"  bind:this={viewport} onscroll={parseScroll}>
+				<div class="flex flex-col space-y-2 overflow-y-auto w-full h-full mt-2" bind:this={viewport} onscroll={parseScroll}>
 					{#each windowStatesList as window, index}
 						<div class="w-full flex h-[60px] items-center justify-start rounded-lg border border-white/15 hover:border-white/50
 													dark:bg-surface-950 bg-surface-50 px-2 py-2">

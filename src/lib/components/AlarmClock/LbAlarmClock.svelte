@@ -70,8 +70,8 @@
 		let extName = (i == -1) ? ' ' + String(id) : ''; /* extend name for new entries */
 		let setting = entry.nightLight ? (entry.daily ? '1' : '0') : entry.modes?.map(s => s.toString());
 		let cmd = 'entryList/put/' + String(id) + '/' +
-		    entry.name + extName + '/' + entry.alarmTime + '/' + 
-				(entry.isActive ? '1' : '0') + '/' + setting;
+			entry.name + extName + '/' + entry.alarmTime + '/' + 
+			(entry.isActive ? '1' : '0') + '/' + setting;
 		//console.log('cmd', cmd, id, entryListIds);
 		loxWsClient.control(control.uuidAction, cmd);
 	}
@@ -153,7 +153,7 @@
 				}
 			});
 		}
-  });
+	});
 
 	$effect( () => {
 		if (windowHeight && modalViewport) { /* trigger on windowHeight change */

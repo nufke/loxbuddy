@@ -15,11 +15,11 @@
 
 	/* Gate types (based on animation detail )
 		0 = Garage Door
-		1 = Single Gate opening to the left:  open |->  close |<-
-		2 = Single Gate opening to the right: open <-|  close ->|
-		3 = Gate opening to both sides:       open <|>  close >|<
-		4 = Folding door opening to the left:  open |->  close |<-
-		5 = Folding door opening to the right: open <-|  close ->|
+		1 = Single Gate opening to the left:		open |->	close |<-
+		2 = Single Gate opening to the right:		open <-|	close ->|
+		3 = Gate opening to both sides:					open <|>	close >|<
+		4 = Folding door opening to the left:		open |->	close |<-
+		5 = Folding door opening to the right:	open <-|	close ->|
 	*/
 
 	$effect( () => {
@@ -83,7 +83,7 @@
 		]
 	});
 
-  let controlView: ControlView = $derived({
+	let controlView: ControlView = $derived({
 		...DEFAULT_CONTROLVIEW,
 		control: control,
 		isFavorite: controlOptions.isFavorite,

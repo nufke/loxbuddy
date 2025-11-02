@@ -1,24 +1,37 @@
 <script lang="ts">
 	import { _ } from 'svelte-i18n';
 	import { getComponent } from '$lib/helpers/components';
-	import type { ControlOptions } from '$lib/types/models';
+	import type { Control, ControlOptions } from '$lib/types/models';
 	import { DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import { store } from '$lib/stores/Store.svelte';
 	import { Tabs } from '@skeletonlabs/skeleton-svelte';
 
 	let tabGroup = $state('1');
+	let fav = 'favorites';
 
-	let filteredControls = $derived(
-		store.controlList.filter((control) => control.isFavorite === true)
-			.sort((a, b) => a.name.localeCompare(b.name, store.locale)));
-
+	let userSettings = $derived(store.userSettings);
 	let room = $derived(store.roomList.find( (room) => room.name == $_('General')));
+	let controlOptions: ControlOptions = $derived(DEFAULT_CONTROLOPTIONS);
+
+	let favoriteControls = $derived(
+		store.controlList.filter((control) => isFavorite(userSettings.userDefaultStructure, control, fav))
+		.sort((a, b) => a.name.localeCompare(b.name, store.locale))
+		.sort((a, b) => getPosition(userSettings.userDefaultStructure, a, fav) - getPosition(userSettings.userDefaultStructure, b, fav))
+	);
 
 	let centralControls = $derived(
-		store.controlList.filter((control) => (control.room === room?.uuid && control.defaultRating > 0) )
-			.sort((a, b) => a.name.localeCompare(b.name, store.locale)));
+		store.controlList.filter((control) => (control.room === room?.uuid && isFavorite(userSettings.userDefaultStructure, control, 'room')) )
+		.sort((a, b) => a.name.localeCompare(b.name, store.locale))
+	);
 
-	let controlOptions: ControlOptions = $derived(DEFAULT_CONTROLOPTIONS);
+	function isFavorite(obj: any, control: Control, key: string) {
+		return obj[control.uuidAction] ? obj[control.uuidAction][key] ? obj[control.uuidAction][key].isFav : false : false;
+	}
+
+	function getPosition(obj: any, control: Control, key: string) {
+		let pos = obj[control.uuidAction] ? obj[control.uuidAction][key] ? obj[control.uuidAction][key].position : 999 : 999;
+		return pos;
+	}
 </script>
 
 <div class="container mx-auto max-w-[1280px] p-3 lb-page-center">
@@ -26,11 +39,11 @@
 		{#snippet list()}
 			<Tabs.Control value="1" labelBase="h4" base='border-b-[2px] border-transparent' padding='ml-2 pb-0'>{$_('Favorites')}</Tabs.Control>
 			<Tabs.Control value="2" labelBase="h4" base='border-b-[2px] border-transparent' padding='ml-2 pb-0'>{$_('General')}</Tabs.Control>
-  	{/snippet}
+		{/snippet}
 		{#snippet content()}
 			<Tabs.Panel value="1">
 				<div class="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 lg:flex-wrap">
-					{#each filteredControls as control}
+					{#each favoriteControls as control}
 						{@const Component = getComponent(control.type)}
 						<Component {control} controlOptions={{...controlOptions, isFavorite: true}}/>
 					{/each}
@@ -44,6 +57,6 @@
 					{/each}
 				</div>
 			</Tabs.Panel>
-	  {/snippet}
+		{/snippet}
 	</Tabs>
 </div>

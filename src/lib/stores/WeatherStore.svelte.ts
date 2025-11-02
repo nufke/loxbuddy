@@ -54,13 +54,13 @@ const weatherCodes: any = {
 }
 
 class WeatherStore {
-  observations = new SvelteMap();
+	observations = new SvelteMap();
 	current: WeatherCurrentConditions = $derived(this.processCurrent()); //WeatherCurrentConditions
 	daily: WeatherDailyForecast[] = $derived(this.processDaily());
-  hourly: WeatherHourlyForecast[] = $derived(this.processHourly());
+	hourly: WeatherHourlyForecast[] = $derived(this.processHourly());
 
 	constructor() {
-  }
+	}
 
 	processCurrent() {
 		const current = String(this.observations.get('current'));
@@ -98,7 +98,7 @@ class WeatherStore {
 				time: Number(field[1])*1000,
 				conditions: weatherCodes[field[26]],
 				icon: weatherIcons[field[25]], 
-				sunRise:  String(Number(field[33])) + ':' + String(field[34]),
+				sunRise: String(Number(field[33])) + ':' + String(field[34]),
 				sunSet: String(Number(field[35])) + ':' + String(field[36]),
 				airTemperatureHigh: Math.round(Number(field[11])),
 				airTemperatureLow: Math.round(Number(field[12])),

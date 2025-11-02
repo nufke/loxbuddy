@@ -20,7 +20,7 @@
 
 	let { controlView = $bindable() }: { controlView: ControlView } = $props();
 
-  let value = $derived(controlView.slider && controlView.slider.position? [controlView.slider.position] : [0]);
+	let value = $derived(controlView.slider && controlView.slider.position? [controlView.slider.position] : [0]);
 	let min = $derived(controlView.slider ? controlView.slider.min : 0);
 	let max = $derived(controlView.slider ? controlView.slider.max : 100);
 	let step = $derived(controlView.slider ? controlView.slider.step : 1);
@@ -63,7 +63,7 @@
 
 	let viewport: any = $state(); // TODO make HTMLDivElement
 	let hasScroll = $state(true);
-  let showScrollTop = $state(false);
+	let showScrollTop = $state(false);
 	let showScrollBottom = $state(true);
 
 	let modalViewport: any = $state(); // TODO make HTMLDivElement
@@ -72,7 +72,7 @@
 
 	function parseScroll() {
 		hasScroll = viewport?.scrollHeight > viewport?.clientHeight;
-    showScrollTop = limitHeight && hasScroll && (viewport?.scrollTop > 10);
+		showScrollTop = limitHeight && hasScroll && (viewport?.scrollTop > 10);
 		showScrollBottom = limitHeight && hasScroll && (viewport.scrollTop + viewport?.clientHeight < (viewport?.scrollHeight - 10));
 	}
 

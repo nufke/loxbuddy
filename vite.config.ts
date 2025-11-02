@@ -8,18 +8,18 @@ export default defineConfig({
 		tailwindcss(),
 		sveltekit(),
 		nodePolyfills({
-      globals: {
-        Buffer: true,
-        global: true,
-        process: true,
-      },
-      protocolImports: true,
-    }),
+			globals: {
+				Buffer: true,
+				global: true,
+				process: true
+			},
+			protocolImports: true
+		})
 	],
 	resolve: {
-    alias: {
-      crypto: 'crypto-browserify',
-			buffer: 'buffer/',
+		alias: {
+			crypto: 'crypto-browserify',
+			buffer: 'buffer/'
 		}
 	}
 });

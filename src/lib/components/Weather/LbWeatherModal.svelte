@@ -150,7 +150,7 @@
 		</div> 
 		{#if slider[i]}
 		<div class="max-w-[768px] bg-surface-100-900" transition:slide={{ duration: 400 }} >
-     	<div transition:fade={{ duration: 200 }}>
+			<div transition:fade={{ duration: 200 }}>
 				<div class="grid grid-cols-2 hr p-1">
 					<div class="flex m-auto">
 						<span class="mr-2"><Sunrise size="22"/></span>
@@ -191,9 +191,9 @@
 	</div>
 	{:else}
 	<div class="flex h-screen">
-	  <div class="m-auto">
-    	<p class="dark:text-surface-50 text-surface-950 text-xl">{$_("Waiting for weather data ...")}</p>
-  	</div>
+		<div class="m-auto">
+			<p class="dark:text-surface-50 text-surface-950 text-xl">{$_("Waiting for weather data ...")}</p>
+		</div>
 	</div>
 	{/if}
 	{/snippet}
@@ -204,10 +204,10 @@
 -->
 
 <style>
-/* to resolve css blowout issue with slider  */ 
+/* to resolve css blowout issue with slider */ 
 :global {
 	main {
-	  min-width: 0!important;
+		min-width: 0!important;
 	}
 }
 </style>

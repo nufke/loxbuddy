@@ -104,7 +104,7 @@ class Utils {
 	isDST(d: Date) { // correction for daylight saving time
 		const jan = new Date(d.getFullYear(), 0, 1).getTimezoneOffset();
 		const jul = new Date(d.getFullYear(), 6, 1).getTimezoneOffset();
-		return Math.max(jan, jul) !== d.getTimezoneOffset();    
+		return Math.max(jan, jul) !== d.getTimezoneOffset();
 	}
 
 	decTime2date(t: number) {
@@ -147,7 +147,7 @@ class Utils {
 	}
 	
 	serialize(value: any): string {
-		return  JSON.stringify(value);
+		return JSON.stringify(value);
 	}
 
 	deserialize(item: string | null): any {
@@ -177,7 +177,7 @@ class Utils {
 		return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c: string) => {
 			const r = Math.random()*16|0, v = c === 'x' ? r : (r & 0x3|0x8);
 			return v.toString(16);
-  	});
+		});
 	}
 
 }

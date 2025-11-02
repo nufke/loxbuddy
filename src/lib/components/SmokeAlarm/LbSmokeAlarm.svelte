@@ -53,7 +53,7 @@
 			default: 
 				statusName = '';
 				statusColor = '';
-    }
+		}
 	}
 
 	function stopService() {
@@ -64,10 +64,10 @@
 	}
 
 	function startService() {
-    if (serviceTime > 0) { // TODO minimal time for service
-      let cmd = 'servicemode/' + String(serviceTime);
-      loxWsClient.control(control.uuidAction, cmd);
-    }
+		if (serviceTime > 0) { // TODO minimal time for service
+			let cmd = 'servicemode/' + String(serviceTime);
+			loxWsClient.control(control.uuidAction, cmd);
+		}
 	}
 
 	function setTimer(h: number, m: number) {

@@ -32,14 +32,14 @@
 		lightControls.filter((control: Control) => store.getState(control.states.activeMoodsNum) == 778)
 	);
 
-	let lightsOn =  $derived(lightList.length - lightsOff.length);
+	let lightsOn = $derived(lightList.length - lightsOff.length);
 	let selectedLightCount = $derived(lightList.filter( item => item.selected == true).length);
 
 	let scenesEnabled = $state(false);
 
 	let viewport: any = $state(); // TODO make HTMLDivElement
 	let hasScroll = $state(true);
-  let showScrollTop = $state(false);
+	let showScrollTop = $state(false);
 	let showScrollBottom = $state(true);
 
 	let modalViewport: any = $state(); // TODO make HTMLDivElement
@@ -48,9 +48,9 @@
 
 	function parseScroll() {
 		hasScroll = viewport?.scrollHeight > viewport?.clientHeight;
-    showScrollTop = limitHeight && hasScroll && (viewport?.scrollTop > 10);
+		showScrollTop = limitHeight && hasScroll && (viewport?.scrollTop > 10);
 		showScrollBottom = limitHeight && hasScroll && (viewport.scrollTop + viewport?.clientHeight < (viewport?.scrollHeight - 10));
-  }
+	}
 
 	$effect( () => {
 		parseScroll();
@@ -68,16 +68,16 @@
 	function getActiveLights() {
 		let status = '';
 		switch (lightsOn) {
-        case 0:
-          status = $_('All off');
-          break;
-        case 1:
-          status = fmt.sprintf($_('On in %s room'), 1);
-          break;
-        default:
-          status = fmt.sprintf($_('On in %s rooms'), lightsOn);
-      }
-			return status;
+			case 0:
+				status = $_('All off');
+				break;
+			case 1:
+				status = fmt.sprintf($_('On in %s room'), 1);
+				break;
+			default:
+				status = fmt.sprintf($_('On in %s rooms'), lightsOn);
+		}
+		return status;
 	}
 
 	function close() {
@@ -145,8 +145,8 @@
 				let moodList = store.getState(control?.states.moodList) as MoodList[];
 				let moodCmd;
 				switch (mood) {
-					case 'On':  moodCmd = String(moodList[0].id); break;
-					case 'Off':  moodCmd = '778'; break; // TODO check if Off is always nr 778
+					case 'On': moodCmd = String(moodList[0].id); break;
+					case 'Off': moodCmd = '778'; break; // TODO check if Off is always nr 778
 					default: /* none */
 				}
 				if (control && moodList && moodCmd) {
@@ -233,7 +233,7 @@
 	</Modal>
 
 	{#if selectedControl && selectedControlOptions }
-		{#key selectedControlOptions}  <!-- reinit component -->
+		{#key selectedControlOptions} <!-- reinit component -->
 			<LbLightControllerV2 control={selectedControl} controlOptions={selectedControlOptions}/>
 		{/key}
 	{/if}

@@ -64,6 +64,14 @@ export class LoxWsClient {
 
 		// initiates streaming of all events
 		await this.client.enableUpdates();
+		
+		// get UserSettings for sorting and favorites
+		console.info('LoxClient: Get user settings...');
+		this.getUserSettings();
+		
+		// get UserSettings for sorting and favorites
+		console.info('LoxClient: Get system status...');
+		this.getSystemStatus();
 	}
 
 	/**
@@ -127,6 +135,31 @@ export class LoxWsClient {
 	async disconnect() {
 		await this.client.disconnect();
 	}
+	
+	getUserSettings() {
+		fetch(`${store.loginCredentials.hostUrl}/jdev/sps/getusersettings`, {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+				'Authorization': 'Basic ' + store.loginCredentials.credentials
+			}
+		})
+		.then((response) => response.json())
+		.then((data) => { store.userSettings = data })
+	}
+
+	getSystemStatus() {
+		fetch(`${store.loginCredentials.hostUrl}/jdev/sps/io/${store.messageCenterList[0].uuidAction}/getEntries/2`, {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+				'Authorization': 'Basic ' + store.loginCredentials.credentials
+			}
+		})
+		.then((response) => response.json())
+		.then((data) => { store.systemStatus = JSON.parse(data.LL.value); })
+	}
+
 }
 
 export const loxWsClient = new LoxWsClient();

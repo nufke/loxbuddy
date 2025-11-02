@@ -11,13 +11,15 @@
 	let { data }: PageProps = $props();
 
 	let key = 'room';
+	let key2 = 'category';
+	let fav = 'favorites';
 	let userSettings = $derived(store.userSettings);
 
 	store.setNav({ label: 'ArrowLeft', href: '/room', icon: ArrowLeft }); // TODO change navigation concept
 
 	let filteredControls: Control[] = $derived(
 		store.controlList.filter((control) => (control.room === data.uuid) && ((control.restrictions & 1) != 1))
-		//.sort((a, b) => a.name.localeCompare(b.name, store.locale))
+		.sort((a, b) => a.name.localeCompare(b.name, store.locale))
 		.sort((a, b) => getPosition(userSettings.userDefaultStructure, a, key + '/' + a.cat) - getPosition(userSettings.userDefaultStructure, b, key + '/' + b.cat))
 	);
 
@@ -26,16 +28,16 @@
 
 	let favorites: Control[] = $derived(
 		filteredControls.filter((control) => isFavorite(userSettings.userDefaultStructure, control, key))
-		.sort((a, b) => getPosition(userSettings.userDefaultStructure, a, key + '/' + a.cat) - getPosition(userSettings.userDefaultStructure, b, key + '/' + a.cat))
+		.sort((a, b) => a.name.localeCompare(b.name, store.locale))
+		.sort((a, b) => getPosition(userSettings.userDefaultStructure, a, key) - getPosition(userSettings.userDefaultStructure, b, key))
 	);
 
 	function isFavorite(obj: any, control: Control, key: string) {
-		
 		return obj[control.uuidAction] ? obj[control.uuidAction][key] ? obj[control.uuidAction][key].isFav : false : false;
 	}
 
 	function getPosition(obj: any, control: Control, key: string) {
-		let pos = obj[control.uuidAction] ? obj[control.uuidAction][key] ? obj[control.uuidAction][key].position : 0 : 0;
+		let pos = obj[control.uuidAction] ? obj[control.uuidAction][key] ? obj[control.uuidAction][key].position : 999 : 999;
 		return pos;
 	}
 
@@ -44,7 +46,7 @@
 			.indexOf(item.uuid) > -1)
 			.sort((a, b) => a.name.localeCompare(b.name, store.locale)));
 
-	let pageTitle: Room | undefined =  $derived(
+	let pageTitle: Room | undefined = $derived(
 		store.roomList.find((item) => filteredControls[0].room == item.uuid)
 	);
 

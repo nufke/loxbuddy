@@ -11,7 +11,7 @@
 
 	let { controlView = $bindable() }: { controlView: ControlView } = $props();
 
-	let soc =  $derived(Number(controlView.modal.details['storage']));
+	let soc = $derived(Number(controlView.modal.details['storage']));
 	let selected = $state(0);
 
 	function getWeekDates(d: Date) {
@@ -69,7 +69,7 @@
 				<div class="relative flex items-center justify-center dark:fill-surface-950 fill-surface-50">
 					<LbIcon class="absolute dark:fill-surface-50 fill-surface-950" name={controlView.iconName} width="36" height="36"/>
 					<svg height="74" width="74" viewBox='0 0 74 74'>
-    				<circle class="dark:stroke-tertiary-500 stroke-tertiary-700" r="36" cx="37" cy="37" stroke-width="2" />
+						<circle class="dark:stroke-tertiary-500 stroke-tertiary-700" r="36" cx="37" cy="37" stroke-width="2" />
 						<circle class="dark:stroke-primary-500 stroke-primary-700" r="36" cx="37" cy="37" transform="rotate({-90+(soc/100)},37,37)"
 									stroke-dasharray="calc({2*3.1415*36*soc/100}) calc({2*3.1415*36*(100-soc)/100})" stroke-width="2" fill="none"/>
 					</svg>

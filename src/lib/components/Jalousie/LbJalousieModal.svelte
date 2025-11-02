@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Modal } from '@skeletonlabs/skeleton-svelte';
-  import type { ControlView } from '$lib/types/models';
+	import type { ControlView } from '$lib/types/models';
 	import LbIcon from '$lib/components/Common/LbIconByName.svelte';
 	import LbJalousieIcon from '$lib/components/Jalousie/LbJalousieIcon.svelte';
 	import { X } from '@lucide/svelte';

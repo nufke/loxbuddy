@@ -1,14 +1,14 @@
 <script lang="ts">
 	import { Switch } from '@skeletonlabs/skeleton-svelte';
 	import { Tabs } from '@skeletonlabs/skeleton-svelte';
-  import { Modal } from '@skeletonlabs/skeleton-svelte';
-	import type { Room, Category, Button, GeneralView } from '$lib/types/models';
+	import { Modal } from '@skeletonlabs/skeleton-svelte';
+	import type { Room, Category, GeneralView } from '$lib/types/models';
 	import { _, locale } from 'svelte-i18n';
 	import { store } from '$lib/stores/Store.svelte';
-  import { ArrowLeft, X } from '@lucide/svelte';
+	import { ArrowLeft, X } from '@lucide/svelte';
 	import LbGeneralModal from '$lib/components/Common/LbGeneralModal.svelte';
 
-  let openThemeModal = $state(false);
+	let openThemeModal = $state(false);
 	let openStartpageModal = $state(false);
 	let showStatus = $state(localStorage.getItem('showStatus') || '0');
 	let theme = $state(localStorage.getItem('theme') || 'LoxBuddy');

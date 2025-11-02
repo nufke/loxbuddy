@@ -38,7 +38,7 @@
 
 	let viewport: any = $state(); // TODO make HTMLDivElement
 	let hasScroll = $state(true);
-  let showScrollTop = $state(false);
+	let showScrollTop = $state(false);
 	let showScrollBottom = $state(true);
 
 	let modalViewport: any = $state(); // TODO make HTMLDivElement
@@ -47,9 +47,9 @@
 
 	function parseScroll() {
 		hasScroll = viewport?.scrollHeight > viewport?.clientHeight;
-    showScrollTop = limitHeight && hasScroll && (viewport?.scrollTop > 10);
+		showScrollTop = limitHeight && hasScroll && (viewport?.scrollTop > 10);
 		showScrollBottom = limitHeight && hasScroll && (viewport.scrollTop + viewport?.clientHeight < (viewport?.scrollHeight - 10));
-  }
+	}
 
 	$effect( () => {
 		parseScroll();
@@ -67,13 +67,13 @@
 	function getActiveScreens() {
 		let status = '';
 		switch (screensClosed.length) {
-        case 0:
-          status = $_('All open');
-          break;
-        default:
-          status = String(screensClosed.length) + ' ' + $_('Closed').toLowerCase();
-      }
-			return status;
+			case 0:
+				status = $_('All open');
+				break;
+			default:
+				status = String(screensClosed.length) + ' ' + $_('Closed').toLowerCase();
+		}
+		return status;
 	}
 
 	function selectScreen(control: Control) {
@@ -114,7 +114,7 @@
 		if (control.details.animation != 0) {
 			return 100;
 		} else {
-		  return Math.round(Number(store.getState(control.states.shadePosition)) * 100);
+			return Math.round(Number(store.getState(control.states.shadePosition)) * 100);
 		}
 	}
 
@@ -235,7 +235,7 @@
 				<div class="flex flex-col overflow-y-auto space-y-2" bind:this={viewport} onscroll={parseScroll}>
 					{#each screenControls as control}
 					<button class="w-full flex h-[60px] items-center justify-start rounded-lg border border-white/10 hover:border-white/50
-												{isSelected(control) ? 'dark:bg-surface-800  bg-surface-200' : 'dark:bg-surface-950  bg-surface-50'} px-2 py-2"
+												{isSelected(control) ? 'dark:bg-surface-800 bg-surface-200' : 'dark:bg-surface-950 bg-surface-50'} px-2 py-2"
 												 onclick={() => selectScreen(control)}>
 						<div class="relative flex truncate w-full">
 							<div class="mt-0 ml-2 mr-2 flex flex-row w-full justify-between truncate items-center h-[60px]">
@@ -264,7 +264,7 @@
 	</Modal>
 
 	{#if selectedControl && selectedControlOptions }
-		{#key selectedControlOptions}  <!-- reinit component -->
+		{#key selectedControlOptions} <!-- reinit component -->
 			<LbJalousie control={selectedControl} controlOptions={selectedControlOptions}/>
 		{/key}
 	{/if}

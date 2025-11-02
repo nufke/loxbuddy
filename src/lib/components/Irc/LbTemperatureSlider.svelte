@@ -26,17 +26,17 @@
 
 	function targetMouseDown(e: any) {
 		if (manual) {
-			isDragging = true;  /* only allow dragging when manual is enabled */
+			isDragging = true; /* only allow dragging when manual is enabled */
 		}
-  }
+	}
 
-  function trackMouseDown(e: any) {
+	function trackMouseDown(e: any) {
 		if (manual) {
 			trackSelected = true;
 			isDragging = true;
 			mouseMove(e);
 		}
-  }
+	}
 
 	function mouseUp(e: any) {
 		isDragging = false;
@@ -46,12 +46,12 @@
 
 <div class="w-full" >
 	<svg width="100%" height="48" onmouseup={mouseUp} onmousemove={mouseMove}>
-    <defs>
-        <linearGradient id="grad">
-            <stop offset="0%" stop-color="#33ADFF" />
-            <stop offset="100%" stop-color="#FFA200" />
-        </linearGradient>
-    </defs>
+		<defs>
+			<linearGradient id="grad">
+				<stop offset="0%" stop-color="#33ADFF" />
+				<stop offset="100%" stop-color="#FFA200" />
+			</linearGradient>
+		</defs>
 		<rect class="track" x="10" y="15" width="95%" height="20" fill="url(#grad)" onmousedown={trackMouseDown}/>
 		<circle class="actual" cx={actualPos} cy="25" r="12"/>
 		<circle class="target" cx={targetPos} cy="25" r="12" onmousedown={targetMouseDown}/>

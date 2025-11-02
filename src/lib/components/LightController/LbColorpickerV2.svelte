@@ -83,7 +83,7 @@
 		} else { // nothing found, set default
 			rgb = [255,255,255];
 			brightness = 100;
-			isTempColor = false;  // rgb
+			isTempColor = false; // rgb
 		}
 		return {rgbColor: rgb, tempColor: kelvin, brightness: brightness, isTempColor: isTempColor};
 	}
@@ -152,10 +152,10 @@
 	// only publish data at fixed interval
 	// intermediate results will be ignored
 	function publishData(data: string) {
-  	const currentTimestamp = Date.now();
-	  const timeElapsed = currentTimestamp - lastRequestTimestamp;
+		const currentTimestamp = Date.now();
+		const timeElapsed = currentTimestamp - lastRequestTimestamp;
 
-  	if (timeElapsed > desiredPublishInterval) {
+		if (timeElapsed > desiredPublishInterval) {
 			loxWsClient.control(control.uuidAction, data);
 			lastRequestTimestamp = Date.now();
  	 }

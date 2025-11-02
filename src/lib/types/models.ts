@@ -100,7 +100,7 @@ export type GlobalStates = {
 	notifications: string;				// uuid for notifications
 	modifications: string;				// uuid for structural changes made via API published as text events
 	favColorSequences: string;		// uuid for favorite color sequences used in LightControllerV2 (string[])
-	favColors: string; 						// uuid  for favorite colors used in LightControllerV2 (string[] )
+	favColors: string; 						// uuid for favorite colors used in LightControllerV2 (string[] )
 	miniserverTime: string; 			// current date, time & UTC-offset of the Miniserver (Date)
 	liveSearch: string;						// uuid for JSON object with current information about device learning
 	userSettings: string;					// uuid
@@ -384,6 +384,13 @@ export type SystemStatus = {
 	controlUUID: string;
 }
 
+export const EMPTY_SYSTEM_STATUS: SystemStatus = {
+	isLimitedUser: false,
+	entries: [],
+	activeEntryUuid: null,
+	controlUUID: ''
+}
+
 export type SystemStatusEntry = {
 	entryUuid: string;
 	eventId: number;
@@ -406,16 +413,16 @@ export type SystemStatusEntry = {
 }
 
 export type NotificationMessage = {
-  uid: string;						// unique message id
-  ts: number;							// unix timestamp in seconds
+	uid: string;						// unique message id
+	ts: number;							// unix timestamp in seconds
 	sound: number;					// sound
-  title: string;					// title
-  message: string;				// message, could be value, e.g. "1"
-  type: number;						// 10 = normal message, 11 = message summary
+	title: string;					// title
+	message: string;				// message, could be value, e.g. "1"
+	type: number;						// 10 = normal message, 11 = message summary
 	data: {
-  	mac: string;					// mac or serial ID of miniserver
-  	lvl: number;					// level: 1 = Info, 2 = Error, 3 = SystemError, 0 = undefined
-  	uuid: string;					// UUID of Control (or empty)
+		mac: string;					// mac or serial ID of miniserver
+		lvl: number;					// level: 1 = Info, 2 = Error, 3 = SystemError, 0 = undefined
+		uuid: string;					// UUID of Control (or empty)
 	}
 }
 
@@ -444,19 +451,19 @@ export type SingleButtonView = {
 }
 
 export type ListItem = {
-  id: number;
-  name: string;
-  value?: number;
+	id: number;
+	name: string;
+	value?: number;
 	isAbsolute?: boolean; // used for temperatures
 	correctionHeating?: number; // correction heating period 
 	correctionCooling?: number; // correction cooling period
-  visible?: boolean;
+	visible?: boolean;
 }
 
 export type SliderBar = {
-  min: number;
-  max: number;
-  step: number;
+	min: number;
+	max: number;
+	step: number;
 	position: number;
 	orientation?: string;
 	locked?: boolean;
@@ -557,7 +564,7 @@ export type ControlOptions = {
 	isSubControl: boolean;
 	action?: any;
 	showControl?: boolean;
-  showModal?: boolean;
+	showModal?: boolean;
 	isFavorite?: boolean;
 	isLink?: boolean;
 }
@@ -566,7 +573,7 @@ export const DEFAULT_CONTROLOPTIONS: ControlOptions = {
 	isSubControl: false,
 	action: undefined,
 	showControl: true,
-  showModal: false,
+	showModal: false,
 	isFavorite: false,
 	isLink: false
 }
@@ -628,6 +635,14 @@ export type GeneralView = {
 	ok: any;
 }
 
+export type CalendarListItem = {
+	name: string[];
+	to: string;
+	from: string;
+	needActivate: string;
+	value: string;
+}
+
 export type CalendarView = {
 	control: Control;
 	subControl?: Control;
@@ -651,7 +666,7 @@ export type SecuredDetails = {
 	LL: {
 		control: string;
 		value: string;
-    Code: string;
+		Code: string;
 	}
 }
 

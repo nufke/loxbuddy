@@ -4,7 +4,7 @@
 	import { Navigation } from '@skeletonlabs/skeleton-svelte';
 	import { innerWidth } from 'svelte/reactivity/window';
 	import { fade } from 'svelte/transition';
-  import { Home, FileText, Grid2x2, Menu, LayoutList, Circle, Square, type Icon as IconType } from '@lucide/svelte';
+	import { Home, FileText, Grid2x2, Menu, LayoutList, Circle, Square, type Icon as IconType } from '@lucide/svelte';
 	import type { Route } from '$lib/types/models';
 	import { mqttClient } from '$lib/communication/MqttClient';
 	import { store } from '$lib/stores/Store.svelte';
@@ -40,8 +40,8 @@
 	let dailyForecast = $derived(weatherStore.daily);
 	let hourlyForecast = $derived(weatherStore.hourly);
 	let time = $derived(store.time);
-	let mqttStatus =  $derived(store.mqttStatus);
-	let msStatus =  $derived(store.msStatus);
+	let mqttStatus = $derived(store.mqttStatus);
+	let msStatus = $derived(store.msStatus);
 	let nav = $derived(store.nav);
 	let path = $derived(page.url.pathname);
 	let home = { label: 'Menu', href: '/menu', icon: Menu }; // fixed for tablet
@@ -94,7 +94,7 @@
 
 	function navigate(s: string) {
 		goto(s);
-		store.setNav({ label: 'Menu', href: '/menu', icon: Menu });  // TODO change navigation concept
+		store.setNav({ label: 'Menu', href: '/menu', icon: Menu }); // TODO change navigation concept
 	}
 
 	$effect( () => {
@@ -114,11 +114,11 @@
 </script>
 
 <svelte:head>
-  <script>
-    mode = localStorage.getItem('mode') || 'dark';
-    document.documentElement.setAttribute('data-mode', mode);
-    theme = localStorage.getItem('theme') || 'LoxBuddy';
-    document.documentElement.setAttribute('data-theme', theme.toLowerCase());
+	<script>
+		mode = localStorage.getItem('mode') || 'dark';
+		document.documentElement.setAttribute('data-mode', mode);
+		theme = localStorage.getItem('theme') || 'LoxBuddy';
+		document.documentElement.setAttribute('data-theme', theme.toLowerCase());
 		locale = localStorage.getItem('locale') || 'en';
 		document.documentElement.setAttribute('lang', locale);
 </script>
@@ -147,7 +147,7 @@
 		{/snippet}
 		{#snippet tiles()}
 		{#each routesTablet as {label, href, icon, badge}}
-		  {@const Icon = icon}
+			{@const Icon = icon}
 			<Navigation.Tile labelClasses={checkUrl(href) ? 'dark:text-primary-500 text-primary-700' : 'white'} classes="flex-col justify-center hover:bg-transparent scope:bg-transparent" label={$_(label)} {href}>
 				<div class="relative inline-block">
 					{#if badge && activeNotifications.length}
@@ -172,9 +172,9 @@
 		{/snippet}
 	</Navigation.Rail>
 </aside>
-  <main>
+	<main>
 		{@render children()}
-  </main>
+	</main>
 </div>
 {:else}
 <div class="md:hidden grid grid-rows-[auto_1fr_auto]"> <!-- mobile / portait mode -->

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Modal } from '@skeletonlabs/skeleton-svelte';
-  import { type ControlView, type SecuredDetails, type SecuredDetailsValue } from '$lib/types/models';
+	import { type ControlView, type SecuredDetails, type SecuredDetailsValue } from '$lib/types/models';
 	import { X, Video, Camera, History } from '@lucide/svelte';
 	import { _ } from 'svelte-i18n';
 	import { fade200 } from '$lib/helpers/transition';
@@ -49,7 +49,7 @@
 					const event = lastBellEvents[imageIdx++];
 					console.info('get intercom image', event);
 					const file = await loxWsClient.getFile(`camimage/${controlView.control.uuidAction}/${event}`);
-  				const url = `data:image/jpeg;base64,${arrayBufferToBase64(file.data)}`;
+					const url = `data:image/jpeg;base64,${arrayBufferToBase64(file.data)}`;
 					bellImages.set(event, url);
 				}
 			}, 300);
@@ -59,7 +59,7 @@
 
 	function handleImageLoad() {
 		imageHeight = img?.height || 400;
-  }
+	}
 
 	function formatDate(event: string) {
 		let s = event;

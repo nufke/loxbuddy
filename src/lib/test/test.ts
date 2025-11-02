@@ -191,7 +191,7 @@ class Test {
 			case 'up': this.startJalousie(control, -1); break;
 			case 'UpOff': clearInterval(this.jalousieIntervalMap[control.uuidAction]); break;
 			case 'FullDown': this.startJalousie(control, 1); break;
-			case  'FullUp': this.startJalousie(control, -1); break;
+			case 'FullUp': this.startJalousie(control, -1); break;
 			default: console.error('Command', msg, 'not found for Control', control.uuidAction, control.type);
 		}
 	}

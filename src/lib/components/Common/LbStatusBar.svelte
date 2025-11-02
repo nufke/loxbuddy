@@ -69,8 +69,8 @@
 		position:relative;
 	}
 	.custom-meter {
-  	-webkit-mask:linear-gradient(#fff 0 0);
-    	      mask:linear-gradient(#fff 0 0);
+		-webkit-mask:linear-gradient(#fff 0 0);
+		mask:linear-gradient(#fff 0 0);
 	}
 	.custom-meter::before {
 		content:"";

@@ -4,5 +4,5 @@ export async function load() {
 	const data = {
 		env: env
 	}
-  return data;
+	return data;
 }

@@ -1,5 +1,5 @@
 import { SvelteMap } from 'svelte/reactivity';
-import { INITIAL_STRUCTURE, DEFAULT_USERSETTINGS, NO_LOGIN } from '$lib/types/models';
+import { INITIAL_STRUCTURE, DEFAULT_USERSETTINGS, NO_LOGIN, EMPTY_SYSTEM_STATUS } from '$lib/types/models';
 import type { Structure, Control, Category, Room, SystemStatus, Route, ModalView, NotificationMap, NotificationList,
 							ControlsMap, CategoriesMap, RoomsMap, MessageCenter, NotificationMessage, UserSettings, LoginCredentials } from '$lib/types/models';
 import { utils } from '$lib/helpers/Utils';
@@ -12,7 +12,7 @@ import { Menu } from '@lucide/svelte';
  */
 class Store {
 	appId: string = $state('');
-  controlState: SvelteMap<string, any> = new SvelteMap();
+	controlState: SvelteMap<string, any> = new SvelteMap();
 	nav: Route = $state({ label: 'Menu', href: '/menu', icon: Menu });
 	structure: Structure = $state(INITIAL_STRUCTURE);
 	controls: ControlsMap = $derived(this.structure.controls);
@@ -25,15 +25,15 @@ class Store {
 	time: Date = $state(new Date());
 	mqttStatus: number = $state(0); // 0=disconnected (grey), 1=connected/ok/info (green), 2=warning/issue (yellow), 3=error (red)
 	msAlive: boolean = $state(false);
-	msStatus: number = $derived(this.getSystemCode());
 	notifications: NotificationMessage | NotificationList = $derived(this.getState(this.structure.globalStates.notifications));
 	notificationsMap: NotificationMap = $derived(this.updateNotificationMap(this.notifications));
 	showStatus: boolean = $state(true);
 	startPage: string = $state('/');
 	locale: string = $state('en'); // default English
 	loginCredentials: LoginCredentials = $state(NO_LOGIN);
-	userSettingsLoaded = $derived(this.getUserSettings(this.loginCredentials));
 	userSettings: UserSettings = $state(DEFAULT_USERSETTINGS);
+	systemStatus: SystemStatus = $state(EMPTY_SYSTEM_STATUS);
+	msStatus: number = $derived(this.systemStatus.entries ? Math.max(...this.systemStatus.entries.filter( item => item.isHistoric == false).map( item => item.severity)) : 0);
 
 	weatherModal: ModalView = $state({
 		action: () => {},
@@ -51,27 +51,26 @@ class Store {
 
 	constructor() {
 		setInterval(() => {
-	  	this.time = new Date();
+			this.time = new Date();
 		}, 1000);
 
 		this._stateUpdate = setTimeout(() => {
 			this.msAlive = false;
-    	console.error("No state update received from Miniserver") 
-  	}, 1000);
+			console.error("No state update received from Miniserver") 
+		}, 1000);
 
 		this.appId = localStorage.getItem('appId') || utils.generateUuid();
 		localStorage.setItem('appId', this.appId);
 
 		this.notificationsMap = utils.deserialize(localStorage.getItem('notifications')) || {};
 		this.showStatus = localStorage.getItem('showStatus') == '1' ? true : false;
-  }
+	}
 
 	updateCredentials(url: string, cred: string) {
 		this.loginCredentials = {
 			hostUrl: url,
 			credentials: btoa(cred)
 		}
-		this.getUserSettings(this.loginCredentials);
 	}
 
 	updateNotificationMap(notifications: NotificationMessage | NotificationList, statusOverride: number = 0 ) {
@@ -80,7 +79,7 @@ class Store {
 		if (msg && msg.uid) {
 			map[msg.uid] = {
 				status: statusOverride || (map[msg.uid].status || 1),
-		  	message: msg
+				message: msg
 			};
 			localStorage.setItem('notifications', utils.serialize(map));
 		}
@@ -103,11 +102,12 @@ class Store {
 	}
 
 	getSystemCode() { // 0=no status (disconnected), 1=info, 2=warning, 3=error
+/*
 		const status = this.controlState.get('systemStatus') as SystemStatus;
 		if (status && status.entries) {
 			return Math.max(...status.entries.filter( item => item.isHistoric == false).map( item => item.severity));
-		}
-		return 0;
+		}*/
+		return this.systemStatus;
 	}
 
 	getState(uuid: string) {
@@ -172,18 +172,6 @@ class Store {
 		}, 60000); // 60s TODO add to configuration
 	}
 
-	getUserSettings(login: LoginCredentials) {
-		fetch(`${login.hostUrl}/jdev/sps/getusersettings`, {
-			method: 'GET',
-			headers: {
-				'Content-Type': 'application/json',
-				'Authorization': 'Basic ' + login.credentials
-			}
-		})
-		.then((response) => response.json())
-		.then((data) => { this.userSettings = data })
-		return true;
-	}
 }
 
 export const store = new Store();

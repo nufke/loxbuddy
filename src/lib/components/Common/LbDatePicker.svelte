@@ -17,22 +17,22 @@
 	let viewDate = $derived(viewDateFrom(dateStr, offset));
 	let month = $derived(months[viewDate.getMonth()]);
 	let year = $derived(viewDate.getFullYear());
-  let weeks = $derived(weeksFrom(viewDate, start));
+	let weeks = $derived(weeksFrom(viewDate, start));
 
 	let calenderHeight = 300;
 	let cw = 'w-9';
 	let ts = 'text-md';
 
 	function getDateStr(date: Date) {
-    const pad = (n:number) => n < 10 ? '0' + n : n;
-    return date.getFullYear() + "-" + pad(date.getMonth()+1) + '-' + pad(date.getDate());
-  }
+		const pad = (n:number) => n < 10 ? '0' + n : n;
+		return date.getFullYear() + "-" + pad(date.getMonth()+1) + '-' + pad(date.getDate());
+	}
 
 	function getTimeStr(date: Date) {
 		const hours = date.getHours() 
 		const minutes = date.getUTCMinutes(); 
 		return (hours < 10 ? `0${hours}` : hours) + ':' + (minutes < 10 ? `0${minutes}` : minutes);
-  }
+	}
 
 	function setMonth(direction: number) {
 		offset = offset + direction;
@@ -133,6 +133,6 @@
 		filter: brightness(100%);
 	}
 	.past, .future {
-    opacity: 0.5;
-  }
+		opacity: 0.5;
+	}
 </style>

@@ -92,12 +92,12 @@
 		cursor: pointer;
 	}
 	.dimmer[type="range"]::-moz-range-thumb {
-  	background-color: transparent;
+		background-color: transparent;
 		border: none;
 	}
 
 	.dimmer[type="range"]:disabled {
-    opacity: 1;      /* disabled should not greyout element */
+		opacity: 1; /* disabled should not greyout element */
 		cursor: default; /* no pointer */
 	}
 

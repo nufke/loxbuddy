@@ -54,16 +54,16 @@
 		setKnobValue(value + min);
 	}
 
-  function knobMouseDown(e: any) {
+	function knobMouseDown(e: any) {
 		if (manual) {
-			isDragging = true;  /* only allow dragging when manual is enabled */
+			isDragging = true; /* only allow dragging when manual is enabled */
 		}
-  }
+	}
 
-  function trackMouseDown(e: any) {
+	function trackMouseDown(e: any) {
 		trackSelected = true;
 		mouseMove(e);
-  }
+	}
 
 	function mouseUp(e: any) {
 		isDragging = false;

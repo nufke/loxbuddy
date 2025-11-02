@@ -61,8 +61,8 @@
 
 	function calcStartEndTime(entryList: EntriesAndDefaultValue) {
 		if (!entryList) return;
-    let startTime = '00:00';
-    let endTime = '24:00';
+		let startTime = '00:00';
+		let endTime = '24:00';
 
 		// no entries means not timer set
 		if (entryList.entry.length == 0) {
@@ -96,10 +96,11 @@
 		let coeff = 1000 * 60; // round to minute
 		let overrideTimeSec = Math.round((overrideDate.end.getTime() - Date.now())/coeff)*coeff/1000;
 		let overrideValue = outputActive ? '1' : '0'; // TODO analog values
-    if (overrideTimeSec > 60) {// TODO define minimum time of 1 minute
-	    let cmd = 'startOverride/' + String(overrideValue) + '/' + String(overrideTimeSec);
+
+		if (overrideTimeSec > 60) {// TODO define minimum time of 1 minute
+			let cmd = 'startOverride/' + String(overrideValue) + '/' + String(overrideTimeSec);
 			loxWsClient.control(control.uuidAction, cmd);
-    } else {
+		} else {
 			console.error('Daytimer override timeperiod to low:', overrideTimeSec);
 			toaster.info({ title: 'Timer period invalid!'});
 		}

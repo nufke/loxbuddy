@@ -2,7 +2,7 @@
 	import { Modal } from '@skeletonlabs/skeleton-svelte';
 	import { Toaster, createToaster } from '@skeletonlabs/skeleton-svelte';
 	import { SvelteDate } from 'svelte/reactivity';
-	import type { ControlView, ListItem, CalendarView, Entry, CalendarEntryView } from '$lib/types/models';
+	import type { ControlView, ListItem, CalendarView, Entry, CalendarEntryView, CalendarListItem } from '$lib/types/models';
 	import { store } from '$lib/stores/Store.svelte';	
 	import { X, Timer, Leaf, Flame, List, CalendarClock } from '@lucide/svelte';
 	import { _ } from 'svelte-i18n';
@@ -49,7 +49,7 @@
 
 	let overrideV1 = $derived(Number(store.getState(controlView.control.states.override)));
 	let overrideEntriesV2 = store.getState(controlView.control.states.overrideEntries);
-	let overrideV2 = $derived(overrideEntriesV2 && overrideEntriesV2[0] ? (overrideEntriesV2[0].isTimer ?  1: 0 ) : 0);
+	let overrideV2 = $derived(overrideEntriesV2 && overrideEntriesV2[0] ? (overrideEntriesV2[0].isTimer ? 1: 0 ) : 0);
 
 	let modeV1 = $derived(Number(store.getState(controlView.control.states.mode)));
 	let modeIdV1 = $derived(temperatureModeList && temperatureModeList[modeV1] ? temperatureModeList[modeV1].id : 0);
@@ -128,7 +128,7 @@
 			entry.needActivate == item.needActivate &&
 			entry.value == item.value &&
 			entry.mode == getOperatingMode(item.name[0])
-		)
+		);
 		if (selectedEntry) {
 			calendarEntryView.label = $_('Update entry');
 			calendarEntryView.control = controlView.control;
@@ -169,20 +169,21 @@
 	function setTempManual() {
 		let cmd = isCooling ? 'setComfortTemperatureCool/' : 'setComfortTemperature/';
 		cmd += tempTarget;
-	  loxWsClient.control(controlView.control.uuidAction, cmd);
+		loxWsClient.control(controlView.control.uuidAction, cmd);
 	}
 
 	function setTimerOverride(item: ListItem) {
 		let coeff = 1000 * 60; // round to minute
 		let overrideTimeSec = Math.round((date.getTime() - Date.now())/coeff)*coeff/1000;
-    if (overrideTimeSec > 60 && controlView.control) {// TODO define minimum time of 1 minute
-	    let cmd = isV1 ? 'starttimer/' : 'override/';
+
+		if (overrideTimeSec > 60 && controlView.control) {// TODO define minimum time of 1 minute
+			let cmd = isV1 ? 'starttimer/' : 'override/';
 			overrideTimeSec += (isV1 ? 0 : Math.round((Date.now() - utils.loxTimeRef)/1000)); // V2 starts to count from 1-1-2009
 			overrideTimeSec += (!isV1 && utils.isDST(date) ? -3600 : 0); // DST correction for V2
 			overrideTimeSec = (isV1 ? Math.round(overrideTimeSec/60) : overrideTimeSec); // V1 in minutes!!
 			cmd += String(item.id) + '/' + String(overrideTimeSec);
 			loxWsClient.control(controlView.control.uuidAction, cmd);
-    } else {
+		} else {
 			console.error('IRC: timer period to low:', overrideTimeSec);
 			toaster.info({ title: 'Timer period invalid!'});
 		}
@@ -229,21 +230,13 @@
 	async function close() {
 		controlView.modal.action(false);
 		await tick();
-    selectedTab = 1;
+		selectedTab = 1;
 	}
 
 	function openCalendarView() {
 		calendarView.subControl = selectedSubControl;
 		calendarView.isCooling = isCooling;
 		calendarView.openModal=true;
-	}
-
-	type CalendarListItem = {
-		name: string[];
-		to: string;
-		from: string;
-		needActivate: string;
-		value: string;
 	}
 
 	function filteredEntries() {

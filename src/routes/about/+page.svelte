@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { _ } from 'svelte-i18n';
 	import { store } from '$lib/stores/Store.svelte';
-  import { ArrowLeft, TriangleAlert } from '@lucide/svelte';
+	import { ArrowLeft, TriangleAlert } from '@lucide/svelte';
 
 	let version = '0.0.1'; // TODO get version from package
 	store.setNav({ label: 'ArrowLeft', href: '/', icon: ArrowLeft });
