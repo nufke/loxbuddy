@@ -1,19 +1,21 @@
-import { store } from '$lib/stores/store.svelte';
+import { store } from '$lib/stores/Store.svelte';
 import type { Control, AlarmClockEntries } from '$lib/types/models';
-import { utils } from '$lib/helpers/utils';
-import demo from '$lib/test/demo.json';
-import states from '$lib/test/states.json';
-import { format } from 'date-fns';
+import { utils } from '$lib/helpers/Utils';
+import structure from '$lib/test/demoStructure.json';
+import states from '$lib/test/demoStates.json';
+
+type IntervalMap = {
+	[key: string]: NodeJS.Timeout;
+}
 
 class Test {
-
-	_timedSwitch: any = {};
-	_jalousie: any = {};
-	_dimmer: any = {}
-	_gate: any = {}
-	_daytimer: any = {};
-	_daytimerOldValue: any = {};
-	_ircv1timer: any = {};
+	private timedSwitchIntervalMap: IntervalMap = {};
+	private jalousieIntervalMap: IntervalMap = {};
+	private dimmerLastValue: {[key: string]: string} = {};
+	private gateIntervalMap: IntervalMap = {};
+	private daytimerIntervalMap: IntervalMap = {};
+	private daytimerOldValue: {[key: string]: string} = {};
+	private ircv1timerIntervalMap: IntervalMap = {};
 
 	start() {
 		console.info('TEST MODE: Use demo structure');
@@ -27,7 +29,7 @@ class Test {
 
 		// loadding of structure and states delayed to test uninitialized variables
 		setTimeout( () => {
-			store.initStructure(demo);
+			store.initStructure(structure);
 		}, 100);
 
 		setTimeout( () => {
@@ -61,7 +63,7 @@ class Test {
 		}, 1000);
 	}
 
-	exec(uuid: string, topic: string, msg: string) {
+	exec(uuid: string, msg: string) {
 		let control: Control = store.controls[uuid];
 		if (!control) { // if no control found, check if the uuid is a subcontrol
 			const parentControl = store.controlList.find( control => control.subControls && control.subControls[uuid])
@@ -118,11 +120,11 @@ class Test {
 	dimmer(control: Control, msg: string) {
 		const stateId = control.states.position;
 		if (Number(msg) > 0) {
-			this._dimmer[control.uuidAction] = msg; // store last value;
+			this.dimmerLastValue[control.uuidAction] = msg; // store last value;
 		}
 		let val = msg;
 		if (msg == 'off') val = '0'; 
-		if (msg == 'on') val = this._dimmer[control.uuidAction];
+		if (msg == 'on') val = this.dimmerLastValue[control.uuidAction];
 		store.setState(stateId, val);
 	}
 
@@ -155,7 +157,7 @@ class Test {
 	gate(control: Control, msg: string) { 
 		switch (msg) {
 		 	case 'open': this.moveGate(control, 1); break;// 1 = open and 0 = closed
-			case 'stop': clearInterval(this._gate[control.uuidAction]); break;
+			case 'stop': clearInterval(this.gateIntervalMap[control.uuidAction]); break;
 			case 'close': this.moveGate(control, 0); break;
 			case 'partiallyOpen': this.moveGate(control, 0.5); break; // to 50%
 			default: console.error('Command', msg, 'not found for Control', control.uuidAction, control.type);
@@ -163,21 +165,21 @@ class Test {
 	}
 
 	moveGate(control: Control, endState: number) {
-		if (this._gate[control.uuidAction]) {
-			clearInterval(this._gate[control.uuidAction]);
+		if (this.gateIntervalMap[control.uuidAction]) {
+			clearInterval(this.gateIntervalMap[control.uuidAction]);
 		}
 		const posId = control.states.position;
 		let pos: number = Number(store.getState(posId));
 		const direction = Math.sign(endState-pos);
-		this._gate[control.uuidAction] = setInterval(() => {
+		this.gateIntervalMap[control.uuidAction] = setInterval(() => {
 			if (pos <= 1 && pos >= 0 ) {
 				pos += 0.1 * direction;
-				if (pos>1) { pos = 1; clearInterval(this._gate[control.uuidAction]);}
-				if (pos<0) { pos = 0; clearInterval(this._gate[control.uuidAction]);}
-				if (Math.round(pos*10) == endState*10 ) { clearInterval(this._gate[control.uuidAction]);}
+				if (pos>1) { pos = 1; clearInterval(this.gateIntervalMap[control.uuidAction]);}
+				if (pos<0) { pos = 0; clearInterval(this.gateIntervalMap[control.uuidAction]);}
+				if (Math.round(pos*10) == endState*10 ) { clearInterval(this.gateIntervalMap[control.uuidAction]);}
 				store.setState(posId, String(pos));
 			} else {
-				clearInterval(this._gate[control.uuidAction]);
+				clearInterval(this.gateIntervalMap[control.uuidAction]);
 			}
 		}, 1000);
 	}
@@ -185,9 +187,9 @@ class Test {
 	jalousie(control: Control, msg: string) {
 		switch (msg) {
 			case 'down': this.startJalousie(control, 1); break;
-			case 'DownOff': clearInterval(this._jalousie[control.uuidAction]); break;
+			case 'DownOff': clearInterval(this.jalousieIntervalMap[control.uuidAction]); break;
 			case 'up': this.startJalousie(control, -1); break;
-			case 'UpOff': clearInterval(this._jalousie[control.uuidAction]); break;
+			case 'UpOff': clearInterval(this.jalousieIntervalMap[control.uuidAction]); break;
 			case 'FullDown': this.startJalousie(control, 1); break;
 			case  'FullUp': this.startJalousie(control, -1); break;
 			default: console.error('Command', msg, 'not found for Control', control.uuidAction, control.type);
@@ -195,19 +197,19 @@ class Test {
 	}
 
 	startJalousie(control: Control, direction: number) {
-		if (this._jalousie[control.uuidAction]) {
-			clearInterval(this._jalousie[control.uuidAction]);
+		if (this.jalousieIntervalMap[control.uuidAction]) {
+			clearInterval(this.jalousieIntervalMap[control.uuidAction]);
 		}
 		const posId = control.states.position;
 		let pos: number = Number(store.getState(posId));
-		this._jalousie[control.uuidAction] = setInterval(() => {
+		this.jalousieIntervalMap[control.uuidAction] = setInterval(() => {
 			if (pos <= 1 && pos >= 0 ) {
 				pos += 0.1 * direction;
-				if (pos > 1) { pos = 1; clearInterval(this._jalousie[control.uuidAction]);}
-				if (pos < 0) { pos = 0; clearInterval(this._jalousie[control.uuidAction]);}
+				if (pos > 1) { pos = 1; clearInterval(this.jalousieIntervalMap[control.uuidAction]);}
+				if (pos < 0) { pos = 0; clearInterval(this.jalousieIntervalMap[control.uuidAction]);}
 				store.setState(posId, String(pos));
 			} else {
-				clearInterval(this._jalousie[control.uuidAction]);
+				clearInterval(this.jalousieIntervalMap[control.uuidAction]);
 			}
 		}, 1000);
 	}
@@ -216,8 +218,8 @@ class Test {
 		const stateId= control.states.deactivationDelay;
 		let val: number = 0;
 		switch (msg) {
-			case 'on': clearInterval(this._timedSwitch[control.uuidAction]); val = -1; store.setState(stateId, String(val)); break;
-			case 'off': clearInterval(this._timedSwitch[control.uuidAction]); val = 0; store.setState(stateId, String(val)); break;
+			case 'on': clearInterval(this.timedSwitchIntervalMap[control.uuidAction]); val = -1; store.setState(stateId, String(val)); break;
+			case 'off': clearInterval(this.timedSwitchIntervalMap[control.uuidAction]); val = 0; store.setState(stateId, String(val)); break;
 			case 'pulse': this.startTimedSwitch(control); break;
 			default: console.error('Command', msg, 'not found for Control', control.uuidAction, control.type);
 		}
@@ -226,8 +228,8 @@ class Test {
 	startTimedSwitch(control: Control) {
 		let val = store.getState(control.states.deactivationDelayTotal);
 		const stateId = control.states.deactivationDelay;
-		clearInterval(this._timedSwitch[control.uuidAction]);
-		this._timedSwitch[control.uuidAction] = setInterval(() => {
+		clearInterval(this.timedSwitchIntervalMap[control.uuidAction]);
+		this.timedSwitchIntervalMap[control.uuidAction] = setInterval(() => {
 			if (val > 0) {
 				val--;
 				store.setState(stateId, String(val));
@@ -323,7 +325,7 @@ class Test {
 			return;
 		}
 		switch (msg) {
-			case 'stoptimer': clearInterval(this._ircv1timer[control.uuidAction]); store.setState(overrideId, '0'); store.setState(valueId, '0'); break;
+			case 'stoptimer': clearInterval(this.ircv1timerIntervalMap[control.uuidAction]); store.setState(overrideId, '0'); store.setState(valueId, '0'); break;
 			default: console.error('Command', msg, 'not found for Control', control.uuidAction, control.type);
 		}
 	}
@@ -333,13 +335,13 @@ class Test {
 		const isCooling = (mode == 2 || mode == 4 || mode == 6);
 		let time = Number(msgItems[2])*60; // Override time given in minutes
 		const overrideId = control.states.override;
-		this._daytimerOldValue = store.getState(control.states.value);
+		this.daytimerOldValue = store.getState(control.states.value);
 		const ircDaytimer = Object.values(control.subControls);
 		const ircDaytimerSelected = ircDaytimer.find( item => item.name == (isCooling ? 'Cooling' : 'Heating'));
 		const valueId = ircDaytimerSelected?.states.value;
 		const tempTargetId = control.states.tempTargetId;
-		clearInterval(this._ircv1timer[control.uuidAction]);
-		this._ircv1timer[control.uuidAction] = setInterval(() => {
+		clearInterval(this.ircv1timerIntervalMap[control.uuidAction]);
+		this.ircv1timerIntervalMap[control.uuidAction] = setInterval(() => {
 			if (time > 0) {
 				time--;
 				store.setState(overrideId, String(time));
@@ -348,7 +350,7 @@ class Test {
 			} else {
 				store.setState(valueId, '0'); // TODO check schedule
 				store.setState(tempTargetId, '21.0'); // TODO check schedule
-				clearInterval(this._ircv1timer[control.uuidAction]);
+				clearInterval(this.ircv1timerIntervalMap[control.uuidAction]);
 			}
 		}, 1000);
 	}
@@ -375,25 +377,32 @@ class Test {
 			return;
 		}
 		switch (msg) {
-			case 'stopOverride': clearInterval(this._daytimer[control.uuidAction]); store.setState(overrideId, '0'); store.setState(valueId, String(this._daytimerOldValue)); break;
-			default: console.error('Command', msg, 'not found for Control', control.uuidAction, control.type);
+			case 'stopOverride': {
+				clearInterval(this.daytimerIntervalMap[control.uuidAction]); 
+				store.setState(overrideId, '0');
+				store.setState(valueId, String(this.daytimerOldValue));
+				break;
+			}
+			default: {
+				console.error('Command', msg, 'not found for Control', control.uuidAction, control.type);
+			}
 		}
 	}
 
 	startDaytimer(control: Control, msgItems: string[]) {
 		let time = Number(msgItems[2]);
 		const overrideId = control.states.override;
-		this._daytimerOldValue = store.getState(control.states.value);
+		this.daytimerOldValue = store.getState(control.states.value);
 		const valueId = control.states.value;
-		clearInterval(this._daytimer[control.uuidAction]);
-		this._daytimer[control.uuidAction] = setInterval(() => {
+		clearInterval(this.daytimerIntervalMap[control.uuidAction]);
+		this.daytimerIntervalMap[control.uuidAction] = setInterval(() => {
 			if (time > 0) {
 				time--;
 				store.setState(overrideId, String(time));
 				store.setState(valueId, String(msgItems[1]));
 			} else {
-				store.setState(valueId, String(this._daytimerOldValue));
-				clearInterval(this._daytimer[control.uuidAction]);
+				store.setState(valueId, String(this.daytimerOldValue));
+				clearInterval(this.daytimerIntervalMap[control.uuidAction]);
 			}
 		}, 1000);
 	}

@@ -2,13 +2,13 @@
 	import { Tabs } from '@skeletonlabs/skeleton-svelte';
 	import { Modal } from '@skeletonlabs/skeleton-svelte';
 	import type { SystemStatus, SystemStatusEntry, NotificationMessage } from '$lib/types/models';
-	import LbIcon from '$lib/components/lb-icon-by-name.svelte';
+	import LbIcon from '$lib/components/Common/LbIconByName.svelte';
 	import { X } from '@lucide/svelte';
-	import { store } from '$lib/stores/store.svelte';
+	import { store } from '$lib/stores/Store.svelte';
 	import { fade200 } from '$lib/helpers/transition';
 	import { _ } from 'svelte-i18n';
 	import { format } from 'date-fns';
-	import { fetchUrl } from '$lib/helpers/resource.svelte';
+	import { fetchUrl } from '$lib/communication/fetchUrl.svelte';
 
 	let group = $state('1');
 	let messageCenter = $derived(store.messageCenterList[0]); // select first message center

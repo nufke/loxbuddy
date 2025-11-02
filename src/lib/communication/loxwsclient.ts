@@ -1,17 +1,18 @@
 import LoxClient from 'svelte-lox-client';
-import { store } from '$lib/stores/store.svelte';
-import { utils } from '$lib/helpers/utils';
+import { store } from '$lib/stores/Store.svelte';
+import { utils } from '$lib/helpers/Utils';
+import { test } from '$lib/test/Test';
 
 /**
  * Class to connect to Miniserver using WebSocket
  */
 export class LoxWsClient {
- 	client!: LoxClient;
-	hostname: string = '';
-	username: string = '';
-	passwd: string = '';
-	appId: string = '';
-	isTest: boolean = false;
+ 	private client!: LoxClient;
+	private hostUrl: string = '';
+	private username: string = '';
+	private passwd: string = '';
+	private appId: string = '';
+	private isTest: boolean = true; // not initialized means test mode
 
 	/** 
 	 * Constructor is empty as we initialize the WebSocket after reading the environment variables.
@@ -30,7 +31,7 @@ export class LoxWsClient {
 	 * @param isTest flag defining if we run in test mode
 	 */
 	async connect(hostname: string, username: string, passwd: string, appId: string, logLevel: number, isTest: boolean) {
-		this.hostname = hostname;
+		this.hostUrl = 'http://' + hostname; // TODO swich protocol http(s) depending on TLS
 		this.username = username;
 		this.passwd = passwd;
 		this.isTest = isTest;
@@ -70,9 +71,8 @@ export class LoxWsClient {
 	 */
 	registerEvents() {
 		this.client.on('connected', () => {
-			console.info(`LoxClient with ID ${store.appId} connected to Miniserver`);
-			store.updateHostUrl(this.hostname);
-			store.updateCredentials(this.username + ':' + this.passwd);
+			console.info(`LoxClient with ID ${this.appId} connected to Miniserver`);
+			store.updateCredentials(this.hostUrl, this.username + ':' + this.passwd);
 		});
 
 		this.client.on('disconnected', () => {
@@ -105,7 +105,7 @@ export class LoxWsClient {
 	async control(uuid: string, value: string) {
 		if (this.isTest) {
 			console.info('TEST control:', uuid, value);
-			//test.exec(uuid, topic, msg);
+			test.exec(uuid, value);
 		} else {
 			console.info('LoxClient control:', uuid, value);
 			await this.client.control(uuid, value);
@@ -119,6 +119,13 @@ export class LoxWsClient {
 	 */
 	async getFile(filename: string) {
 		return await this.client.sendFileCommand(filename);
+	}
+
+	/**
+	 * Disconnect Miniserver and token gets invalidated
+	 */
+	async disconnect() {
+		await this.client.disconnect();
 	}
 }
 

@@ -1,8 +1,8 @@
 import { SvelteMap } from 'svelte/reactivity';
-import { INITIAL_STRUCTURE } from '$lib/types/models';
+import { INITIAL_STRUCTURE, DEFAULT_USERSETTINGS, NO_LOGIN } from '$lib/types/models';
 import type { Structure, Control, Category, Room, SystemStatus, Route, ModalView, NotificationMap, NotificationList,
-							ControlsMap, CategoriesMap, RoomsMap, MessageCenter, NotificationMessage } from '$lib/types/models';
-import { utils } from '$lib/helpers/utils';
+							ControlsMap, CategoriesMap, RoomsMap, MessageCenter, NotificationMessage, UserSettings, LoginCredentials } from '$lib/types/models';
+import { utils } from '$lib/helpers/Utils';
 import { getDefaultIcon } from '$lib/helpers/components';
 import { loxiconsPath } from '$lib/helpers/paths';
 import { Menu } from '@lucide/svelte';
@@ -31,8 +31,9 @@ class Store {
 	showStatus: boolean = $state(true);
 	startPage: string = $state('/');
 	locale: string = $state('en'); // default English
-	hostUrl: string = $state('');
-	credentials: string = $state('');
+	loginCredentials: LoginCredentials = $state(NO_LOGIN);
+	userSettingsLoaded = $derived(this.getUserSettings(this.loginCredentials));
+	userSettings: UserSettings = $state(DEFAULT_USERSETTINGS);
 
 	weatherModal: ModalView = $state({
 		action: () => {},
@@ -65,12 +66,12 @@ class Store {
 		this.showStatus = localStorage.getItem('showStatus') == '1' ? true : false;
   }
 
-	updateHostUrl(url: string) {
-		this.hostUrl = url;
-	}
-
-	updateCredentials(cred: string) {
-		this.credentials = btoa(cred); // base64 conversion
+	updateCredentials(url: string, cred: string) {
+		this.loginCredentials = {
+			hostUrl: url,
+			credentials: btoa(cred)
+		}
+		this.getUserSettings(this.loginCredentials);
 	}
 
 	updateNotificationMap(notifications: NotificationMessage | NotificationList, statusOverride: number = 0 ) {
@@ -169,6 +170,19 @@ class Store {
 		this.lockScreenModal.timeout = setTimeout(() => {
 			this.lockScreenModal.state = true;
 		}, 60000); // 60s TODO add to configuration
+	}
+
+	getUserSettings(login: LoginCredentials) {
+		fetch(`${login.hostUrl}/jdev/sps/getusersettings`, {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+				'Authorization': 'Basic ' + login.credentials
+			}
+		})
+		.then((response) => response.json())
+		.then((data) => { this.userSettings = data })
+		return true;
 	}
 }
 

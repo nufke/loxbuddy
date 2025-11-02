@@ -1,22 +1,22 @@
 import mqtt from 'mqtt';
-import { store } from '$lib/stores/store.svelte';
-import { weatherStore } from '$lib/stores/weather-store.svelte';
-import { utils } from '$lib/helpers/utils';
-import { test } from '$lib/test/test';
+import { store } from '$lib/stores/Store.svelte';
+import { weatherStore } from '$lib/stores/WeatherStore.svelte';
+import { utils } from '$lib/helpers/Utils';
+import { test } from '$lib/test/Test';
 
 /**
  * Class to connect to MQTT Server
  */
 export class MqttClient {
-	client!: mqtt.MqttClient;
-	hostname: string = '';
-	port: number = 0;
-	username: string = '';
-	passwd: string = '';
-	isTest: boolean = false;
-	isConnected: boolean = false;
-	topicPrefix: string = 'loxone'; 				// TODO configure prefix in GUI
-	weatherPrefix: string = 'weather4lox'; 	// TODO configure prefix in GUI
+	private client!: mqtt.MqttClient;
+	private hostname: string = '';
+	private port: number = 0;
+	private username: string = '';
+	private passwd: string = '';
+	private isTest: boolean = true;									// not initialized means test mode
+	private isConnected: boolean = false;
+	private topicPrefix: string = 'loxone'; 				// TODO configure prefix in GUI
+	private weatherPrefix: string = 'weather4lox'; 	// TODO configure prefix in GUI
 
 	/** 
 	 * Constructor is empty as we initialize the MQTT server after reading the environment variables.
@@ -105,7 +105,6 @@ export class MqttClient {
 		});
 	}
 
-	
 	/**
 	 * Callback when message is received
 	 * @param topic Received MQTT topic 
@@ -136,7 +135,7 @@ export class MqttClient {
 			this.client.publish(topic, msg, { retain, qos });
 		} else {
 			console.info('TEST publish:', topic, msg);
-			test.exec(uuid, topic, msg);
+			test.exec(uuid, msg);
 		}
 	}
 

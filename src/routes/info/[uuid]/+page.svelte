@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { PageProps } from './$types';
 	import type { Control } from '$lib/types/models';
-	import { store } from '$lib/stores/store.svelte';
+	import { store } from '$lib/stores/Store.svelte';
 
 	let { data }: PageProps = $props();
 

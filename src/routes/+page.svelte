@@ -3,7 +3,7 @@
 	import { getComponent } from '$lib/helpers/components';
 	import type { ControlOptions } from '$lib/types/models';
 	import { DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
-	import { store } from '$lib/stores/store.svelte';
+	import { store } from '$lib/stores/Store.svelte';
 	import { Tabs } from '@skeletonlabs/skeleton-svelte';
 
 	let tabGroup = $state('1');

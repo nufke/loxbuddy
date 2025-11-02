@@ -1,35 +1,35 @@
-import LbUpDownDigital from '$lib/components/lb-up-down-digital.svelte';
-import LbTextState from '$lib/components/lb-text-state.svelte';
-import LbInfoOnlyAnalog from '$lib/components/lb-info-only-analog.svelte';
-import LbInfoOnlyDigital from '$lib/components/lb-info-only-digital.svelte';
-import LbInfoOnlyText from '$lib/components/lb-info-only-text.svelte';
-import LbJalousie from '$lib/components/lb-jalousie.svelte';
-import LbPushbutton from '$lib/components/lb-pushbutton.svelte';
-import LbRadio from '$lib/components/lb-radio.svelte';
-import LbWebpage from '$lib/components/lb-webpage.svelte';
-import LbSlider from '$lib/components/lb-slider.svelte';
-import LbSwitch from '$lib/components/lb-switch.svelte';
-import LbLightControllerV2 from '$lib/components/lb-lightcontroller-v2.svelte';
-import LbFronius from '$lib/components/lb-fronius.svelte';
-import LbIntercom from '$lib/components/lb-intercom.svelte';
-import LbCentralLight from '$lib/components/lb-central-light.svelte';
-import LbAlarm from '$lib/components/lb-alarm.svelte';
-import LbIRoomController from '$lib/components/lb-iroomcontroller.svelte';
-import LbIRoomControllerV2 from '$lib/components/lb-iroomcontroller-v2.svelte';
-import LbDaytimer from '$lib/components/lb-daytimer.svelte';
-import LbSmokeAlarm from '$lib/components/lb-smoke-alarm.svelte';
-import LbCentralJalousie from '$lib/components/lb-central-jalousie.svelte';
-import LbAlarmClock from '$lib/components/lb-alarm-clock.svelte';
-import LbTimedSwitch from '$lib/components/lb-timed-switch.svelte';
-import LbPresenceDetector from '$lib/components/lb-presence-detector.svelte';
-import LbWindowMonitor from '$lib/components/lb-window-monitor.svelte';
-import LbValueSelector from '$lib/components/lb-value-selector.svelte';
-import LbMeter from '$lib/components/lb-meter.svelte';
-import LbUnknown from '$lib/components/lb-unknown.svelte';
-import LbGate from '$lib/components/lb-gate.svelte';
-import LbDimmer from '$lib/components/lb-dimmer.svelte';
-import LbTracker from '$lib/components/lb-tracker.svelte';
-import LbLoadManager from '$lib/components/lb-load-manager.svelte';
+import LbUpDownDigital from '$lib/components/UpDownDigital/LbUpDownDigital.svelte';
+import LbTextState from '$lib/components/TextState/LbTextState.svelte';
+import LbInfoOnlyAnalog from '$lib/components/Info/LbInfoOnlyAnalog.svelte';
+import LbInfoOnlyDigital from '$lib/components/Info/LbInfoOnlyDigital.svelte';
+import LbInfoOnlyText from '$lib/components/Info/LbInfoOnlyText.svelte';
+import LbJalousie from '$lib/components/Jalousie/LbJalousie.svelte';
+import LbPushbutton from '$lib/components/PushButton/LbPushButton.svelte';
+import LbRadio from '$lib/components/Radio/LbRadio.svelte';
+import LbWebpage from '$lib/components/Webpage/LbWebpage.svelte';
+import LbSlider from '$lib/components/Slider/LbSlider.svelte';
+import LbSwitch from '$lib/components/Switch/LbSwitch.svelte';
+import LbLightControllerV2 from '$lib/components/LightController/LbLightControllerV2.svelte';
+import LbFronius from '$lib/components/Fronius/LbFronius.svelte';
+import LbIntercom from '$lib/components/Intercom/LbIntercom.svelte';
+import LbCentralLight from '$lib/components/LightController/LbCentralLight.svelte';
+import LbAlarm from '$lib/components/Alarm/LbAlarm.svelte';
+import LbIRoomController from '$lib/components/Irc/LbIrcV1.svelte';
+import LbIRoomControllerV2 from '$lib/components/Irc/LbIrcV2.svelte';
+import LbDaytimer from '$lib/components/Daytimer/LbDaytimer.svelte';
+import LbSmokeAlarm from '$lib/components/SmokeAlarm/LbSmokeAlarm.svelte';
+import LbCentralJalousie from '$lib/components/Jalousie/LbCentralJalousie.svelte';
+import LbAlarmClock from '$lib/components/AlarmClock/LbAlarmClock.svelte';
+import LbTimedSwitch from '$lib/components/TimedSwitch/LbTimedSwitch.svelte';
+import LbPresenceDetector from '$lib/components/PresenceDetector/LbPresenceDetector.svelte';
+import LbWindowMonitor from '$lib/components/WindowMonitor/LbWindowMonitor.svelte';
+import LbValueSelector from '$lib/components/ValueSelector/LbValueSelector.svelte';
+import LbMeter from '$lib/components/Meter/LbMeter.svelte';
+import LbUnknownControl from '$lib/components/Common/LbUnknownControl.svelte';
+import LbGate from '$lib/components/Gate/LbGate.svelte';
+import LbDimmer from '$lib/components/Dimmer/LbDimmer.svelte';
+import LbTracker from '$lib/components/Tracker/LbTracker.svelte';
+import LbLoadManager from '$lib/components/LoadManager/LbLoadManager.svelte';
 import { loxiconsPath } from '$lib/helpers/paths';
 
 const componentList = [
@@ -68,7 +68,7 @@ const componentList = [
 
 export function getComponent(type: string) {
 	const comp = componentList.find((component) => component.type == type);
-	return comp ? comp.component : LbUnknown;
+	return comp ? comp.component : LbUnknownControl;
 }
 
 export function getDefaultIcon(type: string) {

@@ -287,6 +287,7 @@ export type Category = {
 	image: string;								// location of the image
 	defaultRating: number;				// default rating
 	default?: boolean;						//
+	isFavorite: boolean;					// elevate to favorite item
 	type: string;									// type of category
 	color: string;								// color of category
 }
@@ -649,7 +650,7 @@ export type CalendarEntryView = {
 export type SecuredDetails = {
 	LL: {
 		control: string;
-		value: string; // "
+		value: string;
     Code: string;
 	}
 }
@@ -666,4 +667,31 @@ export type SecuredDetailsValue = {
 		host: string;
 		user: string;
 	}
+}
+
+export type UserSettings = {
+	ts?: number;
+	userDefaultStructure: {
+		[key: string]: {
+			[key: string]: {
+				position: number;
+				isFav?: boolean;
+			}
+		};
+	};
+}
+
+export const DEFAULT_USERSETTINGS: UserSettings = {
+	ts: 0,
+	userDefaultStructure: {}
+}
+
+export type LoginCredentials = {
+	hostUrl: string;
+	credentials: string;
+}
+
+export const NO_LOGIN: LoginCredentials = {
+	hostUrl: '',
+	credentials: ''
 }
