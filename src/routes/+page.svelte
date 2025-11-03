@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { _ } from 'svelte-i18n';
-	import { getComponent } from '$lib/helpers/components';
+	import { lbControl } from '$lib/helpers/LbControl';
 	import type { Control, ControlOptions } from '$lib/types/models';
 	import { DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import { store } from '$lib/stores/Store.svelte';
@@ -42,17 +42,17 @@
 		{/snippet}
 		{#snippet content()}
 			<Tabs.Panel value="1">
-				<div class="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 lg:flex-wrap">
+				<div class="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 lg:flex-wrap">
 					{#each favoriteControls as control}
-						{@const Component = getComponent(control.type)}
+						{@const Component = lbControl.getControl(control.type)}
 						<Component {control} controlOptions={{...controlOptions, isFavorite: true}}/>
 					{/each}
 				</div>
 			</Tabs.Panel>
 			<Tabs.Panel value="2">
-				<div class="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 lg:flex-wrap">
+				<div class="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 lg:flex-wrap">
 					{#each centralControls as control}
-						{@const Component = getComponent(control.type)}
+						{@const Component = lbControl.getControl(control.type)}
 						<Component {control} controlOptions={{...controlOptions, isFavorite: true}}/>
 					{/each}
 				</div>

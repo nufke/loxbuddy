@@ -1,0 +1,535 @@
+{
+    "userDefaultStructure": {
+        "__uuid__rooms_living_room": {
+            "room": {
+                "position": 0
+            }
+        },
+        "__uuid__rooms_central": {
+            "room": {
+                "position": 0
+            }
+        },
+        "__uuid__rooms_outside": {
+            "favorites": {
+                "isFav": true,
+                "position": 0
+            },
+            "room": {
+                "position": 0
+            }
+        },
+        "__uuid__rooms_kitchen": {
+            "favorites": {
+                "isFav": true,
+                "position": 0
+            },
+            "room": {
+                "position": 0
+            }
+        },
+        "__uuid__rooms_bathroom": {
+            "favorites": {
+                "isFav": true,
+                "position": 0
+            },
+            "room": {
+                "position": 0
+            }
+        },
+        "__uuid__rooms_bedroom": {
+            "room": {
+                "position": 0
+            }
+        },
+        "__uuid__cats_alarm": {
+            "category": {
+                "position": 0
+            }
+        },
+        "__uuid__cats_lighting": {
+            "category": {
+                "position": 0
+            }
+        },
+        "__uuid__cats_pv": {
+            "category": {
+                "position": 0
+            }
+        },
+        "__uuid__cats_energy": {
+            "category": {
+                "position": 0
+            }
+        },
+        "__uuid__cats_sunscreens": {
+            "favorites": {
+                "isFav": true,
+                "position": 0
+            },
+            "category": {
+                "position": 0
+            }
+        },
+        "__uuid__cats_safety": {
+            "category": {
+                "position": 0
+            }
+        },
+        "__uuid__cats_heating": {
+            "favorites": {
+                "isFav": true,
+                "position": 0
+            },
+            "category": {
+                "position": 0
+            }
+        },
+        "__uuid__cats_alarmclock": {
+            "category": {
+                "position": 0
+            }
+        },
+        "__uuid__controls_status": {
+            "favorites": {
+                "isFav": true,
+                "position": 0
+            },
+            "room": {
+                "position": 0
+            },
+            "room/__uuid__cats_lighting": {
+                "position": 0
+            },
+            "category/__uuid__rooms_central": {
+                "position": 0
+            }
+        },
+        "__uuid__controls_switch": {
+            "favorites": {
+                "isFav": true,
+                "position": 0
+            },
+            "room": {
+                "position": 0
+            },
+            "room/__uuid__cats_lighting": {
+                "position": 0
+            },
+            "category/__uuid__rooms_living_room": {
+                "position": 0
+            }
+        },
+        "__uuid__controls_pv_meter": {
+            "favorites": {
+                "isFav": true,
+                "position": 0
+            },
+            "room": {
+                "isFav": true,
+                "position": 0
+            },
+            "category": {
+                "isFav": true,
+                "position": 0
+            },
+            "room/__uuid__cats_pv": {
+                "position": 0
+            },
+            "category/__uuid__rooms_central": {
+                "position": 0
+            }
+        },
+        "__uuid__controls_battery": {
+            "room": {
+                "position": 0
+            },
+            "room/__uuid__cats_energy": {
+                "position": 0
+            },
+            "category/__uuid__rooms_central": {
+                "position": 0
+            }
+        },
+        "__uuid__controls_net": {
+            "room": {
+                "isFav": true,
+                "position": 0
+            },
+            "category": {
+                "isFav": true,
+                "position": 0
+            },
+            "room/__uuid__cats_energy": {
+                "position": 0
+            },
+            "category/__uuid__rooms_central": {
+                "position": 0
+            }
+        },
+        "__uuid__controls_stairslighting": {
+            "favorites": {
+                "isFav": true,
+                "position": 0
+            },
+            "room": {
+                "isFav": true,
+                "position": 0
+            },
+            "category": {
+                "isFav": true,
+                "position": 0
+            },
+            "room/__uuid__cats_lighting": {
+                "position": 0
+            },
+            "category/__uuid__rooms_living_room": {
+                "position": 0
+            }
+        },
+        "__uuid__controls_presence_detector": {
+            "room": {
+                "isFav": true,
+                "position": 0
+            },
+            "category": {
+                "isFav": true,
+                "position": 0
+            },
+            "room/__uuid__cats_lighting": {
+                "position": 0
+            },
+            "category/__uuid__rooms_living_room": {
+                "position": 0
+            }
+        },
+        "__uuid__controls_sunscreen_blinds": {
+            "room": {
+                "isFav": true,
+                "position": 0
+            },
+            "category": {
+                "isFav": true,
+                "position": 0
+            },
+            "room/__uuid__cats_sunscreens": {
+                "position": 0
+            },
+            "category/__uuid__rooms_living_room": {
+                "position": 0
+            }
+        },
+        "__uuid__controls_sunscreen_kitchen": {
+            "room": {
+                "isFav": true,
+                "position": 0
+            },
+            "category": {
+                "isFav": true,
+                "position": 0
+            },
+            "room/__uuid__cats_sunscreens": {
+                "position": 0
+            },
+            "category/__uuid__rooms_living_room": {
+                "position": 0
+            }
+        },
+        "__uuid__controls_sunscreen_central": {
+            "room": {
+                "isFav": true,
+                "position": 0
+            },
+            "category": {
+                "isFav": true,
+                "position": 0
+            },
+            "room/__uuid__cats_sunscreens": {
+                "position": 0
+            },
+            "category/__uuid__rooms_living_room": {
+                "position": 0
+            }
+        },
+        "__uuid__controls_gate_1": {
+            "room": {
+                "position": 0
+            },
+            "room/__uuid__cats_safety": {
+                "position": 0
+            },
+            "category/__uuid__rooms_outside": {
+                "position": 0
+            }
+        },
+        "__uuid__controls_gate_2": {
+            "room": {
+                "position": 0
+            },
+            "room/__uuid__cats_safety": {
+                "position": 0
+            },
+            "category/__uuid__rooms_outside": {
+                "position": 0
+            }
+        },
+        "__uuid__controls_battery_level": {
+            "room": {
+                "position": 0
+            },
+            "room/__uuid__cats_energy": {
+                "position": 0
+            },
+            "category/__uuid__rooms_central": {
+                "position": 0
+            }
+        },
+        "__uuid__controls_window_monitor": {
+            "favorites": {
+                "isFav": true,
+                "position": 0
+            },
+            "room": {
+                "position": 0
+            },
+            "room/__uuid__cats_safety": {
+                "position": 0
+            },
+            "category/__uuid__rooms_central": {
+                "position": 0
+            }
+        },
+        "__uuid__controls_heatingmode": {
+            "room": {
+                "isFav": true,
+                "position": 0
+            },
+            "category": {
+                "isFav": true,
+                "position": 0
+            },
+            "room/__uuid__cats_heating": {
+                "position": 0
+            },
+            "category/__uuid__rooms_central": {
+                "position": 0
+            }
+        },
+        "__uuid__controls_loading": {
+            "room": {
+                "position": 0
+            },
+            "room/__uuid__cats_energy": {
+                "position": 0
+            },
+            "category/__uuid__rooms_central": {
+                "position": 0
+            }
+        },
+        "__uuid__controls_dimmer_1": {
+            "room": {
+                "position": 0
+            },
+            "room/__uuid__cats_lighting": {
+                "position": 0
+            },
+            "category/__uuid__rooms_living_room": {
+                "position": 0
+            }
+        },
+        "__uuid__controls_phase_1": {
+            "room": {
+                "position": 0
+            },
+            "room/__uuid__cats_energy": {
+                "position": 0
+            },
+            "category/__uuid__rooms_central": {
+                "position": 0
+            }
+        },
+        "__uuid__controls_heating_request": {
+            "room": {
+                "position": 0
+            },
+            "room/__uuid__cats_energy": {
+                "position": 0
+            },
+            "category/__uuid__rooms_central": {
+                "position": 0
+            }
+        },
+        "__uuid__controls_reset_box": {
+            "room": {
+                "position": 0
+            },
+            "room/__uuid__cats_energy": {
+                "position": 0
+            },
+            "category/__uuid__rooms_central": {
+                "position": 0
+            }
+        },
+        "__uuid__controls_lightcontrollerv2_1": {
+            "room": {
+                "isFav": true,
+                "position": 0
+            },
+            "category": {
+                "isFav": true,
+                "position": 0
+            },
+            "room/__uuid__cats_lighting": {
+                "position": 0
+            },
+            "category/__uuid__rooms_living_room": {
+                "position": 0
+            }
+        },
+        "__uuid__controls_lightcontrollerv2_2": {
+            "room": {
+                "isFav": true,
+                "position": 0
+            },
+            "category": {
+                "isFav": true,
+                "position": 0
+            },
+            "room/__uuid__cats_lighting": {
+                "position": 0
+            },
+            "category/__uuid__rooms_kitchen": {
+                "position": 0
+            }
+        },
+        "__uuid__controls_lighting_central": {
+            "favorites": {
+                "isFav": true,
+                "position": 0
+            },
+            "room": {
+                "isFav": true,
+                "position": 0
+            },
+            "category": {
+                "isFav": true,
+                "position": 0
+            },
+            "room/__uuid__cats_lighting": {
+                "position": 0
+            },
+            "category/__uuid__rooms_living_room": {
+                "position": 0
+            }
+        },
+        "__uuid__controls_tracker": {
+            "room": {
+                "position": 0
+            },
+            "room/__uuid__cats_energy": {
+                "position": 0
+            },
+            "category/__uuid__rooms_central": {
+                "position": 0
+            }
+        },
+        "__uuid__controls_webpage": {
+            "room": {
+                "position": 0
+            },
+            "room/__uuid__cats_lighting": {
+                "position": 0
+            },
+            "category/__uuid__rooms_central": {
+                "position": 0
+            }
+        },
+        "__uuid__controls_alarmclock": {
+            "room": {
+                "position": 0
+            },
+            "room/__uuid__cats_alarmclock": {
+                "position": 0
+            },
+            "category/__uuid__rooms_bedroom": {
+                "position": 0
+            }
+        },
+        "__uuid__controls_alarmunit": {
+            "room": {
+                "isFav": true,
+                "position": 0
+            },
+            "category": {
+                "isFav": true,
+                "position": 0
+            },
+            "room/__uuid__cats_alarm": {
+                "position": 0
+            },
+            "category/__uuid__rooms_central": {
+                "position": 0
+            }
+        },
+        "__uuid__controls_irc_v1": {
+            "room": {
+                "isFav": true,
+                "position": 0
+            },
+            "category": {
+                "isFav": true,
+                "position": 0
+            },
+            "room/__uuid__cats_heating": {
+                "position": 0
+            },
+            "category/__uuid__rooms_living_room": {
+                "position": 0
+            }
+        },
+        "__uuid__controls_daytimer": {
+            "room": {
+                "position": 0
+            },
+            "room/__uuid__cats_lighting": {
+                "position": 0
+            },
+            "category/__uuid__rooms_central": {
+                "position": 0
+            }
+        },
+        "__uuid__controls_loadmanager": {
+            "room": {
+                "isFav": true,
+                "position": 0
+            },
+            "category": {
+                "isFav": true,
+                "position": 0
+            },
+            "room/__uuid__cats_energy": {
+                "position": 0
+            },
+            "category/__uuid__rooms_central": {
+                "position": 0
+            }
+        },
+        "__uuid__controls_irc_v2": {
+            "room": {
+                "isFav": true,
+                "position": 0
+            },
+            "category": {
+                "isFav": true,
+                "position": 0
+            },
+            "room/__uuid__cats_heating": {
+                "position": 0
+            },
+            "category/__uuid__rooms_bedroom": {
+                "position": 0
+            }
+        }
+    },
+    "ts": 530735020
+}

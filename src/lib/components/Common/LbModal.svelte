@@ -4,7 +4,7 @@
 	import LbSimpleSlider from '$lib/components/Common/LbSimpleSlider.svelte';
 	import LbStatusBar from '$lib/components/Common/LbStatusBar.svelte';
 	import { store } from '$lib/stores/Store.svelte';
-	import { getComponent } from '$lib/helpers/components';
+	import { lbControl } from '$lib/helpers/LbControl';
 	import { DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import { Switch } from '@skeletonlabs/skeleton-svelte';
 	import { Modal } from '@skeletonlabs/skeleton-svelte';
@@ -256,7 +256,7 @@
 				{linkedControls.length > 2 ? 'xl:grid-cols-3' : ''}
 				lg:flex-wrap overflow-y-auto h-full" bind:this={viewport} onscroll={parseScroll}>
 				{#each linkedControls as control}
-					{@const Component = getComponent(control.type)}
+					{@const Component = lbControl.getControl(control.type)}
 					<Component {control} controlOptions={controlOptions}/>
 				{/each}
 			</div>

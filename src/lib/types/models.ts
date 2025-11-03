@@ -710,3 +710,9 @@ export const NO_LOGIN: LoginCredentials = {
 	hostUrl: '',
 	credentials: ''
 }
+
+export type Icon = {
+	id: string;
+	name: string;
+	filterTags?: string;
+}

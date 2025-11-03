@@ -72,6 +72,10 @@ export class LoxWsClient {
 		// get UserSettings for sorting and favorites
 		console.info('LoxClient: Get system status...');
 		this.getSystemStatus();
+
+		// get UserSettings for sorting and favorites
+		console.info('LoxClient: Get icons...');
+		this.getIconList();
 	}
 
 	/**
@@ -158,6 +162,18 @@ export class LoxWsClient {
 		})
 		.then((response) => response.json())
 		.then((data) => { store.systemStatus = JSON.parse(data.LL.value); })
+	}
+
+	getIconList() {
+		fetch(`${store.loginCredentials.hostUrl}/jdev/sps/geticonlist`, {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+				'Authorization': 'Basic ' + store.loginCredentials.credentials
+			}
+		})
+		.then((response) => response.json())
+		.then((data) => { store.iconList = data })
 	}
 
 }

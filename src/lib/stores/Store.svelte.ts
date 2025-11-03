@@ -1,9 +1,9 @@
 import { SvelteMap } from 'svelte/reactivity';
 import { INITIAL_STRUCTURE, DEFAULT_USERSETTINGS, NO_LOGIN, EMPTY_SYSTEM_STATUS } from '$lib/types/models';
-import type { Structure, Control, Category, Room, SystemStatus, Route, ModalView, NotificationMap, NotificationList,
+import type { Structure, Control, Category, Room, SystemStatus, Route, ModalView, NotificationMap, NotificationList, Icon,
 							ControlsMap, CategoriesMap, RoomsMap, MessageCenter, NotificationMessage, UserSettings, LoginCredentials } from '$lib/types/models';
 import { utils } from '$lib/helpers/Utils';
-import { getDefaultIcon } from '$lib/helpers/components';
+import { lbControl } from '$lib/helpers/LbControl';
 import { loxiconsPath } from '$lib/helpers/paths';
 import { Menu } from '@lucide/svelte';
 
@@ -34,6 +34,7 @@ class Store {
 	userSettings: UserSettings = $state(DEFAULT_USERSETTINGS);
 	systemStatus: SystemStatus = $state(EMPTY_SYSTEM_STATUS);
 	msStatus: number = $derived(this.systemStatus.entries ? Math.max(...this.systemStatus.entries.filter( item => item.isHistoric == false).map( item => item.severity)) : 0);
+	iconList: Icon[] | undefined = $state();
 
 	weatherModal: ModalView = $state({
 		action: () => {},
@@ -101,23 +102,14 @@ class Store {
 		Object.assign(this.structure, data);
 	}
 
-	getSystemCode() { // 0=no status (disconnected), 1=info, 2=warning, 3=error
-/*
-		const status = this.controlState.get('systemStatus') as SystemStatus;
-		if (status && status.entries) {
-			return Math.max(...status.entries.filter( item => item.isHistoric == false).map( item => item.severity));
-		}*/
-		return this.systemStatus;
-	}
-
 	getState(uuid: string) {
 		return this.controlState.get(uuid);
 	}
 
-	setState(key: string, data: any) {
-		//console.log('setState', key, data);
+	setState(uuid: string, data: any) {
+		//console.log('setState', uuid, data);
 		const item = $state(data);
-		this.controlState.set(key, item);
+		this.controlState.set(uuid, item);
 		clearTimeout(this._stateUpdate);
 		this.msAlive = true;
 	}
@@ -134,7 +126,7 @@ class Store {
 		if (textState && textState.icon) return loxiconsPath + textState.icon; /* used for TextState icon */
 		if (control.defaultIcon) return loxiconsPath + control.defaultIcon;
 		if (!isSubControl) { 
-			const icon = getDefaultIcon(control.type);
+			const icon = lbControl.getDefaultIcon(control.type);
 			if (icon.length ) {
 				return icon;
 			} 
@@ -171,7 +163,6 @@ class Store {
 			this.lockScreenModal.state = true;
 		}, 60000); // 60s TODO add to configuration
 	}
-
 }
 
 export const store = new Store();

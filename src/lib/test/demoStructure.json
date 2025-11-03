@@ -585,10 +585,10 @@
         "__uuid_unknonw"
       ]
     },
-    "__uuid__controls_Sunscreen_kitchen": {
+    "__uuid__controls_sunscreen_kitchen": {
       "name": "Screen Kitchen",
       "type": "Jalousie",
-      "uuidAction": "__uuid__controls_Sunscreen_kitchen",
+      "uuidAction": "__uuid__controls_sunscreen_kitchen",
       "room": "__uuid__rooms_living_room",
       "cat": "__uuid__cats_sunscreens",
       "defaultRating": 1,
@@ -604,22 +604,22 @@
         "type": 348
       },
       "states": {
-        "jLocked": "__uuid__controls_Sunscreen_kitchen_states_jLocked",
-        "infoText": "__uuid__controls_Sunscreen_kitchen_states_infoText",
-        "up": "__uuid__controls_Sunscreen_kitchen_states_up",
-        "down": "__uuid__controls_Sunscreen_kitchen_states_down",
-        "position": "__uuid__controls_Sunscreen_kitchen_states_position",
-        "shadePosition": "__uuid__controls_Sunscreen_kitchen_states_shadePosition",
-        "safetyActive": "__uuid__controls_Sunscreen_kitchen_states_safetyActive",
-        "autoAllowed": "__uuid__controls_Sunscreen_kitchen_states_autoAllowed",
-        "autoActive": "__uuid__controls_Sunscreen_kitchen_states_autoActive",
-        "locked": "__uuid__controls_Sunscreen_kitchen_states_locked",
-        "autoInfoText": "__uuid__controls_Sunscreen_kitchen_states_autoInfoText",
-        "autoState": "__uuid__controls_Sunscreen_kitchen_states_autoState",
-        "deviceState": "__uuid__controls_Sunscreen_kitchen_states_deviceState",
-        "targetPosition": "__uuid__controls_Sunscreen_kitchen_states_targetPosition",
-        "targetPositionLamelle": "__uuid__controls_Sunscreen_kitchen_states_targetPositionLamelle",
-        "adjustingEndPos": "__uuid__controls_Sunscreen_kitchen_states_adjustingEndPos"
+        "jLocked": "__uuid__controls_sunscreen_kitchen_states_jLocked",
+        "infoText": "__uuid__controls_sunscreen_kitchen_states_infoText",
+        "up": "__uuid__controls_sunscreen_kitchen_states_up",
+        "down": "__uuid__controls_sunscreen_kitchen_states_down",
+        "position": "__uuid__controls_sunscreen_kitchen_states_position",
+        "shadePosition": "__uuid__controls_sunscreen_kitchen_states_shadePosition",
+        "safetyActive": "__uuid__controls_sunscreen_kitchen_states_safetyActive",
+        "autoAllowed": "__uuid__controls_sunscreen_kitchen_states_autoAllowed",
+        "autoActive": "__uuid__controls_sunscreen_kitchen_states_autoActive",
+        "locked": "__uuid__controls_sunscreen_kitchen_states_locked",
+        "autoInfoText": "__uuid__controls_sunscreen_kitchen_states_autoInfoText",
+        "autoState": "__uuid__controls_sunscreen_kitchen_states_autoState",
+        "deviceState": "__uuid__controls_sunscreen_kitchen_states_deviceState",
+        "targetPosition": "__uuid__controls_sunscreen_kitchen_states_targetPosition",
+        "targetPositionLamelle": "__uuid__controls_sunscreen_kitchen_states_targetPositionLamelle",
+        "adjustingEndPos": "__uuid__controls_sunscreen_kitchen_states_adjustingEndPos"
       }
     },
     "__uuid__controls_sunscreen_central": {
@@ -641,7 +641,7 @@
           },
           {
             "id": 1,
-            "uuid": "__uuid__controls_Sunscreen_kitchen"
+            "uuid": "__uuid__controls_sunscreen_kitchen"
           }
         ],
         "parameterConnections": 0

@@ -3,6 +3,7 @@ import type { Control, AlarmClockEntries } from '$lib/types/models';
 import { utils } from '$lib/helpers/Utils';
 import structure from '$lib/test/demoStructure.json';
 import states from '$lib/test/demoStates.json';
+import userSettings from '$lib/test/userSettings.json';
 
 type IntervalMap = {
 	[key: string]: NodeJS.Timeout;
@@ -34,7 +35,8 @@ class Test {
 
 		setTimeout( () => {
 			store.setInitialStates(states);
-		}, 5000);
+			store.userSettings = userSettings;
+		}, 2000);
 
 		// Meter
 		setInterval(() => {

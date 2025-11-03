@@ -4,7 +4,7 @@
 	import type { Control, Room, Category, ControlOptions } from '$lib/types/models';
 	import { DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import { _ } from 'svelte-i18n';
-	import { getComponent } from '$lib/helpers/components';
+	import { lbControl } from '$lib/helpers/LbControl';
 	import { store } from '$lib/stores/Store.svelte';
 	import { ArrowLeft } from '@lucide/svelte';
 
@@ -62,7 +62,7 @@
 	{#if favorites.length}
 		<div class="mt-4 mb-2 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 lg:flex-wrap">
 			{#each favorites as control}
-				{@const Component = getComponent(control.type)}
+				{@const Component = lbControl.getControl(control.type)}
 				<Component control={control} controlOptions={{...controlOptions, isFavorite: true}}/>
 			{/each}
 		</div>
@@ -72,7 +72,7 @@
 			<button class="h5 ml-2" onclick={() => {goto('/room/'+label.uuid)}}>{label.name}</button>
 			<div class="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 lg:flex-wrap">
 				{#each filteredControls.filter( item => item.room == label.uuid) as control}
-					{@const Component = getComponent(control.type)}
+					{@const Component = lbControl.getControl(control.type)}
 					<Component control={control} {controlOptions}/>
 				{/each}
 		</div>
