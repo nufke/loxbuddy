@@ -22,7 +22,8 @@ npm install
 cp .env.example .env.local
 code .env.local
 
-# Unzip the `IconLibrary.zip` in the static folder 
+# Grab the existing icon library `IconLibrary.zip` from the LoxConfig or 
+# Miniserver and unzip it in the static folder 
 cd static/loxicons
 unzip IconLibrary.zip
 
@@ -37,9 +38,14 @@ firefox http://localhost:5173/
 
 To deploy LoxBuddy to a webserver (e.g. running on LoxBerry), follow the steps described in this [README](./infra/README.md)
 
-## Issues and questions
+## Supported controls and features
 
-Please submit your issues and questions via the GitHub issue tracker: https://github.com/nufke/loxbuddy/issues
+Visit the [Wiki Status](https://github.com/nufke/loxbuddy/wiki/Status) page for the latest updates on supported controls and features.
+
+## Issues, questions and requests
+
+Please submit your issues, questions or requests via the GitHub [issue tracker](https://github.com/nufke/loxbuddy/issues) 
+or submit a [Pull Request](https://github.com/nufke/loxbuddy/pulls).
 
 ## Credits
 

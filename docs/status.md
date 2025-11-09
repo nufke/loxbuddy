@@ -1,8 +1,8 @@
 # Status
 
 This page lists the development status of the controls and subcontrols, and future requirements and features.
-For additional requests or ideas, you can raise an [issue](https://github.com/nufke/loxbuddy/issues) 
-or submit a [pull request](https://github.com/nufke/loxbuddy/pulls).
+For additional requests or ideas, you can raise an [Issue](https://github.com/nufke/loxbuddy/issues) 
+or submit a [Pull Request](https://github.com/nufke/loxbuddy/pulls).
 
 ## Controls
 
@@ -118,35 +118,39 @@ or submit a [pull request](https://github.com/nufke/loxbuddy/pulls).
 
 ## Feature list under development
 
-| Feature                     | Status                   |
-|-----------------------------|--------------------------|
-| 12h clock notation          | Not started              |
-| Alarm sync w mobile alarm   | Not started              |
-| Battery status update       | Not started              |
-| Connection status           | Available                |
-| Dark / Light themes         | Available                |
-| Internationalization        | Available (NL, DE, US)   |
-| Kiosk / room mode (tablet)  | Not started              |
-| LoxBerry plugins            | Not started              |
-| Notifications (local)       | Available                |
-| Pin protected pages         | Not started              |
-| Push messages (internet)    | Not started              |
-| Screensaver / Lockscreen    | Available                |
-| Settings menu               | Under development        |
-| Splashscreen                | Not started              |
-| Statistics / history        | Not started              |
-| Statusbar (time, temp, etc) | Available                |
-| System messages             | Available                |
-| User calendar               | Not started              |
-| Voice control               | Not started              |
-| Weather forecast            | Available (Weather4Lox)  |
+| Feature                      | Status                   |
+|------------------------------|--------------------------|
+| 12h (AM/PM) clock notation   | Not started              |
+| Air devices status           | Not started              |
+| Alarm sync w mobile alarm    | Not started              |
+| Battery status update        | Not started              |
+| Connection status            | Available                |
+| Dark / Light themes          | Available                |
+| Internationalization         | Available (NL, DE, US)   |
+| Kiosk / room mode (tablet)   | Not started              |
+| LoxBerry plugins             | Not started              |
+| MQTT client                  | Available                |
+| Notifications (local)        | Available                |
+| Pin protected pages          | Not started              |
+| Push messages (internet)     | Not started              |
+| Screensaver / Lockscreen     | Available                |
+| Settings menu                | Under development        |
+| Sorting of controls          | Under development        |
+| Splashscreen                 | Not started              |
+| Statistics / history         | Not started              |
+| Statusbar (time, temp, etc.) | Available                |
+| System messages              | Available                |
+| User calendar                | Not started              |
+| Voice control                | Not started              |
+| Weather forecast             | Available (Weather4Lox)  |
+| WebSocket comm to Miniserver | Available                |
 
 ## Other ideas
 
  * Region dependent number formatting or scientific notation (e.g. 1000000 displayed as 1.000.000 or 1,000,000 or 1E+06 )
- * Option to disable control pushdown to detailed level
+ * Protected categories
  * Temperature notation (°C / °F)
  * Interface with Synology DSM (e.g. Surveillance Station)
  * Biometic control / screen unlock (e.g. TouchID, FaceID)
- * Near Field Communcation
+ * Near Field Communication
  * QR code scanning

@@ -81,7 +81,7 @@
 					draggable={store.dnd.isEnabled}
 					ondragstart={() => {draggingItem = control; dragGroup = fav}}
 					ondragend={() => {draggingItem = undefined; dragGroup = ''}}
-			  	ondragenter={() => { favorites = swapItems(favorites, control, fav)}}
+					ondragenter={() => { favorites = swapItems(favorites, control, fav)}}
 					ondragover={(event) => {event.preventDefault(); if (event && event.dataTransfer) event.dataTransfer.dropEffect = 'move';}}>
 					<Component control={control} controlOptions={{...controlOptions, isFavorite: true}}/>
 				</div>
@@ -98,7 +98,7 @@
 						draggable={store.dnd.isEnabled}
 						ondragstart={() => {draggingItem = control; dragGroup = label.name}}
 						ondragend={() => {draggingItem = undefined; dragGroup = ''}}
-				  	ondragenter={() => { filteredControls = swapItems(filteredControls, control, label.name)}}
+						ondragenter={() => { filteredControls = swapItems(filteredControls, control, label.name)}}
 						ondragover={(event) => {event.preventDefault(); if (event && event.dataTransfer) event.dataTransfer.dropEffect = 'move';}}>
 							<Component control={control} {controlOptions}/>
 					</div>
