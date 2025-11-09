@@ -20,6 +20,22 @@
 	import { format } from 'date-fns';
 	import { goto } from '$app/navigation';
 	import { test } from '$lib/test/Test';
+	import { enableDragDropTouch } from '$lib/helpers/drag-drop-touch';
+
+	const options = {
+		allowDragScroll: true,
+		contextMenuDelayMS: 900,
+		dragImageOpacity: 1, // was 0.5
+		dragScrollPercentage: 10,
+		dragScrollSpeed: 10,
+		dragThresholdPixels: 5,
+		forceListen: false,
+		isPressHoldMode: true, // enabled to enforce waiting time
+		pressHoldDelayMS: 300, // was 400 (default)
+		pressHoldMargin: 25,
+		pressHoldThresholdPixels: 0
+	};
+	enableDragDropTouch(document, document, options);
 
 	const env = page.data.env;
 	const isTest = Number(env.TEST) ? true : false;

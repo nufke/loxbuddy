@@ -35,6 +35,7 @@ class Store {
 	systemStatus: SystemStatus = $state(EMPTY_SYSTEM_STATUS);
 	msStatus: number = $derived(this.systemStatus.entries ? Math.max(...this.systemStatus.entries.filter( item => item.isHistoric == false).map( item => item.severity)) : 0);
 	iconList: Icon[] | undefined = $state();
+	dnd = $state({isEnabled: false, duration: 300}); // TODO make configurable via menu
 
 	weatherModal: ModalView = $state({
 		action: () => {},

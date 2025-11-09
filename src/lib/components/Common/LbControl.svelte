@@ -7,6 +7,7 @@
 	import { store } from '$lib/stores/Store.svelte';
 	import { _ } from 'svelte-i18n';
 	import { page } from '$app/state';
+	import { GripVertical } from '@lucide/svelte';
 
 	let { controlView = $bindable(), controlOptions = DEFAULT_CONTROLOPTIONS } : { controlView: ControlView, controlOptions: ControlOptions } = $props();
 	let isCategory = page.url.pathname.includes('/category');
@@ -48,8 +49,13 @@
 {#if controlView.isFavorite} <!-- Widget style for favorite -->
 <div role="button" tabindex="0" onkeydown={()=>{}} aria-label="card" onclick={openModal}
 	class="card m-0 flex justify-start rounded-lg shadow-sm border border-white/5
-					bg-surface-100-900 min-h-[150px] px-2 py-2 hover:border-white/10">
+					bg-surface-100-900 min-h-[150px] px-2 py-2 hover:border-white/10 relative">
 	<div class="flex w-full flex-col">
+		{#if store.dnd.isEnabled}
+			<div class="absolute right-1 text-surface-500 top-[40%]">
+				<GripVertical/>
+			</div>
+		{/if}
 		<div class="relative flex w-full justify-between">
 			{#if controlView.iconName.length}
 				<div class="relative mr-1 inline-flex items-center justify-center w-12 h-12 min-w-12 overflow-hidden rounded-full border border-white/10 dark:bg-surface-950 bg-surface-50">
@@ -109,10 +115,15 @@
 
 {#if controlView.showControl && !controlView.isFavorite} <!-- Regular style used in control list -->
 <div role="button" tabindex="0" onkeydown={()=>{}} aria-label="card" onclick={openModal}
-			class="card m-0 flex items-center justify-start rounded-lg shadow-sm border border-white/5
+			class="card m-0 flex items-center justify-start rounded-lg shadow-sm border border-white/5 relative
 						{ controlView.isSubControl ? 'bg-surface-200-800 min-h-[64px]' :
 						( controlOptions.isLink ? 'bg-surface-200-800 min-h-[76px]' : 'bg-surface-100-900 min-h-[76px]') }  px-2 py-2 hover:border-white/10">
 	<div class="flex w-full justify-between">
+		{#if store.dnd.isEnabled}
+			<div class="absolute right-1 text-surface-500 top-[35%]">
+				<GripVertical/>
+			</div>
+		{/if}
 		<div class="relative flex items-center truncate">
 			{#if controlView.iconName.length && !controlView.isSubControl} <!-- only show icon if name is given -->
 				<div class="relative mr-1 inline-flex items-center justify-center w-12 h-12 min-w-12 overflow-hidden rounded-full border border-white/10 dark:bg-surface-950 bg-surface-50">
@@ -145,7 +156,7 @@
 				{/if}
 			</div>
 		</div>
-		<div class="flex flex-row items-center justify-center">
+		<div class="flex flex-row items-center justify-center {store.dnd.isEnabled ? 'pr-5' : 'pr-0'}">
 			{#if controlView.buttons.length}
 				{#each controlView.buttons as button, index}
 					{#if index > 0}

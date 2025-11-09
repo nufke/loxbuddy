@@ -1,12 +1,16 @@
-<script lang="ts">
+<script lang="ts" module>
 	import { _ } from 'svelte-i18n';
-	import type { Category } from '$lib/types/models';
+	import type { Category, UserSettings } from '$lib/types/models';
 	import LbCard from '$lib/components/Common/LbCard.svelte';
 	import { store } from '$lib/stores/Store.svelte';
+	import { flip } from 'svelte/animate';
+	import { customdnd } from '$lib/helpers/custom-drag-n-drop';
 
-	let key = 'category';
-	let fav = 'favorites';
-	let showFavorites = true; // TODO make configurable
+	const key = 'category';
+	const fav = 'favorites';
+	let dragGroup = '';
+	let draggingItem: any;
+	let animatingItems = new Set();
 
 	let userSettings = $derived(store.userSettings);
 	let items: Category[] = $derived(
@@ -29,21 +33,50 @@
 	function getPosition(obj: any, cat: Category, key: string) {
 		return obj[cat.uuid] ? obj[cat.uuid][key] ? obj[cat.uuid][key].position : 999 : 999;
 	}
+
+	function swapItems(list: Category[], item: Category, group: string) {
+		let newList = list;
+		if (draggingItem === item || animatingItems.has(item) || group !== dragGroup) {
+			return list;
+		}
+		animatingItems.add(item);
+		setTimeout(() => animatingItems.delete(item), store.dnd.duration);
+		const itemA = list.indexOf(draggingItem);
+		const itemB = list.indexOf(item);
+		newList[itemA] = item;
+		newList[itemB] = draggingItem;
+		return newList; // update list (triggers effect)
+	}
 </script>
 
 <div class="container p-3 mx-auto max-w-[640px] lg:max-w-[960px] lb-page-center">
 	<p class="pl-2 h4">{$_('Categories')}</p>
-	{#if favorites.length && showFavorites}
+	{#if favorites.length}
 		<div class="mt-4 mb-2 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 lg:flex-wrap">
-			{#each favorites as item}
+			{#each favorites as item (item)}
+			<div animate:flip={{ duration: store.dnd.duration }} use:customdnd
+				draggable={store.dnd.isEnabled}
+				class=""
+				ondragstart={() => {draggingItem = item; dragGroup = fav}}
+				ondragend={() => {draggingItem = undefined; dragGroup = ''}}
+		  	ondragenter={() => { favorites = swapItems(favorites, item, fav)}}
+				ondragover={(event) => {event.preventDefault(); if (event && event.dataTransfer) event.dataTransfer.dropEffect = 'move';}}>
 				<LbCard {key} {item} isFavorite={true}/>
+			</div>
 			{/each}
 		</div>
 	{/if}
 	<p class="pl-2 h5">{$_('All')}</p>
 	<div class="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3 lg:flex-wrap">
-		{#each items as item}
-			<LbCard {key} {item} isFavorite={false}/>
- 		{/each}
+		{#each items as item (item)}
+			<div animate:flip={{ duration: store.dnd.duration }} use:customdnd
+				draggable={store.dnd.isEnabled}
+				ondragstart={() => {draggingItem = item; dragGroup = key}}
+				ondragend={() => {draggingItem = undefined; dragGroup = ''}}
+		  	ondragenter={() => { items = swapItems(items, item, key)}}
+				ondragover={(event) => {event.preventDefault(); if (event && event.dataTransfer) event.dataTransfer.dropEffect = 'move';}}>
+				<LbCard {key} {item} isFavorite={false}/>
+			</div>
+		{/each}
 	</div>
 </div>
