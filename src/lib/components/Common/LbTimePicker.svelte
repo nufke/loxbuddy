@@ -3,7 +3,7 @@
 	import { fade } from 'svelte/transition';
 	import { _ } from 'svelte-i18n';
 
-	let { date = $bindable(), view = $bindable() } = $props();
+	let { date = $bindable(), view } = $props();
 
 	let minuteIncrement: number = 1;
 	let showMeridian: boolean = false;
@@ -12,9 +12,10 @@
 	let size = 300;
 	let ts = 'text-md';
 
+	let localDate = $derived(new SvelteDate(date));
 	let isMinuteView: boolean = $state(view.isMinuteView);
-	let selectedHour = $derived(date.getHours() || 0);
-	let selectedMinutes = $derived(date.getMinutes() || 0);
+	let selectedHour = $derived(localDate.getHours() || 0);
+	let selectedMinutes = $derived(localDate.getMinutes() || 0);
 	let isMouseDown: boolean = $state(false);
 	let pos = $derived(positions(isMinuteView ? size : size*0.85, size/2, 0, false, 0));
 	let isPM = $derived(showMeridian ? selectedHour >= 12 : false);
@@ -30,21 +31,8 @@
 			: `transform: rotateZ(${nextDegree}deg); height: calc(23% + 1px)`;
 	});
 
-	function resetDate() {
-		return new SvelteDate();
-	}
-
-	function updateView(passedValue: SvelteDate) {
-		if (date.valueOf() !== passedValue.valueOf() && passedValue) {
-			date = new SvelteDate(passedValue);
-		} else if (!passedValue) {
-			isMinuteView = false;
-			if (!date) {
-				date = resetDate();
-			} else {
-				date.setHours(0, 0);
-			}
-		}
+	function updateDate(newDate: SvelteDate) {
+		date = newDate;
 	}
 
 	function positions(size: number, offset: number, valueForZero: number, minuteView: boolean, hourAdded: number) {
@@ -112,7 +100,8 @@
 					val = next - val < val - prev ? next : prev;
 				}
 			}
-			isMinuteView ? date.setMinutes(val) : date.setHours(val);
+			isMinuteView ? localDate.setMinutes(val) : localDate.setHours(val);
+			updateDate(localDate);
 		} else if (isMinuteView) {
 			const rect = refClock.getBoundingClientRect();
 			const clientX = e.clientX - rect.left;
@@ -163,7 +152,8 @@
 			if (degree >= 60) {
 				degree = 0;
 			}
-			date.setMinutes(degree);
+			localDate.setMinutes(degree);
+			updateDate(localDate);
 		} else {
 			return;
 		}
@@ -176,14 +166,10 @@
 	function onToggleMove(e: any) {
 		isMouseDown = (e.type === 'mousedown');
 	}
-
-	$effect(() => {
-		updateView(date);
-	});
 </script>
 
-<div class="relative">
-	<div class="relative flex flex-row justify-center align-center mb-2">
+<div>
+	<div class="flex flex-row justify-center align-center mb-2">
 		<button type="button" class="text-xl" class:is-active={!isMinuteView} onclick={() => (isMinuteView = false)}>
 			{showTime(selectedHour, showMeridian)}
 		</button>
@@ -195,7 +181,7 @@
 			<span class="text-lg">{(isPM ? meridiem[1] : meridiem[0]).toUpperCase()}</span>
 		{/if}
 	</div>
-	<div class="relative card flex rounded-full m-auto border border-white/5 bg-surface-50-950 border border-white/5
+	<div class="card relative flex rounded-full m-auto border border-white/5 bg-surface-50-950 border border-white/5
 							hover:border-white/10" style="width: {size}px; height: {size}px"
 							class:is-minute-view={isMinuteView} bind:this={refClock} onclick={(e) => { e.preventDefault(); onClick(e);}}
 							onmousedown={onToggleMove} onmousemove={(e) => {isMouseDown && onClick(e);}} onmouseup={onToggleMove}>

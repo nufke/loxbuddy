@@ -6,7 +6,7 @@
 	import { _ } from 'svelte-i18n';
 	import { lbControl } from '$lib/helpers/LbControl';
 	import { store } from '$lib/stores/Store.svelte';
-	import { ArrowLeft } from '@lucide/svelte';
+	import { ArrowLeftIcon } from '@lucide/svelte';
 	import { flip } from 'svelte/animate';
 	import { customdnd } from '$lib/helpers/custom-drag-n-drop';
 
@@ -19,7 +19,7 @@
 	let draggingItem: any;
 	let animatingItems = new Set();
 
-	store.setNav({ label: 'ArrowLeft', href: '/room', icon: ArrowLeft }); // TODO change navigation concept
+	store.setNav({ label: 'ArrowLeft', href: '/room', icon: ArrowLeftIcon }); // TODO change navigation concept
 
 	let controlOptions: ControlOptions = $derived(DEFAULT_CONTROLOPTIONS);
 
@@ -71,10 +71,10 @@
 
 <div class="container mx-auto max-w-[1280px] p-3 lb-page-center">
 	<div>
-		<p class="ml-2 mb-2 h4">{pageTitle?.name}</p>
+		<p class="ml-2 mb-2 h5">{pageTitle?.name}</p>
 	</div>
 	{#if favorites.length}
-		<div class="mt-4 mb-2 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 lg:flex-wrap">
+		<div class="mt-2 mb-2 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 lg:flex-wrap">
 			{#each favorites as control (control)}
 				{@const Component = lbControl.getControl(control.type)}
 				<div animate:flip={{ duration: store.dnd.duration }} use:customdnd
@@ -90,7 +90,7 @@
 	{/if}
 	<div class="space-y-2">
 		{#each labels as label }
-			<button class="h5 ml-2" onclick={() => {goto('/category/'+label.uuid)}}>{label.name}</button>
+			<button class="h6 ml-2" onclick={() => {goto('/category/'+label.uuid)}}>{label.name}</button>
 			<div class="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 lg:flex-wrap" >
 				{#each filteredControls.filter( item => item.cat == label.uuid) as control (control)}
 					{@const Component = lbControl.getControl(control.type)}

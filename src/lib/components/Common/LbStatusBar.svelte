@@ -2,7 +2,7 @@
 	import { _ } from 'svelte-i18n';
   import { Progress } from '@skeletonlabs/skeleton-svelte';
 	import { store } from '$lib/stores/Store.svelte';
-	import { Bell } from '@lucide/svelte';
+	import { BellIcon } from '@lucide/svelte';
 
 	let { maxPower, currentPower, mode } = $props();
 
@@ -43,13 +43,17 @@
 	}
 </script>
 
-<div class="w-full h-full mt-2 mb-2 flex align-center justify-center">
-	<div class="flex w-full flex-col ml-2 mr-2">
+<div class="w-full h-full flex align-center justify-center">
+	<div class="flex w-full flex-col m-4">
 		<div class="flex justify-end items-center mb-1 border-r-3 dark:border-surface-700 border-surface-300
 								pr-2 text-md h-[26px] w-full">
 			{$_('Max power')} {format(maxPower)}
 		</div>
-		<Progress trackClasses="custom-track" meterClasses="custom-meter" value={100} max={100} height="h-10" />
+		<Progress {value}>
+			<Progress.Track class="custom-track h-10">
+				<Progress.Range class="custom-meter"/>
+			</Progress.Track>
+		</Progress>
 		{#if value < 50}
 			<div class="flex flex-row items-center">
 				<div class="mt-1 border-r-3 dark:border-surface-700 border-surface-300 text-left pr-2 text-md h-[26px]" 

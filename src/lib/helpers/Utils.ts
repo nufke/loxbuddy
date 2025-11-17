@@ -74,18 +74,24 @@ class Utils {
 		else false;
 	}
 
-	hours2dec(t: string) {
-		const hhmm = t.split(':'); // HH:mm notation
+	hours2dec(time: string) {
+		if (!time) return 0; // empty input
+		if (!time.includes(':')) return 0; // invalid input
+		const hhmm = time.split(':'); // HH:mm notation
 		return Number((Number(hhmm[0]) + Number(hhmm[1]) / 60).toFixed(2));
 	}
 
-	hours2sec(t: string) {
-		const hhmm = t.split(':'); // HH:mm notation
+	hours2sec(time: string) {
+		if (!time) return 0; // empty input
+		if (!time.includes(':')) return 0; // invalid input
+		const hhmm = time.split(':'); // HH:mm notation
 		return Number((Number(hhmm[0]) * 3600 + Number(hhmm[1]) * 60));
 	}
 
-	hours2min(t: string) {
-		const hhmm = t.split(':'); // HH:mm notation
+	hours2min(time: string) {
+		if (!time) return 0; // empty input
+		if (!time.includes(':')) return 0; // invalid input
+		const hhmm = time.split(':'); // HH:mm notation
 		return Number((Number(hhmm[0]) * 60 + Number(hhmm[1])));
 	}
 
@@ -107,27 +113,31 @@ class Utils {
 		return Math.max(jan, jul) !== d.getTimezoneOffset();
 	}
 
-	decTime2date(t: number) {
-		const hrs = Math.floor(t/3600);
-		const min = Math.round((Number(t/3600)-hrs) * 60);
+	decTime2date(time: number) {
+		const hrs = Math.floor(time/3600);
+		const min = Math.round((Number(time/3600)-hrs) * 60);
 		const date = new Date();
 		return new Date(date.getFullYear(), date.getMonth(), date.getDate(), hrs, min);
 	}
 
-	hours2date(t: string) {
-		const hhmm = t.split(':'); // HH:mm notation
+	hours2date(time: string) {
+		const hhmm = time.split(':'); // HH:mm notation
 		const date = new Date();
 		return new Date(date.getFullYear(), date.getMonth(), date.getDate(), Number(hhmm[0]), Number(hhmm[1]));
 	}
 
-	hours2hours(t: string, correction: boolean = false) { // enable HH:mm notation (avoid H:mm)
-		const hhmm = t.split(':'); // HH:mm notation
+	hours2hours(time: string, correction: boolean = false) { // enable HH:mm notation (avoid H:mm)
+		if (!time) return ''; // empty input
+		if (!time.includes(':')) return ''; // invalid input
+		const hhmm = time.split(':'); // HH:mm notation
 		const hrs = (Number(hhmm[0]) == 24 && correction) ? 0 : Number(hhmm[0]); // possible conversion 24:00 -> 00:00
 		const min = Number(hhmm[1]);
 		return fmt.sprintf('%02i:%02i', hrs, min); 
 	}
 
 	time2epoch(dateEpoch: number, time: string) {
+		if (!time) return ''; // empty input
+		if (!time.includes(':')) return ''; // empty or invalid input
 		const hhmm = time.split(':'); // HH:mm:ss notation, we ignore seconds
 		const date = new Date(dateEpoch);
 		const dayStart = new Date(date.getFullYear(), date.getMonth(), date.getDate(), Number(hhmm[0]), Number(hhmm[1]));

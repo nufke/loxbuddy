@@ -1,19 +1,20 @@
 <script lang="ts">
 	import { SvelteDate } from 'svelte/reactivity';
-	import { ChevronLeft, ChevronRight, Clock3, Undo2 } from '@lucide/svelte';
+	import { ChevronLeftIcon, ChevronRightIcon, Clock3Icon, Undo2Icon } from '@lucide/svelte';
 	import { format } from 'date-fns';
 	import { _ } from 'svelte-i18n';
 
-	let { date = $bindable(), view = $bindable() } = $props();
+	let { date = $bindable(), view } = $props();
 
 	let days = $_('Days').split('|');
 	let months = $_('Months').split('|');
 	let start = 0; // first day of the week (0 = Sunday, 1 = Monday)
 
+	let localDate = $state(new SvelteDate(date));
 	let offset = $state(0); // offset in months from currently selected date
-	let dateStr = $derived(getDateStr(date));
+	let dateStr = $derived(getDateStr(localDate));
 	let selected: string = $derived(dateStr);
-	let timeStr: string = $derived(getTimeStr(date));
+	let timeStr: string = $derived(getTimeStr(localDate));
 	let viewDate = $derived(viewDateFrom(dateStr, offset));
 	let month = $derived(months[viewDate.getMonth()]);
 	let year = $derived(viewDate.getFullYear());
@@ -38,10 +39,14 @@
 		offset = offset + direction;
 	}
 
+	function updateDate(newDate: SvelteDate) {
+		date = newDate;
+	}
+
 	function reset() {
-		date = new SvelteDate();
-		dateStr = getDateStr(date);
-		timeStr = getTimeStr(date);
+		localDate = new SvelteDate();
+		dateStr = getDateStr(localDate);
+		timeStr = getTimeStr(localDate);
 		offset = 0;
 		selected = dateStr;
 	}
@@ -49,7 +54,8 @@
 	function selectDate(newDateStr: string) {
 		selected = newDateStr;
 		dateStr = newDateStr;
-		date = new SvelteDate(dateStr + " " + timeStr);
+		localDate = new SvelteDate(dateStr + " " + timeStr);
+		updateDate(localDate);
 		offset = 0;
 	}
 
@@ -101,15 +107,15 @@
 </script>
 
 <div class="flex flex-col justify-center items-center">
-	<p class="text-xl mb-1">{format(date, 'PPP')}</p>
+	<p class="text-xl mb-1">{format(localDate, 'PPP')}</p>
 	<div class="card m-0 flex rounded-lg border border-white/5 hover:border-white/10
 							bg-surface-50-950 px-2 py-2 hover:border-white/10" style="width: {calenderHeight}px; height: {calenderHeight}px;">
 		<div class="grid grid-cols-7 gap-0">
-			<div class="btn-icon {cw} justify-start m-auto" onclick={() => setMonth(-1)}><ChevronLeft size="26"/></div>
-			<div class="btn-icon {cw} justify-start m-auto dark:text-primary-500 text-primary-700" onclick={() => reset()}><Undo2/></div>
+			<div class="btn-icon {cw} justify-start m-auto" onclick={() => setMonth(-1)}><ChevronLeftIcon size="26"/></div>
+			<div class="btn-icon {cw} justify-start m-auto dark:text-primary-500 text-primary-700" onclick={() => reset()}><Undo2Icon/></div>
 			<div class="btn col-span-3 {ts}">{month} {year}</div>
 			<div></div>
-			<div class="btn-icon {cw} justify-start start m-auto" onclick={() => setMonth(+1)}><ChevronRight size="26"/></div>
+			<div class="btn-icon {cw} justify-start start m-auto" onclick={() => setMonth(+1)}><ChevronRightIcon size="26"/></div>
 			{#each days as day}
 				<div class="text-center {ts}">{day}</div>
 			{/each}

@@ -3,7 +3,7 @@
 	import { loxiconsPath } from '$lib/helpers/paths';
 	import LbIcon from '$lib/components/Common/LbIconByName.svelte';
 	import { goto } from "$app/navigation";
-	import { GripVertical } from '@lucide/svelte';
+	import { GripVerticalIcon } from '@lucide/svelte';
 	import { store } from '$lib/stores/Store.svelte';
 
 	let { key, item, isFavorite } : { key: string, item: Room | Category, isFavorite: boolean } = $props();
@@ -12,21 +12,21 @@
 </script>
 
 <div role="button" tabindex="0" class="card m-0 flex min-h-[70px] shadow-sm items-center justify-start rounded-lg border border-white/5
-										bg-surface-100-900 px-2 py-2 hover:border-white/10 relative" onclick={() => goto(key + '/' + item.uuid)} >
-		{#if store.dnd.isEnabled}
-			<div class="absolute right-1 text-surface-500">
-				<GripVertical/>
-			</div>
-		{/if}
-		<div class="w-full flex {isFavorite ? 'flex-col mt-1' : 'flex-row'}">
-			<div class="flex justify-center">
-				<div class="relative inline-flex items-center justify-center w-12 h-12 min-w-12 overflow-hidden 
+										bg-surface-100-900 px-2 py-2 hover:border-white/10 relative" onclick={() => goto(key + '/' + item.uuid)}>
+	{#if store.dnd.isEnabled}
+		<div class="absolute right-1 text-surface-500">
+			<GripVerticalIcon/>
+		</div>
+	{/if}
+	<div class="w-full flex {isFavorite ? 'flex-col mt-1' : 'flex-row'}">
+		<div class="flex justify-center">
+			<div class="relative inline-flex items-center justify-center w-12 h-12 min-w-12 overflow-hidden 
 								rounded-full border border-white/10 dark:bg-surface-950 bg-surface-50">
-					<LbIcon class={color} name={loxiconsPath + item.image} width="24" height="24"/>
-				</div>
-			</div>
-			<div class="mt-0 {isFavorite ? 'ml-1' : 'ml-3'} flex justify-center items-center">
-				<p class="truncate text-lg">{item.name}</p>
+				<LbIcon class={color} name={loxiconsPath + item.image} width="24" height="24"/>
 			</div>
 		</div>
+		<div class="mt-0 {isFavorite ? 'ml-1' : 'ml-3'} flex justify-center items-center">
+			<p class="truncate text-lg">{item.name}</p>
+		</div>
+	</div>
 </div>

@@ -5,7 +5,7 @@ import type { Structure, Control, Category, Room, SystemStatus, Route, ModalView
 import { utils } from '$lib/helpers/Utils';
 import { lbControl } from '$lib/helpers/LbControl';
 import { loxiconsPath } from '$lib/helpers/paths';
-import { Menu } from '@lucide/svelte';
+import { MenuIcon } from '@lucide/svelte';
 
 /**
  * App store to maintain state
@@ -13,7 +13,7 @@ import { Menu } from '@lucide/svelte';
 class Store {
 	appId: string = $state('');
 	controlState: SvelteMap<string, any> = new SvelteMap();
-	nav: Route = $state({ label: 'Menu', href: '/menu', icon: Menu });
+	nav: Route = $state({ label: 'Menu', href: '/menu', icon: MenuIcon });
 	structure: Structure = $state(INITIAL_STRUCTURE);
 	controls: ControlsMap = $derived(this.structure.controls);
 	rooms: RoomsMap = $derived(this.structure.rooms);

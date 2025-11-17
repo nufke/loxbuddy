@@ -4,12 +4,11 @@
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import LbControl from '$lib/components/Common/LbControl.svelte';
 	import { Switch } from '@skeletonlabs/skeleton-svelte';
-	import { X, Trash2 } from '@lucide/svelte';
+	import { XIcon, Trash2Icon } from '@lucide/svelte';
 	import { store } from '$lib/stores/Store.svelte';
 	import { _ } from 'svelte-i18n';
 	import { format } from 'date-fns';
-	import { Modal } from '@skeletonlabs/skeleton-svelte';
-	import { fade200 } from '$lib/helpers/transition';
+	import { Dialog, Portal } from '@skeletonlabs/skeleton-svelte';
 	import LbInPlaceEdit from '$lib/helpers/in-place-ediit.svelte';
 	import LbDateTimePickerModal from '$lib/components/Common/LbDateTimePickerModal.svelte';
 	import LbAlarmClockDayPickerModal from '$lib/components/AlarmClock/LbAlarmClockDayPickerModal.svelte';
@@ -20,18 +19,11 @@
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
-	let entryObj = $derived(store.getState(control.states.entryList) as AlarmClockEntries);
-	let entryIds = $derived(entryObj ? Object.keys(entryObj).map(n => Number(n)) : []);
-	let entryList = $derived(entryObj ? Object.values(entryObj) : []);
-	let prevEntryListLength: number = $state(0);
-	let alarms = $derived(entryObj ? Object.values(entryObj).filter( entry => entry.isActive) : []);
-	let nextEntryTime = $derived(Number(store.getState(control.states.nextEntryTime)) || 0);
-	let selectedEntry = $state(0);
-
 	let viewport: any = $state(); // TODO make HTMLDivElement
-	let modalViewport: any = $state(); // TODO make HTMLDivElement
-	let windowHeight = $derived(innerHeight.current || 0);
-	let limitHeight = $state(false); 
+	let hasScroll = $state(true);
+	let showScrollTop = $state(false);
+	let showScrollBottom = $state(true);
+	let selectedEntry = $state(0);
 
 	let dateTimeView = $state({
 		isDateView: false,
@@ -45,6 +37,18 @@
 		state: false
 	});
 
+	let entryObj = $derived(store.getState(control.states.entryList) as AlarmClockEntries);
+	let entryIds = $derived(entryObj ? Object.keys(entryObj).map(n => Number(n)) : []);
+	let entryList = $derived(entryObj ? Object.values(entryObj) : []);
+	let prevEntryListLength: number = $state(0);
+	let alarms = $derived(entryObj ? Object.values(entryObj).filter( entry => entry.isActive) : []);
+	let nextEntryTime = $derived(Number(store.getState(control.states.nextEntryTime)) || 0);
+	let windowHeight = $derived(innerHeight.current || 0);
+
+	let margin = 200;
+	let	size = $derived(windowHeight * 0.9 - viewport?.clientHeight - margin);
+	let style = $derived(size > 0 && viewport?.clientHeight == viewport?.scrollHeight ? 'height: 100%' : 'height: ' + (viewport?.clientHeight + size) + 'px');
+
 	let controlView: ControlView = $derived({
 		...DEFAULT_CONTROLVIEW,
 		control: control,
@@ -56,6 +60,19 @@
 		statusColor: alarms.length ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700',
 		modal: modal
 	});
+
+
+	function parseScroll(height: number, view: any = undefined) {
+		if (!view) return;
+		hasScroll = view.scrollHeight > view.clientHeight;
+		showScrollTop = height > 0 && hasScroll && (view?.scrollTop > 10);
+		showScrollBottom = height > 0 && hasScroll && (view.scrollTop + view.clientHeight < (view.scrollHeight - 10));
+	}
+
+	function updateSize() {
+		size = (windowHeight * 0.9 - viewport?.clientHeight - margin);
+		style = size > 0 && viewport?.clientHeight == viewport?.scrollHeight ? 'height: 100%' : 'height: ' + (viewport?.clientHeight + size) + 'px';
+	}
 
 	function newId() {
 		let max = entryIds.length ? Math.max(...entryIds) : 1;
@@ -142,104 +159,91 @@
 	}
 
 	$effect( () => {
-		if (entryList) { /* to trigger the scroll, we need to be sensitive to the entryList */
+		if (entryList.length) { /* to trigger the scroll, we need to be sensitive to the entryList */
 			tick().then( () => {
 				if ( viewport && prevEntryListLength != entryIds.length ) {
 					viewport.scroll({ top: viewport.scrollHeight, behavior: 'smooth' });
-					tick().then( () => {
-						limitHeight = (windowHeight * 0.9 - modalViewport.getBoundingClientRect().bottom - 10) < 0;
-					});
 					prevEntryListLength = entryIds.length;
+				 	updateSize();
 				}
 			});
 		}
 	});
 
-	$effect( () => {
-		if (windowHeight && modalViewport) { /* trigger on windowHeight change */
-			limitHeight = false;
-			tick().then( () => {
-				limitHeight = (windowHeight * 0.9 - modalViewport.getBoundingClientRect().bottom - 10) < 0;
-			});
-		}
-	});
-
-	$effect( () => {
-		if (prevEntryListLength > entryIds.length) { /* trigger when list gets shorter */
-			limitHeight = false;
-			tick().then( () => {
-				limitHeight = (windowHeight * 0.9 - modalViewport.getBoundingClientRect().bottom - 10) < 0;
-			});
-		}
+	$effect( () => { // check scroll status and window change and viewwport construction
+		parseScroll(windowHeight, viewport);
 	});
 </script>
 
 <div>
 	<LbControl bind:controlView {controlOptions}/>
-	<Modal
-		open={controlView.modal.state}
-		transitionsBackdropIn = {fade200}
-		transitionsBackdropOut = {fade200}
-		transitionsPositionerIn = {fade200}
-		transitionsPositionerOut = {fade200}
-		onOpenChange={()=>{}}
-		triggerBase="btn bg-surface-600"
-		contentBase="card bg-surface-100-900 p-4 shadow-sm rounded-lg border border-white/5 hover:border-white/10
-								md:max-w-9/10 md:max-h-9/10 w-[380px] { limitHeight ? 'h-full': '' }"
-		backdropClasses="backdrop-blur-sm"
-		backdropBackground="">
-		{#snippet content()}
-		<!-- TODO better method to create multiple modal overlays with backdrop? -->
-		<div class="fixed w-full h-full top-0 left-0 right-0 bottom-0 -z-10 bg-surface-50/75 dark:bg-surface-950/75" onclick={close}></div> 
-		<Info control={controlView.control}/>
-		<header class="relative" >
-			<div class="absolute top-0 right-0">
-				<button type="button" aria-label="close" class="btn-icon w-auto" onclick={close}>
-					<X />
-				</button>
-			</div>
-		</header>
-		<div bind:this={modalViewport} class="flex flex-col items-center justify-center h-full">
-			<p class="h5 text-center items-center justify-center w-[80%]">{controlView.textName}</p>
-		<div bind:this={viewport} class="container mt-2 overflow-y-auto w-full">
-			{#each entryList as entry, i}
-				<div class="mt-2 p-4 dark:bg-surface-950 bg-surface-50 rounded-lg">
-					<div class="flex w-full m-auto h-[72px] justify-between">
-						<div>
-							<h1 class="text-lg truncate">
-								<LbInPlaceEdit value={entry.name} onValueChange={(e:any)=>{updateName(i, e)}}/>
-							</h1>
-							<button class="text-3xl {entry.isActive ? 'dark:text-surface-50 text-surface-950' : 'dark:text-surface-700 text-surface-300'}"
-										onclick={() => {selectedEntry = i; dateTimeView.openModal=true;}}>
-								<h1>{utils.dec2hours(entry.alarmTime)}</h1>
-						</button>
-						</div>
-						<div onclick={(e) => {e.stopPropagation(); }}> <!-- workaround wrapper to stop propagation for switch -->
-							<Switch controlClasses="w-12 h-8" name="slide" controlActive="dark:bg-primary-500 bg-primary-700"
-											controlInactive="preset-filled-surface-300-700" thumbInactive="bg-white" 
-											checked={entry.isActive} onCheckedChange={(e) => {updateIsActive(i, e)}} />
-						</div>
-					</div>
-					<div class="flex w-full m-auto justify-between">
-						<LbAlarmClockDayPickerModal {entry} label={$_("Alarm")} onValueChange={(e:any)=>{updateSettings(i, e)}}/>
-						{#if i > 0}
-						<button type="button" class="dark:text-surface-300 text-surface-700" aria-label="delete" onclick={() =>deleteEntry(i)}>
-							<Trash2/>
-						</button>
-						{/if}
-					</div>
-				</div>
-			{/each}
-		</div>
-		<footer class="mt-2 container w-full">
-			<button type="button" class="w-full btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50
-				 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
-					onclick={addEntry}>
-				<span class="text-lg {entryIds.length > 15 ? 'dark:text-surface-800 text-surface-200' : ''}">{$_("Add new alarm time")}</span>
-			</button>
-		</footer>
-		</div>
-		{/snippet}
-	</Modal>
+	{#if controlView.modal.state} <!-- only construct dialog when opened, important to get current clientHeight -->
+		<Dialog
+			open={controlView.modal.state}
+			onInteractOutside={close}>
+			<Portal>
+				<Dialog.Backdrop class="fixed inset-0 z-10 bg-surface-50-950/75 backdrop-blur-sm" />
+				<Dialog.Positioner class="fixed inset-0 z-10 flex justify-center items-center p-4">
+					<Dialog.Content class="card bg-surface-100-900 p-4 pt-3 shadow-sm rounded-lg border border-white/5 hover:border-white/10
+										md:max-w-9/10 md:max-h-9/10 w-[450px]">
+						<!--<Info control={controlView.control}/>-->
+						<header class="grid grid-cols-[5%_90%_5%]">
+							<div class="flex justify-center items-center"></div><!-- placeholder for menu -->
+							<div>
+								<Dialog.Title class="h5 flex justify-center items-center">{controlView.textName}</Dialog.Title>
+							</div>
+							<div class="flex justify-center items-center">
+								<button type="button" class="btn-icon hover:preset-tonal" onclick={close}>
+									<XIcon class="size-4" />
+								</button>
+							</div>
+						</header>
+						<Dialog.Description>
+							<div class="mt-2 overflow-y-auto w-full" {style} bind:this={viewport}>
+								{#each entryList as entry, i}
+									<div class="mt-2 p-4 dark:bg-surface-950 bg-surface-50 rounded-lg">
+										<div class="flex w-full m-auto h-[72px] justify-between">
+											<div>
+												<h1 class="text-lg truncate">
+													<LbInPlaceEdit value={entry.name} onValueChange={(e:any)=>{updateName(i, e)}}/>
+												</h1>
+												<button class="text-3xl {entry.isActive ? 'dark:text-surface-50 text-surface-950' : 'dark:text-surface-700 text-surface-300'}"
+															onclick={() => {selectedEntry = i; dateTimeView.openModal=true;}}>
+													<h1>{utils.dec2hours(entry.alarmTime)}</h1>
+											</button>
+											</div>
+											<div onclick={(e) => {e.stopPropagation(); }}> <!-- workaround wrapper to stop propagation for switch -->
+												<Switch checked={entry.isActive} onCheckedChange={(e) => {updateIsActive(i, e)}}>
+													<Switch.Control class="w-12 h-8 data-[state=checked]:preset-filled-primary-500">
+														<Switch.Thumb />
+													</Switch.Control>
+													<Switch.HiddenInput />
+												</Switch>
+											</div>
+										</div>
+										<div class="flex w-full m-auto justify-between">
+											<LbAlarmClockDayPickerModal {entry} label={$_("Alarm")} onValueChange={(e:any)=>{updateSettings(i, e)}}/>
+											{#if i > 0}
+											<button type="button" class="dark:text-surface-300 text-surface-700" aria-label="delete" onclick={() => { deleteEntry(i);}}>
+												<Trash2Icon/>
+											</button>
+											{/if}
+										</div>
+									</div>
+								{/each}
+							</div>
+							<footer class="mt-2 container w-full">
+								<button type="button" class="w-full btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50
+									shadow-sm rounded-lg border border-white/15 hover:border-white/50"
+										onclick={addEntry}>
+									<span class="text-lg {entryIds.length > 15 ? 'dark:text-surface-800 text-surface-200' : ''}">{$_("Add new alarm time")}</span>
+								</button>
+							</footer>
+						</Dialog.Description>
+					</Dialog.Content>
+				</Dialog.Positioner>
+			</Portal>
+		</Dialog>
+	{/if}
 	<LbDateTimePickerModal date={getTimerDate()} bind:view={dateTimeView} onValueChange={(e:any)=>{ updateAlarmTime(e)}}/>
 </div>

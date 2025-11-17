@@ -4,26 +4,29 @@
 	import type { Control, ControlOptions, ControlView, ModalView, LightItem, MoodList } from '$lib/types/models';
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import { store } from '$lib/stores/Store.svelte';
-	import { Modal } from '@skeletonlabs/skeleton-svelte';
-	import { X, ChevronUp, ChevronDown } from '@lucide/svelte';
+	import { Dialog, Portal } from '@skeletonlabs/skeleton-svelte';
+	import { XIcon, ChevronUpIcon, ChevronDownIcon } from '@lucide/svelte';
 	import { _ } from 'svelte-i18n';
 	import { fade } from 'svelte/transition';
 	import { loxWsClient } from '$lib/communication/LoxWsClient';
 	import fmt from 'sprintf-js';
-	import { fade200 } from '$lib/helpers/transition';
 	import Info from '$lib/components/Common/LbInfo.svelte';
 	import { innerHeight } from 'svelte/reactivity/window';
-	import { tick } from 'svelte';
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
 	let selectedControl: Control | undefined= $state();
 	let selectedControlOptions: ControlOptions | undefined = $state();
-
 	let lightList = control.details.controls as LightItem[];
 	lightList.forEach( item => item.selected = false ); // default all lights unselected
-
 	let lightsUuid = control.details.controls.map((item: LightItem) => item.uuid);
+
+	let scenesEnabled = $state(false);
+	let viewport: any = $state(); // TODO make HTMLDivElement
+	let hasScroll = $state(true);
+	let showScrollTop = $state(false);
+	let showScrollBottom = $state(false);
+
 	let lightControls = $derived(store.controlList.filter(
 		(controls: Control) => lightsUuid.indexOf(controls.uuidAction) > -1
 	));
@@ -35,35 +38,21 @@
 	let lightsOn = $derived(lightList.length - lightsOff.length);
 	let selectedLightCount = $derived(lightList.filter( item => item.selected == true).length);
 
-	let scenesEnabled = $state(false);
-
-	let viewport: any = $state(); // TODO make HTMLDivElement
-	let hasScroll = $state(true);
-	let showScrollTop = $state(false);
-	let showScrollBottom = $state(true);
-
-	let modalViewport: any = $state(); // TODO make HTMLDivElement
 	let windowHeight = $derived(innerHeight.current || 0);
-	let limitHeight = $state(false); 
+	let margin = 200;
+	let size = $derived(windowHeight * 0.9 - viewport?.clientHeight - margin || 0);
+	let style = $derived(size > 0 && viewport?.clientHeight == viewport?.scrollHeight ? 'height: 100%' : 'height: ' + (viewport?.clientHeight + size) + 'px');
 
-	function parseScroll() {
-		hasScroll = viewport?.scrollHeight > viewport?.clientHeight;
-		showScrollTop = limitHeight && hasScroll && (viewport?.scrollTop > 10);
-		showScrollBottom = limitHeight && hasScroll && (viewport.scrollTop + viewport?.clientHeight < (viewport?.scrollHeight - 10));
+	$effect( () => { // check scroll status and window change and viewwport construction
+		parseScroll(windowHeight, viewport);
+	});
+
+	function parseScroll(height: number, view: any = undefined) {
+		if (!view) return;
+		hasScroll = view.scrollHeight > view.clientHeight;
+		showScrollTop = height > 0 && hasScroll && (view?.scrollTop > 10);
+		showScrollBottom = height > 0 && hasScroll && (view.scrollTop + view.clientHeight < (view.scrollHeight - 10));
 	}
-
-	$effect( () => {
-		parseScroll();
-	});
-
-	$effect( () => {
-		if (windowHeight && modalViewport) { /* trigger on windowHeight change */
-			limitHeight = false;
-			tick().then( () => {
-				limitHeight = (windowHeight * 0.9 - modalViewport.getBoundingClientRect().bottom - 10) < 0;
-			});
-		}
-	});
 
 	function getActiveLights() {
 		let status = '';
@@ -169,69 +158,72 @@
 
 <div>
 	<LbControl bind:controlView {controlOptions}/>
-	<Modal
-		open={controlView.modal.state}
-		transitionsBackdropIn = {fade200}
-		transitionsBackdropOut = {fade200}
-		transitionsPositionerIn = {fade200}
-		transitionsPositionerOut = {fade200}
-		onOpenChange={()=>{}}
-		triggerBase="btn bg-surface-600"
-		contentBase="card bg-surface-100-900 p-4 shadow-sm rounded-lg border border-white/5 hover:border-white/10
-									md:max-w-9/10 md:max-h-9/10 w-[450px] { limitHeight ? 'h-full': '' }"
-		backdropClasses="backdrop-blur-sm"
-		backdropBackground="">
-		{#snippet content()}
-		<!-- TODO better method to create multiple modal overlays with backdrop? -->
-		<div class="fixed w-full h-full top-0 left-0 right-0 bottom-0 -z-10 bg-surface-50/75 dark:bg-surface-950/75" onclick={close}></div> 
-		<Info control={controlView.control}/>
-		<header class="relative">
-			<div class="absolute top-0 right-0">
-				<button type="button" aria-label="close" class="btn-icon w-auto" onclick={close}>
-					<X />
-				</button>
-			</div>
-		</header>
-		<div bind:this={modalViewport} class="flex flex-col items-center justify-center h-full">
-			<p class="h5 text-center items-center justify-center w-[80%]">{controlView.textName}</p>
-			<p class="mt-2 mb-4 text-lg text-center {lightsOn ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700'}">{getActiveLights()}</p>
-			<div class="container grid grid-cols-3 gap-2 mb-2">
-				<button type="button" class="w-full btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50 shadow-sm text-surface-950-50
-																			rounded-lg border border-white/15 hover:border-white/50" onclick={() => changeLight('On')}>{$_('On')}</button>
-				<button type="button" class="w-full btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50 shadow-sm text-surface-950-50
-																			rounded-lg border border-white/15 hover:border-white/50" onclick={() => changeLight('Off')}>{$_('Off')}</button>
-				<button type="button" class="w-full btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50 shadow-sm {scenesEnabled ? 'text-surface-800-200' : 'text-surface-200-800'}
-																			rounded-lg border border-white/15 hover:border-white/50" onclick={() => selectScenes()}>{$_('Scenes')}</button>
-			</div>
-			<div class="relative flex flex-col overflow-y-auto w-full h-full">
-				{#if showScrollTop}
-					<div class="absolute z-10 left-[50%] lb-center top-[10px] text-surface-500" transition:fade={{ duration: 300 }}><ChevronUp size="30"/></div>
-				{/if}
-				{#if showScrollBottom}
-					<div class="absolute z-10 left-[50%] lb-center -bottom-[19px] text-surface-500" transition:fade={{ duration: 300 }}><ChevronDown size="30"/></div>
-				{/if}
-				<div class="flex flex-col space-y-2 overflow-y-auto" bind:this={viewport} onscroll={parseScroll}>
-					{#each lightControls as control}
-						<button class="w-full flex h-[60px] items-center justify-start rounded-lg border border-white/15 hover:border-white/50
-													{isSelected(control) ? 'dark:bg-surface-800 bg-surface-200' : 'dark:bg-surface-950 bg-surface-50'} px-2 py-2"
-													onclick={() => selectLight(control)}>
-							<div class="flex items-center truncate w-full">
-								<div class="mt-0 ml-2 mr-2 flex flex-row w-full justify-between truncate items-center h-[60px]">
-									<div class="flex flex-col">
-										<p class="leading-6 truncate text-lg {getStatusColor(control)}">{getControlName(control)}</p>
-										<p class="truncate bg-transparent text-left text-xs dark:text-surface-300 text-surface-700">{getRoomName(control)}</p>
-									</div>
-									<p class="text-lg {getStatusColor(control)}">{getStatusName(control)}</p>
+	{#if controlView.modal.state} <!-- only construct dialog when opened, important to get current clientHeight -->
+		<Dialog
+			open={controlView.modal.state}
+			onInteractOutside={close}>
+			<Portal >
+				<Dialog.Backdrop class="fixed inset-0 z-10 bg-surface-50-950/75 backdrop-blur-sm" />
+				<Dialog.Positioner class="fixed inset-0 z-10 flex justify-center items-center p-4" >
+					<Dialog.Content class="card bg-surface-100-900 p-4 pt-3 shadow-sm rounded-lg border border-white/5 hover:border-white/10
+										md:max-w-9/10 md:max-h-9/10 w-[450px]">
+						<!--<Info control={controlView.control}/>-->
+						<header>
+							<div class="grid grid-cols-[5%_90%_5%]">
+								<div class="flex justify-center items-center"></div><!-- placeholder for menu -->
+								<div>
+									<p class="h5 flex justify-center items-center">{controlView.textName}</p>
+								</div>
+								<div class="flex justify-center items-center">
+									<button type="button" class="btn-icon hover:preset-tonal" onclick={close}>
+										<XIcon class="size-4" />
+									</button>
 								</div>
 							</div>
-						</button>
-					{/each}
-				</div>
-			</div>
-		</div>
-		{/snippet}
-	</Modal>
-
+							<p class="text-lg text-center {lightsOn ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700'}">{getActiveLights()}</p>
+							<div class="grid grid-cols-3 gap-2 mt-2 mb-2">
+								<button type="button" class="w-full btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50 shadow-sm text-surface-950-50
+																			rounded-lg border border-white/15 hover:border-white/50" onclick={() => changeLight('On')}>{$_('On')}</button>
+								<button type="button" class="w-full btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50 shadow-sm text-surface-950-50
+																			rounded-lg border border-white/15 hover:border-white/50" onclick={() => changeLight('Off')}>{$_('Off')}</button>
+								<button type="button" class="w-full btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50 shadow-sm {scenesEnabled ? 'text-surface-800-200' : 'text-surface-200-800'}
+																			rounded-lg border border-white/15 hover:border-white/50" onclick={() => selectScenes()}>{$_('Scenes')}</button>
+							</div>
+						</header>
+						<Dialog.Description>
+							<div class="relative flex flex-col items-center justify-center">
+								<div class="flex flex-col w-full">
+									{#if showScrollTop}
+										<div class="absolute z-10 left-[50%] lb-center top-[10px] text-surface-500" transition:fade={{ duration: 300 }}><ChevronUpIcon size="30"/></div>
+									{/if}
+									{#if showScrollBottom}
+										<div class="absolute z-10 left-[50%] lb-center -bottom-[19px] text-surface-500" transition:fade={{ duration: 300 }}><ChevronDownIcon size="30"/></div>
+									{/if}
+									<div class="flex flex-col space-y-2 overflow-y-auto h-[50%]" {style} bind:this={viewport} onscroll={() => parseScroll(windowHeight, viewport)}>
+										{#each lightControls as control}
+											<button class="w-full flex h-[60px] items-center justify-start rounded-lg border border-white/15 hover:border-white/50
+														{isSelected(control) ? 'dark:bg-surface-800 bg-surface-200' : 'dark:bg-surface-950 bg-surface-50'} px-2 py-2"
+														onclick={() => selectLight(control)}>
+												<div class="flex items-center truncate w-full">
+													<div class="mt-0 ml-2 mr-2 flex flex-row w-full justify-between truncate items-center h-[60px]">
+														<div class="flex flex-col">
+															<p class="leading-6 truncate text-lg {getStatusColor(control)}">{getControlName(control)}</p>
+															<p class="truncate bg-transparent text-left text-xs dark:text-surface-300 text-surface-700">{getRoomName(control)}</p>
+														</div>
+														<p class="text-lg {getStatusColor(control)}">{getStatusName(control)}</p>
+													</div>
+												</div>
+											</button>
+										{/each}
+									</div>
+								</div>
+							</div>
+						</Dialog.Description>
+					</Dialog.Content>
+				</Dialog.Positioner>
+			</Portal>
+		</Dialog>
+	{/if}
 	{#if selectedControl && selectedControlOptions }
 		{#key selectedControlOptions} <!-- reinit component -->
 			<LbLightControllerV2 control={selectedControl} controlOptions={selectedControlOptions}/>

@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { _ } from 'svelte-i18n';
 	import { store } from '$lib/stores/Store.svelte';
-	import { ArrowLeft, TriangleAlert } from '@lucide/svelte';
+	import { ArrowLeftIcon, TriangleAlertIcon } from '@lucide/svelte';
 
 	let version = '0.0.1'; // TODO get version from package
-	store.setNav({ label: 'ArrowLeft', href: '/', icon: ArrowLeft });
+	store.setNav({ label: 'ArrowLeft', href: '/', icon: ArrowLeftIcon });
 </script>
 
 <div class="container flex justify-center items-center h-full mx-auto max-w-[1280px] p-2">
@@ -17,7 +17,7 @@
 		<a class="mt-2 text-md text-primary-500" href="https://github.com/nufke/loxbuddy" target="_blank">{$_("Visit")} GitHub</a>
 		<p class="mt-2 text-xs dark:text-surface-300 text-surface-700 mt-10 mb-5">Interested in supporting the development of this App?</p> 
 		<a href="https://www.buymeacoffee.com/nufke" target="_blank"><img src="/icons/svg/bmc.svg" alt="Buy Me A Coffee"></a>
-		<span class="mt-10 text-orange-500 "><TriangleAlert size="40"/></span>
+		<span class="mt-10 text-orange-500 "><TriangleAlertIcon size="40"/></span>
 		<p class="mt-2 text-md max-w-[600px] text-orange-500 font-medium">{$_("Warning_message")}</p>
 		<p class="mt-4 text-xs dark:text-surface-300 text-surface-700">App ID: {store.appId}</p>
 	</div>

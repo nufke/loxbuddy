@@ -1,16 +1,15 @@
 <script lang="ts">
 	import LbControl from '$lib/components/Common/LbControl.svelte';
-	import { Modal } from '@skeletonlabs/skeleton-svelte';
+	import { Dialog, Portal } from '@skeletonlabs/skeleton-svelte';
 	import { SvelteDate } from 'svelte/reactivity';
-	import { Toaster, createToaster } from '@skeletonlabs/skeleton-svelte';
+	import { Toast, createToaster } from '@skeletonlabs/skeleton-svelte';
 	import type { Control, ControlOptions, ControlView, ModalView, EntriesAndDefaultValue, WeekDays } from '$lib/types/models';
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import LbTimeGrid from '$lib/components/Common/LbTimeGrid.svelte';
 	import LbDateTimePickerModal from '$lib/components/Common/LbDateTimePickerModal.svelte';
 	import LbCalendarModal from '$lib/components/Common/LbCalendarModal.svelte';
 	import { store } from '$lib/stores/Store.svelte';
-	import { fade200 } from '$lib/helpers/transition';
-	import { X, Timer } from '@lucide/svelte';
+	import { XIcon, TimerIcon } from '@lucide/svelte';
 	import fmt from 'sprintf-js';
 	import { _ } from 'svelte-i18n';
 	import { format, isAfter, isBefore, setHours, setMinutes, setSeconds } from 'date-fns';
@@ -149,73 +148,87 @@
 
 <div>
 	<LbControl bind:controlView {controlOptions}/>
-	<Modal
-		open={controlView.modal.state}
-		transitionsBackdropIn = {fade200}
-		transitionsBackdropOut = {fade200}
-		transitionsPositionerIn = {fade200}
-		transitionsPositionerOut = {fade200}
-		onOpenChange={()=>{}}
-		triggerBase="btn bg-surface-600"
-		contentBase="card bg-surface-100-900 p-4 shadow-sm rounded-lg border border-white/5 hover:border-white/10
-								md:max-w-9/10 md:max-h-9/10 w-[450px]"
-		backdropClasses="backdrop-blur-sm"
-		backdropBackground="">
-		{#snippet content()}
-		<!-- TODO better method to create multiple modal overlays with backdrop? -->
-		<div class="fixed w-full h-full top-0 left-0 right-0 bottom-0 -z-10 bg-surface-50/75 dark:bg-surface-950/75" onclick={close}></div> 
-		<Info control={controlView.control}/>
-		<header class="relative">
-			<div class="absolute top-0 right-0">
-				<button type="button" aria-label="close" class="btn-icon w-auto" onclick={close}>
-					<X />
-				</button>
-			</div>
-		</header>
-		<div class="flex flex-col items-center justify-center">
-			<p class="h5 text-center items-center justify-center w-[80%]">{controlView.textName}</p>
-			<p class="text-lg mt-2 text-center {(value > 0 ) ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700'}">
-				{status + getDuration()}
-			</p>
-			{#if override > 0}
-				<div class="flex flex-row items-center justify-center">
-					<span class="dark:text-purple-400 text-purple-800"><Timer size="16"/></span>
-					<p class="ml-1 text-lg text-center dark:text-purple-400 text-purple-800">{$_("Timer is running")}</p>
-				</div>
-			{/if}
-			<div class="w-full m-2 dark:bg-surface-950 bg-surface-50 rounded-lg border border-white/15 hover:border-white/50"
-						onclick={(e) => { e.stopPropagation(); e.preventDefault(); calendarView.openModal=true;}}>
-				<LbTimeGrid {mode} {entries} {overrideDate} {override}/>
-				<h2 class="m-2 text-md text-center dark:text-surface-50 text-surface-950">{dayOfTheWeek}</h2>
-			</div>
-		</div>
-		<div class="flex flex-col items-center justify-center">
-			<div class="flex w-full btn-group dark:bg-surface-950 bg-surface-50 rounded-lg grid-cols-2 p-2 flex-row border border-white/15 hover:border-white/50">
-				<button type="button" class="w-full h-9 rounded-sm {outputActive ? 'dark:bg-surface-600 bg-surface-200' : ''}" onclick={() => outputActive=true}>
-					<p class="text-lg">{$_("Active")}</p>
-				</button>
-				<button type="button" class="w-full h-9 rounded-sm {!outputActive ? 'dark:bg-surface-600 bg-surface-200' : ''}" onclick={() => outputActive=false}>
-					<p class="text-lg">{$_("Inactive")}</p>
-				</button>
-			</div>
-			<button class="w-full m-0 mt-2 flex min-h-[50px] items-center justify-start rounded-lg border border-white/15 hover:border-white/50
-								dark:bg-surface-950 bg-surface-50 px-2 py-2"
-								onclick={(e) => { e.stopPropagation(); e.preventDefault(); dateTimeView.openModal=true;}}>
-				<div class="w-full flex items-center truncate">
-					<div class="mt-0 ml-2 mr-2 flex w-full justify-between truncate">
-						<p class="truncate text-lg">{$_("Duration")}</p>
-						<p class="text-lg">{format(overrideDate.end, 'd MMMM p')}</p>
-					</div>
-				</div>
-			</button>
-			<button type="button" class="w-full mt-2 btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50" 
-							onclick={(e) => {e.stopPropagation(); e.preventDefault(); startStopTimer()}}>
-				<span class="text-lg">{$_( (override > 0) ? "Stop" : "Start")} {$_("Timer").toLocaleLowerCase()}</span>
-			</button>
-		</div>
-		{/snippet}
-	</Modal>
+	{#if controlView.modal.state}
+		<Dialog
+			open={controlView.modal.state}
+			onInteractOutside={close}>
+			<Portal>
+				<Dialog.Backdrop class="fixed inset-0 z-10 bg-surface-50-950/75 backdrop-blur-sm" />
+				<Dialog.Positioner class="fixed inset-0 z-0 flex justify-center items-center p-4">
+					<Dialog.Content class="card bg-surface-100-900 p-4 pt-3 shadow-sm rounded-lg border border-white/5 hover:border-white/10
+										md:max-w-9/10 md:max-h-9/10 w-[450px]">
+						<!--<Info control={controlView.control}/>-->
+						<header class="grid grid-cols-[5%_90%_5%]">
+							<div class="flex justify-center items-center"></div><!-- placeholder for menu -->
+							<div>
+								<Dialog.Title class="h5 flex justify-center items-center">{controlView.textName}</Dialog.Title>
+							</div>
+							<div class="flex justify-center items-center">
+								<button type="button" class="btn-icon hover:preset-tonal" onclick={close}>
+									<XIcon class="size-4" />
+								</button>
+							</div>
+						</header>
+						<Dialog.Description>
+							<div class="flex flex-col items-center justify-center">
+								<p class="text-lg mt-2 text-center {(value > 0 ) ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700'}">
+									{status + getDuration()}
+								</p>
+								{#if override > 0}
+									<div class="flex flex-row items-center justify-center">
+										<span class="dark:text-purple-400 text-purple-800"><TimerIcon size="16"/></span>
+										<p class="ml-1 text-lg text-center dark:text-purple-400 text-purple-800">{$_("Timer is running")}</p>
+									</div>
+								{/if}
+								<div class="w-full m-2 dark:bg-surface-950 bg-surface-50 rounded-lg border border-white/15 hover:border-white/50"
+											onclick={(e) => { e.stopPropagation(); e.preventDefault(); calendarView.openModal=true;}}>
+									<LbTimeGrid {mode} {entries} {overrideDate} {override}/>
+									<h2 class="m-2 text-md text-center dark:text-surface-50 text-surface-950">{dayOfTheWeek}</h2>
+								</div>
+							</div>
+							<div class="flex flex-col items-center justify-center">
+								<div class="flex w-full btn-group dark:bg-surface-950 bg-surface-50 rounded-lg grid-cols-2 p-2 flex-row border border-white/15 hover:border-white/50">
+									<button type="button" class="w-full h-9 rounded-sm {outputActive ? 'dark:bg-surface-600 bg-surface-200' : ''}" onclick={() => outputActive=true}>
+										<p class="text-lg">{$_("Active")}</p>
+									</button>
+									<button type="button" class="w-full h-9 rounded-sm {!outputActive ? 'dark:bg-surface-600 bg-surface-200' : ''}" onclick={() => outputActive=false}>
+										<p class="text-lg">{$_("Inactive")}</p>
+									</button>
+								</div>
+								<button class="w-full m-0 mt-2 flex min-h-[50px] items-center justify-start rounded-lg border border-white/15 hover:border-white/50
+													dark:bg-surface-950 bg-surface-50 px-2 py-2"
+													onclick={(e) => { e.stopPropagation(); e.preventDefault(); dateTimeView.openModal=true;}}>
+									<div class="w-full flex items-center truncate">
+										<div class="mt-0 ml-2 mr-2 flex w-full justify-between truncate">
+											<p class="truncate text-lg">{$_("Duration")}</p>
+											<p class="text-lg">{format(overrideDate.end, 'd MMMM p')}</p>
+										</div>
+									</div>
+								</button>
+								<button type="button" class="w-full mt-2 btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50" 
+												onclick={(e) => {e.stopPropagation(); e.preventDefault(); startStopTimer()}}>
+									<span class="text-lg">{$_( (override > 0) ? "Stop" : "Start")} {$_("Timer").toLocaleLowerCase()}</span>
+								</button>
+							</div>
+						</Dialog.Description>
+					</Dialog.Content>
+				</Dialog.Positioner>
+			</Portal>
+		</Dialog>
+	{/if}
+
 	<LbDateTimePickerModal date={overrideDate.end} bind:view={dateTimeView} onValueChange={(e:any)=>{ updateTimer(e)}}/>
-	<Toaster {toaster}></Toaster>
 	<LbCalendarModal bind:view={calendarView} {mode} {dayModes} {entries}/>
+
+	<Toast.Group {toaster}>
+		{#snippet children(toast)}
+			<Toast {toast}>
+				<Toast.Message>
+					<Toast.Title>{toast.title}</Toast.Title>
+					<Toast.Description>{toast.description}</Toast.Description>
+				</Toast.Message>
+				<Toast.CloseTrigger />
+			</Toast>
+		{/snippet}
+	</Toast.Group>
 </div>

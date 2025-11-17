@@ -1,10 +1,9 @@
 <script lang="ts">
-	import { Modal } from '@skeletonlabs/skeleton-svelte';
-	import { fade200 } from '$lib/helpers/transition';
+	import { Dialog, Portal } from '@skeletonlabs/skeleton-svelte';
 	import { _ } from 'svelte-i18n';
 	import { store } from '$lib/stores/Store.svelte';
 	import { tick } from 'svelte';
-	import { X } from '@lucide/svelte';
+	import { XIcon } from '@lucide/svelte';
 
 	let { entry, onValueChange, label } = $props();
 
@@ -57,63 +56,65 @@
 	</div>
 </button>
 
-<Modal
+
+<Dialog
 	open={openModal}
-	transitionsBackdropIn={fade200}
-	transitionsBackdropOut={fade200}
-	transitionsPositionerIn={fade200}
-	transitionsPositionerOut={fade200}
-	onOpenChange={()=>{}}
-	triggerBase="btn bg-surface-600"
-	contentBase="card bg-surface-100-900 p-4 shadow-sm rounded-lg border border-white/5 hover:border-white/10
-							md:max-w-9/10 md:max-h-9/10 overflow-auto w-[340px]"
-	backdropClasses=""
-	backdropBackground="">
-	{#snippet content()}
-		<!-- TODO better method to create multiple modal overlays with backdrop? -->
-		<div class="fixed w-full h-full top-0 left-0 right-0 bottom-0 -z-10 bg-surface-50/75 dark:bg-surface-950/75" onclick={close}></div>
-		<header class="relative">
-			<div class="absolute top-0 right-0">
-				<button type="button" aria-label="close" class="btn-icon w-auto" onclick={close}>
-					<X />
-				</button>
-			</div>
-		</header>
-		<div class="flex flex-col items-center justify-center">
-			<p class="h5 text-center items-center justify-center w-[80%]">{label}</p>
-			{#if setEntry.nightLight}
-				<form class="mt-4 space-y-2">
-				  <label class="flex items-center space-x-2">
-						<input class="radio" type="radio" checked={setEntry.daily} name="daily" onclick={() => {setEntry.daily=true}}/>
-						<p>{$_("Daily")}</p>
-				  </label>
-				  <label class="flex items-center space-x-2">
-						<input class="radio" type="radio" checked={!setEntry.daily} name="once" onclick={() => {setEntry.daily=false}} />
-						<p>{$_("Once")}</p>
-				  </label>
-				</form>
-			{:else}
-				<form class="mt-4 space-y-2">
-					{#each weekDayNrs as i}
-					<label class="flex items-center space-x-2">
-						<input class="checkbox" type="checkbox" checked={setEntry.modes.includes(Number(i))} onclick={() => {setValue(Number(i))}}/>
-						<p>{opModes[i]}</p>
-					</label>
-					{/each}
-				</form>
-			{/if}
-		</div>
-		<div class="mt-6 flex grid grid-cols-2 gap-2">
-			<button type="button"
-				class="btn btn-lg dark:bg-surface-950 bg-surface-50 w-full rounded-lg border border-white/15 shadow-sm hover:border-white/50"
-				onclick={close}>
-				<span class="text-lg">{$_('Cancel')}</span>
-			</button>
-			<button type="button"
-				class="btn btn-lg dark:bg-surface-950 bg-surface-50 w-full rounded-lg border border-white/15 shadow-sm hover:border-white/50"
-				onclick={() => {onValueChange({value: entry.nightLight ? setEntry.daily : setEntry.modes}); close();}}>
-				<span class="text-lg">{$_('OK')}</span>
-			</button>
-		</div>
-	{/snippet}
-</Modal>
+	onInteractOutside={close}>
+	<Portal>
+		<Dialog.Backdrop class="fixed inset-0 z-10 bg-surface-50-950/75 backdrop-blur-sm" />
+		<Dialog.Positioner class="fixed inset-0 z-10 flex justify-center items-center p-4">
+			<Dialog.Content class="card bg-surface-100-900 p-4 pt-3 shadow-sm rounded-lg border border-white/5 hover:border-white/10
+								md:max-w-9/10 md:max-h-9/10 overflow-auto w-[340px]">
+				<!--<Info control={controlView.control}/>-->
+				<header class="grid grid-cols-[5%_90%_5%]">
+					<div class="flex justify-center items-center"></div><!-- placeholder for menu -->
+					<div>
+						<Dialog.Title class="h5 flex justify-center items-center">{label}</Dialog.Title>
+					</div>
+					<div class="flex justify-center items-center">
+						<button type="button" class="btn-icon hover:preset-tonal" onclick={close}>
+							<XIcon class="size-4" />
+						</button>
+					</div>
+				</header>
+				<Dialog.Description>
+					<div class="flex flex-col items-center justify-center">
+						{#if setEntry.nightLight}
+							<form class="mt-4 space-y-2">
+								<label class="flex items-center space-x-2">
+									<input class="radio" type="radio" checked={setEntry.daily} name="daily" onclick={() => {setEntry.daily=true}}/>
+									<p>{$_("Daily")}</p>
+								</label>
+								<label class="flex items-center space-x-2">
+									<input class="radio" type="radio" checked={!setEntry.daily} name="once" onclick={() => {setEntry.daily=false}} />
+									<p>{$_("Once")}</p>
+								</label>
+							</form>
+						{:else}
+							<form class="mt-4 space-y-2">
+								{#each weekDayNrs as i}
+								<label class="flex items-center space-x-2">
+									<input class="checkbox" type="checkbox" checked={setEntry.modes.includes(Number(i))} onclick={() => {setValue(Number(i))}}/>
+									<p>{opModes[i]}</p>
+								</label>
+								{/each}
+							</form>
+						{/if}
+					</div>
+					<div class="mt-6 flex grid grid-cols-2 gap-2">
+						<button type="button"
+							class="btn btn-lg dark:bg-surface-950 bg-surface-50 w-full rounded-lg border border-white/15 shadow-sm hover:border-white/50"
+							onclick={close}>
+							<span class="text-lg">{$_('Cancel')}</span>
+						</button>
+						<button type="button"
+							class="btn btn-lg dark:bg-surface-950 bg-surface-50 w-full rounded-lg border border-white/15 shadow-sm hover:border-white/50"
+							onclick={() => {onValueChange({value: entry.nightLight ? setEntry.daily : setEntry.modes}); close();}}>
+							<span class="text-lg">{$_('OK')}</span>
+						</button>
+					</div>
+				</Dialog.Description>
+			</Dialog.Content>
+		</Dialog.Positioner>
+	</Portal>
+</Dialog>

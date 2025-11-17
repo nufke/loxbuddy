@@ -7,7 +7,7 @@
 	import { store } from '$lib/stores/Store.svelte';
 	import { _ } from 'svelte-i18n';
 	import { page } from '$app/state';
-	import { GripVertical } from '@lucide/svelte';
+	import { GripVerticalIcon } from '@lucide/svelte';
 
 	let { controlView = $bindable(), controlOptions = DEFAULT_CONTROLOPTIONS } : { controlView: ControlView, controlOptions: ControlOptions } = $props();
 	let isCategory = page.url.pathname.includes('/category');
@@ -53,14 +53,14 @@
 	<div class="flex w-full flex-col">
 		{#if store.dnd.isEnabled}
 			<div class="absolute right-1 text-surface-500 top-[40%]">
-				<GripVertical/>
+				<GripVerticalIcon/>
 			</div>
 		{/if}
 		<div class="relative flex w-full justify-between">
 			{#if controlView.iconName.length}
 				<div class="relative mr-1 inline-flex items-center justify-center w-12 h-12 min-w-12 overflow-hidden rounded-full border border-white/10 dark:bg-surface-950 bg-surface-50">
 					{#if controlView.control.type =='Jalousie'}
-						<LbJalousieIcon position={controlView.modal.details.position} shadePosition={controlView.modal.details.shadePosition} width="28" height="28"/>
+						<LbJalousieIcon control={controlView.control} width="28" height="28"/>
 					{:else}
 					<LbIcon class={controlView.iconColor} name={controlView.iconName} width="24" height="24"
 						style={getIconColorHex(controlView.iconColor)}/>
@@ -97,7 +97,12 @@
 						{/if}
 						{#if button.type == 'switch'}
 							<button class="mt-2" onclick={(e) => { e.stopPropagation()}}> <!-- workaround wrapper to stop propagation for switch -->
-								<Switch controlClasses="w-12 h-8 mr-1" name="slide" controlActive="dark:bg-primary-500 bg-primary-700" controlInactive="preset-filled-surface-300-700" thumbInactive="bg-white" checked={controlView.buttonState} onCheckedChange={button.click} />
+								<Switch checked={controlView.buttonState} onCheckedChange={button.click}>
+									<Switch.Control class="w-12 h-8 mr-1 data-[state=checked]:preset-filled-primary-500">
+										<Switch.Thumb />
+									</Switch.Control>
+									<Switch.HiddenInput />
+								</Switch>
 							</button>
 						{/if}
 					{/each}
@@ -128,7 +133,7 @@
 			{#if controlView.iconName.length && !controlView.isSubControl} <!-- only show icon if name is given -->
 				<div class="relative mr-1 inline-flex items-center justify-center w-12 h-12 min-w-12 overflow-hidden rounded-full border border-white/10 dark:bg-surface-950 bg-surface-50">
 					{#if controlView.control.type =='Jalousie'}
-						<LbJalousieIcon position={controlView.modal.details.position} shadePosition={controlView.modal.details.shadePosition} width="28" height="28"/>
+						<LbJalousieIcon control={controlView.control} width="28" height="28"/>
 					{:else}
 					<LbIcon class={controlView.iconColor} name={controlView.iconName} width="24" height="24"
 						style={getIconColorHex(controlView.iconColor)}/>
@@ -171,8 +176,13 @@
 						</button>
 					{/if}
 					{#if button.type == 'switch'}
-						<button class="mt-2" onclick={(e) => { e.stopPropagation()}}> <!-- workaround wrapper to stop propagation for switch -->
-							<Switch controlClasses="w-12 h-8 mr-1" name="slide" controlActive="dark:bg-primary-500 bg-primary-700" controlInactive="preset-filled-surface-300-700" thumbInactive="bg-white" checked={controlView.buttonState} onCheckedChange={button.click} />
+						<button class="mt-1" onclick={(e) => { e.stopPropagation()}}> <!-- workaround wrapper to stop propagation for switch -->
+							<Switch checked={controlView.buttonState} onCheckedChange={button.click}>
+								<Switch.Control class="w-12 h-8 mr-1 preset-filled-surface-400-600 data-[state=checked]:preset-filled-primary-500">
+									<Switch.Thumb />
+								</Switch.Control>
+								<Switch.HiddenInput />
+							</Switch>
 						</button>
 					{/if}
 				{/each}

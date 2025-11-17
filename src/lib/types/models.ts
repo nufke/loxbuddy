@@ -628,7 +628,7 @@ export type Button = {
 }
 
 export type GeneralView = {
-	title: string;
+	label: string;
 	openModal: boolean
 	buttons: Button[];
 	cancel: any;

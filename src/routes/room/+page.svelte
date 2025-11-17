@@ -51,9 +51,9 @@
 </script>
 
 <div class="container p-3 mx-auto max-w-[640px] lg:max-w-[960px] lb-page-center">
-	<p class="pl-2 h4">{$_('Categories')}</p>
+	<p class="pl-2 h5">{$_('Categories')}</p>
 	{#if favorites.length}
-		<div class="mt-4 mb-2 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 lg:flex-wrap">
+		<div class="mt-2 mb-2 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 lg:flex-wrap">
 			{#each favorites as item (item)}
 			<div animate:flip={{ duration: store.dnd.duration }} use:customdnd
 				draggable={store.dnd.isEnabled}

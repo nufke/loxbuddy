@@ -1,1582 +1,1656 @@
 {
-  "lastModified": "2025-07-12 11:11:11",
-  "msInfo": {
-    "serialNr": "111222333444",
-    "msName": "Demo Miniserver Name",
-    "projectName": "Demo Project Name",
-    "localUrl": "192.168.1.1",
-    "remoteUrl": "dns.loxbuddy.nl/111222333444",
-    "hostname": "",
-    "tempUnit": 0,
-    "currency": "€",
-    "squareMeasure": "m²",
-    "location": "Amsterdam",
-    "latitude": 52.378,
-    "longitude": 4.9,
-    "altitude": 3,
-    "languageCode": "NLD",
-    "heatPeriodStart": "10-01",
-    "heatPeriodEnd": "04-30",
-    "coolPeriodStart": "05-01",
-    "coolPeriodEnd": "09-30",
-    "catTitle": "Categories",
-    "roomTitle": "Rooms",
-    "miniserverType": 2,
-    "deviceMonitor": "__deviceMonitor",
-    "currentUser": {
-      "name": "user",
-      "uuid": "__currentUser_uuid",
-      "isAdmin": false,
-      "changePassword": false,
-      "userRights": 16390
-    }
-  },
-  "partnerInfo": {
-    "name": "LoxBuddy",
-    "image": "__uuid__partner_info_image.png",
-    "details": {
-      "phoneNumber": "+31 6 1234 5678",
-      "eMailAddress": "info@loxbuddy.nl",
-      "website": "www.loxbuddy.nl"
-    }
-  },
-  "globalStates": {
-    "operatingMode": "__uuid__globalStates_operatingMode",
-    "sunrise": "__uuid__globalStates_sunrise",
-    "sunset": "__uuid__globalStates_sunset",
-    "pastTasks": "__uuid__globalStates_pastTasks",
-    "plannedTasks": "__uuid__globalStates_plannedTasks",
-    "notifications": "__uuid__globalStates_notifications",
-    "modifications": "__uuid__globalStates_modifications",
-    "favColorSequences": "__uuid__globalStates_favColorSequences",
-    "favColors": "__uuid__globalStates_favColors",
-    "miniserverTime": "__uuid__globalStates_miniserverTime",
-    "liveSearch": "__uuid__globalStates_liveSearch",
-    "userSettings": "__uuid__globalStates_userSettings",
-    "userSettingsTs": "__uuid__globalStates_userSettingsTs",
-    "cloudservice": "__uuid__globalStates_cloudservice",
-    "trustVersion": "__uuid__globalStates_trustVersion",
-    "propsVersion": "__uuid__globalStates_propsVersion",
-    "hasInternet": "__uuid__globalStates_hasInternet"
-  },
-  "operatingModes": {
-    "0": "Fiesta",
-    "1": "Holiday",
-    "2": "Day off",
-    "3": "Monday",
-    "4": "Tuesday",
-    "5": "Wednesday",
-    "6": "Thursday",
-    "7": "Friday",
-    "8": "Saturday",
-    "9": "Sunday",
-    "10": "Heating period",
-    "11": "Cooling period",
-    "-1": "Alarm",
-    "-2": "Presence simulation",
-    "-3": "Home in deep sleep",
-    "-4": "Increased temperature",
-    "-5": "Party",
-    "-6": "Absent",
-    "-7": "Eco",
-    "-8": "Comfort continued",
-    "-1000": "Sleep",
-    "-1003": "Technical alarm",
-    "-1004": "Present",
-    "-1002": "Frost protection",
-    "-1001": "Storm protection"
-  },
-  "rooms": {
-    "__uuid__rooms_living_room": {
-      "uuid": "__uuid__rooms_living_room",
-      "name": "Living room",
-      "image": "IconsFilled/sofa-1.svg",
-      "defaultRating": 10,
-      "isFavorite": false,
-      "type": 4,
-      "color": "#69C350"
-    },
-    "__uuid__rooms_central": {
-      "uuid": "__uuid__rooms_central",
-      "name": "Central",
-      "image": "IconsFilled/central.svg",
-      "defaultRating": 0,
-      "isFavorite": false,
-      "type": 4,
-      "color": "#69C350"
-    },
-    "__uuid__rooms_outside": {
-      "uuid": "__uuid__rooms_outside",
-      "name": "Outside",
-      "image": "IconsFilled/tree.svg",
-      "defaultRating": 1,
-      "isFavorite": true,
-      "type": 2,
-      "color": "#69C350"
-    },
-    "__uuid__rooms_kitchen": {
-      "uuid": "__uuid__rooms_kitchen",
-      "name": "Kitchen",
-      "image": "IconsFilled/knife-fork.svg",
-      "defaultRating": 9,
-      "isFavorite": true,
-      "type": 2,
-      "color": "#69C350"
-    },
-    "__uuid__rooms_bathroom": {
-      "uuid": "__uuid__rooms_bathroom",
-      "name": "Bathroom",
-      "image": "IconsFilled/shower-1.svg",
-      "defaultRating": 1,
-      "isFavorite": true,
-      "type": 2,
-      "color": "#69C350"
-    },
-    "__uuid__rooms_bedroom": {
-      "uuid": "__uuid__rooms_bedroom",
-      "name": "Bedroom",
-      "image": "IconsFilled/bed-double.svg",
-      "defaultRating": 5,
-      "isFavorite": false,
-      "type": 2,
-      "color": "#69C350"
-    }
-  },
-  "cats": {
-    "__uuid__cats_alarm": {
-      "uuid": "__uuid__cats_alarm",
-      "name": "Alarm",
-      "image": "IconsFilled/alarm-1.svg",
-      "defaultRating": 0,
-      "isFavorite": false,
-      "type": "undefined",
-      "color": "#E4354A"
-    },
-    "__uuid__cats_lighting": {
-      "uuid": "__uuid__cats_lighting",
-      "name": "Lighting",
-      "image": "IconsFilled/lightbulb-3.svg",
-      "defaultRating": 0,
-      "isFavorite": false,
-      "type": "undefined",
-      "color": "#E4354A"
-    },
-    "__uuid__cats_pv": {
-      "uuid": "__uuid__cats_pv",
-      "name": "PV",
-      "image": "IconsFilled/solar-panel.svg",
-      "defaultRating": 0,
-      "isFavorite": false,
-      "type": "undefined",
-      "color": "#69C350"
-    },
-    "__uuid__cats_energy": {
-      "uuid": "__uuid__cats_energy",
-      "name": "Energy",
-      "image": "IconsFilled/flash-1.svg",
-      "defaultRating": 0,
-      "isFavorite": false,
-      "type": "undefined",
-      "color": "#327AE7"
-    },
-    "__uuid__cats_sunscreens": {
-      "uuid": "__uuid__cats_sunscreens",
-      "name": "Sunscreens",
-      "image": "IconsFilled/blinds-half-closed.svg",
-      "defaultRating": 1,
-      "isFavorite": true,
-      "type": "shading",
-      "color": "#1DB0D9"
-    },
-    "__uuid__cats_safety": {
-      "uuid": "__uuid__cats_safety",
-      "name": "Safety",
-      "image": "IconsFilled/cc-camera.svg",
-      "defaultRating": 0,
-      "isFavorite": false,
-      "type": "undefined",
-      "color": "#69C350"
-    },
-    "__uuid__cats_heating": {
-      "uuid": "__uuid__cats_heating",
-      "name": "Heating",
-      "image": "IconsFilled/radiator.svg",
-      "defaultRating": 2,
-      "isFavorite": true,
-      "type": "indoortemperature",
-      "color": "#69C350"
-    },
-    "__uuid__cats_alarmclock": {
-      "uuid": "__uuid__cats_alarmclock",
-      "name": "Alarm Clock",
-      "image": "IconsFilled/alarm-clock.svg",
-      "defaultRating": 0,
-      "isFavorite": false,
-      "type": "undefined",
-      "color": "#69C350"
-    }
-  },
-  "controls": {
-    "__uuid__controls_status": {
-      "name": "Status",
-      "type": "TextState",
-      "uuidAction": "__uuid__controls_status",
-      "room": "__uuid__rooms_central",
-      "cat": "__uuid__cats_lighting",
-      "defaultRating": 0,
-      "isFavorite": true,
-      "isSecured": false,
-      "defaultIcon": "IconsFilled/central.svg",
-      "restrictions": 0,
-      "states": {
-        "textAndIcon": "__uuid__controls_status",
-        "iconAndColor": "__uuid__controls_status_states_iconAndColor"
-      },
-      "links": [
-        "__uuid__controls_switch",
-        "__uuid__controls_pv_meter",
-        "__uuid__controls_window_monitor"
-      ]
-    },
-    "__uuid__controls_switch": {
-      "name": "Switch",
-      "type": "Switch",
-      "uuidAction": "__uuid__controls_switch",
-      "room": "__uuid__rooms_living_room",
-      "cat": "__uuid__cats_lighting",
-      "defaultRating": 0,
-      "isFavorite": true,
-      "isSecured": false,
-      "defaultIcon": null,
-      "restrictions": 0,
-      "details": {
-        "jLockable": false,
-        "type": 71
-      },
-      "states": {
-        "active": "__uuid__controls_switch_states_active"
-      }
-    },
-    "__uuid__controls_pv_meter": {
-      "name": "PV meter",
-      "type": "Meter",
-      "uuidAction": "__uuid__controls_pv_meter",
-      "room": "__uuid__rooms_central",
-      "cat": "__uuid__cats_pv",
-      "defaultRating": 2,
-      "isFavorite": true,
-      "isSecured": false,
-      "defaultIcon": null,
-      "restrictions": 0,
-      "details": {
-        "jLockable": true,
-        "type": "unidirectional",
-        "displayType": 0,
-        "actualFormat": "%.3f kW",
-        "totalFormat": "%.1f kWh",
-        "powerName": "Consumption"
-      },
-      "states": {
-        "jLocked": "__uuid__controls_pv_meter_states_jLocked",
-        "actual": "__uuid__controls_pv_meter_states_actual",
-        "total": "__uuid__controls_pv_meter_states_total",
-        "totalDay": "__uuid__controls_pv_meter_states_totalDay",
-        "totalWeek": "__uuid__controls_pv_meter_states_totalWeek",
-        "totalMonth": "__uuid__controls_pv_meter_states_totalMonth",
-        "totalYear": "__uuid__controls_pv_meter_states_totalYear"
-      },
-      "statisticV2": {
-        "groups": [
-          {
-            "id": "1",
-            "mode": 11,
-            "dataPoints": [
-              {
-                "title": "Consumption",
-                "format": "%.3f kW",
-                "output": "actual"
-              }
-            ]
-          },
-          {
-            "id": "2",
-            "mode": 11,
-            "accumulated": true,
-            "dataPoints": [
-              {
-                "title": "Readings",
-                "format": "%.1f kWh",
-                "output": "total"
-              }
-            ]
-          }
-        ]
-      },
-      "links": [
-        "__uuid_unknonw",
-        "__uuid_unknown"
-      ]
-    },
-    "__uuid__controls_battery": {
-      "name": "Batterie",
-      "type": "Meter",
-      "uuidAction": "__uuid__controls_battery",
-      "room": "__uuid__rooms_central",
-      "cat": "__uuid__cats_energy",
-      "defaultRating": 0,
-      "isFavorite": false,
-      "isSecured": false,
-      "defaultIcon": "IconsFilled/battery-full.svg",
-      "restrictions": 0,
-      "details": {
-        "jLockable": true,
-        "type": "storage",
-        "displayType": 0,
-        "actualFormat": "%.3f kW",
-        "totalFormat": "%.1f kWh",
-        "powerName": "Consumption",
-        "storageFormat": "%.2f%%",
-        "storageMax": 100
-      },
-      "states": {
-        "jLocked": "__uuid__controls_battery_states_jLocked",
-        "actual": "__uuid__controls_battery_states_actual",
-        "total": "__uuid__controls_battery_states_total",
-        "totalNeg": "__uuid__controls_battery_states_totalNeg",
-        "storage": "__uuid__controls_battery_states_storage",
-        "totalDay": "__uuid__controls_battery_states_totalDay",
-        "totalWeek": "__uuid__controls_battery_states_totalWeek",
-        "totalMonth": "__uuid__controls_battery_states_totalMonth",
-        "totalYear": "__uuid__controls_battery_states_totalYear",
-        "totalNegDay": "__uuid__controls_battery_states_totalNegDay",
-        "totalNegWeek": "__uuid__controls_battery_states_totalNegWeek",
-        "totalNegMonth": "__uuid__controls_battery_states_totalNegMonth",
-        "totalNegYear": "__uuid__controls_battery_states_totalNegYear"
-      },
-      "statisticV2": {
-        "groups": [
-          {
-            "id": "1",
-            "mode": 11,
-            "dataPoints": [
-              {
-                "title": "Consumption",
-                "format": "%.3f kW",
-                "output": "actual"
-              }
-            ]
-          },
-          {
-            "id": "2",
-            "mode": 11,
-            "accumulated": true,
-            "dataPoints": [
-              {
-                "title": "Readings",
-                "format": "%.1f kWh",
-                "output": "total"
-              },
-              {
-                "title": "Readings",
-                "format": "%.1f kWh",
-                "output": "totalNeg"
-              }
-            ]
-          },
-          {
-            "id": "3",
-            "mode": 11,
-            "dataPoints": [
-              {
-                "title": "Storage",
-                "format": "%.2f%%",
-                "output": "storageLevel"
-              }
-            ]
-          }
-        ]
-      },
-      "links": [
-        "__uuid_unknonw",
-        "__uuid_unknonw",
-        "__uuid_unknonw",
-        "__uuid_unknonw",
-        "__uuid_unknonw",
-        "__uuid_unknonw",
-        "__uuid_unknonw",
-        "__uuid_unknonw",
-        "__uuid_unknonw",
-        "__uuid_unknonw",
-        "__uuid_unknonw",
-        "__uuid_unknonw"
-      ]
-    },
-    "__uuid__controls_net": {
-      "name": "Net",
-      "type": "Meter",
-      "uuidAction": "__uuid__controls_net",
-      "room": "__uuid__rooms_central",
-      "cat": "__uuid__cats_energy",
-      "defaultRating": 1,
-      "isFavorite": false,
-      "isSecured": false,
-      "defaultIcon": "IconsFilled/electric-pole.svg",
-      "restrictions": 0,
-      "details": {
-        "jLockable": true,
-        "type": "bidirectional",
-        "displayType": 0,
-        "actualFormat": "%.3f kW",
-        "totalFormat": "%.1f kWh",
-        "powerName": "Consumption"
-      },
-      "states": {
-        "jLocked": "__uuid__controls_net_states_jLocked",
-        "actual": "__uuid__controls_net_states_actual",
-        "total": "__uuid__controls_net_states_total",
-        "totalNeg": "__uuid__controls_net_states_totalNeg",
-        "totalDay": "__uuid__controls_net_states_totalDay",
-        "totalWeek": "__uuid__controls_net_states_totalWeek",
-        "totalMonth": "__uuid__controls_net_states_totalMonth",
-        "totalYear": "__uuid__controls_net_states_totalYear",
-        "totalNegDay": "__uuid__controls_net_states_totalNegDay",
-        "totalNegWeek": "__uuid__controls_net_states_totalNegWeek",
-        "totalNegMonth": "__uuid__controls_net_states_totalNegMonth",
-        "totalNegYear": "__uuid__controls_net_states_totalNegYear"
-      },
-      "statisticV2": {
-        "groups": [
-          {
-            "id": "1",
-            "mode": 11,
-            "dataPoints": [
-              {
-                "title": "Consumption",
-                "format": "%.3f kW",
-                "output": "actual"
-              }
-            ]
-          },
-          {
-            "id": "2",
-            "mode": 11,
-            "accumulated": true,
-            "dataPoints": [
-              {
-                "title": "Readings",
-                "format": "%.1f kWh",
-                "output": "total"
-              },
-              {
-                "title": "Readings",
-                "format": "%.1f kWh",
-                "output": "totalNeg"
-              }
-            ]
-          }
-        ]
-      },
-      "links": [
-        "__uuid_unknonw",
-        "__uuid_unknonw",
-        "__uuid_unknonw",
-        "__uuid_unknonw"
-      ]
-    },
-    "__uuid__controls_stairslighting": {
-      "name": "Lighting staircase",
-      "type": "TimedSwitch",
-      "uuidAction": "__uuid__controls_stairslighting",
-      "room": "__uuid__rooms_living_room",
-      "cat": "__uuid__cats_lighting",
-      "defaultRating": 1,
-      "isFavorite": true,
-      "isSecured": false,
-      "defaultIcon": null,
-      "restrictions": 0,
-      "details": {
-        "jLockable": true,
-        "isStairwayLs": true
-      },
-      "states": {
-        "jLocked": "__uuid__controls_stairslighting_states_jLocked",
-        "deactivationDelay": "__uuid__controls_stairslighting_states_deactivationDelay",
-        "deactivationDelayTotal": "__uuid__controls_stairslighting_states_deactivationDelayTotal"
-      }
-    },
-    "__uuid__controls_presence_detector": {
-      "name": "Presence Detector",
-      "type": "PresenceDetector",
-      "uuidAction": "__uuid__controls_presence_detector",
-      "room": "__uuid__rooms_living_room",
-      "cat": "__uuid__cats_lighting",
-      "defaultRating": 1,
-      "isFavorite": false,
-      "isSecured": false,
-      "restrictions": 0,
-      "details": {
-        "jLockable": true,
-        "parameterConnections": 0
-      },
-      "states": {
-        "jLocked": "__uuid__controls_presence_detector_states_jLocked",
-        "active": "__uuid__controls_presence_detector_states_active",
-        "locked": "__uuid__controls_presence_detector_states_locked",
-        "events": "__uuid__controls_presence_detector_states_events",
-        "time": "__uuid__controls_presence_detector_states_time",
-        "activeSince": "__uuid__controls_presence_detector_states_activeSince",
-        "infoText": "__uuid__controls_presence_detector_states_infoText"
-      },
-      "subControls": {
-        "__uuid__controls_presence_detector_subControls/sensors": {
-          "name": "sensors",
-          "type": "Tracker",
-          "uuidAction": "__uuid__controls_presence_detector_subControls/sensors",
-          "defaultRating": 0,
-          "isFavorite": false,
-          "isSecured": false,
-          "restrictions": 0,
-          "details": {
-            "maxEntries": 20
-          },
-          "states": {
-            "entries": "__uuid__controls_presence_detector_subControls"
-          }
-        }
-      }
-    },
-    "__uuid__controls_sunscreen_blinds": {
-      "name": "Sunscreen blinds",
-      "type": "Jalousie",
-      "uuidAction": "__uuid__controls_sunscreen_blinds",
-      "room": "__uuid__rooms_living_room",
-      "cat": "__uuid__cats_sunscreens",
-      "defaultRating": 7,
-      "isFavorite": false,
-      "isSecured": false,
-      "restrictions": 0,
-      "details": {
-        "jLockable": true,
-        "controlHistory": true,
-        "hasHistory": 100,
-        "isAutomatic": true,
-        "animation": 0,
-        "type": 348
-      },
-      "states": {
-        "jLocked": "__uuid__controls_sunscreen_blinds_states_jLocked",
-        "infoText": "__uuid__controls_sunscreen_blinds_states_infoText",
-        "up": "__uuid__controls_sunscreen_blinds_states_up",
-        "down": "__uuid__controls_sunscreen_blinds_states_down",
-        "position": "__uuid__controls_sunscreen_blinds_states_position",
-        "shadePosition": "__uuid__controls_sunscreen_blinds_states_shadePosition",
-        "safetyActive": "__uuid__controls_sunscreen_blinds_states_safetyActive",
-        "autoAllowed": "__uuid__controls_sunscreen_blinds_states_autoAllowed",
-        "autoActive": "__uuid__controls_sunscreen_blinds_states_autoActive",
-        "locked": "__uuid__controls_sunscreen_blinds_states_locked",
-        "autoInfoText": "__uuid__controls_sunscreen_blinds_states_autoInfoText",
-        "autoState": "__uuid__controls_sunscreen_blinds_states_autoState",
-        "deviceState": "__uuid__controls_sunscreen_blinds_states_deviceState",
-        "targetPosition": "__uuid__controls_sunscreen_blinds_states_targetPosition",
-        "targetPositionLamelle": "__uuid__controls_sunscreen_blinds_states_targetPositionLamelle",
-        "adjustingEndPos": "__uuid__controls_sunscreen_blinds_states_adjustingEndPos"
-      },
-      "links": [
-        "__uuid_unknonw"
-      ]
-    },
-    "__uuid__controls_sunscreen_kitchen": {
-      "name": "Screen Kitchen",
-      "type": "Jalousie",
-      "uuidAction": "__uuid__controls_sunscreen_kitchen",
-      "room": "__uuid__rooms_living_room",
-      "cat": "__uuid__cats_sunscreens",
-      "defaultRating": 1,
-      "isFavorite": false,
-      "isSecured": false,
-      "restrictions": 0,
-      "details": {
-        "jLockable": true,
-        "controlHistory": true,
-        "hasHistory": 20,
-        "isAutomatic": true,
-        "animation": 1,
-        "type": 348
-      },
-      "states": {
-        "jLocked": "__uuid__controls_sunscreen_kitchen_states_jLocked",
-        "infoText": "__uuid__controls_sunscreen_kitchen_states_infoText",
-        "up": "__uuid__controls_sunscreen_kitchen_states_up",
-        "down": "__uuid__controls_sunscreen_kitchen_states_down",
-        "position": "__uuid__controls_sunscreen_kitchen_states_position",
-        "shadePosition": "__uuid__controls_sunscreen_kitchen_states_shadePosition",
-        "safetyActive": "__uuid__controls_sunscreen_kitchen_states_safetyActive",
-        "autoAllowed": "__uuid__controls_sunscreen_kitchen_states_autoAllowed",
-        "autoActive": "__uuid__controls_sunscreen_kitchen_states_autoActive",
-        "locked": "__uuid__controls_sunscreen_kitchen_states_locked",
-        "autoInfoText": "__uuid__controls_sunscreen_kitchen_states_autoInfoText",
-        "autoState": "__uuid__controls_sunscreen_kitchen_states_autoState",
-        "deviceState": "__uuid__controls_sunscreen_kitchen_states_deviceState",
-        "targetPosition": "__uuid__controls_sunscreen_kitchen_states_targetPosition",
-        "targetPositionLamelle": "__uuid__controls_sunscreen_kitchen_states_targetPositionLamelle",
-        "adjustingEndPos": "__uuid__controls_sunscreen_kitchen_states_adjustingEndPos"
-      }
-    },
-    "__uuid__controls_sunscreen_central": {
-      "name": "Sunscreen central",
-      "type": "CentralJalousie",
-      "uuidAction": "__uuid__controls_sunscreen_central",
-      "room": "__uuid__rooms_living_room",
-      "cat": "__uuid__cats_sunscreens",
-      "defaultRating": 1,
-      "isFavorite": false,
-      "isSecured": false,
-      "restrictions": 0,
-      "details": {
-        "jLockable": true,
-        "controls": [
-          {
-            "id": 0,
-            "uuid": "__uuid__controls_sunscreen_blinds"
-          },
-          {
-            "id": 1,
-            "uuid": "__uuid__controls_sunscreen_kitchen"
-          }
-        ],
-        "parameterConnections": 0
-      },
-      "states": {
-        "jLocked": "__uuid__controls_sunscreen_central_states_jLocked",
-        "events": "__uuid__controls_sunscreen_central_states_events"
-      }
-    },
-    "__uuid__controls_gate_1": {
-      "name": "Garage door",
-      "type": "Gate",
-      "uuidAction": "__uuid__controls_gate_1",
-      "room": "__uuid__rooms_outside",
-      "cat": "__uuid__cats_safety",
-      "defaultRating": 0,
-      "isFavorite": false,
-      "isSecured": true,
-      "restrictions": 0,
-      "details": {
-        "jLockable": true,
-        "controlHistory": true,
-        "hasHistory": 20,
-        "animation": 0
-      },
-      "states": {
-        "jLocked": "__uuid__controls_gate_1_states_jLocked",
-        "position": "__uuid__controls_gate_1_states_position",
-        "active": "__uuid__controls_gate_1_states_active",
-        "preventOpen": "__uuid__controls_gate_1_states_preventOpen",
-        "preventClose": "__uuid__controls_gate_1_states_preventClose"
-      }
-    },
-    "__uuid__controls_gate_2": {
-      "name": "Gate entry",
-      "type": "Gate",
-      "uuidAction": "__uuid__controls_gate_2",
-      "room": "__uuid__rooms_outside",
-      "cat": "__uuid__cats_safety",
-      "defaultRating": 0,
-      "isFavorite": false,
-      "isSecured": true,
-      "restrictions": 0,
-      "details": {
-        "jLockable": true,
-        "controlHistory": true,
-        "hasHistory": 20,
-        "animation": 5
-      },
-      "states": {
-        "jLocked": "__uuid__controls_gate_2_states_jLocked",
-        "position": "__uuid__controls_gate_2_states_position",
-        "active": "__uuid__controls_gate_2_states_active",
-        "preventOpen": "__uuid__controls_gate_2_states_preventOpen",
-        "preventClose": "__uuid__controls_gate_2_states_preventClose"
-      }
-    },
-    "__uuid__controls_battery_level": {
-      "name": "Battery level",
-      "type": "ValueSelector",
-      "uuidAction": "__uuid__controls_battery_level",
-      "room": "__uuid__rooms_central",
-      "cat": "__uuid__cats_energy",
-      "defaultRating": 0,
-      "isFavorite": false,
-      "isSecured": false,
-      "defaultIcon": null,
-      "restrictions": 0,
-      "details": {
-        "jLockable": true,
-        "increaseOnly": false,
-        "format": "%.0f %%"
-      },
-      "states": {
-        "jLocked": "__uuid__controls_battery_level_states_jLocked",
-        "min": "__uuid__controls_battery_level_states_min",
-        "max": "__uuid__controls_battery_level_states_max",
-        "step": "__uuid__controls_battery_level_states_step",
-        "value": "__uuid__controls_battery_level_states_value"
-      }
-    },
-    "__uuid__controls_window_monitor": {
-      "name": "Window monitor",
-      "type": "WindowMonitor",
-      "uuidAction": "__uuid__controls_window_monitor",
-      "room": "__uuid__rooms_central",
-      "cat": "__uuid__cats_safety",
-      "defaultRating": 8,
-      "isFavorite": true,
-      "isSecured": false,
-      "restrictions": 0,
-      "details": {
-        "jLockable": false,
-        "windows": [
-          {
-            "name": "Window",
-            "installPlace": "",
-            "uuid": "__uuid__controls_window_monitor_window1",
-            "room": "__uuid__rooms_living_room"
-          },
-          {
-            "name": "Window",
-            "installPlace": "",
-            "uuid": "__uuid__controls_window_monitor_window2",
-            "room": "__uuid__rooms_living_room"
-          },
-          {
-            "name": "Window",
-            "installPlace": "",
-            "uuid": "__uuid__controls_window_monitor_window3",
-            "room": "__uuid__rooms_living_room"
-          },
-          {
-            "name": "Window",
-            "installPlace": "",
-            "uuid": "__uuid__controls_window_monitor_window4",
-            "room": "__uuid__rooms_kitchen"
-          },
-          {
-            "name": "Window",
-            "installPlace": "",
-            "uuid": "__uuid__controls_window_monitor_window5",
-            "room": "__uuid__rooms_bathroom"
-          },
-          {
-            "name": "Window",
-            "installPlace": "",
-            "uuid": "__uuid__controls_window_monitor_window6",
-            "room": "__uuid__rooms_bathroom"
-          }
-        ]
-      },
-      "states": {
-        "numOpen": "__uuid__controls_window_monitor_states_numOpen",
-        "numClosed": "__uuid__controls_window_monitor_states_numClosed",
-        "numTilted": "__uuid__controls_window_monitor_states_numTilted",
-        "numOffline": "__uuid__controls_window_monitor_states_numOffline",
-        "numLocked": "__uuid__controls_window_monitor_states_numLocked",
-        "numUnlocked": "__uuid__controls_window_monitor_states_numUnlocked",
-        "windowStates": "__uuid__controls_window_monitor_states_windowStates"
-      }
-    },
-    "__uuid__controls_heatingmode": {
-      "name": "Heating mode",
-      "type": "Radio",
-      "uuidAction": "__uuid__controls_heatingmode",
-      "room": "__uuid__rooms_central",
-      "cat": "__uuid__cats_heating",
-      "defaultRating": 1,
-      "isFavorite": false,
-      "isSecured": false,
-      "defaultIcon": "IconsFilled/radiator.svg",
-      "restrictions": 0,
-      "details": {
-        "jLockable": true,
-        "allOff": "Normal operation",
-        "outputs": {
-          "1": "Economy",
-          "2": "Comfort continue",
-          "3": "Holiday",
-          "4": "Party",
-          "5": "Increased temperature",
-          "6": "All absent",
-          "7": "House in deep sleep",
-          "8": "Alarm"
-        }
-      },
-      "states": {
-        "jLocked": "__uuid__controls_heatingmode_states_jLocked",
-        "activeOutput": "__uuid__controls_heatingmode_states_activeOutput"
-      }
-    },
-    "__uuid__controls_loading": {
-      "name": "Loading",
-      "type": "Slider",
-      "uuidAction": "__uuid__controls_loading",
-      "room": "__uuid__rooms_central",
-      "cat": "__uuid__cats_energy",
-      "defaultRating": 0,
-      "isFavorite": false,
-      "isSecured": false,
-      "defaultIcon": null,
-      "restrictions": 0,
-      "details": {
-        "jLockable": false,
-        "format": "%.1f kW",
-        "min": 0,
-        "max": 11,
-        "step": 0.1
-      },
-      "states": {
-        "value": "__uuid__controls_loading_states_value",
-        "error": "__uuid__controls_loading_states_error"
-      }
-    },
-    "__uuid__controls_dimmer_1": {
-      "name": "Dimmer living room",
-      "type": "Dimmer",
-      "uuidAction": "__uuid__controls_dimmer_1",
-      "room": "__uuid__rooms_living_room",
-      "cat": "__uuid__cats_lighting",
-      "defaultRating": 0,
-      "isFavorite": false,
-      "isSecured": false,
-      "restrictions": 0,
-      "details": {
-        "jLockable": true
-      },
-      "states": {
-        "jLocked": "__uuid__controls_dimmer_1_states_jLocked",
-        "position": "__uuid__controls_dimmer_1_states_position",
-        "min": "__uuid__controls_dimmer_1_states_min",
-        "max": "__uuid__controls_dimmer_1_states_max",
-        "step": "__uuid__controls_dimmer_1_states_step"
-      }
-    },
-    "__uuid__controls_phase_1": {
-      "name": "Electricity Phase 1",
-      "type": "InfoOnlyAnalog",
-      "uuidAction": "__uuid__controls_phase_1",
-      "room": "__uuid__rooms_central",
-      "cat": "__uuid__cats_energy",
-      "defaultRating": 0,
-      "isFavorite": false,
-      "isSecured": false,
-      "defaultIcon": "IconsFilled/flash-1.svg",
-      "restrictions": 0,
-      "details": {
-        "jLockable": false,
-        "format": "%.1f A"
-      },
-      "states": {
-        "value": "__uuid__controls_phase_1",
-        "error": "__uuid__controls_phase_1_states_error"
-      }
-    },
-    "__uuid__controls_heating_request": {
-      "name": "Heating request",
-      "type": "InfoOnlyDigital",
-      "uuidAction": "__uuid__controls_heating_request",
-      "room": "__uuid__rooms_central",
-      "cat": "__uuid__cats_energy",
-      "defaultRating": 0,
-      "isFavorite": false,
-      "isSecured": false,
-      "defaultIcon": null,
-      "restrictions": 0,
-      "details": {
-        "jLockable": false,
-        "text": {
-          "off": "Off",
-          "on": "On"
-        },
-        "color": {
-          "off": "#E73246",
-          "on": "#69C350"
-        }
-      },
-      "states": {
-        "active": "__uuid__controls_heating_request"
-      }
-    },
-    "__uuid__controls_reset_box": {
-      "name": "Reset box",
-      "type": "Pushbutton",
-      "uuidAction": "__uuid__controls_reset_box",
-      "room": "__uuid__rooms_central",
-      "cat": "__uuid__cats_energy",
-      "defaultRating": 0,
-      "isFavorite": false,
-      "isSecured": false,
-      "defaultIcon": null,
-      "restrictions": 0,
-      "details": {
-        "jLockable": true
-      },
-      "states": {
-        "jLocked": "__uuid__controls_reset_box_states_jLocked",
-        "active": "__uuid__controls_reset_box_states_active"
-      }
-    },
-    "__uuid__controls_lightcontrollerv2_1": {
-      "name": "Lighting living room",
-      "type": "LightControllerV2",
-      "uuidAction": "__uuid__controls_lightcontrollerv2_1",
-      "room": "__uuid__rooms_living_room",
-      "cat": "__uuid__cats_lighting",
-      "defaultRating": 1,
-      "isFavorite": false,
-      "isSecured": false,
-      "restrictions": 0,
-      "details": {
-        "jLockable": true,
-        "controlHistory": true,
-        "hasHistory": 20,
-        "movementScene": 1,
-        "masterValue": "__uuid__controls_lightcontrollerv2_1/masterValue"
-      },
-      "states": {
-        "jLocked": "__uuid__controls_lightcontrollerv2_1_states_jLocked",
-        "activeMoods": "__uuid__controls_lightcontrollerv2_1_states_activeMoods",
-        "moodList": "__uuid__controls_lightcontrollerv2_1_states_moodList",
-        "activeMoodsNum": "__uuid__controls_lightcontrollerv2_1_states_activeMoodsNum",
-        "favoriteMoods": "__uuid__controls_lightcontrollerv2_1_states_favoriteMoods",
-        "additionalMoods": "__uuid__controls_lightcontrollerv2_1_states_additionalMoods",
-        "circuitNames": "__uuid__controls_lightcontrollerv2_1_states_circuitNames",
-        "daylightConfig": "__uuid__controls_lightcontrollerv2_1_states_daylightConfig",
-        "presence": "__uuid__controls_lightcontrollerv2_1_states_presence"
-      },
-      "subControls": {
-        "__uuid__controls_lightcontrollerv2_1/masterValue": {
-          "name": "Master Brightness",
-          "type": "Dimmer",
-          "uuidAction": "__uuid__controls_lightcontrollerv2_1/masterValue",
-          "defaultRating": 0,
-          "isFavorite": false,
-          "isSecured": false,
-          "restrictions": 0,
-          "states": {
-            "position": "__uuid__controls_lightcontrollerv2_1/masterValue_states_position",
-            "min": "__uuid__controls_lightcontrollerv2_1/masterValue_states_min",
-            "max": "__uuid__controls_lightcontrollerv2_1/masterValue_states_max",
-            "step": "__uuid__controls_lightcontrollerv2_1/masterValue_states_step"
-          }
-        },
-        "__uuid__controls_lightcontrollerv2_1/masterColor": {
-          "name": "Master Color",
-          "type": "ColorPickerV2",
-          "uuidAction": "__uuid__controls_lightcontrollerv2_1/masterColor",
-          "defaultRating": 0,
-          "isFavorite": false,
-          "isSecured": false,
-          "restrictions": 0,
-          "details": {
-            "pickerType": "Rgb"
-          },
-          "states": {
-            "color": "__uuid__controls_lightcontrollerv2_1/masterColor_states_color",
-            "sequence": "__uuid__controls_lightcontrollerv2_1/masterColor_states_sequence",
-            "sequenceColorIdx": "__uuid__controls_lightcontrollerv2_1/masterColor_states_sequenceColorIdx"
-          }
-        },
-        "__uuid__controls_lightcontrollerv2_1/AI1": {
-          "name": "Spotlight",
-          "type": "Dimmer",
-          "uuidAction": "__uuid__controls_lightcontrollerv2_1/AI1",
-          "defaultRating": 0,
-          "isFavorite": false,
-          "isSecured": false,
-          "restrictions": 0,
-          "states": {
-            "position": "__uuid__controls_lightcontrollerv2_1/AI1_states_position",
-            "min": "__uuid__controls_lightcontrollerv2_1/AI1_states_min",
-            "max": "__uuid__controls_lightcontrollerv2_1/AI1_states_max",
-            "step": "__uuid__controls_lightcontrollerv2_1/AI1_states_step"
-          }
-        },
-        "__uuid__controls_lightcontrollerv2_1/AI2": {
-          "name": "Mirror",
-          "type": "Switch",
-          "uuidAction": "__uuid__controls_lightcontrollerv2_1/AI2",
-          "defaultRating": 0,
-          "isFavorite": false,
-          "isSecured": false,
-          "restrictions": 0,
-          "states": {
-            "active": "__uuid__controls_lightcontrollerv2_1/AI2_states_active"
-          }
-        },
-        "__uuid__controls_lightcontrollerv2_1/AI3": {
-          "name": "Color Bottom",
-          "type": "ColorPickerV2",
-          "uuidAction": "__uuid__controls_lightcontrollerv2_1/AI3",
-          "defaultRating": 0,
-          "isFavorite": false,
-          "isSecured": false,
-          "restrictions": 0,
-          "details": {
-            "pickerType": "Rgb"
-          },
-          "states": {
-            "color": "__uuid__controls_lightcontrollerv2_1/AI3_states_color",
-            "sequence": "__uuid__controls_lightcontrollerv2_1/AI3_states_sequence",
-            "sequenceColorIdx": "__uuid__controls_lightcontrollerv2_1/AI3_states_sequenceColorIdx"
-          }
-        },
-        "__uuid__controls_lightcontrollerv2_1/AI4": {
-          "name": "Color Up",
-          "type": "ColorPickerV2",
-          "uuidAction": "__uuid__controls_lightcontrollerv2_1/AI4",
-          "defaultRating": 0,
-          "isFavorite": false,
-          "isSecured": false,
-          "restrictions": 0,
-          "details": {
-            "pickerType": "Rgb"
-          },
-          "states": {
-            "color": "__uuid__controls_lightcontrollerv2_1/AI4_states_color",
-            "sequence": "__uuid__controls_lightcontrollerv2_1/AI4_states_sequence",
-            "sequenceColorIdx": "__uuid__controls_lightcontrollerv2_1/AI4_states_sequenceColorIdx"
-          }
-        }
-      }
-    },
-    "__uuid__controls_lightcontrollerv2_2": {
-      "name": "Lighting kitchen",
-      "type": "LightControllerV2",
-      "uuidAction": "__uuid__controls_lightcontrollerv2_2",
-      "room": "__uuid__rooms_kitchen",
-      "cat": "__uuid__cats_lighting",
-      "defaultRating": 1,
-      "isFavorite": false,
-      "isSecured": false,
-      "restrictions": 0,
-      "details": {
-        "jLockable": true,
-        "controlHistory": true,
-        "hasHistory": 20,
-        "movementScene": 1,
-        "masterValue": "__uuid__controls_lightcontrollerv2_2/masterValue"
-      },
-      "states": {
-        "jLocked": "__uuid__controls_lightcontrollerv2_2_states_jLocked",
-        "activeMoods": "__uuid__controls_lightcontrollerv2_2_states_activeMoods",
-        "moodList": "__uuid__controls_lightcontrollerv2_2_states_moodList",
-        "activeMoodsNum": "__uuid__controls_lightcontrollerv2_2_states_activeMoodsNum",
-        "favoriteMoods": "__uuid__controls_lightcontrollerv2_2_states_favoriteMoods",
-        "additionalMoods": "__uuid__controls_lightcontrollerv2_2_states_additionalMoods",
-        "circuitNames": "__uuid__controls_lightcontrollerv2_2_states_circuitNames",
-        "daylightConfig": "__uuid__controls_lightcontrollerv2_2_states_daylightConfig",
-        "presence": "__uuid__controls_lightcontrollerv2_2_states_presence"
-      },
-      "subControls": {
-        "__uuid__controls_lightcontrollerv2_2/masterValue": {
-          "name": "Master Brightness",
-          "type": "Dimmer",
-          "uuidAction": "__uuid__controls_lightcontrollerv2_2/masterValue",
-          "defaultRating": 0,
-          "isFavorite": false,
-          "isSecured": false,
-          "restrictions": 0,
-          "states": {
-            "position": "__uuid__controls_lightcontrollerv2_2/masterValue_states_position",
-            "min": "__uuid__controls_lightcontrollerv2_2/masterValue_states_min",
-            "max": "__uuid__controls_lightcontrollerv2_2/masterValue_states_max",
-            "step": "__uuid__controls_lightcontrollerv2_2/masterValue_states_step"
-          }
-        },
-        "__uuid__controls_lightcontrollerv2_2/AI1": {
-          "name": "Spotlight",
-          "type": "Dimmer",
-          "uuidAction": "__uuid__controls_lightcontrollerv2_2/AI1",
-          "defaultRating": 0,
-          "isFavorite": false,
-          "isSecured": false,
-          "restrictions": 0,
-          "states": {
-            "position": "__uuid__controls_lightcontrollerv2_2/AI1_states_position",
-            "min": "__uuid__controls_lightcontrollerv2_2/AI1_states_min",
-            "max": "__uuid__controls_lightcontrollerv2_2/AI1_states_max",
-            "step": "__uuid__controls_lightcontrollerv2_2/AI1_states_step"
-          }
-        }
-      }
-    },
-    "__uuid__controls_lighting_central": {
-      "name": "Lighting central",
-      "type": "CentralLightController",
-      "uuidAction": "__uuid__controls_lighting_central",
-      "room": "__uuid__rooms_living_room",
-      "cat": "__uuid__cats_lighting",
-      "defaultRating": 10,
-      "isFavorite": true,
-      "isSecured": false,
-      "restrictions": 0,
-      "details": {
-        "jLockable": true,
-        "controls": [
-          {
-            "id": 0,
-            "uuid": "__uuid__controls_lightcontrollerv2_2"
-          },
-          {
-            "id": 1,
-            "uuid": "__uuid__controls_lightcontrollerv2_1"
-          }
-        ],
-        "parameterConnections": 0
-      },
-      "states": {
-        "jLocked": "__uuid__controls_lighting_central_states_jLocked",
-        "events": "__uuid__controls_lighting_central_states_events"
-      }
-    },
-    "__uuid__controls_tracker": {
-      "name": "Tracker",
-      "type": "Tracker",
-      "uuidAction": "__uuid__controls_tracker",
-      "room": "__uuid__rooms_central",
-      "cat": "__uuid__cats_energy",
-      "defaultRating": 0,
-      "isFavorite": false,
-      "isSecured": false,
-      "defaultIcon": "IconsFilled/brightness-decrease.svg",
-      "restrictions": 0,
-      "details": {
-        "jLockable": false,
-        "maxEntries": 28
-      },
-      "states": {
-        "entries": "__uuid__controls_tracker"
-      }
-    },
-    "__uuid__controls_webpage": {
-      "name": "Webpage",
-      "type": "Webpage",
-      "uuidAction": "__uuid__controls_webpage_2",
-      "room": "__uuid__rooms_central",
-      "cat": "__uuid__cats_lighting",
-      "defaultRating": 0,
-      "isFavorite": false,
-      "isSecured": false,
-      "restrictions": 0,
-      "details": {
-        "jLockable": false,
-        "url": "https://github.com/nufke/loxbuddy",
-        "urlHd": "https://github.com/nufke/loxbuddy",
-        "image": "",
-        "iconColor": "#000000"
-      }
-    },
-    "__uuid__controls_alarmclock": {
-      "name": "Alarm clock",
-      "type": "AlarmClock",
-      "uuidAction": "__uuid__controls_alarmclock",
-      "room": "__uuid__rooms_bedroom",
-      "cat": "__uuid__cats_alarmclock",
-      "defaultRating": 0,
-      "isFavorite": false,
-      "isSecured": false,
-      "restrictions": 0,
-      "details": {
-        "jLockable": true,
-        "hasNightLight": false,
-        "snoozeDurationConnected": false,
-        "brightInactiveConnected": false,
-        "brightActiveConnected": false,
-        "wakeAlarmSoundConnected": false,
-        "wakeAlarmVolumeConnected": false,
-        "wakeAlarmSlopingConnected": false,
-        "wakeAlarmSounds": [
-          {
-            "id": 1,
-            "name": "Low tone 4 times"
-          },
-          {
-            "id": 2,
-            "name": "High tone 4 times"
-          },
-          {
-            "id": 3,
-            "name": "Low tone 2 times"
-          },
-          {
-            "id": 4,
-            "name": "High tone 2 times"
-          },
-          {
-            "id": 5,
-            "name": "Siren"
-          }
-        ]
-      },
-      "states": {
-        "jLocked": "__uuid__controls_alarmclock_states_jLocked",
-        "isEnabled": "__uuid__controls_alarmclock_states_isEnabled",
-        "isAlarmActive": "__uuid__controls_alarmclock_states_isAlarmActive",
-        "confirmationNeeded": "__uuid__controls_alarmclock_states_confirmationNeeded",
-        "entryList": "__uuid__controls_alarmclock_states_entryList",
-        "currentEntry": "__uuid__controls_alarmclock_states_currentEntry",
-        "nextEntry": "__uuid__controls_alarmclock_states_nextEntry",
-        "nextEntryMode": "__uuid__controls_alarmclock_states_nextEntryMode",
-        "ringingTime": "__uuid__controls_alarmclock_states_ringingTime",
-        "ringDuration": "__uuid__controls_alarmclock_states_ringDuration",
-        "prepareDuration": "__uuid__controls_alarmclock_states_prepareDuration",
-        "snoozeTime": "__uuid__controls_alarmclock_states_snoozeTime",
-        "snoozeDuration": "__uuid__controls_alarmclock_states_snoozeDuration",
-        "nextEntryTime": "__uuid__controls_alarmclock_states_nextEntryTime",
-        "deviceState": "__uuid__controls_alarmclock_states_deviceState",
-        "deviceSettings": "__uuid__controls_alarmclock_states_deviceSettings",
-        "wakeAlarmSoundSettings": "__uuid__controls_alarmclock_states_wakeAlarmSoundSettings"
-      }
-    },
-    "__uuid__controls_alarmunit": {
-      "name": "Alarm unit",
-      "type": "Alarm",
-      "uuidAction": "__uuid__controls_alarmunit",
-      "room": "__uuid__rooms_central",
-      "cat": "__uuid__cats_alarm",
-      "defaultRating": 2,
-      "isFavorite": false,
-      "isSecured": false,
-      "restrictions": 0,
-      "details": {
-        "jLockable": true,
-        "alert": true,
-        "presenceConnected": false
-      },
-      "states": {
-        "jLocked": "__uuid__controls_alarmunit_states_jLocked",
-        "armed": "__uuid__controls_alarmunit_states_armed",
-        "nextLevel": "__uuid__controls_alarmunit_states_nextLevel",
-        "nextLevelDelay": "__uuid__controls_alarmunit_states_nextLevelDelay",
-        "nextLevelDelayTotal": "__uuid__controls_alarmunit_states_nextLevelDelayTotal",
-        "level": "__uuid__controls_alarmunit_states_level",
-        "startTime": "__uuid__controls_alarmunit_states_startTime",
-        "armedAt": "__uuid__controls_alarmunit_states_armedAt",
-        "nextLevelAt": "__uuid__controls_alarmunit_states_nextLevelAt",
-        "armedDelay": "__uuid__controls_alarmunit_states_armedDelay",
-        "armedDelayTotal": "__uuid__controls_alarmunit_states_armedDelayTotal",
-        "sensors": "__uuid__controls_alarmunit_states_sensors",
-        "disabledMove": "__uuid__controls_alarmunit_states_disabledMove",
-        "events": "__uuid__controls_alarmunit_states_events"
-      },
-      "subControls": {
-        "__uuid__controls_alarmunit/sensors": {
-          "name": "sensors",
-          "type": "Tracker",
-          "uuidAction": "__uuid__controls_alarmunit/sensors",
-          "defaultRating": 0,
-          "isFavorite": false,
-          "isSecured": false,
-          "restrictions": 0,
-          "details": {
-            "maxEntries": 40
-          },
-          "states": {
-            "entries": "__uuid__controls_alarmunit"
-          }
-        }
-      }
-    },
-    "__uuid__controls_irc_v1": {
-      "name": "Intelligent room control",
-      "type": "IRoomController",
-      "uuidAction": "__uuid__controls_irc_v1",
-      "room": "__uuid__rooms_living_room",
-      "cat": "__uuid__cats_heating",
-      "defaultRating": 1,
-      "isFavorite": false,
-      "isSecured": false,
-      "restrictions": 0,
-      "details": {
-        "jLockable": true,
-        "restrictedToMode": 0,
-        "temperatures": {
-          "0": {
-            "isAbsolute": false
-          },
-          "1": {
-            "isAbsolute": true
-          },
-          "2": {
-            "isAbsolute": true
-          },
-          "3": {
-            "isAbsolute": true
-          },
-          "4": {
-            "isAbsolute": true
-          },
-          "5": {
-            "isAbsolute": false
-          },
-          "6": {
-            "isAbsolute": false
-          }
-        },
-        "format": "%.1f°"
-      },
-      "states": {
-        "jLocked": "__uuid__controls_irc_v1_states_jLocked",
-        "tempTarget": "__uuid__controls_irc_v1_states_tempTarget",
-        "tempActual": "__uuid__controls_irc_v1_states_tempActual",
-        "error": "__uuid__controls_irc_v1_states_error",
-        "mode": "__uuid__controls_irc_v1_states_mode",
-        "serviceMode": "__uuid__controls_irc_v1_states_serviceMode",
-        "currHeatTempIx": "__uuid__controls_irc_v1_states_currHeatTempIx",
-        "currCoolTempIx": "__uuid__controls_irc_v1_states_currCoolTempIx",
-        "override": "__uuid__controls_irc_v1_states_override",
-        "isPreparing": "__uuid__controls_irc_v1_states_isPreparing",
-        "valveHeat": "__uuid__controls_irc_v1_states_valveHeat",
-        "valveCool": "__uuid__controls_irc_v1_states_valveCool",
-        "openWindow": "__uuid__controls_irc_v1_states_openWindow",
-        "stop": "__uuid__controls_irc_v1_states_stop",
-        "overrideTotal": "__uuid__controls_irc_v1_states_overrideTotal",
-        "movement": "__uuid__controls_irc_v1_states_movement",
-        "manualMode": "__uuid__controls_irc_v1_states_manualMode",
-        "temperatures": [
-          "__uuid__controls_irc_v1_temp0",
-          "__uuid__controls_irc_v1_temp1",
-          "__uuid__controls_irc_v1_temp2",
-          "__uuid__controls_irc_v1_temp3",
-          "__uuid__controls_irc_v1_temp4",
-          "__uuid__controls_irc_v1_temp5",
-          "__uuid__controls_irc_v1_temp6"
-        ]
-      },
-      "subControls": {
-        "__uuid__controls_irc_v1_subControls_heating": {
-          "name": "Heating",
-          "type": "IRCDaytimer",
-          "uuidAction": "__uuid__controls_irc_v1_subControls_heating",
-          "defaultRating": 0,
-          "isFavorite": false,
-          "isSecured": false,
-          "restrictions": 0,
-          "details": {
-            "analog": true,
-            "format": "%.1f°"
-          },
-          "states": {
-            "entriesAndDefaultValue": "__uuid__controls_irc_v1_subControls_heating",
-            "mode": "__uuid__controls_irc_v1_subControls_heating_states_mode",
-            "modeList": "__uuid__controls_irc_v1_subControls_heating_states_modeList",
-            "value": "__uuid__controls_irc_v1_subControls_heating_states_value"
-          }
-        },
-        "__uuid__controls_irc_v1_subControls_cooling": {
-          "name": "Cooling",
-          "type": "IRCDaytimer",
-          "uuidAction": "__uuid__controls_irc_v1_subControls_cooling",
-          "defaultRating": 0,
-          "isFavorite": false,
-          "isSecured": false,
-          "restrictions": 0,
-          "details": {
-            "analog": true,
-            "format": "%.1f°"
-          },
-          "states": {
-            "entriesAndDefaultValue": "__uuid__controls_irc_v1_subControls_cooling",
-            "mode": "__uuid__controls_irc_v1_subControls_cooling_states_mode",
-            "modeList": "__uuid__controls_irc_v1_subControls_cooling_states_modeList",
-            "value": "__uuid__controls_irc_v1_subControls_cooling_states_value"
-          }
-        }
-      }
-    },
-    "__uuid__controls_daytimer": {
-      "name": "Lighting timer",
-      "type": "Daytimer",
-      "uuidAction": "__uuid__controls_daytimer",
-      "room": "__uuid__rooms_central",
-      "cat": "__uuid__cats_lighting",
-      "defaultRating": 0,
-      "isFavorite": false,
-      "isSecured": false,
-      "defaultIcon": null,
-      "restrictions": 0,
-      "details": {
-        "jLockable": true,
-        "analog": false,
-        "text": {
-          "on": "Actief",
-          "off": "Inactief"
-        }
-      },
-      "states": {
-        "jLocked": "__uuid__controls_daytimer_states_jLocked",
-        "mode": "__uuid__controls_daytimer_states_mode",
-        "override": "__uuid__controls_daytimer_states_override",
-        "value": "__uuid__controls_daytimer_states_value",
-        "needsActivation": "__uuid__controls_daytimer_states_needsActivation",
-        "modeList": "__uuid__controls_daytimer_states_modeList",
-        "entriesAndDefaultValue": "__uuid__controls_daytimer",
-        "resetActive": "__uuid__controls_daytimer_states_resetActive"
-      }
-    },
-    "__uuid__controls_loadmanager": {
-      "name": "Loadmanager",
-      "type": "LoadManager",
-      "uuidAction": "__uuid__controls_loadmanager",
-      "room": "__uuid__rooms_central",
-      "cat": "__uuid__cats_energy",
-      "defaultRating": 1,
-      "isFavorite": false,
-      "isSecured": false,
-      "restrictions": 0,
-      "details": {
-        "jLockable": true,
-        "loads": [
-          {
-            "id": 0,
-            "name": "Dishwasher",
-            "power": 2.1,
-            "maxOff": 0,
-            "minOn": 0,
-            "hasStatus": true
-          },
-          {
-            "id": 1,
-            "name": "Washing machine",
-            "power": 2.1,
-            "maxOff": 0,
-            "minOn": 0,
-            "hasStatus": true
-          },
-          {
-            "id": 2,
-            "name": "Oven",
-            "power": 2,
-            "maxOff": 0,
-            "minOn": 0,
-            "hasStatus": false
-          }
-        ],
-        "mode": 0
-      },
-      "states": {
-        "jLocked": "__uuid__controls_loadmanager_states_jLocked",
-        "currentPower": "__uuid__controls_loadmanager_states_currentPower",
-        "peakOverloadPower": "__uuid__controls_loadmanager_states_peakOverloadPower",
-        "maxPower": "__uuid__controls_loadmanager_states_maxPower",
-        "maxTp": "__uuid__controls_loadmanager_states_maxTp",
-        "maxPowerExceeded": "__uuid__controls_loadmanager_states_maxPowerExceeded",
-        "availablePower": "__uuid__controls_loadmanager_states_availablePower",
-        "lockedLoads": "__uuid__controls_loadmanager_states_lockedLoads",
-        "statusLoads": "__uuid__controls_loadmanager_states_statusLoads"
-      },
-      "links": [
-        "__uuid_unknonw",
-        "__uuid_unknonw",
-        "__uuid_unknonw"
-      ]
-    },
-    "__uuid__controls_irc_v2": {
-      "name": "Intelligent Room Controller v2",
-      "type": "IRoomControllerV2",
-      "uuidAction": "__uuid__controls_irc_v2",
-      "room": "__uuid__rooms_bedroom",
-      "cat": "__uuid__cats_heating",
-      "defaultRating": 2,
-      "isFavorite": false,
-      "isSecured": false,
-      "restrictions": 0,
-      "details": {
-        "jLockable": true,
-        "controlHistory": true,
-        "hasHistory": 20,
-        "timerModes": [
-          {
-            "name": "Comfort temperature",
-            "description": "Comfort",
-            "id": 1
-          },
-          {
-            "name": "Eco temperature",
-            "description": "Saving Mode",
-            "id": 0
-          },
-          {
-            "name": "Off (building protection)",
-            "description": "Building protection",
-            "id": 2
-          }
-        ],
-        "format": "%.1f°",
-        "connectedInputs": 0,
-        "possibleCapabilities": 0,
-        "singleComfortTemperature": false,
-        "linkedAcControls": []
-      },
-      "states": {
-        "jLocked": "__uuid__controls_irc_v2_states_jLocked",
-        "tempActual": "__uuid__controls_irc_v2_states_tempActual",
-        "tempTarget": "__uuid__controls_irc_v2_states_tempTarget",
-        "comfortTemperature": "__uuid__controls_irc_v2_states_comfortTemperature",
-        "comfortTemperatureCool": "__uuid__controls_irc_v2_states_comfortTemperatureCool",
-        "comfortTolerance": "__uuid__controls_irc_v2_states_comfortTolerance",
-        "absentMinOffset": "__uuid__controls_irc_v2_states_absentMinOffset",
-        "absentMaxOffset": "__uuid__controls_irc_v2_states_absentMaxOffset",
-        "frostProtectTemperature": "__uuid__controls_irc_v2_states_frostProtectTemperature",
-        "heatProtectTemperature": "__uuid__controls_irc_v2_states_heatProtectTemperature",
-        "shadingCoolTemp": "__uuid__controls_irc_v2_states_shadingCoolTemp",
-        "shadingHeatTemp": "__uuid__controls_irc_v2_states_shadingHeatTemp",
-        "co2": "__uuid__controls_irc_v2_states_co2",
-        "humidityActual": "__uuid__controls_irc_v2_states_humidityActual",
-        "actualOutdoorTemp": "__uuid__controls_irc_v2_states_actualOutdoorTemp",
-        "currentMode": "__uuid__controls_irc_v2_states_currentMode",
-        "shadingOut": "__uuid__controls_irc_v2_states_shadingOut",
-        "activeMode": "__uuid__controls_irc_v2_states_activeMode",
-        "comfortTemperatureOffset": "__uuid__controls_irc_v2_states_comfortTemperatureOffset",
-        "overrideEntries": "__uuid__controls_irc_v2_states_overrideEntries",
-        "prepareState": "__uuid__controls_irc_v2_states_prepareState",
-        "useOutdoor": "__uuid__controls_irc_v2_states_useOutdoor",
-        "operatingMode": "__uuid__controls_irc_v2_states_operatingMode",
-        "overrideReason": "__uuid__controls_irc_v2_states_overrideReason",
-        "excessEnergyTempOffset": "__uuid__controls_irc_v2_states_excessEnergyTempOffset",
-        "averageOutdoorTemp": "__uuid__controls_irc_v2_states_averageOutdoorTemp",
-        "temperatureBoundaryInfo": "__uuid__controls_irc_v2_states_temperatureBoundaryInfo",
-        "capabilities": "__uuid__controls_irc_v2_states_capabilities",
-        "openWindow": "__uuid__controls_irc_v2_states_jLocked"
-      },
-      "subControls": {
-        "__uuid__controls_irc_v2_subcontrols_heating_and_cooling": {
-          "name": "Heating and Cooling",
-          "type": "IRCV2Daytimer",
-          "uuidAction": "__uuid__controls_irc_v2_subcontrols_heating_and_cooling",
-          "defaultRating": 0,
-          "isFavorite": false,
-          "isSecured": false,
-          "restrictions": 0,
-          "details": {
-            "analog": true,
-            "format": "%.1f°"
-          },
-          "states": {
-            "entriesAndDefaultValue": "__uuid__controls_irc_v2_subcontrols_heating_and_cooling",
-            "mode": "__uuid__controls_irc_v2_subcontrols_heating_and_cooling_states_mode",
-            "modeList": "__uuid__controls_irc_v2_subcontrols_heating_and_cooling_states_modeList",
-            "value": "__uuid__controls_irc_v2_subcontrols_heating_and_cooling_states_value",
-            "needsActivation": "__uuid__controls_irc_v2_subcontrols_heating_and_cooling_states_needsActivation"
-          }
-        }
-      }
-    }
-  },
-  "modes": {},
-  "times": {},
-  "caller": {},
-  "mailer": {},
-  "mediaServer": {},
-  "autopilot": {},
-  "messageCenter": {},
-  "structureDate": "2025-07-12 11:11:11"
+	"lastModified": "2025-11-18 11:11:11",
+	"msInfo": {
+		"serialNr": "111222333444",
+		"msName": "Demo Miniserver Name",
+		"projectName": "Demo Project Name",
+		"localUrl": "192.168.1.1",
+		"remoteUrl": "dns.loxbuddy.nl/111222333444",
+		"hostname": "",
+		"tempUnit": 0,
+		"currency": "€",
+		"squareMeasure": "m²",
+		"location": "Amsterdam",
+		"latitude": 52.378,
+		"longitude": 4.9,
+		"altitude": 3,
+		"languageCode": "NLD",
+		"heatPeriodStart": "10-01",
+		"heatPeriodEnd": "04-30",
+		"coolPeriodStart": "05-01",
+		"coolPeriodEnd": "09-30",
+		"catTitle": "Categories",
+		"roomTitle": "Rooms",
+		"miniserverType": 2,
+		"deviceMonitor": "__deviceMonitor",
+		"currentUser": {
+			"name": "user",
+			"uuid": "__currentUser_uuid",
+			"isAdmin": false,
+			"changePassword": false,
+			"userRights": 16390
+		}
+	},
+	"partnerInfo": {
+		"name": "LoxBuddy",
+		"image": "__uuid__partner_info_image.png",
+		"details": {
+			"phoneNumber": "+31 6 1234 5678",
+			"eMailAddress": "info@loxbuddy.nl",
+			"website": "www.loxbuddy.nl"
+		}
+	},
+	"globalStates": {
+		"operatingMode": "__uuid__globalStates_operatingMode",
+		"sunrise": "__uuid__globalStates_sunrise",
+		"sunset": "__uuid__globalStates_sunset",
+		"pastTasks": "__uuid__globalStates_pastTasks",
+		"plannedTasks": "__uuid__globalStates_plannedTasks",
+		"notifications": "__uuid__globalStates_notifications",
+		"modifications": "__uuid__globalStates_modifications",
+		"favColorSequences": "__uuid__globalStates_favColorSequences",
+		"favColors": "__uuid__globalStates_favColors",
+		"miniserverTime": "__uuid__globalStates_miniserverTime",
+		"liveSearch": "__uuid__globalStates_liveSearch",
+		"userSettings": "__uuid__globalStates_userSettings",
+		"userSettingsTs": "__uuid__globalStates_userSettingsTs",
+		"cloudservice": "__uuid__globalStates_cloudservice",
+		"trustVersion": "__uuid__globalStates_trustVersion",
+		"propsVersion": "__uuid__globalStates_propsVersion",
+		"hasInternet": "__uuid__globalStates_hasInternet"
+	},
+	"operatingModes": {
+		"0": "Fiesta",
+		"1": "Holiday",
+		"2": "Day off",
+		"3": "Monday",
+		"4": "Tuesday",
+		"5": "Wednesday",
+		"6": "Thursday",
+		"7": "Friday",
+		"8": "Saturday",
+		"9": "Sunday",
+		"10": "Heating period",
+		"11": "Cooling period",
+		"-1": "Alarm",
+		"-2": "Presence simulation",
+		"-3": "Home in deep sleep",
+		"-4": "Increased temperature",
+		"-5": "Party",
+		"-6": "Absent",
+		"-7": "Eco",
+		"-8": "Comfort continued",
+		"-1000": "Sleep",
+		"-1003": "Technical alarm",
+		"-1004": "Present",
+		"-1002": "Frost protection",
+		"-1001": "Storm protection"
+	},
+	"rooms": {
+		"__uuid__rooms_living_room": {
+			"uuid": "__uuid__rooms_living_room",
+			"name": "Living room",
+			"image": "IconsFilled/sofa-1.svg",
+			"defaultRating": 10,
+			"isFavorite": false,
+			"type": 4,
+			"color": "#69C350"
+		},
+		"__uuid__rooms_central": {
+			"uuid": "__uuid__rooms_central",
+			"name": "Central",
+			"image": "IconsFilled/central.svg",
+			"defaultRating": 0,
+			"isFavorite": false,
+			"type": 4,
+			"color": "#69C350"
+		},
+		"__uuid__rooms_outside": {
+			"uuid": "__uuid__rooms_outside",
+			"name": "Outside",
+			"image": "IconsFilled/tree.svg",
+			"defaultRating": 1,
+			"isFavorite": true,
+			"type": 2,
+			"color": "#69C350"
+		},
+		"__uuid__rooms_kitchen": {
+			"uuid": "__uuid__rooms_kitchen",
+			"name": "Kitchen",
+			"image": "IconsFilled/knife-fork.svg",
+			"defaultRating": 9,
+			"isFavorite": true,
+			"type": 2,
+			"color": "#69C350"
+		},
+		"__uuid__rooms_bathroom": {
+			"uuid": "__uuid__rooms_bathroom",
+			"name": "Bathroom",
+			"image": "IconsFilled/shower-1.svg",
+			"defaultRating": 1,
+			"isFavorite": true,
+			"type": 2,
+			"color": "#69C350"
+		},
+		"__uuid__rooms_bedroom": {
+			"uuid": "__uuid__rooms_bedroom",
+			"name": "Bedroom",
+			"image": "IconsFilled/bed-double.svg",
+			"defaultRating": 5,
+			"isFavorite": false,
+			"type": 2,
+			"color": "#69C350"
+		}
+	},
+	"cats": {
+		"__uuid__cats_alarm": {
+			"uuid": "__uuid__cats_alarm",
+			"name": "Alarm",
+			"image": "IconsFilled/alarm-1.svg",
+			"defaultRating": 0,
+			"isFavorite": false,
+			"type": "undefined",
+			"color": "#E4354A"
+		},
+		"__uuid__cats_lighting": {
+			"uuid": "__uuid__cats_lighting",
+			"name": "Lighting",
+			"image": "IconsFilled/lightbulb-3.svg",
+			"defaultRating": 0,
+			"isFavorite": false,
+			"type": "undefined",
+			"color": "#E4354A"
+		},
+		"__uuid__cats_pv": {
+			"uuid": "__uuid__cats_pv",
+			"name": "PV",
+			"image": "IconsFilled/solar-panel.svg",
+			"defaultRating": 0,
+			"isFavorite": false,
+			"type": "undefined",
+			"color": "#69C350"
+		},
+		"__uuid__cats_energy": {
+			"uuid": "__uuid__cats_energy",
+			"name": "Energy",
+			"image": "IconsFilled/flash-1.svg",
+			"defaultRating": 0,
+			"isFavorite": false,
+			"type": "undefined",
+			"color": "#327AE7"
+		},
+		"__uuid__cats_sunscreens": {
+			"uuid": "__uuid__cats_sunscreens",
+			"name": "Sunscreens",
+			"image": "IconsFilled/blinds-half-closed.svg",
+			"defaultRating": 1,
+			"isFavorite": true,
+			"type": "shading",
+			"color": "#1DB0D9"
+		},
+		"__uuid__cats_safety": {
+			"uuid": "__uuid__cats_safety",
+			"name": "Safety",
+			"image": "IconsFilled/cc-camera.svg",
+			"defaultRating": 0,
+			"isFavorite": false,
+			"type": "undefined",
+			"color": "#69C350"
+		},
+		"__uuid__cats_heating": {
+			"uuid": "__uuid__cats_heating",
+			"name": "Heating",
+			"image": "IconsFilled/radiator.svg",
+			"defaultRating": 2,
+			"isFavorite": true,
+			"type": "indoortemperature",
+			"color": "#69C350"
+		},
+		"__uuid__cats_alarmclock": {
+			"uuid": "__uuid__cats_alarmclock",
+			"name": "Alarm Clock",
+			"image": "IconsFilled/alarm-clock.svg",
+			"defaultRating": 0,
+			"isFavorite": false,
+			"type": "undefined",
+			"color": "#69C350"
+		}
+	},
+	"controls": {
+		"__uuid__controls_status": {
+			"name": "Status",
+			"type": "TextState",
+			"uuidAction": "__uuid__controls_status",
+			"room": "__uuid__rooms_central",
+			"cat": "__uuid__cats_lighting",
+			"defaultRating": 0,
+			"isFavorite": true,
+			"isSecured": false,
+			"defaultIcon": "IconsFilled/central.svg",
+			"restrictions": 0,
+			"states": {
+				"textAndIcon": "__uuid__controls_status",
+				"iconAndColor": "__uuid__controls_status_states_iconAndColor"
+			},
+			"links": [
+				"__uuid__controls_switch",
+				"__uuid__controls_pv_meter",
+				"__uuid__controls_window_monitor"
+			]
+		},
+		"__uuid__controls_switch": {
+			"name": "Switch",
+			"type": "Switch",
+			"uuidAction": "__uuid__controls_switch",
+			"room": "__uuid__rooms_living_room",
+			"cat": "__uuid__cats_lighting",
+			"defaultRating": 0,
+			"isFavorite": true,
+			"isSecured": false,
+			"defaultIcon": null,
+			"restrictions": 0,
+			"details": {
+				"jLockable": false,
+				"type": 71
+			},
+			"states": {
+				"active": "__uuid__controls_switch_states_active"
+			}
+		},
+		"__uuid__controls_pv_meter": {
+			"name": "PV meter",
+			"type": "Meter",
+			"uuidAction": "__uuid__controls_pv_meter",
+			"room": "__uuid__rooms_central",
+			"cat": "__uuid__cats_pv",
+			"defaultRating": 2,
+			"isFavorite": true,
+			"isSecured": false,
+			"defaultIcon": null,
+			"restrictions": 0,
+			"details": {
+				"jLockable": true,
+				"type": "unidirectional",
+				"displayType": 0,
+				"actualFormat": "%.3f kW",
+				"totalFormat": "%.1f kWh",
+				"powerName": "Consumption"
+			},
+			"states": {
+				"jLocked": "__uuid__controls_pv_meter_states_jLocked",
+				"actual": "__uuid__controls_pv_meter_states_actual",
+				"total": "__uuid__controls_pv_meter_states_total",
+				"totalDay": "__uuid__controls_pv_meter_states_totalDay",
+				"totalWeek": "__uuid__controls_pv_meter_states_totalWeek",
+				"totalMonth": "__uuid__controls_pv_meter_states_totalMonth",
+				"totalYear": "__uuid__controls_pv_meter_states_totalYear"
+			},
+			"statisticV2": {
+				"groups": [
+					{
+						"id": "1",
+						"mode": 11,
+						"dataPoints": [
+							{
+								"title": "Consumption",
+								"format": "%.3f kW",
+								"output": "actual"
+							}
+						]
+					},
+					{
+						"id": "2",
+						"mode": 11,
+						"accumulated": true,
+						"dataPoints": [
+							{
+								"title": "Readings",
+								"format": "%.1f kWh",
+								"output": "total"
+							}
+						]
+					}
+				]
+			},
+			"links": ["__uuid_unknonw", "__uuid_unknown"]
+		},
+		"__uuid__controls_battery": {
+			"name": "Batterie",
+			"type": "Meter",
+			"uuidAction": "__uuid__controls_battery",
+			"room": "__uuid__rooms_central",
+			"cat": "__uuid__cats_energy",
+			"defaultRating": 0,
+			"isFavorite": false,
+			"isSecured": false,
+			"defaultIcon": "IconsFilled/battery-full.svg",
+			"restrictions": 0,
+			"details": {
+				"jLockable": true,
+				"type": "storage",
+				"displayType": 0,
+				"actualFormat": "%.3f kW",
+				"totalFormat": "%.1f kWh",
+				"powerName": "Consumption",
+				"storageFormat": "%.2f%%",
+				"storageMax": 100
+			},
+			"states": {
+				"jLocked": "__uuid__controls_battery_states_jLocked",
+				"actual": "__uuid__controls_battery_states_actual",
+				"total": "__uuid__controls_battery_states_total",
+				"totalNeg": "__uuid__controls_battery_states_totalNeg",
+				"storage": "__uuid__controls_battery_states_storage",
+				"totalDay": "__uuid__controls_battery_states_totalDay",
+				"totalWeek": "__uuid__controls_battery_states_totalWeek",
+				"totalMonth": "__uuid__controls_battery_states_totalMonth",
+				"totalYear": "__uuid__controls_battery_states_totalYear",
+				"totalNegDay": "__uuid__controls_battery_states_totalNegDay",
+				"totalNegWeek": "__uuid__controls_battery_states_totalNegWeek",
+				"totalNegMonth": "__uuid__controls_battery_states_totalNegMonth",
+				"totalNegYear": "__uuid__controls_battery_states_totalNegYear"
+			},
+			"statisticV2": {
+				"groups": [
+					{
+						"id": "1",
+						"mode": 11,
+						"dataPoints": [
+							{
+								"title": "Consumption",
+								"format": "%.3f kW",
+								"output": "actual"
+							}
+						]
+					},
+					{
+						"id": "2",
+						"mode": 11,
+						"accumulated": true,
+						"dataPoints": [
+							{
+								"title": "Readings",
+								"format": "%.1f kWh",
+								"output": "total"
+							},
+							{
+								"title": "Readings",
+								"format": "%.1f kWh",
+								"output": "totalNeg"
+							}
+						]
+					},
+					{
+						"id": "3",
+						"mode": 11,
+						"dataPoints": [
+							{
+								"title": "Storage",
+								"format": "%.2f%%",
+								"output": "storageLevel"
+							}
+						]
+					}
+				]
+			},
+			"links": [
+				"__uuid_unknonw",
+				"__uuid_unknonw",
+				"__uuid_unknonw",
+				"__uuid_unknonw",
+				"__uuid_unknonw",
+				"__uuid_unknonw",
+				"__uuid_unknonw",
+				"__uuid_unknonw",
+				"__uuid_unknonw",
+				"__uuid_unknonw",
+				"__uuid_unknonw",
+				"__uuid_unknonw"
+			]
+		},
+		"__uuid__controls_net": {
+			"name": "Net",
+			"type": "Meter",
+			"uuidAction": "__uuid__controls_net",
+			"room": "__uuid__rooms_central",
+			"cat": "__uuid__cats_energy",
+			"defaultRating": 1,
+			"isFavorite": false,
+			"isSecured": false,
+			"defaultIcon": "IconsFilled/electric-pole.svg",
+			"restrictions": 0,
+			"details": {
+				"jLockable": true,
+				"type": "bidirectional",
+				"displayType": 0,
+				"actualFormat": "%.3f kW",
+				"totalFormat": "%.1f kWh",
+				"powerName": "Consumption"
+			},
+			"states": {
+				"jLocked": "__uuid__controls_net_states_jLocked",
+				"actual": "__uuid__controls_net_states_actual",
+				"total": "__uuid__controls_net_states_total",
+				"totalNeg": "__uuid__controls_net_states_totalNeg",
+				"totalDay": "__uuid__controls_net_states_totalDay",
+				"totalWeek": "__uuid__controls_net_states_totalWeek",
+				"totalMonth": "__uuid__controls_net_states_totalMonth",
+				"totalYear": "__uuid__controls_net_states_totalYear",
+				"totalNegDay": "__uuid__controls_net_states_totalNegDay",
+				"totalNegWeek": "__uuid__controls_net_states_totalNegWeek",
+				"totalNegMonth": "__uuid__controls_net_states_totalNegMonth",
+				"totalNegYear": "__uuid__controls_net_states_totalNegYear"
+			},
+			"statisticV2": {
+				"groups": [
+					{
+						"id": "1",
+						"mode": 11,
+						"dataPoints": [
+							{
+								"title": "Consumption",
+								"format": "%.3f kW",
+								"output": "actual"
+							}
+						]
+					},
+					{
+						"id": "2",
+						"mode": 11,
+						"accumulated": true,
+						"dataPoints": [
+							{
+								"title": "Readings",
+								"format": "%.1f kWh",
+								"output": "total"
+							},
+							{
+								"title": "Readings",
+								"format": "%.1f kWh",
+								"output": "totalNeg"
+							}
+						]
+					}
+				]
+			},
+			"links": ["__uuid_unknonw", "__uuid_unknonw", "__uuid_unknonw", "__uuid_unknonw"]
+		},
+		"__uuid__controls_stairslighting": {
+			"name": "Lighting staircase",
+			"type": "TimedSwitch",
+			"uuidAction": "__uuid__controls_stairslighting",
+			"room": "__uuid__rooms_living_room",
+			"cat": "__uuid__cats_lighting",
+			"defaultRating": 1,
+			"isFavorite": true,
+			"isSecured": false,
+			"defaultIcon": null,
+			"restrictions": 0,
+			"details": {
+				"jLockable": true,
+				"isStairwayLs": true
+			},
+			"states": {
+				"jLocked": "__uuid__controls_stairslighting_states_jLocked",
+				"deactivationDelay": "__uuid__controls_stairslighting_states_deactivationDelay",
+				"deactivationDelayTotal": "__uuid__controls_stairslighting_states_deactivationDelayTotal"
+			}
+		},
+		"__uuid__controls_presence_detector": {
+			"name": "Presence Detector",
+			"type": "PresenceDetector",
+			"uuidAction": "__uuid__controls_presence_detector",
+			"room": "__uuid__rooms_living_room",
+			"cat": "__uuid__cats_lighting",
+			"defaultRating": 1,
+			"isFavorite": false,
+			"isSecured": false,
+			"restrictions": 0,
+			"details": {
+				"jLockable": true,
+				"parameterConnections": 0
+			},
+			"states": {
+				"jLocked": "__uuid__controls_presence_detector_states_jLocked",
+				"active": "__uuid__controls_presence_detector_states_active",
+				"locked": "__uuid__controls_presence_detector_states_locked",
+				"events": "__uuid__controls_presence_detector_states_events",
+				"time": "__uuid__controls_presence_detector_states_time",
+				"activeSince": "__uuid__controls_presence_detector_states_activeSince",
+				"infoText": "__uuid__controls_presence_detector_states_infoText"
+			},
+			"subControls": {
+				"__uuid__controls_presence_detector_subControls/sensors": {
+					"name": "sensors",
+					"type": "Tracker",
+					"uuidAction": "__uuid__controls_presence_detector_subControls/sensors",
+					"defaultRating": 0,
+					"isFavorite": false,
+					"isSecured": false,
+					"restrictions": 0,
+					"details": {
+						"maxEntries": 20
+					},
+					"states": {
+						"entries": "__uuid__controls_presence_detector_subControls"
+					}
+				}
+			}
+		},
+		"__uuid__controls_sunscreen_blinds": {
+			"name": "Sunscreen blinds",
+			"type": "Jalousie",
+			"uuidAction": "__uuid__controls_sunscreen_blinds",
+			"room": "__uuid__rooms_living_room",
+			"cat": "__uuid__cats_sunscreens",
+			"defaultRating": 7,
+			"isFavorite": false,
+			"isSecured": false,
+			"restrictions": 0,
+			"details": {
+				"jLockable": true,
+				"controlHistory": true,
+				"hasHistory": 100,
+				"isAutomatic": true,
+				"animation": 0,
+				"type": 348
+			},
+			"states": {
+				"jLocked": "__uuid__controls_sunscreen_blinds_states_jLocked",
+				"infoText": "__uuid__controls_sunscreen_blinds_states_infoText",
+				"up": "__uuid__controls_sunscreen_blinds_states_up",
+				"down": "__uuid__controls_sunscreen_blinds_states_down",
+				"position": "__uuid__controls_sunscreen_blinds_states_position",
+				"shadePosition": "__uuid__controls_sunscreen_blinds_states_shadePosition",
+				"safetyActive": "__uuid__controls_sunscreen_blinds_states_safetyActive",
+				"autoAllowed": "__uuid__controls_sunscreen_blinds_states_autoAllowed",
+				"autoActive": "__uuid__controls_sunscreen_blinds_states_autoActive",
+				"locked": "__uuid__controls_sunscreen_blinds_states_locked",
+				"autoInfoText": "__uuid__controls_sunscreen_blinds_states_autoInfoText",
+				"autoState": "__uuid__controls_sunscreen_blinds_states_autoState",
+				"deviceState": "__uuid__controls_sunscreen_blinds_states_deviceState",
+				"targetPosition": "__uuid__controls_sunscreen_blinds_states_targetPosition",
+				"targetPositionLamelle": "__uuid__controls_sunscreen_blinds_states_targetPositionLamelle",
+				"adjustingEndPos": "__uuid__controls_sunscreen_blinds_states_adjustingEndPos"
+			},
+			"links": ["__uuid_unknonw"]
+		},
+		"__uuid__controls_sunscreen_kitchen": {
+			"name": "Screen Kitchen",
+			"type": "Jalousie",
+			"uuidAction": "__uuid__controls_sunscreen_kitchen",
+			"room": "__uuid__rooms_living_room",
+			"cat": "__uuid__cats_sunscreens",
+			"defaultRating": 1,
+			"isFavorite": false,
+			"isSecured": false,
+			"restrictions": 0,
+			"details": {
+				"jLockable": true,
+				"controlHistory": true,
+				"hasHistory": 20,
+				"isAutomatic": true,
+				"animation": 1,
+				"type": 348
+			},
+			"states": {
+				"jLocked": "__uuid__controls_sunscreen_kitchen_states_jLocked",
+				"infoText": "__uuid__controls_sunscreen_kitchen_states_infoText",
+				"up": "__uuid__controls_sunscreen_kitchen_states_up",
+				"down": "__uuid__controls_sunscreen_kitchen_states_down",
+				"position": "__uuid__controls_sunscreen_kitchen_states_position",
+				"shadePosition": "__uuid__controls_sunscreen_kitchen_states_shadePosition",
+				"safetyActive": "__uuid__controls_sunscreen_kitchen_states_safetyActive",
+				"autoAllowed": "__uuid__controls_sunscreen_kitchen_states_autoAllowed",
+				"autoActive": "__uuid__controls_sunscreen_kitchen_states_autoActive",
+				"locked": "__uuid__controls_sunscreen_kitchen_states_locked",
+				"autoInfoText": "__uuid__controls_sunscreen_kitchen_states_autoInfoText",
+				"autoState": "__uuid__controls_sunscreen_kitchen_states_autoState",
+				"deviceState": "__uuid__controls_sunscreen_kitchen_states_deviceState",
+				"targetPosition": "__uuid__controls_sunscreen_kitchen_states_targetPosition",
+				"targetPositionLamelle": "__uuid__controls_sunscreen_kitchen_states_targetPositionLamelle",
+				"adjustingEndPos": "__uuid__controls_sunscreen_kitchen_states_adjustingEndPos"
+			}
+		},
+		"__uuid__controls_sunscreen_central": {
+			"name": "Sunscreen central",
+			"type": "CentralJalousie",
+			"uuidAction": "__uuid__controls_sunscreen_central",
+			"room": "__uuid__rooms_living_room",
+			"cat": "__uuid__cats_sunscreens",
+			"defaultRating": 1,
+			"isFavorite": false,
+			"isSecured": false,
+			"restrictions": 0,
+			"details": {
+				"jLockable": true,
+				"controls": [
+					{
+						"id": 0,
+						"uuid": "__uuid__controls_sunscreen_blinds"
+					},
+					{
+						"id": 1,
+						"uuid": "__uuid__controls_sunscreen_kitchen"
+					}
+				],
+				"parameterConnections": 0
+			},
+			"states": {
+				"jLocked": "__uuid__controls_sunscreen_central_states_jLocked",
+				"events": "__uuid__controls_sunscreen_central_states_events"
+			}
+		},
+		"__uuid__controls_gate_1": {
+			"name": "Garage door",
+			"type": "Gate",
+			"uuidAction": "__uuid__controls_gate_1",
+			"room": "__uuid__rooms_outside",
+			"cat": "__uuid__cats_safety",
+			"defaultRating": 0,
+			"isFavorite": false,
+			"isSecured": true,
+			"restrictions": 0,
+			"details": {
+				"jLockable": true,
+				"controlHistory": true,
+				"hasHistory": 20,
+				"animation": 0
+			},
+			"states": {
+				"jLocked": "__uuid__controls_gate_1_states_jLocked",
+				"position": "__uuid__controls_gate_1_states_position",
+				"active": "__uuid__controls_gate_1_states_active",
+				"preventOpen": "__uuid__controls_gate_1_states_preventOpen",
+				"preventClose": "__uuid__controls_gate_1_states_preventClose"
+			}
+		},
+		"__uuid__controls_gate_2": {
+			"name": "Gate entry",
+			"type": "Gate",
+			"uuidAction": "__uuid__controls_gate_2",
+			"room": "__uuid__rooms_outside",
+			"cat": "__uuid__cats_safety",
+			"defaultRating": 0,
+			"isFavorite": false,
+			"isSecured": true,
+			"restrictions": 0,
+			"details": {
+				"jLockable": true,
+				"controlHistory": true,
+				"hasHistory": 20,
+				"animation": 5
+			},
+			"states": {
+				"jLocked": "__uuid__controls_gate_2_states_jLocked",
+				"position": "__uuid__controls_gate_2_states_position",
+				"active": "__uuid__controls_gate_2_states_active",
+				"preventOpen": "__uuid__controls_gate_2_states_preventOpen",
+				"preventClose": "__uuid__controls_gate_2_states_preventClose"
+			}
+		},
+		"__uuid__controls_battery_level": {
+			"name": "Battery level",
+			"type": "ValueSelector",
+			"uuidAction": "__uuid__controls_battery_level",
+			"room": "__uuid__rooms_central",
+			"cat": "__uuid__cats_energy",
+			"defaultRating": 0,
+			"isFavorite": false,
+			"isSecured": false,
+			"defaultIcon": null,
+			"restrictions": 0,
+			"details": {
+				"jLockable": true,
+				"increaseOnly": false,
+				"format": "%.0f %%"
+			},
+			"states": {
+				"jLocked": "__uuid__controls_battery_level_states_jLocked",
+				"min": "__uuid__controls_battery_level_states_min",
+				"max": "__uuid__controls_battery_level_states_max",
+				"step": "__uuid__controls_battery_level_states_step",
+				"value": "__uuid__controls_battery_level_states_value"
+			}
+		},
+		"__uuid__controls_window_monitor": {
+			"name": "Window monitor",
+			"type": "WindowMonitor",
+			"uuidAction": "__uuid__controls_window_monitor",
+			"room": "__uuid__rooms_central",
+			"cat": "__uuid__cats_safety",
+			"defaultRating": 8,
+			"isFavorite": true,
+			"isSecured": false,
+			"restrictions": 0,
+			"details": {
+				"jLockable": false,
+				"windows": [
+					{
+						"name": "Window",
+						"installPlace": "",
+						"uuid": "__uuid__controls_window_monitor_window1",
+						"room": "__uuid__rooms_living_room"
+					},
+					{
+						"name": "Window",
+						"installPlace": "",
+						"uuid": "__uuid__controls_window_monitor_window2",
+						"room": "__uuid__rooms_living_room"
+					},
+					{
+						"name": "Window",
+						"installPlace": "",
+						"uuid": "__uuid__controls_window_monitor_window3",
+						"room": "__uuid__rooms_living_room"
+					},
+					{
+						"name": "Window",
+						"installPlace": "",
+						"uuid": "__uuid__controls_window_monitor_window4",
+						"room": "__uuid__rooms_kitchen"
+					},
+					{
+						"name": "Window",
+						"installPlace": "",
+						"uuid": "__uuid__controls_window_monitor_window5",
+						"room": "__uuid__rooms_bathroom"
+					},
+					{
+						"name": "Window",
+						"installPlace": "",
+						"uuid": "__uuid__controls_window_monitor_window6",
+						"room": "__uuid__rooms_bathroom"
+					}
+				]
+			},
+			"states": {
+				"numOpen": "__uuid__controls_window_monitor_states_numOpen",
+				"numClosed": "__uuid__controls_window_monitor_states_numClosed",
+				"numTilted": "__uuid__controls_window_monitor_states_numTilted",
+				"numOffline": "__uuid__controls_window_monitor_states_numOffline",
+				"numLocked": "__uuid__controls_window_monitor_states_numLocked",
+				"numUnlocked": "__uuid__controls_window_monitor_states_numUnlocked",
+				"windowStates": "__uuid__controls_window_monitor_states_windowStates"
+			}
+		},
+		"__uuid__controls_heatingmode": {
+			"name": "Heating mode",
+			"type": "Radio",
+			"uuidAction": "__uuid__controls_heatingmode",
+			"room": "__uuid__rooms_central",
+			"cat": "__uuid__cats_heating",
+			"defaultRating": 1,
+			"isFavorite": false,
+			"isSecured": false,
+			"defaultIcon": "IconsFilled/radiator.svg",
+			"restrictions": 0,
+			"details": {
+				"jLockable": true,
+				"allOff": "Normal operation",
+				"outputs": {
+					"1": "Economy",
+					"2": "Comfort continue",
+					"3": "Holiday",
+					"4": "Party",
+					"5": "Increased temperature",
+					"6": "All absent",
+					"7": "House in deep sleep",
+					"8": "Alarm"
+				}
+			},
+			"states": {
+				"jLocked": "__uuid__controls_heatingmode_states_jLocked",
+				"activeOutput": "__uuid__controls_heatingmode_states_activeOutput"
+			}
+		},
+		"__uuid__controls_loading": {
+			"name": "Loading",
+			"type": "Slider",
+			"uuidAction": "__uuid__controls_loading",
+			"room": "__uuid__rooms_central",
+			"cat": "__uuid__cats_energy",
+			"defaultRating": 0,
+			"isFavorite": false,
+			"isSecured": false,
+			"defaultIcon": null,
+			"restrictions": 0,
+			"details": {
+				"jLockable": false,
+				"format": "%.1f kW",
+				"min": 0,
+				"max": 11,
+				"step": 0.1
+			},
+			"states": {
+				"value": "__uuid__controls_loading_states_value",
+				"error": "__uuid__controls_loading_states_error"
+			}
+		},
+		"__uuid__controls_dimmer_1": {
+			"name": "Dimmer living room",
+			"type": "Dimmer",
+			"uuidAction": "__uuid__controls_dimmer_1",
+			"room": "__uuid__rooms_living_room",
+			"cat": "__uuid__cats_lighting",
+			"defaultRating": 0,
+			"isFavorite": false,
+			"isSecured": false,
+			"restrictions": 0,
+			"details": {
+				"jLockable": true
+			},
+			"states": {
+				"jLocked": "__uuid__controls_dimmer_1_states_jLocked",
+				"position": "__uuid__controls_dimmer_1_states_position",
+				"min": "__uuid__controls_dimmer_1_states_min",
+				"max": "__uuid__controls_dimmer_1_states_max",
+				"step": "__uuid__controls_dimmer_1_states_step"
+			}
+		},
+		"__uuid__controls_phase_1": {
+			"name": "Electricity Phase 1",
+			"type": "InfoOnlyAnalog",
+			"uuidAction": "__uuid__controls_phase_1",
+			"room": "__uuid__rooms_central",
+			"cat": "__uuid__cats_energy",
+			"defaultRating": 0,
+			"isFavorite": false,
+			"isSecured": false,
+			"defaultIcon": "IconsFilled/flash-1.svg",
+			"restrictions": 0,
+			"details": {
+				"jLockable": false,
+				"format": "%.1f A"
+			},
+			"states": {
+				"value": "__uuid__controls_phase_1",
+				"error": "__uuid__controls_phase_1_states_error"
+			}
+		},
+		"__uuid__controls_heating_request": {
+			"name": "Heating request",
+			"type": "InfoOnlyDigital",
+			"uuidAction": "__uuid__controls_heating_request",
+			"room": "__uuid__rooms_central",
+			"cat": "__uuid__cats_energy",
+			"defaultRating": 0,
+			"isFavorite": false,
+			"isSecured": false,
+			"defaultIcon": null,
+			"restrictions": 0,
+			"details": {
+				"jLockable": false,
+				"text": {
+					"off": "Off",
+					"on": "On"
+				},
+				"color": {
+					"off": "#E73246",
+					"on": "#69C350"
+				}
+			},
+			"states": {
+				"active": "__uuid__controls_heating_request"
+			}
+		},
+		"__uuid__controls_reset_box": {
+			"name": "Reset box",
+			"type": "Pushbutton",
+			"uuidAction": "__uuid__controls_reset_box",
+			"room": "__uuid__rooms_central",
+			"cat": "__uuid__cats_energy",
+			"defaultRating": 0,
+			"isFavorite": false,
+			"isSecured": false,
+			"defaultIcon": null,
+			"restrictions": 0,
+			"details": {
+				"jLockable": true
+			},
+			"states": {
+				"jLocked": "__uuid__controls_reset_box_states_jLocked",
+				"active": "__uuid__controls_reset_box_states_active"
+			}
+		},
+		"__uuid__controls_lightcontrollerv2_1": {
+			"name": "Lighting living room",
+			"type": "LightControllerV2",
+			"uuidAction": "__uuid__controls_lightcontrollerv2_1",
+			"room": "__uuid__rooms_living_room",
+			"cat": "__uuid__cats_lighting",
+			"defaultRating": 1,
+			"isFavorite": false,
+			"isSecured": false,
+			"restrictions": 0,
+			"details": {
+				"jLockable": true,
+				"controlHistory": true,
+				"hasHistory": 20,
+				"movementScene": 1,
+				"masterValue": "__uuid__controls_lightcontrollerv2_1/masterValue"
+			},
+			"states": {
+				"jLocked": "__uuid__controls_lightcontrollerv2_1_states_jLocked",
+				"activeMoods": "__uuid__controls_lightcontrollerv2_1_states_activeMoods",
+				"moodList": "__uuid__controls_lightcontrollerv2_1_states_moodList",
+				"activeMoodsNum": "__uuid__controls_lightcontrollerv2_1_states_activeMoodsNum",
+				"favoriteMoods": "__uuid__controls_lightcontrollerv2_1_states_favoriteMoods",
+				"additionalMoods": "__uuid__controls_lightcontrollerv2_1_states_additionalMoods",
+				"circuitNames": "__uuid__controls_lightcontrollerv2_1_states_circuitNames",
+				"daylightConfig": "__uuid__controls_lightcontrollerv2_1_states_daylightConfig",
+				"presence": "__uuid__controls_lightcontrollerv2_1_states_presence"
+			},
+			"subControls": {
+				"__uuid__controls_lightcontrollerv2_1/masterValue": {
+					"name": "Master Brightness",
+					"type": "Dimmer",
+					"uuidAction": "__uuid__controls_lightcontrollerv2_1/masterValue",
+					"defaultRating": 0,
+					"isFavorite": false,
+					"isSecured": false,
+					"restrictions": 0,
+					"states": {
+						"position": "__uuid__controls_lightcontrollerv2_1/masterValue_states_position",
+						"min": "__uuid__controls_lightcontrollerv2_1/masterValue_states_min",
+						"max": "__uuid__controls_lightcontrollerv2_1/masterValue_states_max",
+						"step": "__uuid__controls_lightcontrollerv2_1/masterValue_states_step"
+					}
+				},
+				"__uuid__controls_lightcontrollerv2_1/masterColor": {
+					"name": "Master Color",
+					"type": "ColorPickerV2",
+					"uuidAction": "__uuid__controls_lightcontrollerv2_1/masterColor",
+					"defaultRating": 0,
+					"isFavorite": false,
+					"isSecured": false,
+					"restrictions": 0,
+					"details": {
+						"pickerType": "Rgb"
+					},
+					"states": {
+						"color": "__uuid__controls_lightcontrollerv2_1/masterColor_states_color",
+						"sequence": "__uuid__controls_lightcontrollerv2_1/masterColor_states_sequence",
+						"sequenceColorIdx": "__uuid__controls_lightcontrollerv2_1/masterColor_states_sequenceColorIdx"
+					}
+				},
+				"__uuid__controls_lightcontrollerv2_1/AI1": {
+					"name": "Spotlight",
+					"type": "Dimmer",
+					"uuidAction": "__uuid__controls_lightcontrollerv2_1/AI1",
+					"defaultRating": 0,
+					"isFavorite": false,
+					"isSecured": false,
+					"restrictions": 0,
+					"states": {
+						"position": "__uuid__controls_lightcontrollerv2_1/AI1_states_position",
+						"min": "__uuid__controls_lightcontrollerv2_1/AI1_states_min",
+						"max": "__uuid__controls_lightcontrollerv2_1/AI1_states_max",
+						"step": "__uuid__controls_lightcontrollerv2_1/AI1_states_step"
+					}
+				},
+				"__uuid__controls_lightcontrollerv2_1/AI2": {
+					"name": "Mirror",
+					"type": "Switch",
+					"uuidAction": "__uuid__controls_lightcontrollerv2_1/AI2",
+					"defaultRating": 0,
+					"isFavorite": false,
+					"isSecured": false,
+					"restrictions": 0,
+					"states": {
+						"active": "__uuid__controls_lightcontrollerv2_1/AI2_states_active"
+					}
+				},
+				"__uuid__controls_lightcontrollerv2_1/AI3": {
+					"name": "Color Bottom",
+					"type": "ColorPickerV2",
+					"uuidAction": "__uuid__controls_lightcontrollerv2_1/AI3",
+					"defaultRating": 0,
+					"isFavorite": false,
+					"isSecured": false,
+					"restrictions": 0,
+					"details": {
+						"pickerType": "Rgb"
+					},
+					"states": {
+						"color": "__uuid__controls_lightcontrollerv2_1/AI3_states_color",
+						"sequence": "__uuid__controls_lightcontrollerv2_1/AI3_states_sequence",
+						"sequenceColorIdx": "__uuid__controls_lightcontrollerv2_1/AI3_states_sequenceColorIdx"
+					}
+				},
+				"__uuid__controls_lightcontrollerv2_1/AI4": {
+					"name": "Color Up",
+					"type": "ColorPickerV2",
+					"uuidAction": "__uuid__controls_lightcontrollerv2_1/AI4",
+					"defaultRating": 0,
+					"isFavorite": false,
+					"isSecured": false,
+					"restrictions": 0,
+					"details": {
+						"pickerType": "Rgb"
+					},
+					"states": {
+						"color": "__uuid__controls_lightcontrollerv2_1/AI4_states_color",
+						"sequence": "__uuid__controls_lightcontrollerv2_1/AI4_states_sequence",
+						"sequenceColorIdx": "__uuid__controls_lightcontrollerv2_1/AI4_states_sequenceColorIdx"
+					}
+				}
+			}
+		},
+		"__uuid__controls_lightcontrollerv2_2": {
+			"name": "Lighting kitchen",
+			"type": "LightControllerV2",
+			"uuidAction": "__uuid__controls_lightcontrollerv2_2",
+			"room": "__uuid__rooms_kitchen",
+			"cat": "__uuid__cats_lighting",
+			"defaultRating": 1,
+			"isFavorite": false,
+			"isSecured": false,
+			"restrictions": 0,
+			"details": {
+				"jLockable": true,
+				"controlHistory": true,
+				"hasHistory": 20,
+				"movementScene": 1,
+				"masterValue": "__uuid__controls_lightcontrollerv2_2/masterValue"
+			},
+			"states": {
+				"jLocked": "__uuid__controls_lightcontrollerv2_2_states_jLocked",
+				"activeMoods": "__uuid__controls_lightcontrollerv2_2_states_activeMoods",
+				"moodList": "__uuid__controls_lightcontrollerv2_2_states_moodList",
+				"activeMoodsNum": "__uuid__controls_lightcontrollerv2_2_states_activeMoodsNum",
+				"favoriteMoods": "__uuid__controls_lightcontrollerv2_2_states_favoriteMoods",
+				"additionalMoods": "__uuid__controls_lightcontrollerv2_2_states_additionalMoods",
+				"circuitNames": "__uuid__controls_lightcontrollerv2_2_states_circuitNames",
+				"daylightConfig": "__uuid__controls_lightcontrollerv2_2_states_daylightConfig",
+				"presence": "__uuid__controls_lightcontrollerv2_2_states_presence"
+			},
+			"subControls": {
+				"__uuid__controls_lightcontrollerv2_2/masterValue": {
+					"name": "Master Brightness",
+					"type": "Dimmer",
+					"uuidAction": "__uuid__controls_lightcontrollerv2_2/masterValue",
+					"defaultRating": 0,
+					"isFavorite": false,
+					"isSecured": false,
+					"restrictions": 0,
+					"states": {
+						"position": "__uuid__controls_lightcontrollerv2_2/masterValue_states_position",
+						"min": "__uuid__controls_lightcontrollerv2_2/masterValue_states_min",
+						"max": "__uuid__controls_lightcontrollerv2_2/masterValue_states_max",
+						"step": "__uuid__controls_lightcontrollerv2_2/masterValue_states_step"
+					}
+				},
+				"__uuid__controls_lightcontrollerv2_2/AI1": {
+					"name": "Spotlight",
+					"type": "Dimmer",
+					"uuidAction": "__uuid__controls_lightcontrollerv2_2/AI1",
+					"defaultRating": 0,
+					"isFavorite": false,
+					"isSecured": false,
+					"restrictions": 0,
+					"states": {
+						"position": "__uuid__controls_lightcontrollerv2_2/AI1_states_position",
+						"min": "__uuid__controls_lightcontrollerv2_2/AI1_states_min",
+						"max": "__uuid__controls_lightcontrollerv2_2/AI1_states_max",
+						"step": "__uuid__controls_lightcontrollerv2_2/AI1_states_step"
+					}
+				}
+			}
+		},
+		"__uuid__controls_lighting_central": {
+			"name": "Lighting central",
+			"type": "CentralLightController",
+			"uuidAction": "__uuid__controls_lighting_central",
+			"room": "__uuid__rooms_living_room",
+			"cat": "__uuid__cats_lighting",
+			"defaultRating": 10,
+			"isFavorite": true,
+			"isSecured": false,
+			"restrictions": 0,
+			"details": {
+				"jLockable": true,
+				"controls": [
+					{
+						"id": 0,
+						"uuid": "__uuid__controls_lightcontrollerv2_2"
+					},
+					{
+						"id": 1,
+						"uuid": "__uuid__controls_lightcontrollerv2_1"
+					}
+				],
+				"parameterConnections": 0
+			},
+			"states": {
+				"jLocked": "__uuid__controls_lighting_central_states_jLocked",
+				"events": "__uuid__controls_lighting_central_states_events"
+			}
+		},
+		"__uuid__controls_tracker": {
+			"name": "Tracker",
+			"type": "Tracker",
+			"uuidAction": "__uuid__controls_tracker",
+			"room": "__uuid__rooms_central",
+			"cat": "__uuid__cats_energy",
+			"defaultRating": 0,
+			"isFavorite": false,
+			"isSecured": false,
+			"defaultIcon": "IconsFilled/brightness-decrease.svg",
+			"restrictions": 0,
+			"details": {
+				"jLockable": false,
+				"maxEntries": 28
+			},
+			"states": {
+				"entries": "__uuid__controls_tracker"
+			}
+		},
+		"__uuid__controls_webpage": {
+			"name": "Webpage",
+			"type": "Webpage",
+			"uuidAction": "__uuid__controls_webpage_2",
+			"room": "__uuid__rooms_central",
+			"cat": "__uuid__cats_lighting",
+			"defaultRating": 0,
+			"isFavorite": false,
+			"isSecured": false,
+			"restrictions": 0,
+			"details": {
+				"jLockable": false,
+				"url": "https://github.com/nufke/loxbuddy",
+				"urlHd": "https://github.com/nufke/loxbuddy",
+				"image": "",
+				"iconColor": "#000000"
+			}
+		},
+		"__uuid__controls_alarmclock": {
+			"name": "Alarm clock",
+			"type": "AlarmClock",
+			"uuidAction": "__uuid__controls_alarmclock",
+			"room": "__uuid__rooms_bedroom",
+			"cat": "__uuid__cats_alarmclock",
+			"defaultRating": 0,
+			"isFavorite": false,
+			"isSecured": false,
+			"restrictions": 0,
+			"details": {
+				"jLockable": true,
+				"hasNightLight": false,
+				"snoozeDurationConnected": false,
+				"brightInactiveConnected": false,
+				"brightActiveConnected": false,
+				"wakeAlarmSoundConnected": false,
+				"wakeAlarmVolumeConnected": false,
+				"wakeAlarmSlopingConnected": false,
+				"wakeAlarmSounds": [
+					{
+						"id": 1,
+						"name": "Low tone 4 times"
+					},
+					{
+						"id": 2,
+						"name": "High tone 4 times"
+					},
+					{
+						"id": 3,
+						"name": "Low tone 2 times"
+					},
+					{
+						"id": 4,
+						"name": "High tone 2 times"
+					},
+					{
+						"id": 5,
+						"name": "Siren"
+					}
+				]
+			},
+			"states": {
+				"jLocked": "__uuid__controls_alarmclock_states_jLocked",
+				"isEnabled": "__uuid__controls_alarmclock_states_isEnabled",
+				"isAlarmActive": "__uuid__controls_alarmclock_states_isAlarmActive",
+				"confirmationNeeded": "__uuid__controls_alarmclock_states_confirmationNeeded",
+				"entryList": "__uuid__controls_alarmclock_states_entryList",
+				"currentEntry": "__uuid__controls_alarmclock_states_currentEntry",
+				"nextEntry": "__uuid__controls_alarmclock_states_nextEntry",
+				"nextEntryMode": "__uuid__controls_alarmclock_states_nextEntryMode",
+				"ringingTime": "__uuid__controls_alarmclock_states_ringingTime",
+				"ringDuration": "__uuid__controls_alarmclock_states_ringDuration",
+				"prepareDuration": "__uuid__controls_alarmclock_states_prepareDuration",
+				"snoozeTime": "__uuid__controls_alarmclock_states_snoozeTime",
+				"snoozeDuration": "__uuid__controls_alarmclock_states_snoozeDuration",
+				"nextEntryTime": "__uuid__controls_alarmclock_states_nextEntryTime",
+				"deviceState": "__uuid__controls_alarmclock_states_deviceState",
+				"deviceSettings": "__uuid__controls_alarmclock_states_deviceSettings",
+				"wakeAlarmSoundSettings": "__uuid__controls_alarmclock_states_wakeAlarmSoundSettings"
+			}
+		},
+		"__uuid__controls_alarmunit": {
+			"name": "Alarm unit",
+			"type": "Alarm",
+			"uuidAction": "__uuid__controls_alarmunit",
+			"room": "__uuid__rooms_central",
+			"cat": "__uuid__cats_alarm",
+			"defaultRating": 2,
+			"isFavorite": false,
+			"isSecured": false,
+			"restrictions": 0,
+			"details": {
+				"jLockable": true,
+				"alert": true,
+				"presenceConnected": false
+			},
+			"states": {
+				"jLocked": "__uuid__controls_alarmunit_states_jLocked",
+				"armed": "__uuid__controls_alarmunit_states_armed",
+				"nextLevel": "__uuid__controls_alarmunit_states_nextLevel",
+				"nextLevelDelay": "__uuid__controls_alarmunit_states_nextLevelDelay",
+				"nextLevelDelayTotal": "__uuid__controls_alarmunit_states_nextLevelDelayTotal",
+				"level": "__uuid__controls_alarmunit_states_level",
+				"startTime": "__uuid__controls_alarmunit_states_startTime",
+				"armedAt": "__uuid__controls_alarmunit_states_armedAt",
+				"nextLevelAt": "__uuid__controls_alarmunit_states_nextLevelAt",
+				"armedDelay": "__uuid__controls_alarmunit_states_armedDelay",
+				"armedDelayTotal": "__uuid__controls_alarmunit_states_armedDelayTotal",
+				"sensors": "__uuid__controls_alarmunit_states_sensors",
+				"disabledMove": "__uuid__controls_alarmunit_states_disabledMove",
+				"events": "__uuid__controls_alarmunit_states_events"
+			},
+			"subControls": {
+				"__uuid__controls_alarmunit/sensors": {
+					"name": "sensors",
+					"type": "Tracker",
+					"uuidAction": "__uuid__controls_alarmunit/sensors",
+					"defaultRating": 0,
+					"isFavorite": false,
+					"isSecured": false,
+					"restrictions": 0,
+					"details": {
+						"maxEntries": 40
+					},
+					"states": {
+						"entries": "__uuid__controls_alarmunit"
+					}
+				}
+			}
+		},
+		"__uuid__controls_irc_v1": {
+			"name": "Intelligent room control",
+			"type": "IRoomController",
+			"uuidAction": "__uuid__controls_irc_v1",
+			"room": "__uuid__rooms_living_room",
+			"cat": "__uuid__cats_heating",
+			"defaultRating": 1,
+			"isFavorite": false,
+			"isSecured": false,
+			"restrictions": 0,
+			"details": {
+				"jLockable": true,
+				"restrictedToMode": 0,
+				"temperatures": {
+					"0": {
+						"isAbsolute": false
+					},
+					"1": {
+						"isAbsolute": true
+					},
+					"2": {
+						"isAbsolute": true
+					},
+					"3": {
+						"isAbsolute": true
+					},
+					"4": {
+						"isAbsolute": true
+					},
+					"5": {
+						"isAbsolute": false
+					},
+					"6": {
+						"isAbsolute": false
+					}
+				},
+				"format": "%.1f°"
+			},
+			"states": {
+				"jLocked": "__uuid__controls_irc_v1_states_jLocked",
+				"tempTarget": "__uuid__controls_irc_v1_states_tempTarget",
+				"tempActual": "__uuid__controls_irc_v1_states_tempActual",
+				"error": "__uuid__controls_irc_v1_states_error",
+				"mode": "__uuid__controls_irc_v1_states_mode",
+				"serviceMode": "__uuid__controls_irc_v1_states_serviceMode",
+				"currHeatTempIx": "__uuid__controls_irc_v1_states_currHeatTempIx",
+				"currCoolTempIx": "__uuid__controls_irc_v1_states_currCoolTempIx",
+				"override": "__uuid__controls_irc_v1_states_override",
+				"isPreparing": "__uuid__controls_irc_v1_states_isPreparing",
+				"valveHeat": "__uuid__controls_irc_v1_states_valveHeat",
+				"valveCool": "__uuid__controls_irc_v1_states_valveCool",
+				"openWindow": "__uuid__controls_irc_v1_states_openWindow",
+				"stop": "__uuid__controls_irc_v1_states_stop",
+				"overrideTotal": "__uuid__controls_irc_v1_states_overrideTotal",
+				"movement": "__uuid__controls_irc_v1_states_movement",
+				"manualMode": "__uuid__controls_irc_v1_states_manualMode",
+				"temperatures": [
+					"__uuid__controls_irc_v1_temp0",
+					"__uuid__controls_irc_v1_temp1",
+					"__uuid__controls_irc_v1_temp2",
+					"__uuid__controls_irc_v1_temp3",
+					"__uuid__controls_irc_v1_temp4",
+					"__uuid__controls_irc_v1_temp5",
+					"__uuid__controls_irc_v1_temp6"
+				]
+			},
+			"subControls": {
+				"__uuid__controls_irc_v1_subControls_heating": {
+					"name": "Heating",
+					"type": "IRCDaytimer",
+					"uuidAction": "__uuid__controls_irc_v1_subControls_heating",
+					"defaultRating": 0,
+					"isFavorite": false,
+					"isSecured": false,
+					"restrictions": 0,
+					"details": {
+						"analog": true,
+						"format": "%.1f°"
+					},
+					"states": {
+						"entriesAndDefaultValue": "__uuid__controls_irc_v1_subControls_heating",
+						"mode": "__uuid__controls_irc_v1_subControls_heating_states_mode",
+						"modeList": "__uuid__controls_irc_v1_subControls_heating_states_modeList",
+						"value": "__uuid__controls_irc_v1_subControls_heating_states_value"
+					}
+				},
+				"__uuid__controls_irc_v1_subControls_cooling": {
+					"name": "Cooling",
+					"type": "IRCDaytimer",
+					"uuidAction": "__uuid__controls_irc_v1_subControls_cooling",
+					"defaultRating": 0,
+					"isFavorite": false,
+					"isSecured": false,
+					"restrictions": 0,
+					"details": {
+						"analog": true,
+						"format": "%.1f°"
+					},
+					"states": {
+						"entriesAndDefaultValue": "__uuid__controls_irc_v1_subControls_cooling",
+						"mode": "__uuid__controls_irc_v1_subControls_cooling_states_mode",
+						"modeList": "__uuid__controls_irc_v1_subControls_cooling_states_modeList",
+						"value": "__uuid__controls_irc_v1_subControls_cooling_states_value"
+					}
+				}
+			}
+		},
+		"__uuid__controls_daytimer": {
+			"name": "Lighting timer",
+			"type": "Daytimer",
+			"uuidAction": "__uuid__controls_daytimer",
+			"room": "__uuid__rooms_central",
+			"cat": "__uuid__cats_lighting",
+			"defaultRating": 0,
+			"isFavorite": false,
+			"isSecured": false,
+			"defaultIcon": null,
+			"restrictions": 0,
+			"details": {
+				"jLockable": true,
+				"analog": false,
+				"text": {
+					"on": "Actief",
+					"off": "Inactief"
+				}
+			},
+			"states": {
+				"jLocked": "__uuid__controls_daytimer_states_jLocked",
+				"mode": "__uuid__controls_daytimer_states_mode",
+				"override": "__uuid__controls_daytimer_states_override",
+				"value": "__uuid__controls_daytimer_states_value",
+				"needsActivation": "__uuid__controls_daytimer_states_needsActivation",
+				"modeList": "__uuid__controls_daytimer_states_modeList",
+				"entriesAndDefaultValue": "__uuid__controls_daytimer",
+				"resetActive": "__uuid__controls_daytimer_states_resetActive"
+			}
+		},
+		"__uuid__controls_loadmanager": {
+			"name": "Loadmanager",
+			"type": "LoadManager",
+			"uuidAction": "__uuid__controls_loadmanager",
+			"room": "__uuid__rooms_central",
+			"cat": "__uuid__cats_energy",
+			"defaultRating": 1,
+			"isFavorite": false,
+			"isSecured": false,
+			"restrictions": 0,
+			"details": {
+				"jLockable": true,
+				"loads": [
+					{
+						"id": 0,
+						"name": "Dishwasher",
+						"power": 2.1,
+						"maxOff": 0,
+						"minOn": 0,
+						"hasStatus": true
+					},
+					{
+						"id": 1,
+						"name": "Washing machine",
+						"power": 2.1,
+						"maxOff": 0,
+						"minOn": 0,
+						"hasStatus": true
+					},
+					{
+						"id": 2,
+						"name": "Oven",
+						"power": 2,
+						"maxOff": 0,
+						"minOn": 0,
+						"hasStatus": false
+					}
+				],
+				"mode": 0
+			},
+			"states": {
+				"jLocked": "__uuid__controls_loadmanager_states_jLocked",
+				"currentPower": "__uuid__controls_loadmanager_states_currentPower",
+				"peakOverloadPower": "__uuid__controls_loadmanager_states_peakOverloadPower",
+				"maxPower": "__uuid__controls_loadmanager_states_maxPower",
+				"maxTp": "__uuid__controls_loadmanager_states_maxTp",
+				"maxPowerExceeded": "__uuid__controls_loadmanager_states_maxPowerExceeded",
+				"availablePower": "__uuid__controls_loadmanager_states_availablePower",
+				"lockedLoads": "__uuid__controls_loadmanager_states_lockedLoads",
+				"statusLoads": "__uuid__controls_loadmanager_states_statusLoads"
+			},
+			"links": ["__uuid_unknonw", "__uuid_unknonw", "__uuid_unknonw"]
+		},
+		"__uuid__controls_irc_v2": {
+			"name": "Intelligent Room Controller v2",
+			"type": "IRoomControllerV2",
+			"uuidAction": "__uuid__controls_irc_v2",
+			"room": "__uuid__rooms_bedroom",
+			"cat": "__uuid__cats_heating",
+			"defaultRating": 2,
+			"isFavorite": false,
+			"isSecured": false,
+			"restrictions": 0,
+			"details": {
+				"jLockable": true,
+				"controlHistory": true,
+				"hasHistory": 20,
+				"timerModes": [
+					{
+						"name": "Comfort temperature",
+						"description": "Comfort",
+						"id": 1
+					},
+					{
+						"name": "Eco temperature",
+						"description": "Saving Mode",
+						"id": 0
+					},
+					{
+						"name": "Off (building protection)",
+						"description": "Building protection",
+						"id": 2
+					}
+				],
+				"format": "%.1f°",
+				"connectedInputs": 0,
+				"possibleCapabilities": 0,
+				"singleComfortTemperature": false,
+				"linkedAcControls": []
+			},
+			"states": {
+				"jLocked": "__uuid__controls_irc_v2_states_jLocked",
+				"tempActual": "__uuid__controls_irc_v2_states_tempActual",
+				"tempTarget": "__uuid__controls_irc_v2_states_tempTarget",
+				"comfortTemperature": "__uuid__controls_irc_v2_states_comfortTemperature",
+				"comfortTemperatureCool": "__uuid__controls_irc_v2_states_comfortTemperatureCool",
+				"comfortTolerance": "__uuid__controls_irc_v2_states_comfortTolerance",
+				"absentMinOffset": "__uuid__controls_irc_v2_states_absentMinOffset",
+				"absentMaxOffset": "__uuid__controls_irc_v2_states_absentMaxOffset",
+				"frostProtectTemperature": "__uuid__controls_irc_v2_states_frostProtectTemperature",
+				"heatProtectTemperature": "__uuid__controls_irc_v2_states_heatProtectTemperature",
+				"shadingCoolTemp": "__uuid__controls_irc_v2_states_shadingCoolTemp",
+				"shadingHeatTemp": "__uuid__controls_irc_v2_states_shadingHeatTemp",
+				"co2": "__uuid__controls_irc_v2_states_co2",
+				"humidityActual": "__uuid__controls_irc_v2_states_humidityActual",
+				"actualOutdoorTemp": "__uuid__controls_irc_v2_states_actualOutdoorTemp",
+				"currentMode": "__uuid__controls_irc_v2_states_currentMode",
+				"shadingOut": "__uuid__controls_irc_v2_states_shadingOut",
+				"activeMode": "__uuid__controls_irc_v2_states_activeMode",
+				"comfortTemperatureOffset": "__uuid__controls_irc_v2_states_comfortTemperatureOffset",
+				"overrideEntries": "__uuid__controls_irc_v2_states_overrideEntries",
+				"prepareState": "__uuid__controls_irc_v2_states_prepareState",
+				"useOutdoor": "__uuid__controls_irc_v2_states_useOutdoor",
+				"operatingMode": "__uuid__controls_irc_v2_states_operatingMode",
+				"overrideReason": "__uuid__controls_irc_v2_states_overrideReason",
+				"excessEnergyTempOffset": "__uuid__controls_irc_v2_states_excessEnergyTempOffset",
+				"averageOutdoorTemp": "__uuid__controls_irc_v2_states_averageOutdoorTemp",
+				"temperatureBoundaryInfo": "__uuid__controls_irc_v2_states_temperatureBoundaryInfo",
+				"capabilities": "__uuid__controls_irc_v2_states_capabilities",
+				"openWindow": "__uuid__controls_irc_v2_states_jLocked"
+			},
+			"subControls": {
+				"__uuid__controls_irc_v2_subcontrols_heating_and_cooling": {
+					"name": "Heating and Cooling",
+					"type": "IRCV2Daytimer",
+					"uuidAction": "__uuid__controls_irc_v2_subcontrols_heating_and_cooling",
+					"defaultRating": 0,
+					"isFavorite": false,
+					"isSecured": false,
+					"restrictions": 0,
+					"details": {
+						"analog": true,
+						"format": "%.1f°"
+					},
+					"states": {
+						"entriesAndDefaultValue": "__uuid__controls_irc_v2_subcontrols_heating_and_cooling",
+						"mode": "__uuid__controls_irc_v2_subcontrols_heating_and_cooling_states_mode",
+						"modeList": "__uuid__controls_irc_v2_subcontrols_heating_and_cooling_states_modeList",
+						"value": "__uuid__controls_irc_v2_subcontrols_heating_and_cooling_states_value",
+						"needsActivation": "__uuid__controls_irc_v2_subcontrols_heating_and_cooling_states_needsActivation"
+					}
+				}
+			}
+		},
+		"__uuid__controls_smoke_alarm": {
+			"name": "Fire and Water Alarm",
+			"type": "SmokeAlarm",
+			"uuidAction": "__uuid__controls_smoke_alarm",
+			"room": "__uuid__rooms_central",
+			"cat": "__uuid__cats_alarm",
+			"defaultRating": 2,
+			"isFavorite": false,
+			"isSecured": false,
+			"restrictions": 0,
+			"details": {
+				"jLockable": true,
+				"hasAcousticAlarm": false,
+				"availableAlarms": 3
+			},
+			"states": {
+				"jLocked": "__uuid__controls_smoke_alarm_jLocked",
+				"sensors": "__uuid__controls_smoke_alarm",
+				"testAlarm": "__uuid__controls_smoke_alarm_testAlarm",
+				"acousticAlarm": "__uuid__controls_smoke_alarm_acousticAlarm",
+				"level": "__uuid__controls_smoke_alarm_level",
+				"nextLevel": "__uuid__controls_smoke_alarm_nextLevel",
+				"nextLevelDelay": "__uuid__controls_smoke_alarm_nextLevelDelay",
+				"nextLevelDelayTotal": "__uuid__controls_smoke_alarm_nextLevelDelayTotal",
+				"timeServiceMode": "__uuid__controls_smoke_alarm_timeServiceMode",
+				"alarmCause": "__uuid__controls_smoke_alarm_alarmCause",
+				"startTime": "__uuid__controls_smoke_alarm_startTime",
+				"areAlarmSignalsOff": "__uuid__controls_smoke_alarm_areAlarmSignalsOff"
+			},
+			"subControls": {
+				"__uuid__controls_smoke_alarm7/sensors": {
+					"name": "sensors",
+					"type": "Tracker",
+					"uuidAction": "__uuid__controls_smoke_alarm/sensors",
+					"defaultRating": 0,
+					"isFavorite": false,
+					"isSecured": false,
+					"restrictions": 0,
+					"details": {
+						"maxEntries": 40
+					},
+					"states": {
+						"entries": "__uuid__controls_smoke_alarm"
+					}
+				}
+			}
+		},
+		"__uuid__controls_intercom": {
+			"name": "Intercom",
+			"type": "Intercom",
+			"uuidAction": "__uuid__controls_intercom",
+			"room": "__uuid__rooms_central",
+			"cat": "__uuid__cats_alarm",
+			"defaultRating": 0,
+			"isFavorite": false,
+			"isSecured": false,
+			"restrictions": 0,
+			"securedDetails": true,
+			"details": {
+				"jLockable": true,
+				"deviceType": 0,
+				"lastBellEventImages": true,
+				"videoInfo": {},
+				"audioInfo": {},
+				"showBellImage": false,
+				"outputs": [
+					{
+						"id": 0,
+						"name": "Output 1"
+					},
+					{
+						"id": 1,
+						"name": "Output 2"
+					},
+					{
+						"id": 2,
+						"name": "Output 3"
+					}
+				]
+			},
+			"states": {
+				"jLocked": "__uuid__controls_intercom_jLocked",
+				"bell": "__uuid__controls_intercom_bell",
+				"lastBellEvents": "__uuid__controls_intercom_lastBellEvents",
+				"lastBellTimestamp": "__uuid__controls_intercom_lastBellTimestamp"
+			},
+			"subControls": {}
+		}
+	},
+	"modes": {},
+	"times": {},
+	"caller": {},
+	"mailer": {},
+	"mediaServer": {},
+	"autopilot": {},
+	"messageCenter": {},
+	"structureDate": "2025-11-18 11:11:11"
 }

@@ -7,9 +7,7 @@
 	import { Tabs } from '@skeletonlabs/skeleton-svelte';
 	import { flip } from 'svelte/animate';
 	import { customdnd } from '$lib/helpers/custom-drag-n-drop';
-	import { Trash } from '@lucide/svelte';
 
-	let tabGroup = $state('1');
 	let fav = 'favorites';
 	let draggingItem: any;
 	let animatingItems = new Set();
@@ -53,43 +51,42 @@
 	}
 </script>
 
-<div class="container mx-auto max-w-[1280px] p-3 lb-page-center">
-	<Tabs value={tabGroup} listBorder='' onValueChange={(e) => (tabGroup = e.value)} >
-		{#snippet list()}
-			<Tabs.Control value="1" labelBase="h4" base='border-b-[2px] border-transparent' padding='ml-2 pb-0'>{$_('Favorites')}</Tabs.Control>
-			<Tabs.Control value="2" labelBase="h4" base='border-b-[2px] border-transparent' padding='ml-2 pb-0'>{$_('General')}</Tabs.Control>
-		{/snippet}
-		{#snippet content()}
-			<Tabs.Panel value="1">
-				<div class="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 lg:flex-wrap">
-					{#each favoriteControls as control (control)}
-						{@const Component = lbControl.getControl(control.type)}
-						<div animate:flip={{ duration: store.dnd.duration }} use:customdnd
-							draggable={store.dnd.isEnabled}
-							ondragstart={() => {draggingItem = control}}
-							ondragend={() => {draggingItem = undefined}}
-		  				ondragenter={() => { favoriteControls = swapItems(favoriteControls, control)}}
-							ondragover={(event) => {event.preventDefault(); if (event && event.dataTransfer) event.dataTransfer.dropEffect = 'move';}}>
-								<Component {control} controlOptions={{...controlOptions, isFavorite: true}}/>
-						</div>
-					{/each}
-				</div>
-			</Tabs.Panel>
-			<Tabs.Panel value="2">
-				<div class="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 lg:flex-wrap">
-					{#each centralControls as control (control)}
-						{@const Component = lbControl.getControl(control.type)}
-						<div animate:flip={{ duration: store.dnd.duration }} use:customdnd
-							draggable={store.dnd.isEnabled}
-							ondragstart={() => {draggingItem = control}}
-							ondragend={() => {draggingItem = undefined}}
-		  				ondragenter={() => { centralControls = swapItems(centralControls, control)}}
-							ondragover={(event) => {event.preventDefault(); if (event && event.dataTransfer) event.dataTransfer.dropEffect = 'move';}}>
-						<Component {control} controlOptions={{...controlOptions, isFavorite: true}}/>
-						</div>
-					{/each}
-				</div>
-			</Tabs.Panel>
-		{/snippet}
+<div class="container mx-auto max-w-[800px] lg:max-w-[1280px] p-3 pt-2">
+	<Tabs defaultValue="favorites">
+		<Tabs.List class="border-b-[2px] border-transparent">
+			<Tabs.Trigger value="favorites" class="h5">{$_('Favorites')}</Tabs.Trigger>
+			<Tabs.Trigger value="general" class="h5">{$_('General')}</Tabs.Trigger>
+			<Tabs.Indicator/>
+		</Tabs.List>
+		<Tabs.Content value="favorites">
+			<div class="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 lg:flex-wrap">
+				{#each favoriteControls as control (control)}
+					{@const Component = lbControl.getControl(control.type)}
+					<div animate:flip={{ duration: store.dnd.duration }} use:customdnd
+						draggable={store.dnd.isEnabled}
+						ondragstart={() => {draggingItem = control}}
+						ondragend={() => {draggingItem = undefined}}
+	  				ondragenter={() => { favoriteControls = swapItems(favoriteControls, control)}}
+						ondragover={(event) => {event.preventDefault(); if (event && event.dataTransfer) event.dataTransfer.dropEffect = 'move';}}>
+							<Component {control} controlOptions={{...controlOptions, isFavorite: true}}/>
+					</div>
+				{/each}
+			</div>
+		</Tabs.Content>
+		<Tabs.Content value="general">
+			<div class="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 lg:flex-wrap">
+				{#each centralControls as control (control)}
+					{@const Component = lbControl.getControl(control.type)}
+					<div animate:flip={{ duration: store.dnd.duration }} use:customdnd
+						draggable={store.dnd.isEnabled}
+						ondragstart={() => {draggingItem = control}}
+						ondragend={() => {draggingItem = undefined}}
+		  			ondragenter={() => { centralControls = swapItems(centralControls, control)}}
+						ondragover={(event) => {event.preventDefault(); if (event && event.dataTransfer) event.dataTransfer.dropEffect = 'move';}}>
+							<Component {control} controlOptions={{...controlOptions, isFavorite: true}}/>
+					</div>
+				{/each}
+			</div>
+		</Tabs.Content>
 	</Tabs>
 </div>
