@@ -1,8 +1,8 @@
 <script lang="ts">
-	import type { Control, ControlOptions, ControlView, SingleButtonView, ModalView } from '$lib/types/models';
+	import type { Control, ControlOptions, ControlView, SingleButtonView, DialogView } from '$lib/types/models';
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import LbControl from '$lib/components/Common/LbControl.svelte';
-	import LbListModal from '$lib/components/Common/LbListModal.svelte';
+	import LbListDialog from '$lib/components/Common/LbListDialog.svelte';
 	import { loxWsClient } from '$lib/communication/LoxWsClient';
 	import { store } from '$lib/stores/Store.svelte';
 
@@ -44,20 +44,20 @@
 
 	let radioIndex = $derived(radioList.find( item => item.id == selectedRadio));
 
-	let	modal: ModalView = $state({
-		action: (state: boolean) => {modal.state = state},
+	let	dialog: DialogView = $state({
+		action: (state: boolean) => {dialog.state = state},
 		state: false,
 	});
 
 	let buttons: SingleButtonView[] = $state([
 		{
-			iconName: 'Minus',
+			iconName: 'MinusIcon',
 			type: 'button',
 			color: '',
 			click: (e: any) => clickRadio(e, -1)
 		},
 		{
-			iconName: 'Plus',
+			iconName: 'PlusIcon',
 			type: 'button',
 			color: '',
 			click: (e: any) => clickRadio(e, 1)
@@ -74,11 +74,11 @@
 		statusColor: selectedRadio ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700',
 		list: radioList,
 		buttons: buttons,
-		modal: modal
+		dialog: dialog
 	});
 </script>
 
 <div>
 	<LbControl bind:controlView {controlOptions}/>
-	<LbListModal bind:controlView />
+	<LbListDialog bind:controlView />
 </div>

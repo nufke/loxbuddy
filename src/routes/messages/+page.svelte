@@ -20,7 +20,7 @@
 	let activeNotifications = $derived(notificationList.filter( items => items.status < 3)); // new or read
 	let archivedNotifications = $derived(notificationList.filter( items => items.status == 3)); // new or read
 	let selectedEntry: SystemStatusEntry | undefined = $state();
-	let openModal = $state(false);
+	let openDialog = $state(false);
 
 	let severity = ['', 'Info', 'Warning', 'Error'];
 
@@ -34,7 +34,7 @@
 	
 	function showEntry(entry: SystemStatusEntry) {
 		selectedEntry = entry;
-		openModal = true;
+		openDialog = true;
 	}
 
 	function confirmEntry() {
@@ -94,10 +94,10 @@
 </div>
 
 <Dialog
-	open={openModal}
-	onInteractOutside={() => openModal=false}>
+	open={openDialog}
+	onInteractOutside={() => openDialog=false}>
 	<Portal>
-		<Dialog.Backdrop class="fixed inset-0 z-10 bg-surface-50-950/75 backdrop-blur-sm" />
+		<Dialog.Backdrop class="fixed inset-0 z-10 bg-surface-50-950/75 backdrop-blur-sm"/>
 		<Dialog.Positioner class="fixed inset-0 z-10 flex justify-center items-center p-4">
 			<Dialog.Content class="card bg-surface-100-900 p-4 pt-3 shadow-sm rounded-lg border border-white/5 hover:border-white/10
 								md:max-w-9/10 md:max-h-9/10 w-[450px]">
@@ -107,8 +107,8 @@
 						<Dialog.Title class="h5 flex justify-center items-center">{$_("Startpage")}</Dialog.Title>
 					</div>
 					<div class="flex justify-center items-center">
-						<button type="button" class="btn-icon hover:preset-tonal" onclick={() => openModal=false}>
-							<XIcon class="size-4" />
+						<button type="button" class="btn-icon hover:preset-tonal" onclick={() => openDialog=false}>
+							<XIcon class="size-4"/>
 						</button>
 					</div>
 				</header> -->
@@ -125,7 +125,7 @@
 				</div>
 			</div>
 			<div class="absolute right-0 top-0">
-				<button type="button" aria-label="close" class="btn-icon w-auto" onclick={() => { openModal = false }}>
+				<button type="button" aria-label="close" class="btn-icon w-auto" onclick={() => { openDialog = false }}>
 					<XIcon/>
 				</button>
 			</div>

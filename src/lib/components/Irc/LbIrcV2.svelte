@@ -1,8 +1,8 @@
 <script lang="ts">
-	import type { Control, ControlOptions, ControlView, ModalView, ListItem } from '$lib/types/models';
+	import type { Control, ControlOptions, ControlView, DialogView, ListItem } from '$lib/types/models';
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import LbControl from '$lib/components/Common/LbControl.svelte';
-	import LbIrcModal from '$lib/components/Irc/LbIrcModal.svelte';
+	import LbIrcDialog from '$lib/components/Irc/LbIrcDialog.svelte';
 	import { store } from '$lib/stores/Store.svelte';
 	import fmt from 'sprintf-js';
 	import { _ } from 'svelte-i18n';
@@ -50,8 +50,8 @@
 		return (findName && store.rooms) ? store.rooms[control.room].name : control.name;
 	}
 	
-	let modal: ModalView = $state({
-		action: (state: boolean) => {modal.state = state},
+	let dialog: DialogView = $state({
+		action: (state: boolean) => {dialog.state = state},
 		state: false
 	});
 
@@ -66,11 +66,11 @@
 		statusName:  temperatureList && temperatureList[mode] ? $_(temperatureList[mode].name) : '',
 		statusColor: temperatureList && temperatureList[mode] && temperatureList[mode].id > 0 && temperatureList[mode].id != 4 ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700', // TODO other colors for temperatures
 		list: temperatureList,
-		modal: modal
+		dialog: dialog
 	});
 </script>
 
 <div>
 	<LbControl bind:controlView {controlOptions}/>
-	<LbIrcModal bind:controlView /> <!-- we reuse the V1 modal -->
+	<LbIrcDialog bind:controlView /> <!-- we reuse the V1 dialog -->
 </div>

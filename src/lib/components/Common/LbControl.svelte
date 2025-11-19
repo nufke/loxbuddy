@@ -28,9 +28,9 @@
 		return (hexColor && hexColor[0] == '#') ? 'fill: ' + hexColor : '';
 	}
 
-	function openModal() {
-		if (!controlView.iconName.length && !controlView.iconText?.length) return; // no modal if we are at subcontrol level (we have no icon at this level)
-		controlView.modal.action(true);
+	function openDialog() {
+		if (!controlView.iconName.length && !controlView.iconText?.length) return; // no dialog if we are at subcontrol level (we have no icon at this level)
+		controlView.dialog.action(true);
 	}
 	function label(control: Control) {
 		let label : Category | Room | undefined;
@@ -47,7 +47,7 @@
 </script>
 
 {#if controlView.isFavorite} <!-- Widget style for favorite -->
-<div role="button" tabindex="0" onkeydown={()=>{}} aria-label="card" onclick={openModal}
+<div role="button" tabindex="0" onkeydown={()=>{}} aria-label="card" onclick={openDialog}
 	class="card m-0 flex justify-start rounded-lg shadow-sm border border-white/5
 					bg-surface-100-900 min-h-[150px] px-2 py-2 hover:border-white/10 relative">
 	<div class="flex w-full flex-col">
@@ -119,14 +119,14 @@
 {/if}
 
 {#if controlView.showControl && !controlView.isFavorite} <!-- Regular style used in control list -->
-<div role="button" tabindex="0" onkeydown={()=>{}} aria-label="card" onclick={openModal}
+<div role="button" tabindex="0" onkeydown={()=>{}} aria-label="card" onclick={openDialog}
 			class="card m-0 flex items-center justify-start rounded-lg shadow-sm border border-white/5 relative
 						{ controlView.isSubControl ? 'bg-surface-200-800 min-h-[64px]' :
 						( controlOptions.isLink ? 'bg-surface-200-800 min-h-[76px]' : 'bg-surface-100-900 min-h-[76px]') }  px-2 py-2 hover:border-white/10">
 	<div class="flex w-full justify-between">
 		{#if store.dnd.isEnabled}
 			<div class="absolute right-1 text-surface-500 top-[35%]">
-				<GripVertical/>
+				<GripVerticalIcon/>
 			</div>
 		{/if}
 		<div class="relative flex items-center truncate">

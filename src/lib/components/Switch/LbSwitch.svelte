@@ -1,8 +1,8 @@
 <script lang="ts">
 	import LbControl from '$lib/components/Common/LbControl.svelte';
-	import type { Control, ControlOptions, ControlView, SingleButtonView, ModalView } from '$lib/types/models';
+	import type { Control, ControlOptions, ControlView, SingleButtonView, DialogView } from '$lib/types/models';
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
-	import LbModal from '$lib/components/Common/LbModal.svelte';
+	import LbDialog from '$lib/components/Common/LbDialog.svelte';
 	import { loxWsClient } from '$lib/communication/LoxWsClient';
 	import { store } from '$lib/stores/Store.svelte';
 	import { _ } from 'svelte-i18n';
@@ -21,8 +21,8 @@
 		}
 	]);
 
-	let modal: ModalView = $state({
-		action: (state: boolean) => {modal.state = state},
+	let dialog: DialogView = $state({
+		action: (state: boolean) => {dialog.state = state},
 		state: false
 	});
 
@@ -39,13 +39,13 @@
 		textColor: controlOptions.isSubControl && buttonActive ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-50 text-surface-950',
 		buttonState: buttonActive,
 		buttons: buttons,
-		modal: modal,
+		dialog: dialog,
 	});
 </script>
 
 <div>
 	<LbControl bind:controlView {controlOptions}/>
-	{#if !controlOptions.action} <!-- TODO disable modal popup for controls with action -->
-		<LbModal bind:controlView={controlView}/>
+	{#if !controlOptions.action} <!-- TODO disable dialog popup for controls with action -->
+		<LbDialog bind:controlView={controlView}/>
 	{/if}
 </div>

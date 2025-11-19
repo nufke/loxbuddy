@@ -1,8 +1,8 @@
 <script lang="ts">
-	import type { Control, ControlOptions, ControlView, ModalView } from '$lib/types/models';
+	import type { Control, ControlOptions, ControlView, DialogView } from '$lib/types/models';
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import LbControl from '$lib/components/Common/LbControl.svelte';
-	import LbModal from '$lib/components/Common/LbModal.svelte';
+	import LbDialog from '$lib/components/Common/LbDialog.svelte';
 	import { store } from '$lib/stores/Store.svelte';
 	import { utils } from '$lib/helpers/Utils';
 	import { format } from 'date-fns';
@@ -60,8 +60,8 @@
 		return s;
 	}
 
-	let modal: ModalView = $state({
-		action: (state: boolean) => {modal.state = state},
+	let dialog: DialogView = $state({
+		action: (state: boolean) => {dialog.state = state},
 		state: false
 	});
 
@@ -72,11 +72,11 @@
 		iconName: store.getIcon(control, controlOptions.isSubControl),
 		textName: control.name,
 		statusName: getFormattedString(String(store.getState(control.states.value))),
-		modal: modal
+		dialog: dialog
 	});
 </script>
 
 <div>
 	<LbControl bind:controlView {controlOptions}/>
-	<LbModal bind:controlView />
+	<LbDialog bind:controlView />
 </div>

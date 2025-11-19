@@ -15,7 +15,7 @@
 	});
 
 	let opModes = $derived(store.structure.operatingModes);
-	let openModal = $state(false);
+	let openDialog = $state(false);
 	let daysFull = $_('DaysFull').toLowerCase().split('|');
 	let weekDayNrs = $derived(Object.keys(opModes).filter( (key) => daysFull.includes(opModes[key].toLowerCase())));
 	let filteredWeekDayNrs = $derived(weekDayNrs.filter( (key) => entry.modes.includes(Number(key))));
@@ -29,14 +29,14 @@
 	}
 
 	async function close() {
-		openModal = false;
+		openDialog = false;
 		await tick();
 		setEntry.modes = entry.modes; // restore latest accepted modes
 		setEntry.daily = entry.daily; // restore latest accepted daily setting
 	}
 </script>
 
-<button onclick={() => (openModal = true)}>
+<button onclick={() => (openDialog = true)}>
 	<div class="flex flex-row gap-1">
 		{#if entry.nightLight}
 			<div class="text-sm {entry.isActive ? 'dark:text-surface-50 text-surface-950' : 'dark:text-surface-700 text-surface-300'}">
@@ -58,10 +58,10 @@
 
 
 <Dialog
-	open={openModal}
+	open={openDialog}
 	onInteractOutside={close}>
 	<Portal>
-		<Dialog.Backdrop class="fixed inset-0 z-10 bg-surface-50-950/75 backdrop-blur-sm" />
+		<Dialog.Backdrop class="fixed inset-0 z-10 bg-surface-50-950/75 backdrop-blur-sm"/>
 		<Dialog.Positioner class="fixed inset-0 z-10 flex justify-center items-center p-4">
 			<Dialog.Content class="card bg-surface-100-900 p-4 pt-3 shadow-sm rounded-lg border border-white/5 hover:border-white/10
 								md:max-w-9/10 md:max-h-9/10 overflow-auto w-[340px]">
@@ -73,7 +73,7 @@
 					</div>
 					<div class="flex justify-center items-center">
 						<button type="button" class="btn-icon hover:preset-tonal" onclick={close}>
-							<XIcon class="size-4" />
+							<XIcon class="size-4"/>
 						</button>
 					</div>
 				</header>

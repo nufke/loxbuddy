@@ -9,7 +9,8 @@ export const fetchUrl = <T>(
 
 	$effect(() => {
 		if(store.loginCredentials.hostUrl.length) {
-			req = new Request(`${store.loginCredentials.hostUrl}/${url}/`, {
+			const found = url.match(/^http/);
+			req = new Request(found ? url : `${store.loginCredentials.hostUrl}/${url}/`, {
 				method: 'GET',
 				headers: {
 					'Content-Type': 'application/json',

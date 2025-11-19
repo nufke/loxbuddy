@@ -1,6 +1,6 @@
 import { SvelteMap } from 'svelte/reactivity';
 import { INITIAL_STRUCTURE, DEFAULT_USERSETTINGS, NO_LOGIN, EMPTY_SYSTEM_STATUS } from '$lib/types/models';
-import type { Structure, Control, Category, Room, SystemStatus, Route, ModalView, NotificationMap, NotificationList, Icon,
+import type { Structure, Control, Category, Room, SystemStatus, Route, DialogView, NotificationMap, NotificationList, Icon,
 							ControlsMap, CategoriesMap, RoomsMap, MessageCenter, NotificationMessage, UserSettings, LoginCredentials } from '$lib/types/models';
 import { utils } from '$lib/helpers/Utils';
 import { lbControl } from '$lib/helpers/LbControl';
@@ -37,13 +37,13 @@ class Store {
 	iconList: Icon[] | undefined = $state();
 	dnd = $state({isEnabled: false, duration: 300}); // TODO make configurable via menu
 
-	weatherModal: ModalView = $state({
+	weatherDialog: DialogView = $state({
 		action: () => {},
 		state: false,
 		timeout: undefined
 	});
 
-	lockScreenModal: ModalView = $state({
+	lockScreenDialog: DialogView = $state({
 		action: () => {},
 		state: false,
 		timeout: undefined
@@ -141,27 +141,27 @@ class Store {
 		this.mqttStatus = s;
 	}
 
-	resetLockScreenModalTimeout() {
-		this.lockScreenModal.state = false; 
-		clearTimeout(this.lockScreenModal.timeout); 
-		this.setLockScreenModalTimeout();
+	resetLockScreenDialogTimeout() {
+		this.lockScreenDialog.state = false; 
+		clearTimeout(this.lockScreenDialog.timeout); 
+		this.setLockScreenDialogTimeout();
 	}
 
-	resetWeatherModalTimeout() {
-		this.weatherModal.state = false; 
-		clearTimeout(this.weatherModal.timeout); 
-		this.setWeatherModalTimeout();
+	resetWeatherDialogTimeout() {
+		this.weatherDialog.state = false; 
+		clearTimeout(this.weatherDialog.timeout); 
+		this.setWeatherDialogTimeout();
 	}
 
-	setWeatherModalTimeout() {
-		this.weatherModal.timeout = setTimeout(() => {
-			this.weatherModal.state = false;
+	setWeatherDialogTimeout() {
+		this.weatherDialog.timeout = setTimeout(() => {
+			this.weatherDialog.state = false;
 		}, 30000); // 30s TODO add to configuration
 	}
 
-	setLockScreenModalTimeout() {
-		this.lockScreenModal.timeout = setTimeout(() => {
-			this.lockScreenModal.state = true;
+	setLockScreenDialogTimeout() {
+		this.lockScreenDialog.timeout = setTimeout(() => {
+			this.lockScreenDialog.state = true;
 		}, 60000); // 60s TODO add to configuration
 	}
 }

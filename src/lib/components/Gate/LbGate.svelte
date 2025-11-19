@@ -1,8 +1,8 @@
 <script lang="ts">
 	import LbControl from '$lib/components/Common/LbControl.svelte';
-	import type { Control, ControlOptions, ControlView, ModalView, SingleButtonView } from '$lib/types/models';
+	import type { Control, ControlOptions, ControlView, DialogView, SingleButtonView } from '$lib/types/models';
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
-	import LbModal from '$lib/components/Common/LbModal.svelte';
+	import LbDialog from '$lib/components/Common/LbDialog.svelte';
 	import { store } from '$lib/stores/Store.svelte';
 	import { loxWsClient } from '$lib/communication/LoxWsClient';
 	import { _ } from 'svelte-i18n';
@@ -35,30 +35,30 @@
 			case 3: buttons[0].iconName = '/icons/svg/chevrons-right-left-close.svg';
 							buttons[1].iconName = '/icons/svg/chevrons-left-right-open.svg';
 							break;
-			default: buttons[0].iconName = 'ChevronDown';
-							buttons[1].iconName = 'ChevronUp';
+			default: buttons[0].iconName = 'ChevronDownIcon';
+							buttons[1].iconName = 'ChevronUpIcon';
 							break;
 		}
 	});
 
 	let buttons: SingleButtonView[] = $state([
 		{
-			iconName: 'ChevronDown',
+			iconName: 'ChevronDownIcon',
 			type: 'button',
 			color: '',
 			click: () => loxWsClient.control(control.uuidAction, 'close')
 		},
 		{
-			iconName: 'ChevronUp',
+			iconName: 'ChevronUpIcon',
 			type: 'button',
 			color: '',
 			click: () => loxWsClient.control(control.uuidAction, 'open')
 		}
 	]);
 
-	let modal: ModalView = $state({
-		action: (state: boolean) => {modal.state = state},
-		state: controlOptions.showModal,
+	let dialog: DialogView = $state({
+		action: (state: boolean) => {dialog.state = state},
+		state: controlOptions.showDialog,
 		class: 'grid-cols-2',
 		buttons: [
 			{
@@ -92,11 +92,11 @@
 		statusName: (position > 99) ? $_('Open') : ( (position < 1) ? $_('Closed') :  fmt.sprintf('%2.0f%% %s', position, $_('Open'))),
 		statusColor: (position > 1) ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700',
 		buttons: buttons,
-		modal: modal
+		dialog: dialog
 	});
 </script>
 
 <div>
 	<LbControl bind:controlView {controlOptions}/>
-	<LbModal bind:controlView />
+	<LbDialog bind:controlView />
 </div>

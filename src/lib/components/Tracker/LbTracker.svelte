@@ -1,8 +1,8 @@
 <script lang="ts">
 	import LbControl from '$lib/components/Common/LbControl.svelte';
-	import type { Control, ControlOptions, ControlView, ModalView } from '$lib/types/models';
+	import type { Control, ControlOptions, ControlView, DialogView } from '$lib/types/models';
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
-	import LbModal from '$lib/components/Common/LbModal.svelte';
+	import LbDialog from '$lib/components/Common/LbDialog.svelte';
 	import { store } from '$lib/stores/Store.svelte';
 	import { utils } from '$lib/helpers/Utils';
 	import { format } from 'date-fns';
@@ -41,8 +41,8 @@
 			format(new Date(Number(lastEntryDate)), "PPP ") + format(new Date(Number(entryMap[lastEntryDate][0].time)), "p") : '';
 	}
 
-	let	modal: ModalView = $state({
-		action: (state: boolean) => {modal.state = state},
+	let	dialog: DialogView = $state({
+		action: (state: boolean) => {dialog.state = state},
 		state: false
 	});
 
@@ -53,8 +53,8 @@
 		iconName: store.getIcon(control, controlOptions.isSubControl),
 		textName: control.name,
 		statusName: getStatus(),
-		modal: {
-			...modal,
+		dialog: {
+			...dialog,
 			details: {
 				tracker: entryMap
 			}
@@ -64,5 +64,5 @@
 
 <div>
 	<LbControl bind:controlView {controlOptions}/>
-	<LbModal bind:controlView />
+	<LbDialog bind:controlView />
 </div>

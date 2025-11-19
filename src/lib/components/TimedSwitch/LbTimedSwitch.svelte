@@ -1,8 +1,8 @@
 <script lang="ts">
 	import LbControl from '$lib/components/Common/LbControl.svelte';
-	import type { Control, ControlOptions, ControlView, ModalView, SingleButtonView } from '$lib/types/models';
+	import type { Control, ControlOptions, ControlView, DialogView, SingleButtonView } from '$lib/types/models';
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
-	import LbModal from '$lib/components/Common/LbModal.svelte';
+	import LbDialog from '$lib/components/Common/LbDialog.svelte';
 	import { store } from '$lib/stores/Store.svelte';
 	import { _ } from 'svelte-i18n';
 	import { loxWsClient } from '$lib/communication/LoxWsClient';
@@ -17,7 +17,7 @@
 	*/
 	let deactivationDelay = $derived(Number(store.getState(control.states.deactivationDelay)) || 0);
 
-	let modalButton1: SingleButtonView = $derived(
+	let dialogButton1: SingleButtonView = $derived(
 		{
 			name: (deactivationDelay == 0) ? $_('Turn on') : ((deactivationDelay == -1) ? $_('Turn off') : $_('Switch on permanently')),
 			type: 'button',
@@ -28,7 +28,7 @@
 		}
 	);
 
-	let modalButton2: SingleButtonView = $derived(
+	let dialogButton2: SingleButtonView = $derived(
 		{
 			name: (deactivationDelay == 0) ? $_('Start timer') : $_('Turn off'),
 			type: 'button',
@@ -39,7 +39,7 @@
 		}
 	);
 
-	let modalButton3: SingleButtonView = $derived(
+	let dialogButton3: SingleButtonView = $derived(
 		{
 			name: $_('Restart timer'),
 			type: 'button',
@@ -62,11 +62,11 @@
 	}
 
 	function setButtons() {
-		let modalButtons: SingleButtonView[] = [];
-		modalButtons.push(modalButton1);
-		if (deactivationDelay != -1) modalButtons.push(modalButton2);
-		if (deactivationDelay > 0) modalButtons.push(modalButton3);
-		return modalButtons;
+		let dialogButtons: SingleButtonView[] = [];
+		dialogButtons.push(dialogButton1);
+		if (deactivationDelay != -1) dialogButtons.push(dialogButton2);
+		if (deactivationDelay > 0) dialogButtons.push(dialogButton3);
+		return dialogButtons;
 	}
 
 	let controlButtons: SingleButtonView[] = $state([
@@ -80,9 +80,9 @@
 		}
 	]);
 
-	let modal: ModalView = $state({
-		action: (state: boolean) => {modal.state = state},
-		state: controlOptions.showModal
+	let dialog: DialogView = $state({
+		action: (state: boolean) => {dialog.state = state},
+		state: controlOptions.showDialog
 	});
 
 	let controlView: ControlView = $derived({
@@ -97,8 +97,8 @@
 		statusName: formatTime(deactivationDelay),
 		statusColor: (deactivationDelay == -1 || deactivationDelay > 0) ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700',
 		buttons: controlButtons,
-		modal: {
-			...modal,
+		dialog: {
+			...dialog,
 			buttons: setButtons()
 		}
 	});
@@ -106,5 +106,5 @@
 
 <div>
 	<LbControl bind:controlView {controlOptions}/>
-	<LbModal bind:controlView />
+	<LbDialog bind:controlView />
 </div>

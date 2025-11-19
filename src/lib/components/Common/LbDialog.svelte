@@ -56,8 +56,8 @@
 	}
 
 	function getPowerStatus(mask: number) {
-		const statusLoads = controlView.modal.details.loadManager.statusLoads & (mask+1);
-		const lockedLoads = controlView.modal.details.loadManager.lockedLoads & (mask+1);
+		const statusLoads = controlView.dialog.details.loadManager.statusLoads & (mask+1);
+		const lockedLoads = controlView.dialog.details.loadManager.lockedLoads & (mask+1);
 		return { 
 			name: lockedLoads ? $_('Locked') : (statusLoads ? $_('On') : $_('Off')),
 			color: lockedLoads ? 'dark:text-error-500 text-error-700' : (statusLoads ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700')
@@ -93,16 +93,16 @@
 	}
 
 	function close() {
-		controlView.modal.action(false);
+		controlView.dialog.action(false);
 	}
 </script>
 
-{#if controlView.modal.state} <!-- only construct dialog when opened, important to get current clientHeight -->
+{#if controlView.dialog.state} <!-- only construct dialog when opened, important to get current clientHeight -->
 	<Dialog
-		open={controlView.modal.state}
+		open={controlView.dialog.state}
 		onInteractOutside={close}>
 		<Portal>
-			<Dialog.Backdrop class="fixed inset-0 z-10 bg-surface-50-950/75 backdrop-blur-sm" />
+			<Dialog.Backdrop class="fixed inset-0 z-10 bg-surface-50-950/75 backdrop-blur-sm"/>
 			<Dialog.Positioner class="fixed inset-0 z-10 flex justify-center items-center p-4">
 				<Dialog.Content class="card bg-surface-100-900 p-4 pt-3 shadow-sm rounded-lg border border-white/5 hover:border-white/10
 									md:max-w-9/10 md:max-h-9/10 w-[450px]">
@@ -113,14 +113,14 @@
 						</div>
 						<div class="flex justify-center items-center">
 							<button type="button" class="btn-icon hover:preset-tonal" onclick={close}>
-								<XIcon class="size-4" />
+								<XIcon class="size-4"/>
 							</button>
 						</div>
 					</header>
 					<Dialog.Description>
 						<div class="mt-3">
 							<div class="flex flex-col items-center justify-center">
-								{#if !controlView.modal.disableIcon}
+								{#if !controlView.dialog.disableIcon}
 								<div class="relative inline-flex h-18 w-18 items-center justify-center overflow-hidden rounded-full border border-white/10 dark:bg-surface-950 bg-surface-50">
 									<LbIcon class={controlView.iconColor} name={controlView.iconName} width="36" height="36"
 													style={getIconColorHex(controlView.iconColor)}/>
@@ -133,12 +133,12 @@
 								</div>
 								{/if}
 								<div class="flex flex-col justify-center items-center m-2 truncate">
-									{#if controlView.statusName && !controlView.modal.details?.tracker} <!-- remove status when we show a tracker -->
+									{#if controlView.statusName && !controlView.dialog.details?.tracker} <!-- remove status when we show a tracker -->
 										<p class="text-lg truncate {controlView.statusColor}" style={getStatusColorHex(controlView.statusColor)}>{$_(controlView.statusName)}</p>
 									{/if}
 								</div>
 							</div>
-							{#if controlView.buttons.length && !controlView.slider && !controlView.modal.buttons}
+							{#if controlView.buttons.length && !controlView.slider && !controlView.dialog.buttons}
 							<div class="w-full overflow-y-auto" {style} bind:this={viewport} >
 								{#each controlView.buttons as button, index}
 									{#if index > 0}
@@ -187,9 +187,9 @@
 									{/if}
 								</div>
 							{/if}
-							{#if controlView && controlView.modal && controlView.modal.buttons}
-							<div class="container grid grid-cols-1 {controlView.modal.class} gap-2 overflow-y-auto" {style} bind:this={viewport}>
-								{#each controlView.modal.buttons as button}
+							{#if controlView && controlView.dialog && controlView.dialog.buttons}
+							<div class="container grid grid-cols-1 {controlView.dialog.class} gap-2 overflow-y-auto" {style} bind:this={viewport}>
+								{#each controlView.dialog.buttons as button}
 									{#if button.type === 'button' && button.click}
 										<button type="button" class="w-full {button.class} btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50" 
 												onclick={button.click}>
@@ -216,13 +216,13 @@
 								{/each}
 							</div>
 							{/if}
-							{#if controlView.modal && controlView.modal.details && controlView.modal.details.tracker} <!-- used for entries for tracker -->
+							{#if controlView.dialog && controlView.dialog.details && controlView.dialog.details.tracker} <!-- used for entries for tracker -->
 							<div class="flex flex-col w-full mt-2 pl-2 pr-2 overflow-y-auto" {style} bind:this={viewport}>
-								{#each Object.keys(controlView.modal.details.tracker) as key}
+								{#each Object.keys(controlView.dialog.details.tracker) as key}
 									<p class="text-lg dark:text-surface-50 text-surface-950">{format(new Date(Number(key)), "PPP")}</p>
 									<hr class="hr" />
 									<div class="grid grid-cols-5 gap-2 mt-2 mb-2">
-										{#each controlView.modal.details.tracker[key] as item}
+										{#each controlView.dialog.details.tracker[key] as item}
 											<p class="text-md dark:text-surface-300 text-surface-700">{format(new Date(Number(item.time)), "p")}</p>
 											<p class="text-md col-span-4">{item.description}</p>
 										{/each}
@@ -230,11 +230,11 @@
 								{/each}
 							</div>
 							{/if}
-							{#if controlView.modal && controlView.modal.details && controlView.modal.details.loadManager}
+							{#if controlView.dialog && controlView.dialog.details && controlView.dialog.details.loadManager}
 								<div class="w-full mb-2 dark:bg-surface-950 bg-surface-50 rounded-lg border border-white/15 hover:border-white/50">
-									<LbStatusBar maxPower={controlView.modal.details.loadManager.maxPower}
-																currentPower={controlView.modal.details.loadManager.currentPower}
-																mode={controlView.modal.details.loadManager.mode} />
+									<LbStatusBar maxPower={controlView.dialog.details.loadManager.maxPower}
+																currentPower={controlView.dialog.details.loadManager.currentPower}
+																mode={controlView.dialog.details.loadManager.mode} />
 								</div>
 								<div class="relative flex flex-col w-full">
 									{#if showScrollTop}
@@ -244,7 +244,7 @@
 										<div class="absolute z-10 left-[50%] lb-center -bottom-[19px] text-surface-500" transition:fade={{ duration: 300 }}><ChevronDownIcon size="30"/></div>
 									{/if}
 									<div class="grid gap-2 overflow-y-auto" {style} bind:this={viewport}>
-										{#each controlView.modal.details.loadManager.loads as load,i}
+										{#each controlView.dialog.details.loadManager.loads as load,i}
 											<button class="w-full flex h-[60px] items-center justify-start rounded-lg border border-white/15 hover:border-white/50
 																		dark:bg-surface-950 bg-surface-50 px-2 py-2">
 												<div class="relative flex truncate w-full">

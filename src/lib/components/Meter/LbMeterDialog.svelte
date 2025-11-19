@@ -10,7 +10,7 @@
 
 	let { controlView = $bindable() }: { controlView: ControlView } = $props();
 
-	let soc = $derived(Number(controlView.modal.details['storage']));
+	let soc = $derived(Number(controlView.dialog.details['storage']));
 	let selected = $state(0);
 
 	function getWeekDates(d: Date) {
@@ -23,19 +23,19 @@
 	}
 
 	function close() {
-		controlView.modal.action(false);
+		controlView.dialog.action(false);
 	}
 </script>
 
-{#if controlView.modal.state}
+{#if controlView.dialog.state}
 	<Dialog
-		open={controlView.modal.state}
+		open={controlView.dialog.state}
 		onInteractOutside={close}>
 		<Portal>
-			<Dialog.Backdrop class="fixed inset-0 z-10 bg-surface-50-950/75 backdrop-blur-sm" />
+			<Dialog.Backdrop class="fixed inset-0 z-10 bg-surface-50-950/75 backdrop-blur-sm"/>
 			<Dialog.Positioner class="fixed inset-0 z-10 flex justify-center items-center p-4">
 				<Dialog.Content class="card bg-surface-100-900 p-4 pt-3 space-y-4 shadow-sm rounded-lg border border-white/5 hover:border-white/10
-								md:max-w-9/10 md:max-h-9/10 overflow-auto {controlView.modal.size?.width || 'w-[450px]'}">
+								md:max-w-9/10 md:max-h-9/10 overflow-auto {controlView.dialog.size?.width || 'w-[450px]'}">
 					<!--<Info control={controlView.control}/>-->
 					<header class="grid grid-cols-[5%_90%_5%]">
 						<div class="flex justify-center items-center"></div><!-- placeholder for menu -->
@@ -44,7 +44,7 @@
 						</div>
 						<div class="flex justify-center items-center">
 							<button type="button" class="btn-icon hover:preset-tonal" onclick={close}>
-								<XIcon class="size-4" />
+								<XIcon class="size-4"/>
 							</button>
 						</div>
 					</header>
@@ -54,8 +54,8 @@
 								<div class="grid grid-cols-1 gap-x-2 m-2">
 									{#if controlView.control.details.type == 'unidirectional' || controlView.control.details.type == 'bidirectional'}
 									<div class="flex h-18 w-18 m-auto items-center justify-center rounded-full border
-															{controlView.modal.details['actual'][0] > 0 ? 'border-2 border-primary-500' : 
-															(controlView.modal.details['actual'][0] == 0 ? 'border-white/10' :
+															{controlView.dialog.details['actual'][0] > 0 ? 'border-2 border-primary-500' : 
+															(controlView.dialog.details['actual'][0] == 0 ? 'border-white/10' :
 															(controlView.control.details.type == 'bidirectional' ? 'border-2 border-tertiary-500' : 'border-white/10'))} dark:bg-surface-950 bg-surface-50">
 										<LbIcon class="dark:fill-surface-50 fill-surface-950" name={controlView.iconName} width="36" height="36"/>
 									</div>
@@ -71,17 +71,17 @@
 									</div>
 									{/if}
 									<div class="relative w-full mt-2 flex flex-col justify-center items-center">
-										<p class="text-lg {controlView.modal.details['actual'][0] > 0 ? 'dark:text-primary-500 text-primary-700' :
-													(controlView.modal.details['actual'][0] == 0 ? 'border-white/10' :
-														'dark:text-tertiary-500 text-tertiary-700')} ">{controlView.modal.details['actual'].join(' ')}</p>
-											{#if controlView.modal.details && controlView.control.details.type == 'storage'}
-											<p class="text-lg dark:text-primary-500 text-primary-700">{controlView.modal.details['storage']} %</p>
+										<p class="text-lg {controlView.dialog.details['actual'][0] > 0 ? 'dark:text-primary-500 text-primary-700' :
+													(controlView.dialog.details['actual'][0] == 0 ? 'border-white/10' :
+														'dark:text-tertiary-500 text-tertiary-700')} ">{controlView.dialog.details['actual'].join(' ')}</p>
+											{#if controlView.dialog.details && controlView.control.details.type == 'storage'}
+											<p class="text-lg dark:text-primary-500 text-primary-700">{controlView.dialog.details['storage']} %</p>
 											{/if}
 									</div>
 								</div>
 							</div>
 							<div class="relative w-full mt-2">
-								{#if controlView.modal.details}
+								{#if controlView.dialog.details}
 								<div class="grid { controlView.control.details.type == 'unidirectional' ? 'grid-cols-2' : 'grid-cols-3'} gap-x-2 m-2">
 									{#if controlView.control.details.type == 'storage' || controlView.control.details.type == 'bidirectional'}
 									<div></div>
@@ -108,55 +108,55 @@
 										<p class="text-md">{$_('Today')}</p>
 									</div>
 									<div class="relative w-full flex justify-center items-center">
-										<p class="text-lg dark:text-primary-500 text-primary-700">{controlView.modal.details['totalDay'].join(' ')}</p>
+										<p class="text-lg dark:text-primary-500 text-primary-700">{controlView.dialog.details['totalDay'].join(' ')}</p>
 									</div>
 									{#if controlView.control.details.type != 'unidirectional'}
 									<div class="relative w-full flex justify-center items-center">
-										<p class="text-lg dark:text-tertiary-500 text-tertiary-700">{controlView.modal.details['totalNegDay'].join(' ')}</p>
+										<p class="text-lg dark:text-tertiary-500 text-tertiary-700">{controlView.dialog.details['totalNegDay'].join(' ')}</p>
 									</div>
 									{/if}
 									<div class="relative w-full flex justify-center items-center">
 										<p class="text-md">{getWeekDates(store.time)}</p>
 									</div>
 									<div class="relative w-full flex justify-center items-center">
-										<p class="text-lg dark:text-primary-500 text-primary-700">{controlView.modal.details['totalWeek'].join(' ')}</p>
+										<p class="text-lg dark:text-primary-500 text-primary-700">{controlView.dialog.details['totalWeek'].join(' ')}</p>
 									</div>
 									{#if controlView.control.details.type != 'unidirectional'}
 									<div class="relative w-full flex justify-center items-center">
-										<p class="text-lg dark:text-tertiary-500 text-tertiary-700">{controlView.modal.details['totalNegWeek'].join(' ')}</p>
+										<p class="text-lg dark:text-tertiary-500 text-tertiary-700">{controlView.dialog.details['totalNegWeek'].join(' ')}</p>
 									</div>
 									{/if}
 									<div class="relative w-full flex justify-center items-center">
 										<p class="text-md">{format(store.time, 'MMMM')}</p>
 									</div>
 									<div class="relative w-full flex justify-center items-center">
-										<p class="text-lg dark:text-primary-500 text-primary-700">{controlView.modal.details['totalMonth'].join(' ')}</p>
+										<p class="text-lg dark:text-primary-500 text-primary-700">{controlView.dialog.details['totalMonth'].join(' ')}</p>
 									</div>
 									{#if controlView.control.details.type != 'unidirectional'}
 									<div class="relative w-full flex justify-center items-center">
-										<p class="text-lg dark:text-tertiary-500 text-tertiary-700">{controlView.modal.details['totalNegMonth'].join(' ')}</p>
+										<p class="text-lg dark:text-tertiary-500 text-tertiary-700">{controlView.dialog.details['totalNegMonth'].join(' ')}</p>
 									</div>
 									{/if}
 									<div class="relative w-full flex justify-center items-center">
 										<p class="text-md">{format(store.time, 'u')}</p>
 									</div>
 									<div class="relative w-full flex justify-center items-center">
-										<p class="text-lg dark:text-primary-500 text-primary-700">{controlView.modal.details['totalYear'].join(' ')}</p>
+										<p class="text-lg dark:text-primary-500 text-primary-700">{controlView.dialog.details['totalYear'].join(' ')}</p>
 									</div>
 									{#if controlView.control.details.type != 'unidirectional'}
 									<div class="relative w-full flex justify-center items-center">
-										<p class="text-lg dark:text-tertiary-500 text-tertiary-700">{controlView.modal.details['totalNegYear'].join(' ')}</p>
+										<p class="text-lg dark:text-tertiary-500 text-tertiary-700">{controlView.dialog.details['totalNegYear'].join(' ')}</p>
 									</div>
 									{/if}
 									<div class="relative w-full flex justify-center items-center">
 										<p class="text-md">{$_('Total')}</p>
 									</div>
 									<div class="relative w-full flex justify-center items-center">
-										<p class="text-lg dark:text-primary-500 text-primary-700">{controlView.modal.details['total'].join(' ')}</p>
+										<p class="text-lg dark:text-primary-500 text-primary-700">{controlView.dialog.details['total'].join(' ')}</p>
 									</div>
 									{#if controlView.control.details.type != 'unidirectional'}
 									<div class="relative w-full flex justify-center items-center">
-										<p class="text-lg dark:text-tertiary-500 text-tertiary-700">{controlView.modal.details['totalNeg'].join(' ')}</p>
+										<p class="text-lg dark:text-tertiary-500 text-tertiary-700">{controlView.dialog.details['totalNeg'].join(' ')}</p>
 									</div>
 									{/if}
 								</div>

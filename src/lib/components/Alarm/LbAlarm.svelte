@@ -1,7 +1,7 @@
 <script lang="ts">
 	import LbControl from '$lib/components/Common/LbControl.svelte';
-	import LbModal from '$lib/components/Common/LbModal.svelte';
-	import type { Control, ControlOptions, ControlView, ModalView, SingleButtonView } from '$lib/types/models';
+	import LbDialog from '$lib/components/Common/LbDialog.svelte';
+	import type { Control, ControlOptions, ControlView, DialogView, SingleButtonView } from '$lib/types/models';
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import { store } from '$lib/stores/Store.svelte';
 	import { loxWsClient } from '$lib/communication/LoxWsClient';
@@ -50,8 +50,8 @@
 		}
 	]);
 
-	let modal: ModalView = $state({
-		action: (state: boolean) => {modal.state = state},
+	let dialog: DialogView = $state({
+		action: (state: boolean) => {dialog.state = state},
 		state: false
 	});
 
@@ -71,8 +71,8 @@
 		statusName: getStatus(),
 		statusColor: armed ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700',
 		buttonState: !disabledMove,
-		modal: {
-			...modal,
+		dialog: {
+			...dialog,
 			buttons
 		}
 	});
@@ -80,5 +80,5 @@
 
 <div>
 	<LbControl bind:controlView {controlOptions}/>
-	<LbModal bind:controlView />
+	<LbDialog bind:controlView />
 </div>

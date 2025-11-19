@@ -489,10 +489,10 @@ export type ControlView = {
 	list?: ListItem[];
 	links?: string[];
 	details?: any;
-	modal: ModalView;
+	dialog: DialogView;
 }
 
-export type ModalView = {
+export type DialogView = {
 	action: any,
 	state?: boolean;
 	class?: string;
@@ -520,7 +520,7 @@ export const DEFAULT_CONTROLVIEW: ControlView = {
 	statusName: '',
 	statusColor: 'dark:text-surface-300 text-surface-700',
 	buttons: [],
-	modal: {
+	dialog: {
 		action: () => {} // no default action
 	}
 }
@@ -564,7 +564,7 @@ export type ControlOptions = {
 	isSubControl: boolean;
 	action?: any;
 	showControl?: boolean;
-	showModal?: boolean;
+	showDialog?: boolean;
 	isFavorite?: boolean;
 	isLink?: boolean;
 }
@@ -573,7 +573,7 @@ export const DEFAULT_CONTROLOPTIONS: ControlOptions = {
 	isSubControl: false,
 	action: undefined,
 	showControl: true,
-	showModal: false,
+	showDialog: false,
 	isFavorite: false,
 	isLink: false
 }
@@ -629,7 +629,7 @@ export type Button = {
 
 export type GeneralView = {
 	label: string;
-	openModal: boolean
+	openDialog: boolean
 	buttons: Button[];
 	cancel: any;
 	ok: any;
@@ -649,7 +649,7 @@ export type CalendarView = {
 	isIRC: boolean;
 	isIRCV1: boolean;
 	isCooling: boolean;
-	openModal: boolean;
+	openDialog: boolean;
 }
 
 export type CalendarEntryView = {
@@ -659,7 +659,7 @@ export type CalendarEntryView = {
 	isCooling: boolean;
 	label: string;
 	enableDelete: boolean;
-	openModal: boolean;
+	openDialog: boolean;
 }
 
 export type SecuredDetails = {

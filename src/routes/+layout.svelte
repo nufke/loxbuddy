@@ -1,9 +1,10 @@
 <script lang="ts">
 	import '../app.css';
 	import '../global.css';
-	import { Navigation } from '@skeletonlabs/skeleton-svelte';
+	import { Navigation, Dialog, Portal } from '@skeletonlabs/skeleton-svelte';
 	import { innerWidth } from 'svelte/reactivity/window';
-	import { HouseIcon, FileTextIcon, Grid2x2Icon, MenuIcon, LayoutListIcon, ArrowLeftRightIcon, CircleIcon, SquareIcon, type Icon as IconType } from '@lucide/svelte';
+	import { HouseIcon, FileTextIcon, Grid2x2Icon, MenuIcon, LayoutListIcon, ArrowLeftRightIcon, 
+						XIcon, SettingsIcon, CircleIcon, SquareIcon, type Icon as IconType } from '@lucide/svelte';
 	import type { Route } from '$lib/types/models';
 	import { mqttClient } from '$lib/communication/MqttClient';
 	import { store } from '$lib/stores/Store.svelte';
@@ -14,8 +15,8 @@
 	import { utils } from '$lib/helpers/Utils';
 	import type { WeatherCurrentConditions } from '$lib/types/weather';
 	import LbIcon from '$lib/components/Common/LbIconByName.svelte';
-	import LbWeatherModal from '$lib/components/Weather/LbWeatherModal.svelte';
-	import LbLockScreenModal from '$lib/components/LockScreen/LbLockScreenModal.svelte';
+	import LbWeatherDialog from '$lib/components/Weather/LbWeatherDialog.svelte';
+	import LbLockScreenDialog from '$lib/components/LockScreen/LbLockScreenDialog.svelte';
 	import { format } from 'date-fns';
 	import { goto } from '$app/navigation';
 	import { test } from '$lib/test/Test';
@@ -38,7 +39,7 @@
 
 	const env = page.data.env;
 	const isTest = Number(env.TEST) ? true : false;
- 
+
 	if (isTest) {
 		/* load test demo structure */
 		test.start();
@@ -51,6 +52,7 @@
 
 	let { children } = $props();
 
+	let mobileMenuDialog = $state(false);
 	let currentWeather = $derived(weatherStore.current);
 	let dailyForecast = $derived(weatherStore.daily);
 	let hourlyForecast = $derived(weatherStore.hourly);
@@ -75,6 +77,7 @@
 		{ label: 'Rooms', href: '/room', icon: Grid2x2Icon, badge: false },
 		{ label: 'Categories', href: '/category', icon: LayoutListIcon, badge: false },
 		{ label: 'Messages', href: '/messages', icon: FileTextIcon, badge: true },
+		{ label: 'Settings', href: '/settings', icon: SettingsIcon, badge: true },
 	]);
 
 	function checkUrl(href: string) {
@@ -86,8 +89,8 @@
 
 	function openWeather() {
 		if (currentWeather.time > 0) {
-			store.weatherModal.state = true;
-			store.setWeatherModalTimeout();
+			store.weatherDialog.state = true;
+			store.setWeatherDialogTimeout();
 		}
 	}
 
@@ -104,18 +107,21 @@
 	}
 
 	function navigate(s: string) {
-		goto(s);
-		store.setNav({ label: 'Menu', href: '/menu', icon: MenuIcon }); // TODO change navigation concept
+		if (s.length) {
+			goto(s);
+		} else {
+			mobileMenuDialog = true;
+		}
 	}
 
 	$effect( () => {
 		let found = routes.find ( item => item.href == path );
 		if (found) {
-			store.setNav({ label: 'Menu', href: '/menu', icon: MenuIcon });
+			store.setNav({ label: 'Menu', href: '', icon: MenuIcon });
 		}
 	});
 
-	store.resetLockScreenModalTimeout();
+	store.resetLockScreenDialogTimeout();
 
 	let localeSettings = localStorage.getItem('locale') || 'en';
 	store.locale = localeSettings;
@@ -158,12 +164,19 @@
 </svelte:head>
 
 <!-- click activity resets timeout for lockscreen -->
-<svelte:body onclick={() => {store.resetLockScreenModalTimeout()}}/>
+<svelte:body onclick={() => {store.resetLockScreenDialogTimeout()}}/>
 
 {#if (innerWidth.current != undefined) && innerWidth.current > 768 } <!-- tabled / landscape mode  -->
 <div class="fixed w-full h-screen md:grid grid-cols-[auto_1fr]">
 	<Navigation layout={ layoutRail ? 'rail' : 'sidebar'}
-							class={ layoutRail ? '' : 'grid grid-rows-[1fr_auto] gap-4'}>
+							class={ layoutRail ? '' : 'grid grid-rows-[1fr_auto] gap-4 w-[180px]'}>
+		{#if layoutRail}
+			<Navigation.Header>
+				<div class="flex justify-center items-center" onclick={(e)=>{e.stopPropagation(); store.lockScreenDialog.state=true;}}>
+					<p class="text-right text-2xl font-medium">{format(time, "p")}</p>
+			</div>
+			</Navigation.Header>
+		{/if}
 		<Navigation.Content>
 			<Navigation.Menu>
 			{#if layoutRail}
@@ -174,31 +187,20 @@
 						<span class="text-[12px] + {checkUrl(link.href) ? 'dark:text-primary-500 text-primary-700' : 'white'}">{link.label}</span>
 					</a>
 				{/each}
-			{/if}
-			{#if !layoutRail}
+			{:else}
 				<Navigation.Group>
+					<Navigation.Label class="capitalize pl-2">Menu</Navigation.Label>
 					<Navigation.Menu>
-						<a href="/" class={anchorSidebar}>
-							<HouseIcon class="size-4"/>
-							<span>Home</span>
-						</a>
+						{#each routes as link (link)}
+							{@const Icon = link.icon}
+							<div onclick={() => { toggleLayout(); goto(link.href)}} class={anchorSidebar} 
+								aria-label={link.label}>
+								<Icon class="size-4 {checkUrl(link.href) ? 'dark:text-primary-500 text-primary-700' : 'white'}"/>
+								<span class="{checkUrl(link.href) ? 'dark:text-primary-500 text-primary-700' : 'white'}">{link.label}</span>
+							</div>
+						{/each}
 					</Navigation.Menu>
 				</Navigation.Group>
-				{#each Object.entries(linksSidebar) as [category, links]}
-					<Navigation.Group>
-						<Navigation.Label class="capitalize pl-2">{category}</Navigation.Label>
-						<Navigation.Menu>
-							{#each routes as link (link)}
-								{@const Icon = link.icon}
-								<a href={link.href} class={anchorSidebar} 
-									title={link.label} aria-label={link.label}>
-									<Icon class="size-4"/>
-									<span>{link.label}</span>
-								</a>
-							{/each}
-						</Navigation.Menu>
-					</Navigation.Group>
-				{/each}
 			{/if}
 			</Navigation.Menu>
 		</Navigation.Content>
@@ -227,15 +229,17 @@
 					</button>
 				{/if}
 			</div>
-			<a href="/about">
-				<span class="text-xl dark:text-primary-500 text-primary-700 font-medium">LoxBuddy</span>
-			</a>
-			<div class="mr-1 flex flex-row gap-3 justify-end">
-				<div onclick={(e)=>{e.stopPropagation(); store.lockScreenModal.state=true;}}>
+			<div class="flex justify-center items-center">
+				<a href="/about">
+					<span class="text-xl dark:text-primary-500 text-primary-700 font-medium">LoxBuddy</span>
+				</a>
+			</div>
+			<div class="mr-1 flex flex-row gap-3 justify-end items-center">
+				<div onclick={(e)=>{e.stopPropagation(); store.lockScreenDialog.state=true;}}>
 					<p class="text-right text-2xl font-medium">{format(time, "p")}</p>
 				</div>
 				{#if store.showStatus}
-				<div class="flex flex-col gap-2">
+				<div class="flex flex-col justify-center items-center gap-2">
 					<CircleIcon class={getStatusColor(mqttStatus)} size="16"/>
 					<SquareIcon class={getStatusColor((mqttStatus==1) ? msStatus : 0)} size="16"/>
 				</div>
@@ -260,8 +264,39 @@
 </div>
 {/if}
 
-<LbWeatherModal />
-<LbLockScreenModal />
+<LbWeatherDialog />
+<LbLockScreenDialog />
+
+<Dialog
+	open={mobileMenuDialog}
+	onInteractOutside={() => mobileMenuDialog = false}>
+	<Portal>
+		<Dialog.Backdrop class="fixed inset-0 z-50 bg-surface-50-950/50 transition transition-discrete
+				transition transition-discrete opacity-0 starting:data-[state=open]:opacity-0 data-[state=open]:opacity-100"/>
+		<Dialog.Positioner class="fixed inset-0 z-50 flex justify-start">
+			<Dialog.Content class="h-screen card bg-surface-100-900 w-sm p-4 space-y-4 shadow-xl transition transition-discrete opacity-0 
+					-translate-x-full starting:data-[state=open]:opacity-0 starting:data-[state=open]:-translate-x-full data-[state=open]:opacity-100 
+					data-[state=open]:translate-x-0  max-w-[300px]">
+				<header class="flex justify-between items-center">
+					<Dialog.Title class="h4">Menu</Dialog.Title>
+						<button type="button" class="btn-icon hover:preset-tonal" onclick={() => mobileMenuDialog = false}>
+							<XIcon class="size-4"/>
+						</button>
+				</header>
+				<div class="flex flex-col">
+					{#each routes as link (link)}
+						{@const Icon = link.icon}
+						<div onclick={() => { mobileMenuDialog = false; goto(link.href)}} class={anchorSidebar} 
+							aria-label={link.label}>
+							<Icon class="size-4 {checkUrl(link.href) ? 'dark:text-primary-500 text-primary-700' : 'white'}"/>
+							<span class="{checkUrl(link.href) ? 'dark:text-primary-500 text-primary-700' : 'white'}">{link.label}</span>
+						</div>
+					{/each}
+				</div>
+			</Dialog.Content>
+		</Dialog.Positioner>
+	</Portal>
+</Dialog>
 
 <!-- loxbuddy logo and status in footer
 			<a class={store.showStatus ? "mb-1" : "mb-4"} href="/about">

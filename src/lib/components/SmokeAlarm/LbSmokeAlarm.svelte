@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Dialog, Portal } from '@skeletonlabs/skeleton-svelte';
-	import type { Control, ControlOptions, ControlView, ModalView, SingleButtonView } from '$lib/types/models';
+	import type { Control, ControlOptions, ControlView, DialogView, SingleButtonView } from '$lib/types/models';
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import LbControl from '$lib/components/Common/LbControl.svelte';
 	import { store } from '$lib/stores/Store.svelte';
@@ -88,8 +88,8 @@
 		}
 	);
 
-	let modal: ModalView = $state({
-		action: (state: boolean) => {modal.state = state},
+	let dialog: DialogView = $state({
+		action: (state: boolean) => {dialog.state = state},
 		state: false,
 	});
 
@@ -102,11 +102,11 @@
 		textName: control.name,
 		statusName: statusName,
 		statusColor: statusColor,
-		modal: modal
+		dialog: dialog
 	});
 
 	async function close() {
-		controlView.modal.action(false);
+		controlView.dialog.action(false);
 		await tick();
 		selectedTab = 0;
 	}
@@ -114,12 +114,12 @@
 
 <div>
 	<LbControl bind:controlView {controlOptions}/>
-	{#if controlView.modal.state}
+	{#if controlView.dialog.state}
 		<Dialog
-			open={controlView.modal.state}
+			open={controlView.dialog.state}
 			onInteractOutside={close}>
 			<Portal>
-				<Dialog.Backdrop class="fixed inset-0 z-10 bg-surface-50-950/75 backdrop-blur-sm" />
+				<Dialog.Backdrop class="fixed inset-0 z-10 bg-surface-50-950/75 backdrop-blur-sm"/>
 				<Dialog.Positioner class="fixed inset-0 z-10 flex justify-center items-center p-4">
 					<Dialog.Content class="card bg-surface-100-900 p-4 space-y-4 shadow-sm rounded-lg border border-white/5 hover:border-white/10
 										md:max-w-9/10 md:max-h-9/10 overflow-auto w-[380px]">
@@ -131,7 +131,7 @@
 							</div>
 							<div class="flex justify-center items-center">
 								<button type="button" class="btn-icon hover:preset-tonal" onclick={close}>
-									<XIcon class="size-4" />
+									<XIcon class="size-4"/>
 								</button>
 							</div>
 						</header>

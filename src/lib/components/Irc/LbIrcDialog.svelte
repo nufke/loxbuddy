@@ -10,9 +10,9 @@
 	import LbTemperatureSlider from '$lib/components/Irc/LbTemperatureSlider.svelte';
 	import LbTimeGrid from '$lib/components/Common/LbTimeGrid.svelte';
 	import LbIcon from '$lib/components/Common/LbIconByName.svelte';
-	import LbDateTimePickerModal from '$lib/components/Common/LbDateTimePickerModal.svelte';
-	import LbCalendarEntryModal from '$lib/components/Common/LbCalendarEntryModal.svelte';
-	import LbCalendarModal from '$lib/components/Common/LbCalendarModal.svelte';
+	import LbDateTimePickerDialog from '$lib/components/Common/LbDateTimePickerDialog.svelte';
+	import LbCalendarEntryDialog from '$lib/components/Common/LbCalendarEntryDialog.svelte';
+	import LbCalendarDialog from '$lib/components/Common/LbCalendarDialog.svelte';
 	import Info from '$lib/components/Common/LbInfo.svelte';
 	import { utils } from '$lib/helpers/Utils';
 	import { format } from 'date-fns';
@@ -33,7 +33,7 @@
 		{ id: 6, name: 'Manual cooling', visible: false }
 	];
 
-	/* this modal is used for V1 and V2, so we need to select the proper attributes */
+	/* this dialog is used for V1 and V2, so we need to select the proper attributes */
 	let isV1 = controlView.control.type !== 'IRoomControllerV2'; 
 
 	let dayOfTheWeek = $derived(format(store.time, 'eeee'));
@@ -108,25 +108,25 @@
 		isDateView: true,
 		isMinuteView: false,
 		label: $_('Duration'),
-		openModal: false
+		openDialog: false
 	});
 
 	let calendarView: CalendarView = $state({
 		control: controlView.control,
 		isIRC: true,
 		isIRCV1: isV1,
-		isCooling: false, // will be updated when modal is opened
-		openModal: false
+		isCooling: false, // will be updated when dialog is opened
+		openDialog: false
 	});
 
 	let calendarEntryView: CalendarEntryView = $state({
 		control: controlView.control,
-		subControl: controlView.control, // updated when Modal is opened
-		isIRC: false, // updated when Modal is opened
-		isCooling: false, // updated when Modal is opened
-		label: '', // updated when Modal is opened
-		enableDelete: true, // updated when Modal is opened
-		openModal: false // updated when Modal is opened
+		subControl: controlView.control, // updated when dialog is opened
+		isIRC: false, // updated when dialog is opened
+		isCooling: false, // updated when dialog is opened
+		label: '', // updated when dialog is opened
+		enableDelete: true, // updated when dialog is opened
+		openDialog: false // updated when dialog is opened
 	});
 
 	function getOperatingMode(s: string) {
@@ -149,7 +149,7 @@
 			calendarEntryView.isIRC = true;
 			calendarEntryView.isCooling = isCooling;
 			calendarEntryView.enableDelete = true;
-			calendarEntryView.openModal = true;
+			calendarEntryView.openDialog = true;
 		}
 	}
 
@@ -168,7 +168,7 @@
 		calendarEntryView.isIRC = true;
 		calendarEntryView.isCooling = isCooling;
 		calendarEntryView.enableDelete = false;
-		calendarEntryView.openModal = true;
+		calendarEntryView.openDialog = true;
 	}
 
 	function setTemperature(item: ListItem) {
@@ -241,7 +241,7 @@
 	}
 
 	async function close() {
-		controlView.modal.action(false);
+		controlView.dialog.action(false);
 		await tick();
 		selectedTab = 1;
 	}
@@ -249,7 +249,7 @@
 	function openCalendarView() {
 		calendarView.subControl = selectedSubControl;
 		calendarView.isCooling = isCooling;
-		calendarView.openModal=true;
+		calendarView.openDialog=true;
 	}
 
 	function filteredEntries() {
@@ -279,12 +279,12 @@
 	});
 </script>
 
-{#if controlView.modal.state} <!-- only construct dialog when opened, important to get current clientHeight -->
+{#if controlView.dialog.state} <!-- only construct dialog when opened, important to get current clientHeight -->
 	<Dialog
-		open={controlView.modal.state}
+		open={controlView.dialog.state}
 		onInteractOutside={close}>
 		<Portal>
-			<Dialog.Backdrop class="fixed inset-0 z-10 bg-surface-50-950/75 backdrop-blur-sm" />
+			<Dialog.Backdrop class="fixed inset-0 z-10 bg-surface-50-950/75 backdrop-blur-sm"/>
 			<Dialog.Positioner class="fixed inset-0 z-10 flex justify-center items-center p-4" >
 				<Dialog.Content class="card bg-surface-100-900 p-4 pt-3 shadow-sm rounded-lg border border-white/5 hover:border-white/10
 									md:max-w-9/10 md:max-h-9/10 w-[450px]">
@@ -297,7 +297,7 @@
 							</div>
 							<div class="flex justify-center items-center">
 								<button type="button" class="btn-icon hover:preset-tonal" onclick={close}>
-									<XIcon class="size-4" />
+									<XIcon class="size-4"/>
 								</button>
 							</div>
 						</div>
@@ -367,7 +367,7 @@
 								</div>
 								<button class="w-full m-0 mt-4 flex min-h-[50px] items-center justify-start rounded-lg border border-white/15 hover:border-white/50
 												dark:bg-surface-950 bg-surface-50 px-2 py-2"
-												onclick={() => {dateTimeView.openModal=true}}>
+												onclick={() => {dateTimeView.openDialog=true}}>
 									<div class="w-full flex items-center truncate">
 										<div class="mt-0 ml-3 mr-2 flex w-full justify-between truncate">
 											<p class="truncate text-lg">{$_("Duration")}</p>
@@ -428,9 +428,9 @@
 			</Dialog.Positioner>
 		</Portal>
 	</Dialog>
-	<LbDateTimePickerModal date={date} bind:view={dateTimeView} onValueChange={(e:any)=>{ updateTimer(e)}}/>
-	<LbCalendarModal bind:view={calendarView} {mode} {dayModes} {entries} {temperatureList}/>
-	<LbCalendarEntryModal bind:view={calendarEntryView} {entries} {selectedEntry} {dayModes} {temperatureList}/>
+	<LbDateTimePickerDialog date={date} bind:view={dateTimeView} onValueChange={(e:any)=>{ updateTimer(e)}}/>
+	<LbCalendarDialog bind:view={calendarView} {mode} {dayModes} {entries} {temperatureList}/>
+	<LbCalendarEntryDialog bind:view={calendarEntryView} {entries} {selectedEntry} {dayModes} {temperatureList}/>
 {/if}
 
 <Toast.Group {toaster}>

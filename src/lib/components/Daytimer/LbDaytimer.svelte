@@ -3,11 +3,11 @@
 	import { Dialog, Portal } from '@skeletonlabs/skeleton-svelte';
 	import { SvelteDate } from 'svelte/reactivity';
 	import { Toast, createToaster } from '@skeletonlabs/skeleton-svelte';
-	import type { Control, ControlOptions, ControlView, ModalView, EntriesAndDefaultValue, WeekDays } from '$lib/types/models';
+	import type { Control, ControlOptions, ControlView, DialogView, EntriesAndDefaultValue, WeekDays } from '$lib/types/models';
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import LbTimeGrid from '$lib/components/Common/LbTimeGrid.svelte';
-	import LbDateTimePickerModal from '$lib/components/Common/LbDateTimePickerModal.svelte';
-	import LbCalendarModal from '$lib/components/Common/LbCalendarModal.svelte';
+	import LbDateTimePickerDialog from '$lib/components/Common/LbDateTimePickerDialog.svelte';
+	import LbCalendarDialog from '$lib/components/Common/LbCalendarDialog.svelte';
 	import { store } from '$lib/stores/Store.svelte';
 	import { XIcon, TimerIcon } from '@lucide/svelte';
 	import fmt from 'sprintf-js';
@@ -110,24 +110,24 @@
 	}
 
 	function close() {
-		controlView.modal.action(false);
+		controlView.dialog.action(false);
 	}
 
 	let calendarView = $state({
 		control: control,
 		isIRC: false,
-		openModal: false
+		openDialog: false
 	});
 	
 	let dateTimeView = $state({
 		isDateView: true,
 		isMinuteView: false,
 		label: $_('Duration'),
-		openModal: false
+		openDialog: false
 	});
 
-	let modal: ModalView = $state({
-		action: (state: boolean) => {modal.state = state},
+	let dialog: DialogView = $state({
+		action: (state: boolean) => {dialog.state = state},
 		state: false
 	});
 
@@ -142,19 +142,19 @@
 		textName: control.name,
 		statusName: status + getDuration(),
 		statusColor: (value > 0 ) ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700',
-		modal: modal
+		dialog: dialog
 	});
 </script>
 
 <div>
 	<LbControl bind:controlView {controlOptions}/>
-	{#if controlView.modal.state}
+	{#if controlView.dialog.state}
 		<Dialog
-			open={controlView.modal.state}
+			open={controlView.dialog.state}
 			onInteractOutside={close}>
 			<Portal>
-				<Dialog.Backdrop class="fixed inset-0 z-10 bg-surface-50-950/75 backdrop-blur-sm" />
-				<Dialog.Positioner class="fixed inset-0 z-0 flex justify-center items-center p-4">
+				<Dialog.Backdrop class="fixed inset-0 z-10 bg-surface-50-950/75 backdrop-blur-sm"/>
+				<Dialog.Positioner class="fixed inset-0 z-10 flex justify-center items-center p-4">
 					<Dialog.Content class="card bg-surface-100-900 p-4 pt-3 shadow-sm rounded-lg border border-white/5 hover:border-white/10
 										md:max-w-9/10 md:max-h-9/10 w-[450px]">
 						<!--<Info control={controlView.control}/>-->
@@ -165,7 +165,7 @@
 							</div>
 							<div class="flex justify-center items-center">
 								<button type="button" class="btn-icon hover:preset-tonal" onclick={close}>
-									<XIcon class="size-4" />
+									<XIcon class="size-4"/>
 								</button>
 							</div>
 						</header>
@@ -181,7 +181,7 @@
 									</div>
 								{/if}
 								<div class="w-full m-2 dark:bg-surface-950 bg-surface-50 rounded-lg border border-white/15 hover:border-white/50"
-											onclick={(e) => { e.stopPropagation(); e.preventDefault(); calendarView.openModal=true;}}>
+											onclick={(e) => { e.stopPropagation(); e.preventDefault(); calendarView.openDialog=true;}}>
 									<LbTimeGrid {mode} {entries} {overrideDate} {override}/>
 									<h2 class="m-2 text-md text-center dark:text-surface-50 text-surface-950">{dayOfTheWeek}</h2>
 								</div>
@@ -197,7 +197,7 @@
 								</div>
 								<button class="w-full m-0 mt-2 flex min-h-[50px] items-center justify-start rounded-lg border border-white/15 hover:border-white/50
 													dark:bg-surface-950 bg-surface-50 px-2 py-2"
-													onclick={(e) => { e.stopPropagation(); e.preventDefault(); dateTimeView.openModal=true;}}>
+													onclick={(e) => { e.stopPropagation(); e.preventDefault(); dateTimeView.openDialog=true;}}>
 									<div class="w-full flex items-center truncate">
 										<div class="mt-0 ml-2 mr-2 flex w-full justify-between truncate">
 											<p class="truncate text-lg">{$_("Duration")}</p>
@@ -217,8 +217,8 @@
 		</Dialog>
 	{/if}
 
-	<LbDateTimePickerModal date={overrideDate.end} bind:view={dateTimeView} onValueChange={(e:any)=>{ updateTimer(e)}}/>
-	<LbCalendarModal bind:view={calendarView} {mode} {dayModes} {entries}/>
+	<LbDateTimePickerDialog date={overrideDate.end} bind:view={dateTimeView} onValueChange={(e:any)=>{ updateTimer(e)}}/>
+	<LbCalendarDialog bind:view={calendarView} {mode} {dayModes} {entries}/>
 
 	<Toast.Group {toaster}>
 		{#snippet children(toast)}

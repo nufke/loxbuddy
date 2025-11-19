@@ -1,8 +1,8 @@
 <script lang="ts">
-	import type { Control, ControlOptions, ControlView, SingleButtonView, ModalView } from '$lib/types/models';
+	import type { Control, ControlOptions, ControlView, SingleButtonView, DialogView } from '$lib/types/models';
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import LbControl from '$lib/components/Common/LbControl.svelte';
-	import LbJalousieModal from '$lib/components/Jalousie/LbJalousieModal.svelte';
+	import LbJalousieDialog from '$lib/components/Jalousie/LbJalousieDialog.svelte';
 	import fmt from 'sprintf-js';
 	import { _ } from 'svelte-i18n';
 	import { loxWsClient } from '$lib/communication/LoxWsClient';
@@ -28,25 +28,25 @@
 		
 	let buttons: SingleButtonView[] = $state([
 		{
-			iconName: 'ChevronDown',
+			iconName: 'ChevronDownIcon',
 			type: 'button',
 			color: '',
 			click: () => loxWsClient.control(control.uuidAction, 'FullDown')
 		},
 		{
-			iconName: 'ChevronUp',
+			iconName: 'ChevronUpIcon',
 			type: 'button',
 			color: '',
 			click: () => loxWsClient.control(control.uuidAction, 'FullUp')
 		}
 	]);
 
-	let modal: ModalView = $state({
-		action: (state: boolean) => {modal.state = state},
-		state: controlOptions.showModal,
+	let dialog: DialogView = $state({
+		action: (state: boolean) => {dialog.state = state},
+		state: controlOptions.showDialog,
 		buttons: [
 			{
-				iconName: 'ChevronDown',
+				iconName: 'ChevronDownIcon',
 				type: 'button',
 				color: '',
 				click: () => {},  // do nothing
@@ -54,7 +54,7 @@
 				mouseup: () => { loxWsClient.control(control.uuidAction, 'DownOff')}
 			},
 			{
-				iconName: 'ChevronUp',
+				iconName: 'ChevronUpIcon',
 				type: 'button',
 				color: '',
 				click: () => {}, // do nothing
@@ -123,7 +123,7 @@
 		badgeIconName: isAutomatic ? '/icons/svg/automatic-2.svg' : '',
 		badgeIconColor: autoActive ? 'dark:bg-primary-500 bg-primary-700' : 'dark:bg-surface-50 bg-surface-950',
 		buttons: buttons,
-		modal: { ...modal,
+		dialog: { ...dialog,
 			details: jalousie
 		}
 	});
@@ -131,5 +131,5 @@
 
 <div>
 	<LbControl bind:controlView {controlOptions}/>
-	<LbJalousieModal bind:controlView />
+	<LbJalousieDialog bind:controlView />
 </div>

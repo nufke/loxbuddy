@@ -5,7 +5,7 @@
 
 	let { view = $bindable() } = $props();
 
-	let returnObj: any; // Modal can return any object
+	let returnObj: any; // Dialog can return any object
 	let selectedButton: any = $derived(view.buttons ? view.buttons.find( (b: Button) => b.selected): null);
 
 	function buttonSelect(id: number) {
@@ -15,12 +15,12 @@
 	}
 </script>
 
-{#if view.openModal}
+{#if view.openDialog}
 	<Dialog
-		open={view.openModal}
+		open={view.openDialog}
 		onInteractOutside={close}>
 		<Portal>
-			<Dialog.Backdrop class="fixed inset-0 z-40 bg-surface-50-950/75 backdrop-blur-sm" />
+			<Dialog.Backdrop class="fixed inset-0 z-40 bg-surface-50-950/75 backdrop-blur-sm"/>
 			<Dialog.Positioner class="fixed inset-0 z-40 flex justify-center items-center p-4">
 				<Dialog.Content class="card bg-surface-100-900 p-4 pt-3 shadow-sm rounded-lg border border-white/5 hover:border-white/10
 									md:max-w-9/10 md:max-h-9/10 w-[450px]">
@@ -43,11 +43,11 @@
 						</div>
 						<div class="flex grid grid-cols-2 gap-2 mt-2 w-full">
 							<button class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
-											onclick={() => {view.openModal=false; view.cancel()}}>
+											onclick={() => {view.openDialog=false; view.cancel()}}>
 								<p class="truncate text-lg">{$_("Cancel")}</p>
 							</button>
 							<button class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
-											onclick={() => {view.openModal=false; view.ok(returnObj)}}>
+											onclick={() => {view.openDialog=false; view.ok(returnObj)}}>
 								<p class="truncate text-lg">{$_("OK")}</p>
 							</button>
 						</div>

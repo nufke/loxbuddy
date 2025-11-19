@@ -6,10 +6,10 @@
 	import { _, locale } from 'svelte-i18n';
 	import { store } from '$lib/stores/Store.svelte';
 	import { ArrowLeftIcon, XIcon } from '@lucide/svelte';
-	import LbGeneralModal from '$lib/components/Common/LbGeneralModal.svelte';
+	import LbGeneralDialog from '$lib/components/Common/LbGeneralDialog.svelte';
 
-	let openThemeModal = $state(false);
-	let openStartpageModal = $state(false);
+	let openThemeDialog = $state(false);
+	let openStartpageDialog = $state(false);
 	let showStatus = $state(localStorage.getItem('showStatus') || '0');
 	let theme = $state(localStorage.getItem('theme') || 'LoxBuddy');
 	let mode = $state(localStorage.getItem('mode') || 'dark');
@@ -41,7 +41,7 @@
 
 	let languageSelectView: GeneralView = $state({
 		label: $_('Select language'),
-		openModal: false,
+		openDialog: false,
 		buttons: [],
 		cancel: () => {},
 		ok: (e: any) => {setLocale(e)}
@@ -85,12 +85,12 @@
 		theme = s || 'LoxBuddy';
 		document.documentElement.setAttribute('data-theme', theme.toLowerCase());
 		localStorage.setItem('theme', theme);
-		openThemeModal = false;
+		openThemeDialog = false;
 	};
 
 	function openLanguageSelectView() {
 		languageSelectView.buttons = languageSelectViewButtons;
-		languageSelectView.openModal = true;
+		languageSelectView.openDialog = true;
 	}
 
 	function getStartpageName(startpageUrl: string) {
@@ -107,7 +107,7 @@
 		startPage = cat.length ? ('/' + cat + '/' + uuid) : uuid;
 		localStorage.setItem('startPage', startPage);
 		store.startPage = startPage;
-		openStartpageModal = false;
+		openStartpageDialog = false;
 	}
 
 	const onShowStatusChange = (event: { checked: boolean }) => {
@@ -141,7 +141,7 @@
 		</div>
 	</button>
 	<button aria-current="true" type="button" class="flex w-full justify-between border-b dark:border-surface-900 border-surface-200 p-3 pr-5 pl-5 text-left text-lg"
-					onclick={() => {openThemeModal = true;}}>
+					onclick={() => {openThemeDialog = true;}}>
 		<p>{$_("Theme")}</p>
 		<p>{theme}</p>
 	</button>
@@ -151,7 +151,7 @@
 		<p>{$_(lang)}</p>
 	</button>
 	<button aria-current="true" type="button" class="flex w-full justify-between border-b dark:border-surface-900 border-surface-200 p-3 pr-5 pl-5 text-left text-lg"
-					onclick={() => {openStartpageModal = true;}}>
+					onclick={() => {openStartpageDialog = true;}}>
 		<p>{$_("Startpage")}</p>
 		<p>{getStartpageName(startPage)}</p>
 	</button>
@@ -162,10 +162,10 @@
 </div>
 
 <Dialog
-	open={openThemeModal}
-	onInteractOutside={() => openThemeModal=false}>
+	open={openThemeDialog}
+	onInteractOutside={() => openThemeDialog=false}>
 	<Portal>
-		<Dialog.Backdrop class="fixed inset-0 z-10 bg-surface-50-950/75 backdrop-blur-sm" />
+		<Dialog.Backdrop class="fixed inset-0 z-10 bg-surface-50-950/75 backdrop-blur-sm"/>
 		<Dialog.Positioner class="fixed inset-0 z-10 flex justify-center items-center p-4">
 			<Dialog.Content class="card bg-surface-100-900 p-4 pt-3 shadow-sm rounded-lg border border-white/5 hover:border-white/10
 								md:max-w-9/10 md:max-h-9/10 w-[450px]">
@@ -175,8 +175,8 @@
 						<Dialog.Title class="h5 flex justify-center items-center">Theme selector</Dialog.Title>
 					</div>
 					<div class="flex justify-center items-center">
-						<button type="button" class="btn-icon hover:preset-tonal" onclick={() => openThemeModal=false}>
-							<XIcon class="size-4" />
+						<button type="button" class="btn-icon hover:preset-tonal" onclick={() => openThemeDialog=false}>
+							<XIcon class="size-4"/>
 						</button>
 					</div>
 				</header>
@@ -446,10 +446,10 @@
 </Dialog>
 
 <Dialog
-	open={openStartpageModal}
-	onInteractOutside={() => openStartpageModal=false}>
+	open={openStartpageDialog}
+	onInteractOutside={() => openStartpageDialog=false}>
 	<Portal>
-		<Dialog.Backdrop class="fixed inset-0 z-10 bg-surface-50-950/75 backdrop-blur-sm" />
+		<Dialog.Backdrop class="fixed inset-0 z-10 bg-surface-50-950/75 backdrop-blur-sm"/>
 		<Dialog.Positioner class="fixed inset-0 z-10 flex justify-center items-center p-4">
 			<Dialog.Content class="card bg-surface-100-900 p-4 pt-3 shadow-sm rounded-lg border border-white/5 hover:border-white/10
 								md:max-w-9/10 md:max-h-9/10 w-[450px]">
@@ -459,8 +459,8 @@
 						<Dialog.Title class="h5 flex justify-center items-center">{$_("Startpage")}</Dialog.Title>
 					</div>
 					<div class="flex justify-center items-center">
-						<button type="button" class="btn-icon hover:preset-tonal" onclick={() => openStartpageModal=false}>
-							<XIcon class="size-4" />
+						<button type="button" class="btn-icon hover:preset-tonal" onclick={() => openStartpageDialog=false}>
+							<XIcon class="size-4"/>
 						</button>
 					</div>
 				</header>
@@ -514,4 +514,4 @@
 	</Portal>
 </Dialog>
 
-<LbGeneralModal bind:view={languageSelectView}/>
+<LbGeneralDialog bind:view={languageSelectView}/>

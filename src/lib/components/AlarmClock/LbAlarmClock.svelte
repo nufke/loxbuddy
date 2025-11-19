@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { tick } from 'svelte';
-	import type { Control, ControlOptions, ControlView, ModalView, AlarmClockEntries, AlarmClockEntry } from '$lib/types/models';
+	import type { Control, ControlOptions, ControlView, DialogView, AlarmClockEntries, AlarmClockEntry } from '$lib/types/models';
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import LbControl from '$lib/components/Common/LbControl.svelte';
 	import { Switch } from '@skeletonlabs/skeleton-svelte';
@@ -10,8 +10,8 @@
 	import { format } from 'date-fns';
 	import { Dialog, Portal } from '@skeletonlabs/skeleton-svelte';
 	import LbInPlaceEdit from '$lib/helpers/in-place-ediit.svelte';
-	import LbDateTimePickerModal from '$lib/components/Common/LbDateTimePickerModal.svelte';
-	import LbAlarmClockDayPickerModal from '$lib/components/AlarmClock/LbAlarmClockDayPickerModal.svelte';
+	import LbDateTimePickerDialog from '$lib/components/Common/LbDateTimePickerDialog.svelte';
+	import LbAlarmClockDayPickerDialog from '$lib/components/AlarmClock/LbAlarmClockDayPickerDialog.svelte';
 	import { loxWsClient } from '$lib/communication/LoxWsClient';
 	import { utils } from '$lib/helpers/Utils';
 	import Info from '$lib/components/Common/LbInfo.svelte';
@@ -29,11 +29,11 @@
 		isDateView: false,
 		isMinuteView: false,
 		label: $_('Wake-up time'),
-		openModal: false
+		openDialog: false
 	});
 
-	let modal: ModalView = $state({
-		action: (state: boolean) => {modal.state = state},
+	let dialog: DialogView = $state({
+		action: (state: boolean) => {dialog.state = state},
 		state: false
 	});
 
@@ -58,7 +58,7 @@
 		textName: control.name,
 		statusName: alarms.length ? getAlarmTime() : $_('No alarm time active'),
 		statusColor: alarms.length ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700',
-		modal: modal
+		dialog: dialog
 	});
 
 
@@ -155,7 +155,7 @@
 	}
 
 	function close() {
-		controlView.modal.action(false);
+		controlView.dialog.action(false);
 	}
 
 	$effect( () => {
@@ -177,12 +177,12 @@
 
 <div>
 	<LbControl bind:controlView {controlOptions}/>
-	{#if controlView.modal.state} <!-- only construct dialog when opened, important to get current clientHeight -->
+	{#if controlView.dialog.state} <!-- only construct dialog when opened, important to get current clientHeight -->
 		<Dialog
-			open={controlView.modal.state}
+			open={controlView.dialog.state}
 			onInteractOutside={close}>
 			<Portal>
-				<Dialog.Backdrop class="fixed inset-0 z-10 bg-surface-50-950/75 backdrop-blur-sm" />
+				<Dialog.Backdrop class="fixed inset-0 z-10 bg-surface-50-950/75 backdrop-blur-sm"/>
 				<Dialog.Positioner class="fixed inset-0 z-10 flex justify-center items-center p-4">
 					<Dialog.Content class="card bg-surface-100-900 p-4 pt-3 shadow-sm rounded-lg border border-white/5 hover:border-white/10
 										md:max-w-9/10 md:max-h-9/10 w-[450px]">
@@ -194,7 +194,7 @@
 							</div>
 							<div class="flex justify-center items-center">
 								<button type="button" class="btn-icon hover:preset-tonal" onclick={close}>
-									<XIcon class="size-4" />
+									<XIcon class="size-4"/>
 								</button>
 							</div>
 						</header>
@@ -208,7 +208,7 @@
 													<LbInPlaceEdit value={entry.name} onValueChange={(e:any)=>{updateName(i, e)}}/>
 												</h1>
 												<button class="text-3xl {entry.isActive ? 'dark:text-surface-50 text-surface-950' : 'dark:text-surface-700 text-surface-300'}"
-															onclick={() => {selectedEntry = i; dateTimeView.openModal=true;}}>
+															onclick={() => {selectedEntry = i; dateTimeView.openDialog=true;}}>
 													<h1>{utils.dec2hours(entry.alarmTime)}</h1>
 											</button>
 											</div>
@@ -222,7 +222,7 @@
 											</div>
 										</div>
 										<div class="flex w-full m-auto justify-between">
-											<LbAlarmClockDayPickerModal {entry} label={$_("Alarm")} onValueChange={(e:any)=>{updateSettings(i, e)}}/>
+											<LbAlarmClockDayPickerDialog {entry} label={$_("Alarm")} onValueChange={(e:any)=>{updateSettings(i, e)}}/>
 											{#if i > 0}
 											<button type="button" class="dark:text-surface-300 text-surface-700" aria-label="delete" onclick={() => { deleteEntry(i);}}>
 												<Trash2Icon/>
@@ -245,5 +245,5 @@
 			</Portal>
 		</Dialog>
 	{/if}
-	<LbDateTimePickerModal date={getTimerDate()} bind:view={dateTimeView} onValueChange={(e:any)=>{ updateAlarmTime(e)}}/>
+	<LbDateTimePickerDialog date={getTimerDate()} bind:view={dateTimeView} onValueChange={(e:any)=>{ updateAlarmTime(e)}}/>
 </div>

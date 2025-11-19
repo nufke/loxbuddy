@@ -3,7 +3,7 @@
 	import { utils } from '$lib/helpers/Utils';
 	import { PlusIcon, ArrowLeftIcon } from '@lucide/svelte';
 	import type { Entry, CalendarEntryView } from '$lib/types/models';
-	import LbCalendarEntryModal from '$lib/components/Common/LbCalendarEntryModal.svelte';
+	import LbCalendarEntryDialog from '$lib/components/Common/LbCalendarEntryDialog.svelte';
 	import { _ } from 'svelte-i18n';
 	import { store } from '$lib/stores/Store.svelte';
 
@@ -94,7 +94,7 @@
 		calendarEntryView.isIRC = view.isIRC;
 		calendarEntryView.isCooling = view.isCooling;
 		calendarEntryView.enableDelete = false;
-		calendarEntryView.openModal = true;
+		calendarEntryView.openDialog = true;
 	}
 
 	function updateEntry(entry: Entry) {
@@ -105,7 +105,7 @@
 		calendarEntryView.isIRC = view.isIRC;
 		calendarEntryView.isCooling = view.isCooling;
 		calendarEntryView.enableDelete = true;
-		calendarEntryView.openModal = true;
+		calendarEntryView.openDialog = true;
 	}
 
 	function getCoolingDayTimerInfo() {
@@ -117,23 +117,23 @@
 
 	function close() {
 		initialEntries = [];
-		view.openModal = false;
+		view.openDialog = false;
 	}
 
 	let calendarEntryView: CalendarEntryView = $state({
 		control: view.control,
 		subControl: view.subControl,
-		isIRC: false, // updated when Modal is opened
-		isCooling: false, // updated when Modal is opened
+		isIRC: false, // updated when Dialog is opened
+		isCooling: false, // updated when Dialog is opened
 		label: '',
 		enableDelete: true,
-		openModal: false
+		openDialog: false
 	});
 </script>
 
-{#if view.openModal}
+{#if view.openDialog}
 <Dialog
-	open={view.openModal}
+	open={view.openDialog}
 	onInteractOutside={close}>
 	<Portal>
 		<Dialog.Backdrop class="fixed z-20 top-0 left-0 right-0 bottom-0 dark:bg-surface-950 bg-surface-50" />
@@ -201,4 +201,4 @@
 </Dialog>
 {/if}
 
-<LbCalendarEntryModal bind:view={calendarEntryView} {entries} {selectedEntry} {dayModes} {temperatureList}/>
+<LbCalendarEntryDialog bind:view={calendarEntryView} {entries} {selectedEntry} {dayModes} {temperatureList}/>

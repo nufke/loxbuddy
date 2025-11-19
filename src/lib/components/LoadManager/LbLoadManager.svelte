@@ -1,7 +1,7 @@
 <script lang="ts">
 	import LbControl from '$lib/components/Common/LbControl.svelte';
-	import LbModal from '$lib/components/Common/LbModal.svelte';
-	import type { Control, ControlOptions, ControlView, ModalView } from '$lib/types/models';
+	import LbDialog from '$lib/components/Common/LbDialog.svelte';
+	import type { Control, ControlOptions, ControlView, DialogView } from '$lib/types/models';
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import { store } from '$lib/stores/Store.svelte';
 	import { _ } from 'svelte-i18n';
@@ -31,8 +31,8 @@
 		return text ? 'dark:text-error-500 text-error-700' : 'dark:fill-error-500 fill-error-700';
 	}
 
-	let modal: ModalView = $state({
-		action: (state: boolean) => {modal.state = state},
+	let dialog: DialogView = $state({
+		action: (state: boolean) => {dialog.state = state},
 		state: false,
 		disableIcon: true
 	});
@@ -46,8 +46,8 @@
 		textName: control.name,
 		statusName: getPowerLevel(availablePower),
 		statusColor: setColor(currentPower/maxPower, true),
-		modal: {
-			...modal,
+		dialog: {
+			...dialog,
 			details: {
 				loadManager: {
 					loads: loads,
@@ -67,5 +67,5 @@
 
 <div>
 	<LbControl bind:controlView {controlOptions}/>
-	<LbModal bind:controlView />
+	<LbDialog bind:controlView />
 </div>

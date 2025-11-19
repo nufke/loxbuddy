@@ -1,8 +1,8 @@
 <script lang="ts">
-	import type { Control, ControlOptions, ControlView, SingleButtonView, ModalView } from '$lib/types/models';
+	import type { Control, ControlOptions, ControlView, SingleButtonView, DialogView } from '$lib/types/models';
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import LbControl from '$lib/components/Common/LbControl.svelte';
-	import LbModal from '$lib/components/Common/LbModal.svelte';
+	import LbDialog from '$lib/components/Common/LbDialog.svelte';
 	import { store } from '$lib/stores/Store.svelte';
 	import { loxWsClient } from '$lib/communication/LoxWsClient';
 	import fmt from 'sprintf-js';
@@ -25,7 +25,7 @@
 
 	let buttonMinus: SingleButtonView[] = $state([
 		{
-			iconName: 'Minus',
+			iconName: 'MinusIcon',
 			type: 'button',
 			color: '',
 			click: () => {updateValue(-1)}
@@ -34,15 +34,15 @@
 
 	let buttonPlus: SingleButtonView[] = $state([
 		{
-			iconName: 'Plus',
+			iconName: 'PlusIcon',
 			type: 'button',
 			color: '',
 			click: () => {updateValue(1)}
 		}
 	]);
 
-	let modal: ModalView = $state({
-		action: (state: boolean) => {modal.state = state},
+	let dialog: DialogView = $state({
+		action: (state: boolean) => {dialog.state = state},
 		state: false,
 		size: {
 			width: 'w-[450px]'
@@ -57,11 +57,11 @@
 		textName: control.name,
 		statusName: fmt.sprintf(control.details.format, value),
 		buttons: increaseOnly ? buttonPlus : [...buttonMinus, ...buttonPlus],
-		modal: modal
+		dialog: dialog
 	});
 </script>
 
 <div>
 	<LbControl bind:controlView {controlOptions}/>
-	<LbModal bind:controlView />
+	<LbDialog bind:controlView />
 </div>

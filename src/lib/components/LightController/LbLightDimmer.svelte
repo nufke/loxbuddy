@@ -67,7 +67,7 @@
 	});
 </script>
 
-<div role="button" tabindex="0" onkeydown={()=>{}} aria-label="card" onclick={() => {controlOptions.action ? controlOptions.action() : controlView.modal.state = true}}
+<div role="button" tabindex="0" onkeydown={()=>{}} aria-label="card" onclick={() => {controlOptions.action ? controlOptions.action() : controlView.dialog.state = true}}
 		class="card m-0 flex min-h-[70px] items-center justify-start rounded-lg border border-white/5
 						{controlOptions.isSubControl ? 'bg-surface-200-800' : 'bg-surface-100-900'} px-2 py-2 hover:border-white/10">
 	<div class="w-full ">

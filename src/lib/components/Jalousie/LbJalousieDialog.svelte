@@ -13,16 +13,16 @@
 	let autoActive = $derived(Number(store.getState(controlView.control.states.autoActive)));
 
 	function close() {
-		controlView.modal.action(false);
+		controlView.dialog.action(false);
 	}
 </script>
 
-{#if controlView.modal.state}
+{#if controlView.dialog.state}
 	<Dialog
-		open={controlView.modal.state}
+		open={controlView.dialog.state}
 		onInteractOutside={close}>
 		<Portal>
-			<Dialog.Backdrop class="fixed inset-0 z-10 bg-surface-50-950/75 backdrop-blur-sm" />
+			<Dialog.Backdrop class="fixed inset-0 z-10 bg-surface-50-950/75 backdrop-blur-sm"/>
 			<Dialog.Positioner class="fixed inset-0 z-10 flex justify-center items-center p-4">
 				<Dialog.Content class="card bg-surface-100-900 p-4 pt-3 space-y-4 shadow-sm rounded-lg border border-white/5 hover:border-white/10
 								md:max-w-9/10 md:max-h-9/10 overflow-auto w-[450px]">
@@ -35,7 +35,7 @@
 							</div>
 							<div class="flex justify-center items-center">
 								<button type="button" class="btn-icon hover:preset-tonal" onclick={close}>
-									<XIcon class="size-4" />
+									<XIcon class="size-4"/>
 								</button>
 							</div>
 						</header>
@@ -59,8 +59,8 @@
 								<p class="text-lg truncate {controlView.statusColor}">{controlView.statusName}</p>
 							</div>
 							<div class="container flex grid grid-cols-2 gap-2 mt-6">
-							{#if controlView.modal && controlView.modal.buttons}
-								{#each controlView.modal.buttons as button}
+							{#if controlView.dialog && controlView.dialog.buttons}
+								{#each controlView.dialog.buttons as button}
 									{#if button.type === 'button'}
 										<button type="button" class="w-full {button.class} btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50" 
 												onclick={(e) => { e.stopPropagation(); e.preventDefault(); button.click()}}

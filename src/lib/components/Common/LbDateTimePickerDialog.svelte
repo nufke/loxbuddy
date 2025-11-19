@@ -14,21 +14,21 @@
 	let flexCol = $derived(innerWidth.current && innerWidth.current < 900 ? 'flex-col' : 'flex-row space-x-4');
 
 	function valueChanged() {
-		view.openModal = false;
+		view.openDialog = false;
 		return (localDate != date)
 	}
 
 	function close() {
-		view.openModal = false;
+		view.openDialog = false;
 	}
 </script>
 
-{#if view.openModal}
+{#if view.openDialog}
 	<Dialog
-		open={view.openModal}
+		open={view.openDialog}
 		onInteractOutside={close}>
 		<Portal>
-			<Dialog.Backdrop class="fixed inset-0 z-30 bg-surface-50-950/75 backdrop-blur-sm" />
+			<Dialog.Backdrop class="fixed inset-0 z-30 bg-surface-50-950/75 backdrop-blur-sm"/>
 			<Dialog.Positioner class="fixed inset-0 z-30 flex justify-center items-center p-4">
 				<Dialog.Content class="card bg-surface-100-900 p-4 pt-3 shadow-sm rounded-lg border border-white/5 hover:border-white/10
 									md:max-w-9/10 md:max-h-9/10 {width}">
@@ -39,7 +39,7 @@
 						</div>
 						<div class="flex justify-center items-center">
 							<button type="button" class="btn-icon hover:preset-tonal" onclick={close}>
-								<XIcon class="size-4" />
+								<XIcon class="size-4"/>
 							</button>
 						</div>
 					</header>

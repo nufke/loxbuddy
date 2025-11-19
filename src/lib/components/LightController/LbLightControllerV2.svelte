@@ -1,9 +1,9 @@
 <script lang="ts">
-	import type { Control, ControlOptions, ControlView, MoodList, SingleButtonView, ModalView } from '$lib/types/models';
+	import type { Control, ControlOptions, ControlView, MoodList, SingleButtonView, DialogView } from '$lib/types/models';
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import LbControl from '$lib/components/Common/LbControl.svelte';
 	import { loxWsClient } from '$lib/communication/LoxWsClient';
-	import LbListModal from '$lib/components/Common/LbListModal.svelte';
+	import LbListDialog from '$lib/components/Common/LbListDialog.svelte';
 	import { _ } from 'svelte-i18n';
 	import { store } from '$lib/stores/Store.svelte';
 
@@ -42,16 +42,16 @@
 
 	let buttons: SingleButtonView[] = $state([
 		{
-			iconName: 'Plus',
+			iconName: 'PlusIcon',
 			type: 'button',
 			color: '',
 			click: (e:any) => selectMood(e)
 		}
 	]);
 
-	let modal: ModalView = $state({
-		action: (state: boolean) => {modal.state = state},
-		state: controlOptions.showModal,
+	let dialog: DialogView = $state({
+		action: (state: boolean) => {dialog.state = state},
+		state: controlOptions.showDialog,
 	});
 
 	let controlView: ControlView = $derived({
@@ -67,11 +67,11 @@
 		statusColor: activeMoodsNum != 778 ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700',
 		list: moodList,
 		buttons: buttons,
-		modal: modal
+		dialog: dialog
 	});
 </script>
 
 <div>
 	<LbControl bind:controlView {controlOptions}/>
-	<LbListModal bind:controlView />
+	<LbListDialog bind:controlView />
 </div>

@@ -1,8 +1,8 @@
 <script lang="ts">
-	import type { Control, ControlOptions, ControlView, ModalView, ListItem } from '$lib/types/models';
+	import type { Control, ControlOptions, ControlView, DialogView, ListItem } from '$lib/types/models';
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import LbControl from '$lib/components/Common/LbControl.svelte';
-	import LbIrcModal from '$lib/components/Irc/LbIrcModal.svelte';
+	import LbIrcDialog from '$lib/components/Irc/LbIrcDialog.svelte';
 	import { store } from '$lib/stores/Store.svelte';
 	import fmt from 'sprintf-js';
 	import { _ } from 'svelte-i18n';
@@ -61,8 +61,8 @@
 		return Idlist;
 	}
 
-	let modal: ModalView = $state({
-		action: (state: boolean) => {modal.state = state},
+	let dialog: DialogView = $state({
+		action: (state: boolean) => {dialog.state = state},
 		state: false
 	});
 
@@ -77,11 +77,11 @@
 		statusName: temperatureIdsList && temperatureIdsList[value] ? $_(temperatureIdsList[value].name) : '',
 		statusColor: temperatureIdsList && temperatureIdsList[value] && temperatureIdsList[value].id > 0 ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700', // TODO other colors for temperatures
 		list: temperatureIdsList,
-		modal: modal
+		dialog: dialog
 	});
 </script>
 
 <div>
 	<LbControl bind:controlView {controlOptions}/>
-	<LbIrcModal bind:controlView />
+	<LbIrcDialog bind:controlView />
 </div>

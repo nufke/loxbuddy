@@ -1,7 +1,7 @@
 <script lang="ts">
 	import LbControl from '$lib/components/Common/LbControl.svelte';
-	import LbMeterModal from '$lib/components/Meter/LbMeterModal.svelte';
-	import type { Control, ControlOptions, ControlView, ModalView } from '$lib/types/models';
+	import LbMeterDialog from '$lib/components/Meter/LbMeterDialog.svelte';
+	import type { Control, ControlOptions, ControlView, DialogView } from '$lib/types/models';
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import { store } from '$lib/stores/Store.svelte';
 	import { _ } from 'svelte-i18n';
@@ -102,8 +102,8 @@
 		'totalNeg': format(totalNeg)
 	});
 
-	let modal: ModalView = $state({
-		action: (state: boolean) => {modal.state = state},
+	let dialog: DialogView = $state({
+		action: (state: boolean) => {dialog.state = state},
 		state: false,
 	});
 
@@ -116,13 +116,13 @@
 		textName: control.name,
 		statusName: format(actual, false).join(' '),
 		statusColor: (actual > 0) ? 'dark:text-primary-500 text-primary-700' : ((actual == 0) ? 'dark:text-surface-50 text-surface-950' : 'dark:text-tertiary-500 text-tertiary-700'),
-		modal: {
-			...modal,
+		dialog: {
+			...dialog,
 			details }
 	});
 </script>
 
 <div>
 	<LbControl bind:controlView {controlOptions}/>
-	<LbMeterModal bind:controlView />
+	<LbMeterDialog bind:controlView />
 </div>

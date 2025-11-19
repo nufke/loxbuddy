@@ -3,9 +3,9 @@
 	import { utils } from '$lib/helpers/Utils';
 	import { XIcon, Trash2Icon } from '@lucide/svelte';
 	import { Switch } from '@skeletonlabs/skeleton-svelte';
-	import LbDateTimePickerModal from '$lib/components/Common/LbDateTimePickerModal.svelte';
-	import LbDayModePickerModal from '$lib/components/Common/LbDayModePickerModal.svelte';
-	import LbGeneralModal from '$lib/components/Common/LbGeneralModal.svelte';
+	import LbDateTimePickerDialog from '$lib/components/Common/LbDateTimePickerDialog.svelte';
+	import LbDayModePickerDialog from '$lib/components/Common/LbDayModePickerDialog.svelte';
+	import LbGeneralDialog from '$lib/components/Common/LbGeneralDialog.svelte';
 	import type { Entry, Button, GeneralView } from '$lib/types/models';
 	import { _ } from 'svelte-i18n';
 	import { slide } from 'svelte/transition'
@@ -60,24 +60,24 @@
 		isDateView: false,
 		isMinuteView: false,
 		label: $_('Time'),
-		openModal: false
+		openDialog: false
 	});
 
 	let dayModeView = $state({
 		label: $_('Select days'),
-		openModal: false
+		openDialog: false
 	});
 
 	let itemDeleteView = $state({
 		label: '',
-		openModal: false,
+		openDialog: false,
 		cancel: () => {},
 		ok: () => {}
 	});
 
 	let temperatureView: GeneralView = $state({
 		label: $_('Select temperature'),
-		openModal: false,
+		openDialog: false,
 		buttons: [],
 		cancel: () => {},
 		ok: () => {}
@@ -95,34 +95,34 @@
 		temperatureView.cancel = () => {};
 		temperatureView.ok = (e: any) => {value = e};
 		temperatureView.buttons = buttons;
-		temperatureView.openModal = true;
+		temperatureView.openDialog = true;
 	}
 
 	function openDeleteView() {
 		itemDeleteView.label = (modes.length > 1) ? ($_('Delete all entries') + '?') : ($_('Delete entry') + '?');
 		itemDeleteView.ok = () => {deleteEntries()};
-		itemDeleteView.openModal = true;
+		itemDeleteView.openDialog = true;
 	}
 
 	function openTimeCheckView() {
 		itemDeleteView.label = $_('End time should be later than start time');
-		itemDeleteView.cancel = () => {itemDeleteView.openModal = false};
-		itemDeleteView.ok = () => {itemDeleteView.openModal = false};
-		itemDeleteView.openModal = true;
+		itemDeleteView.cancel = () => {itemDeleteView.openDialog = false};
+		itemDeleteView.ok = () => {itemDeleteView.openDialog = false};
+		itemDeleteView.openDialog = true;
 	}
 
 	function setStartTime() {
 		dateTime = utils.hours2date(startTime);
 		isStartTime = true;
 		dateTimeView.label = $_("Start time");
-		dateTimeView.openModal = true;
+		dateTimeView.openDialog = true;
 	}
 
 	function setEndTime() {
 		dateTime = utils.hours2date(endTime);
 		isStartTime = false;
 		dateTimeView.label = $_("End time");
-		dateTimeView.openModal = true;
+		dateTimeView.openDialog = true;
 	}
 
 	function deleteEntries() {
@@ -144,7 +144,7 @@
 	}
 
 	function close() {
-		view.openModal = false;
+		view.openDialog = false;
 	}
 
 	function updateEntries() {
@@ -225,12 +225,12 @@
 	}
 </script>
 
-{#if view.openModal}
+{#if view.openDialog}
 <Dialog
-	open={view.openModal}
+	open={view.openDialog}
 	onInteractOutside={close}>
 	<Portal>
-		<Dialog.Backdrop class="fixed inset-0 z-30 bg-surface-50-950/75 backdrop-blur-sm" />
+		<Dialog.Backdrop class="fixed inset-0 z-30 bg-surface-50-950/75 backdrop-blur-sm"/>
 		<Dialog.Positioner class="fixed inset-0 z-30 flex justify-center items-center p-4">
 			<Dialog.Content class="card bg-surface-100-900 p-4 pt-3 shadow-sm rounded-lg border border-white/5 hover:border-white/10
 								md:max-w-9/10 md:max-h-9/10 w-[450px]">
@@ -242,7 +242,7 @@
 					</div>
 					<div class="flex justify-center items-center">
 						<button type="button" class="btn-icon hover:preset-tonal" onclick={close}>
-							<XIcon class="size-4" />
+							<XIcon class="size-4"/>
 						</button>
 					</div>
 				</header>
@@ -250,7 +250,7 @@
 					<div class="flex flex-col items-center justify-center">
 						<div class="mt-4 space-y-2 w-full">
 							<button class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
-											onclick={(e) => { e.stopPropagation(); dayModeView.openModal=true;}}>
+											onclick={(e) => { e.stopPropagation(); dayModeView.openDialog=true;}}>
 								<div class="flex w-full items-center justify-between">
 									<h1 class="truncate text-lg">{$_("Day / mode")}</h1>
 									<p class="text-right text-xs max-w-55 text-wrap truncate line-clamp-2">{getDayModes()}</p>
@@ -336,7 +336,7 @@
 </Dialog>
 {/if}
 
-<LbDayModePickerModal bind:view={dayModeView} {modes} {dayModes} onValueChange={(e:any)=>{ updateDayModes(e)}}/>
-<LbDateTimePickerModal date={dateTime} bind:view={dateTimeView} onValueChange={(e:any)=>{ updateTime(e)}}/>
-<LbGeneralModal bind:view={itemDeleteView}/>
-<LbGeneralModal bind:view={temperatureView}/>
+<LbDayModePickerDialog bind:view={dayModeView} {modes} {dayModes} onValueChange={(e:any)=>{ updateDayModes(e)}}/>
+<LbDateTimePickerDialog date={dateTime} bind:view={dateTimeView} onValueChange={(e:any)=>{ updateTime(e)}}/>
+<LbGeneralDialog bind:view={itemDeleteView}/>
+<LbGeneralDialog bind:view={temperatureView}/>

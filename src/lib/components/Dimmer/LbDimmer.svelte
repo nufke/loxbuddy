@@ -1,8 +1,8 @@
 <script lang="ts">
-	import type { Control, ControlOptions, ControlView, SingleButtonView, ModalView, SliderBar } from '$lib/types/models';
+	import type { Control, ControlOptions, ControlView, SingleButtonView, DialogView, SliderBar } from '$lib/types/models';
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import LbControl from '$lib/components/Common/LbControl.svelte';
-	import LbModal from '$lib/components/Common/LbModal.svelte';
+	import LbDialog from '$lib/components/Common/LbDialog.svelte';
 	import { store } from '$lib/stores/Store.svelte';
 	import { loxWsClient } from '$lib/communication/LoxWsClient';
 	import { _ } from 'svelte-i18n';
@@ -36,13 +36,13 @@
 
 	let plusMinusButtons: SingleButtonView[] = $state([
 		{
-			iconName: 'Minus',
+			iconName: 'MinusIcon',
 			type: 'button',
 			color: '',
 			click: (e: any) => {updatePosition(e, -1)}
 		},
 		{
-			iconName: 'Plus',
+			iconName: 'PlusIcon',
 			type: 'button',
 			color: '',
 			click: (e: any) => {updatePosition(e, 1)}
@@ -60,8 +60,8 @@
 		}
 	);
 	
-	let modal: ModalView = $state({
-		action: (state: boolean) => {modal.state = state},
+	let dialog: DialogView = $state({
+		action: (state: boolean) => {dialog.state = state},
 		state: false,
 		class: 'grid-cols-2',
 	});
@@ -77,8 +77,8 @@
 		statusColor: position > 0 ? 'dark:text-primary-500 text-primary-700' : 'text-surface-700 dark:text-surface-300',
 		buttons: plusMinusButtons,
 		slider: sliderBar,
-		modal: {
-			...modal,
+		dialog: {
+			...dialog,
 			buttons: [
 				...plusMinusButtons,
 				onOffButton
@@ -89,5 +89,5 @@
 
 <div>
 	<LbControl bind:controlView {controlOptions}/>
-	<LbModal bind:controlView />
+	<LbDialog bind:controlView />
 </div>

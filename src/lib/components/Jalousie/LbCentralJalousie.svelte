@@ -3,11 +3,11 @@
 	import LbJalousie from '$lib/components/Jalousie/LbJalousie.svelte';
 	import LbIcon from '$lib/components/Common/LbIconByName.svelte';
 	import LbJalousieIcon from '$lib/components/Jalousie/LbJalousieIcon.svelte';
-	import type { Control, ControlOptions, ControlView, ModalView, ScreenItem, SingleButtonView } from '$lib/types/models';
+	import type { Control, ControlOptions, ControlView, DialogView, ScreenItem, SingleButtonView } from '$lib/types/models';
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import { store } from '$lib/stores/Store.svelte';
 	import { Dialog, Portal } from '@skeletonlabs/skeleton-svelte';
-	import { XIcon, ChevronUp, ChevronDown, Blinds, Settings, OctagonMinus } from '@lucide/svelte';
+	import { XIcon, ChevronUpIcon, ChevronDownIcon, BlindsIcon, SettingsIcon, OctagonMinusIcon } from '@lucide/svelte';
 	import { _ } from 'svelte-i18n';
 	import { fade } from 'svelte/transition';
 	import { loxWsClient } from '$lib/communication/LoxWsClient';
@@ -85,13 +85,13 @@
 		let control: Control | undefined = store.controlList.find( (control: Control) => control.uuidAction == screen?.uuid);
 		if (control) {
 			selectedControl = control;
-			selectedControlOptions = {...DEFAULT_CONTROLOPTIONS, showModal: true, showControl: false};
+			selectedControlOptions = {...DEFAULT_CONTROLOPTIONS, showDialog: true, showControl: false};
 		}
 	}
 
-	let modal: ModalView = $state({
+	let dialog: DialogView = $state({
 		action: (state: boolean) => {
-			modal.state = state;
+			dialog.state = state;
 		},
 		state: false
 	});
@@ -110,7 +110,7 @@
 		screenSelected = false;
 		selectedControl = undefined;
 		selectedControlOptions = undefined;
-		controlView.modal.action(false);
+		controlView.dialog.action(false);
 	}
 
 	function screenAction(action: string) {
@@ -131,13 +131,13 @@
 
 	let buttons: SingleButtonView[] = $state([
 		{
-			iconName: 'ChevronDown',
+			iconName: 'ChevronDownIcon',
 			type: 'button',
 			color: '',
 			click: () => loxWsClient.control(control.uuidAction, 'FullDown')
 		},
 		{
-			iconName: 'ChevronUp',
+			iconName: 'ChevronUpIcon',
 			type: 'button',
 			color: '',
 			click: () => loxWsClient.control(control.uuidAction, 'FullUp')
@@ -154,18 +154,18 @@
 		statusName: getActiveScreens(),
 		statusColor: screensClosed.length ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700',
 		buttons: buttons,
-		modal: modal
+		dialog: dialog
 	});
 </script>
 
 <div>
 	<LbControl bind:controlView {controlOptions}/>
-	{#if controlView.modal.state} <!-- only construct dialog when opened, important to get current clientHeight -->
+	{#if controlView.dialog.state} <!-- only construct dialog when opened, important to get current clientHeight -->
 		<Dialog
-			open={controlView.modal.state}
+			open={controlView.dialog.state}
 			onInteractOutside={close}>
 			<Portal>
-				<Dialog.Backdrop class="fixed inset-0 z-10 bg-surface-50-950/75 backdrop-blur-sm" />
+				<Dialog.Backdrop class="fixed inset-0 z-10 bg-surface-50-950/75 backdrop-blur-sm"/>
 				<Dialog.Positioner class="fixed inset-0 z-10 flex justify-center items-center p-4">
 					<Dialog.Content class="card bg-surface-100-900 p-4 pt-3 shadow-sm rounded-lg border border-white/5 hover:border-white/10
 										md:max-w-9/10 md:max-h-9/10 w-[450px]">
@@ -177,7 +177,7 @@
 								</div>
 								<div class="flex justify-center items-center">
 									<button type="button" class="btn-icon hover:preset-tonal" onclick={close}>
-										<XIcon class="size-4" />
+										<XIcon class="size-4"/>
 									</button>
 								</div>
 							</header>
@@ -188,26 +188,26 @@
 								<div class="container grid grid-cols-5 gap-2 mb-2">
 									<button type="button" class="btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50 shadow-sm text-surface-950-50
 																				rounded-lg border border-white/10 hover:border-white/50" onclick={() => screenAction("FullDown")}>
-																				<span class="w-[32px] flex justify-center items-center"><ChevronDown/></span></button> <!-- to span to avoid scaling of icons -->
+																				<span class="w-[32px] flex justify-center items-center"><ChevronDownIcon/></span></button> <!-- to span to avoid scaling of icons -->
 									<button type="button" class="btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50 shadow-sm text-surface-950-50
 																				rounded-lg border border-white/10 hover:border-white/50" onclick={() => screenAction("FullUp")}>
-																				<span class="w-[32px] flex justify-center items-center"><ChevronUp/></span></button>
+																				<span class="w-[32px] flex justify-center items-center"><ChevronUpIcon/></span></button>
 									<button type="button" class="btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50 shadow-sm text-surface-950-50
 																				rounded-lg border border-white/10 hover:border-white/50" onclick={() => screenAction("shade")}>
-																				<span class="w-[32px] flex justify-center items-center"><Blinds/></span></button>
+																				<span class="w-[32px] flex justify-center items-center"><BlindsIcon/></span></button>
 									<button type="button" class="btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50 shadow-sm text-surface-950-50
 																				rounded-lg border border-white/10 hover:border-white/50" onclick={() => screenAction("stop")}>
-																				<span class="w-[32px] flex justify-center items-center"><OctagonMinus/></span></button>
+																				<span class="w-[32px] flex justify-center items-center"><OctagonMinusIcon/></span></button>
 									<button type="button" class="btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50 shadow-sm {screenSelected ? 'text-surface-800-200' : 'text-surface-200-800'}
 																				rounded-lg border border-white/10 hover:border-white/50" onclick={() => selectScreenOptions()}>
-																				<span class="w-[32px] flex justify-center items-center"><Settings/></span></button>
+																				<span class="w-[32px] flex justify-center items-center"><SettingsIcon/></span></button>
 								</div>
 								<div class="relative flex flex-col w-full">
 									{#if showScrollTop}
-										<div class="absolute z-10 left-[50%] lb-center top-[10px] text-surface-500" transition:fade={{ duration: 300 }}><ChevronUp size="30"/></div>
+										<div class="absolute z-10 left-[50%] lb-center top-[10px] text-surface-500" transition:fade={{ duration: 300 }}><ChevronUpIcon size="30"/></div>
 									{/if}
 									{#if showScrollBottom}
-										<div class="absolute z-10 left-[50%] lb-center -bottom-[19px] text-surface-500" transition:fade={{ duration: 300 }}><ChevronDown size="30"/></div>
+										<div class="absolute z-10 left-[50%] lb-center -bottom-[19px] text-surface-500" transition:fade={{ duration: 300 }}><ChevronDownIcon size="30"/></div>
 									{/if}
 									<div class="flex flex-col overflow-y-auto space-y-2" {style} bind:this={viewport} onscroll={() => parseScroll(windowHeight, viewport)}>
 										{#each screenControls as control}
