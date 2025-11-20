@@ -4,7 +4,8 @@
 	import { Dialog, Portal } from '@skeletonlabs/skeleton-svelte';
 	import type { Room, Category, GeneralView } from '$lib/types/models';
 	import { _, locale } from 'svelte-i18n';
-	import { store } from '$lib/stores/Store.svelte';
+	import { appStore } from '$lib/stores/LbAppStore.svelte';
+	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 	import { ArrowLeftIcon, XIcon } from '@lucide/svelte';
 	import LbGeneralDialog from '$lib/components/Common/LbGeneralDialog.svelte';
 
@@ -15,7 +16,7 @@
 	let mode = $state(localStorage.getItem('mode') || 'dark');
 	let startPage = $state(localStorage.getItem('startPage') || '/');
  	let group = $state('room');
-	let localeSettings = $derived(store.locale);
+	let localeSettings = $derived(appStore.locale);
 
 	const loc = ['en', 'de', 'nl'];
 	const language: any = {
@@ -26,17 +27,17 @@
 
 	let lang = $derived(language[localeSettings]);
 
-	store.setNav({ label: 'ArrowLeft', href: '/', icon: ArrowLeftIcon });
+	appStore.setNav({ label: 'ArrowLeftIcon', href: '/', icon: ArrowLeftIcon, root: true }); // TODO change navigation concept
 
 	let other = [
 		{ name: 'Home', uuid: '/'}
 	];
 
 	async function setLocale(s: number) {
-		store.locale = loc[s];
-		localStorage.setItem('locale', store.locale);
-		locale.set(store.locale); // reset svelte-i18n
-		console.info('Set locale to', store.locale);
+		appStore.locale = loc[s];
+		localStorage.setItem('locale', appStore.locale);
+		locale.set(appStore.locale); // reset svelte-i18n
+		console.info('Set locale to', appStore.locale);
 	}
 
 	let languageSelectView: GeneralView = $state({
@@ -66,14 +67,14 @@
 	]);
 
 	let rooms: Room[] = $derived(
-		store.roomList.filter((item) => store.controlList.map((control) => control.room)
+		controlStore.roomList.filter((item) => controlStore.controlList.map((control) => control.room)
 			.indexOf(item.uuid) > -1)
-			.sort((a, b) => a.name.localeCompare(b.name, store.locale)));
+			.sort((a, b) => a.name.localeCompare(b.name, appStore.locale)));
 
 	let categories: Category[] = $derived(
-		store.categoryList.filter((item) => store.controlList.map((control) => control.cat)
+		controlStore.categoryList.filter((item) => controlStore.controlList.map((control) => control.cat)
 			.indexOf(item.uuid) > -1)
-			.sort((a, b) => a.name.localeCompare(b.name, store.locale)));
+			.sort((a, b) => a.name.localeCompare(b.name, appStore.locale)));
 
 	const onDarkModeChange = (event: { checked: boolean }) => {
 		mode = event.checked ? 'dark' : 'light';
@@ -106,14 +107,14 @@
 	function onChangeStartpage(cat: string, uuid: string) {
 		startPage = cat.length ? ('/' + cat + '/' + uuid) : uuid;
 		localStorage.setItem('startPage', startPage);
-		store.startPage = startPage;
+		appStore.startPage = startPage;
 		openStartpageDialog = false;
 	}
 
 	const onShowStatusChange = (event: { checked: boolean }) => {
 		showStatus = event.checked ? '1' : '0';
 		localStorage.setItem('showStatus', showStatus);
-		store.showStatus = event.checked;
+		appStore.showStatus = event.checked;
 	};
 </script>
 

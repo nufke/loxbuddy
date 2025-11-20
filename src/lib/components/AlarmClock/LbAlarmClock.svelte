@@ -5,7 +5,7 @@
 	import LbControl from '$lib/components/Common/LbControl.svelte';
 	import { Switch } from '@skeletonlabs/skeleton-svelte';
 	import { XIcon, Trash2Icon } from '@lucide/svelte';
-	import { store } from '$lib/stores/Store.svelte';
+	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 	import { _ } from 'svelte-i18n';
 	import { format } from 'date-fns';
 	import { Dialog, Portal } from '@skeletonlabs/skeleton-svelte';
@@ -37,12 +37,12 @@
 		state: false
 	});
 
-	let entryObj = $derived(store.getState(control.states.entryList) as AlarmClockEntries);
+	let entryObj = $derived(controlStore.getState(control.states.entryList) as AlarmClockEntries);
 	let entryIds = $derived(entryObj ? Object.keys(entryObj).map(n => Number(n)) : []);
 	let entryList = $derived(entryObj ? Object.values(entryObj) : []);
 	let prevEntryListLength: number = $state(0);
 	let alarms = $derived(entryObj ? Object.values(entryObj).filter( entry => entry.isActive) : []);
-	let nextEntryTime = $derived(Number(store.getState(control.states.nextEntryTime)) || 0);
+	let nextEntryTime = $derived(Number(controlStore.getState(control.states.nextEntryTime)) || 0);
 	let windowHeight = $derived(innerHeight.current || 0);
 
 	let margin = 200;
@@ -53,7 +53,7 @@
 		...DEFAULT_CONTROLVIEW,
 		control: control,
 		isFavorite: controlOptions.isFavorite,
-		iconName: store.getIcon(control, controlOptions.isSubControl),
+		iconName: controlStore.getIcon(control, controlOptions.isSubControl),
 		iconColor: alarms.length ? 'dark:fill-primary-500 fill-primary-700' : 'fill-surface-950 dark:fill-surface-50',
 		textName: control.name,
 		statusName: alarms.length ? getAlarmTime() : $_('No alarm time active'),
@@ -124,7 +124,7 @@
 	function addEntry() {
 		if (entryIds.length > 15) return; // limit to 16 entries
 		let day = format(new Date(), 'eeee').toLowerCase();
-		let opModes = store.structure.operatingModes;
+		let opModes = controlStore.structure.operatingModes;
 		let idx = Object.keys(opModes).find( (key) => opModes[key].toLowerCase() == day);
 		let entry: AlarmClockEntry = {
 			name: $_('Alarm clock'),

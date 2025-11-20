@@ -6,13 +6,13 @@
 	import fmt from 'sprintf-js';
 	import { _ } from 'svelte-i18n';
 	import { loxWsClient } from '$lib/communication/LoxWsClient';
-	import { store } from '$lib/stores/Store.svelte';
-	
+	import { controlStore } from '$lib/stores/LbControlStore.svelte';
+
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
-	let position = $derived(Number(store.getState(control.states.position)) * 100);
-	let shadePosition = $derived(store.getState(control.states.shadePosition) * 100);
-	let autoActive = $derived(Number(store.getState(control.states.autoActive)));
+	let position = $derived(Number(controlStore.getState(control.states.position)) * 100);
+	let shadePosition = $derived(controlStore.getState(control.states.shadePosition) * 100);
+	let autoActive = $derived(Number(controlStore.getState(control.states.autoActive)));
 	let isAutomatic = $derived(Number(control.details.isAutomatic));
 	let type = control.details.animation;
 
@@ -115,7 +115,7 @@
 		control: control,
 		showControl: controlOptions.showControl,
 		isFavorite: controlOptions.isFavorite,
-		iconName: store.getIcon(control, controlOptions.isSubControl),
+		iconName: controlStore.getIcon(control, controlOptions.isSubControl),
 		iconColor: (position > 0) ? 'dark:fill-primary-500 fill-primary-700' : 'fill-surface-950 dark:fill-surface-50',
 		textName: control.name,
 		statusName: getPosition(),

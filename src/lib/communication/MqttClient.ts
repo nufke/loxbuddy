@@ -1,5 +1,6 @@
 import mqtt from 'mqtt';
-import { store } from '$lib/stores/Store.svelte';
+import { appStore } from '$lib/stores/LbAppStore.svelte';
+import { controlStore } from '$lib/stores/LbControlStore.svelte';
 import { weatherStore } from '$lib/stores/WeatherStore.svelte';
 import { utils } from '$lib/helpers/Utils';
 import { test } from '$lib/test/Test';
@@ -78,7 +79,7 @@ export class MqttClient {
 		this.client.on('close', () => {
 			console.info('MQTT client disconnected');
 			this.isConnected = false;
-			store.setMqttStatus(0); // diconnnect=grey
+			appStore.setMqttStatus(0); // diconnnect=grey
 		});
 	}
 
@@ -88,7 +89,7 @@ export class MqttClient {
 	onConnect() {
 		console.info('MQTT client connected\n');
 		this.isConnected = true;
-		store.setMqttStatus(1); // connect=green
+		appStore.setMqttStatus(1); // connect=green
 
 		const registerTopics = [
 			this.topicPrefix + '/#',
@@ -128,7 +129,7 @@ export class MqttClient {
 	 */
 	publishTopic(uuid: string, msg: string, retain: boolean = false) {
 		const qos = 1; // TODO add to configuration?
-		const serialNr = store.structure.msInfo.serialNr;
+		const serialNr = controlStore.structure.msInfo.serialNr;
 		const topic = this.topicPrefix + '/' + serialNr + '/' + uuid + '/cmd';
 		if (this.isConnected && serialNr && !this.isTest) {
 			console.info('MQTT client publish:', topic, msg);
@@ -148,8 +149,8 @@ export class MqttClient {
 		const regex = new RegExp(this.topicPrefix + '/(.*)/structure');
 		const found = topic.match(regex);
 		if (found && found[1]) {
-			store.initStructure(JSON.parse(msg));
-			const serialNr = store.structure.msInfo.serialNr;
+			controlStore.initStructure(JSON.parse(msg));
+			const serialNr = controlStore.structure.msInfo.serialNr;
 			if (serialNr == found[1]) {
 				console.info('Miniserver registered: ', serialNr);
 			} else {
@@ -169,7 +170,7 @@ export class MqttClient {
 		if (found && found[1]) {
 			const regex2 = new RegExp(this.topicPrefix + '/' + found[1] + '/', 'g'); // TODO replace stored states at server 
 			msg = msg.replace(regex2, '');
-			store.setInitialStates(JSON.parse(msg));
+			controlStore.setInitialStates(JSON.parse(msg));
 		}
 	}
 
@@ -184,7 +185,7 @@ export class MqttClient {
 		if (found && found[1] && found[2]) {
 			const obj = utils.isValidJSONObject(msg) ? JSON.parse(msg) : msg;
 			//console.log('setState: ', found[2], obj);
-			store.setState(found[2], obj);
+			controlStore.setState(found[2], obj);
 		}
 	}
 

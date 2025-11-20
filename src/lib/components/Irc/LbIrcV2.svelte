@@ -3,22 +3,22 @@
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import LbControl from '$lib/components/Common/LbControl.svelte';
 	import LbIrcDialog from '$lib/components/Irc/LbIrcDialog.svelte';
-	import { store } from '$lib/stores/Store.svelte';
+	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 	import fmt from 'sprintf-js';
 	import { _ } from 'svelte-i18n';
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS}: { control: Control, controlOptions: ControlOptions } = $props();
 
-	let tempActual = $derived(fmt.sprintf('%.1f', Number(store.getState(control.states.tempActual))));
-	let activeMode = $derived(Number(store.getState(control.states.activeMode)));
-	let operatingMode = $derived(Number(store.getState(control.states.operatingMode)));
-	let currentMode = $derived(Number(store.getState(control.states.currentMode)));
-	let comfortTemperature = $derived(Number(store.getState(control.states.comfortTemperature))); // Heating
-	let comfortTemperatureCool = $derived(Number(store.getState(control.states.comfortTemperatureCool)));
-	let frostProtectTemperature = $derived(Number(store.getState(control.states.frostProtectTemperature)));
-	let heatProtectTemperature = $derived(Number(store.getState(control.states.heatProtectTemperature)));
-	let absentMaxOffset = $derived(Number(store.getState(control.states.absentMaxOffset))); // max temp offset for eco mode
-	let absentMinOffset = $derived(Number(store.getState(control.states.absentMinOffset))); // min temp offset for eco mode
+	let tempActual = $derived(fmt.sprintf('%.1f', Number(controlStore.getState(control.states.tempActual))));
+	let activeMode = $derived(Number(controlStore.getState(control.states.activeMode)));
+	let operatingMode = $derived(Number(controlStore.getState(control.states.operatingMode)));
+	let currentMode = $derived(Number(controlStore.getState(control.states.currentMode)));
+	let comfortTemperature = $derived(Number(controlStore.getState(control.states.comfortTemperature))); // Heating
+	let comfortTemperatureCool = $derived(Number(controlStore.getState(control.states.comfortTemperatureCool)));
+	let frostProtectTemperature = $derived(Number(controlStore.getState(control.states.frostProtectTemperature)));
+	let heatProtectTemperature = $derived(Number(controlStore.getState(control.states.heatProtectTemperature)));
+	let absentMaxOffset = $derived(Number(controlStore.getState(control.states.absentMaxOffset))); // max temp offset for eco mode
+	let absentMinOffset = $derived(Number(controlStore.getState(control.states.absentMinOffset))); // min temp offset for eco mode
 	let isHeating = $derived((currentMode == 1) || (currentMode == 4));
 	let temperatureList = $derived(getTemperatureList(isHeating, false));
 	let mode = $derived((activeMode == 2) ? 4 : activeMode); // remapping
@@ -47,7 +47,7 @@
 
 	function getTextName() {
 		let findName = $_('IRoomControllerV2').split(',').includes(control.name);
-		return (findName && store.rooms) ? store.rooms[control.room].name : control.name;
+		return (findName && controlStore.rooms) ? controlStore.rooms[control.room].name : control.name;
 	}
 	
 	let dialog: DialogView = $state({

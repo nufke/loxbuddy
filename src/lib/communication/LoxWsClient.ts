@@ -1,5 +1,6 @@
 import LoxClient from 'svelte-lox-client';
-import { store } from '$lib/stores/Store.svelte';
+import { appStore } from '$lib/stores/LbAppStore.svelte';
+import { controlStore } from '$lib/stores/LbControlStore.svelte';
 import { utils } from '$lib/helpers/Utils';
 import { test } from '$lib/test/Test';
 
@@ -59,7 +60,7 @@ export class LoxWsClient {
 		// get structure file
 		console.info('LoxClient: Get structure file...');
 		const structure = await this.client.getStructureFile();
-		store.initStructure(structure);
+		controlStore.initStructure(structure);
 		this.client.parseStructureFile();
 
 		// initiates streaming of all events
@@ -84,7 +85,7 @@ export class LoxWsClient {
 	registerEvents() {
 		this.client.on('connected', () => {
 			console.info(`LoxClient with ID ${this.appId} connected to Miniserver`);
-			store.updateCredentials(this.hostUrl, this.username + ':' + this.passwd);
+			appStore.updateCredentials(this.hostUrl, this.username + ':' + this.passwd);
 		});
 
 		this.client.on('disconnected', () => {
@@ -98,14 +99,14 @@ export class LoxWsClient {
 
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		this.client.on("event_value", (event: any) => {
-			store.setState(event.detail.uuid.stringValue, event.detail.value);
+			controlStore.setState(event.detail.uuid.stringValue, event.detail.value);
 		});
 
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		this.client.on("event_text", (event: any) => {
 			const text = event.detail.text;
 			const objOrText = utils.isValidJSONObject(text) ? JSON.parse(text) : text;
-			store.setState(event.detail.uuid.stringValue, objOrText);
+			controlStore.setState(event.detail.uuid.stringValue, objOrText);
 		});
 	}
 
@@ -141,39 +142,39 @@ export class LoxWsClient {
 	}
 	
 	getUserSettings() {
-		fetch(`${store.loginCredentials.hostUrl}/jdev/sps/getusersettings`, {
+		fetch(`${appStore.loginCredentials.hostUrl}/jdev/sps/getusersettings`, {
 			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json',
-				'Authorization': 'Basic ' + store.loginCredentials.credentials
+				'Authorization': 'Basic ' + appStore.loginCredentials.credentials
 			}
 		})
 		.then((response) => response.json())
-		.then((data) => { store.userSettings = data })
+		.then((data) => { appStore.userSettings = data })
 	}
 
 	getSystemStatus() {
-		fetch(`${store.loginCredentials.hostUrl}/jdev/sps/io/${store.messageCenterList[0].uuidAction}/getEntries/2`, {
+		fetch(`${appStore.loginCredentials.hostUrl}/jdev/sps/io/${controlStore.messageCenterList[0].uuidAction}/getEntries/2`, {
 			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json',
-				'Authorization': 'Basic ' + store.loginCredentials.credentials
+				'Authorization': 'Basic ' + appStore.loginCredentials.credentials
 			}
 		})
 		.then((response) => response.json())
-		.then((data) => { store.systemStatus = JSON.parse(data.LL.value); })
+		.then((data) => { appStore.systemStatus = JSON.parse(data.LL.value); })
 	}
 
 	getIconList() {
-		fetch(`${store.loginCredentials.hostUrl}/jdev/sps/geticonlist`, {
+		fetch(`${appStore.loginCredentials.hostUrl}/jdev/sps/geticonlist`, {
 			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json',
-				'Authorization': 'Basic ' + store.loginCredentials.credentials
+				'Authorization': 'Basic ' + appStore.loginCredentials.credentials
 			}
 		})
 		.then((response) => response.json())
-		.then((data) => { store.iconList = data })
+		.then((data) => { controlStore.iconList = data })
 	}
 
 }

@@ -3,7 +3,7 @@
 	import type { Control, ControlOptions, ControlView, DialogView, SingleButtonView } from '$lib/types/models';
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import LbDialog from '$lib/components/Common/LbDialog.svelte';
-	import { store } from '$lib/stores/Store.svelte';
+	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 	import { _ } from 'svelte-i18n';
 	import { loxWsClient } from '$lib/communication/LoxWsClient';
 
@@ -15,7 +15,7 @@
 		-1: output permanently on
 		other: count down from deactivationDelayTotal
 	*/
-	let deactivationDelay = $derived(Number(store.getState(control.states.deactivationDelay)) || 0);
+	let deactivationDelay = $derived(Number(controlStore.getState(control.states.deactivationDelay)) || 0);
 
 	let dialogButton1: SingleButtonView = $derived(
 		{
@@ -89,7 +89,7 @@
 		...DEFAULT_CONTROLVIEW,
 		control: control,
 		isFavorite: controlOptions.isFavorite,
-		iconName: store.getIcon(control, controlOptions.isSubControl),
+		iconName: controlStore.getIcon(control, controlOptions.isSubControl),
 		iconColor: (deactivationDelay == -1 || deactivationDelay > 0) ? 'dark:fill-primary-500 fill-primary-700' : 'fill-surface-950 dark:fill-surface-50',
 		badgeIconName: (deactivationDelay > 0) ? 'Timer' : '',
 		badgeIconColor: (deactivationDelay > 0) ? 'dark:bg-primary-500 bg-primary-700' : '',

@@ -4,7 +4,7 @@
 	import LbControl from '$lib/components/Common/LbControl.svelte';
 	import LbIntercomDialog from '$lib/components/Intercom/LbIntercomDialog.svelte';
 	import fmt from 'sprintf-js';
-	import { store } from '$lib/stores/Store.svelte';
+	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
@@ -19,9 +19,9 @@
 		...DEFAULT_CONTROLVIEW,
 		control: control,
 		isFavorite: controlOptions.isFavorite,
-		iconName: store.getIcon(control, controlOptions.isSubControl),
+		iconName: controlStore.getIcon(control, controlOptions.isSubControl),
 		textName: control.name,
-		statusName: fmt.sprintf(control.details.format, store.getState(control.states.text)),
+		statusName: fmt.sprintf(control.details.format, controlStore.getState(control.states.text)),
 		dialog: dialog,
 	});
 </script>

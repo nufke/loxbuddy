@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { _ } from 'svelte-i18n';
-	import { store } from '$lib/stores/Store.svelte';
+	import { appStore } from '$lib/stores/LbAppStore.svelte';
 	import { weatherStore } from '$lib/stores/WeatherStore.svelte';
 	import LbIcon from '$lib/components/Common/LbIconByName.svelte';
 	import { XIcon } from '@lucide/svelte';
@@ -10,7 +10,7 @@
 	import { Dialog, Portal } from '@skeletonlabs/skeleton-svelte';
 
 	let currentWeather = $derived(weatherStore.current);
-	let time = $derived(store.time);
+	let time = $derived(appStore.time);
 
 	function getCurrentIcon(cur: WeatherCurrentConditions) {
 		let sunRise = utils.time2epoch(cur.time, cur.sunRise);
@@ -20,17 +20,17 @@
 	}
 </script>
 
-{#if store.lockScreenDialog.state}
+{#if appStore.lockScreenDialog.state}
 	<Dialog
-		open={store.lockScreenDialog.state}
-		onInteractOutside={() => {store.resetLockScreenDialogTimeout()}}>
+		open={appStore.lockScreenDialog.state}
+		onInteractOutside={() => {appStore.resetLockScreenDialogTimeout()}}>
 		<Portal>
 			<Dialog.Backdrop class="fixed top-0 left-0 right-0 bottom-0 z-2000 dark:bg-surface-950 bg-surface-50" />
 			<Dialog.Positioner class="fixed top-0 left-0 w-full h-full z-2001">
 				<Dialog.Content class="card p-4 space-y-4 shadow-xl">
 					<header class="flex justify-between items-center">
 						<Dialog.Title class="text-lg font-bold"></Dialog.Title>
-						<button type="button" class="btn-icon text-left hover:preset-tonal" onclick={() => store.resetLockScreenDialogTimeout()}>
+						<button type="button" class="btn-icon text-left hover:preset-tonal" onclick={() => appStore.resetLockScreenDialogTimeout()}>
 							<XIcon class="size-4"/>
 						</button>
 					</header>

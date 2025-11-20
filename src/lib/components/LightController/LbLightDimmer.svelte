@@ -2,7 +2,7 @@
 	import type { Control, ControlOptions, ControlView } from '$lib/types/models';
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import { utils } from '$lib/helpers/Utils';
-	import { store } from '$lib/stores/Store.svelte';
+	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 	import { loxWsClient } from '$lib/communication/LoxWsClient';
 	import { _ } from 'svelte-i18n';
 	import LbSimpleSlider from '$lib/components/Common/LbSimpleSlider.svelte'
@@ -10,11 +10,11 @@
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
-	let min = $derived(control.states.min ? Number(store.getState(control.states.min)) : 0 );
-	let max = $derived(control.states.max ? Number(store.getState(control.states.max)) : 100);
-	let step = $derived(control.states.step ? Number(store.getState(control.states.step)) : 1);
-	let nPosition = $derived(Number(store.getState(control.states.position)));
-	let color = $derived(String(store.getState(control.states.color)));
+	let min = $derived(control.states.min ? Number(controlStore.getState(control.states.min)) : 0 );
+	let max = $derived(control.states.max ? Number(controlStore.getState(control.states.max)) : 100);
+	let step = $derived(control.states.step ? Number(controlStore.getState(control.states.step)) : 1);
+	let nPosition = $derived(Number(controlStore.getState(control.states.position)));
+	let color = $derived(String(controlStore.getState(control.states.color)));
 	let {rgbColor, brightness} = $derived(getColor(color));
 	let position = $derived ( (control.type === 'ColorPickerV2') ? brightness : Math.round(nPosition));
 

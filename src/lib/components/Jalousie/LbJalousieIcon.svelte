@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { store } from '$lib/stores/Store.svelte';
+	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 
 	let { control, width, height } = $props();
 
-	let screenPosition = $derived(Number(store.getState(control?.states.position)) * 100 || 0);
-	let shadePosition = $derived(Number(store.getState(control?.states.shadePosition)) * 100 || 0);
+	let screenPosition = $derived(Number(controlStore.getState(control?.states.position)) * 100 || 0);
+	let shadePosition = $derived(Number(controlStore.getState(control?.states.shadePosition)) * 100 || 0);
 	let position = $derived(control?.details.animation != 0 ? 100 : Math.round(shadePosition));
 	let strokeWidth = $derived(Math.round(position*4/100)+1);
 	let pos = $derived(Math.round(screenPosition*6/100) || 0); // 0-100 in % 

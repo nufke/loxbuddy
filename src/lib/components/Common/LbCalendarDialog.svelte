@@ -5,7 +5,7 @@
 	import type { Entry, CalendarEntryView } from '$lib/types/models';
 	import LbCalendarEntryDialog from '$lib/components/Common/LbCalendarEntryDialog.svelte';
 	import { _ } from 'svelte-i18n';
-	import { store } from '$lib/stores/Store.svelte';
+	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 
 	let { view = $bindable(), mode, dayModes, entries, temperatureList = [] } = $props();
 
@@ -19,7 +19,7 @@
 
 	let modeEntries: number[] = $derived(entries.entry.map( (m: Entry) => m.mode));
 	let modes = $derived(modeEntries.filter((mode, idx) => modeEntries.indexOf(mode) == idx));
-	let opModes = $derived(store.structure.operatingModes);
+	let opModes = $derived(controlStore.structure.operatingModes);
 
 	let selectedEntry = $state();
 

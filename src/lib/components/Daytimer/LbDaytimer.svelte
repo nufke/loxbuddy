@@ -8,7 +8,8 @@
 	import LbTimeGrid from '$lib/components/Common/LbTimeGrid.svelte';
 	import LbDateTimePickerDialog from '$lib/components/Common/LbDateTimePickerDialog.svelte';
 	import LbCalendarDialog from '$lib/components/Common/LbCalendarDialog.svelte';
-	import { store } from '$lib/stores/Store.svelte';
+	import { appStore } from '$lib/stores/LbAppStore.svelte';
+	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 	import { XIcon, TimerIcon } from '@lucide/svelte';
 	import fmt from 'sprintf-js';
 	import { _ } from 'svelte-i18n';
@@ -21,27 +22,27 @@
 
 	const toaster = createToaster({duration: 1500});
 
-	let dayOfTheWeek = $derived(format(store.time, 'eeee'));
+	let dayOfTheWeek = $derived(format(appStore.time, 'eeee'));
 
 	let isAnalog = Boolean(control.details.analog);
-	let value = $derived(Number(store.getState(control.states.value)));
+	let value = $derived(Number(controlStore.getState(control.states.value)));
 	let valueFormatted = $derived(fmt.sprintf(control.details.format, value));
 
-	let mode = $derived(Number(store.getState(control.states.mode)));
-	let entries = $derived(utils.extractEntries(store.getState(control.states.entriesAndDefaultValue))) as EntriesAndDefaultValue;
-	let modeList = $derived(String(store.getState(control.states.modeList))); 
+	let mode = $derived(Number(controlStore.getState(control.states.mode)));
+	let entries = $derived(utils.extractEntries(controlStore.getState(control.states.entriesAndDefaultValue))) as EntriesAndDefaultValue;
+	let modeList = $derived(String(controlStore.getState(control.states.modeList))); 
 
-	let currentTime = $derived(store.time);
+	let currentTime = $derived(appStore.time);
 	let dayModes = $derived(utils.extractDayModes(modeList)) as WeekDays;
 	let status = $derived(isAnalog ? valueFormatted : ( value ? control.details.text.on : control.details.text.off)) as string;
-	let override = $derived(Number(store.getState(control.states.override)));
+	let override = $derived(Number(controlStore.getState(control.states.override)));
 	let timeslot = $derived(calcStartEndTime(entries));
 	let overrideDate = $state({start: new SvelteDate(), end: new SvelteDate(), active: false});
 	let outputActive = $derived(false);
 
 	function getDuration() {
 		let statusExt = '';
-		const timerEnds = store.time.valueOf() + override * 1000;
+		const timerEnds = appStore.time.valueOf() + override * 1000;
 		if (override > 0 || (timeslot && timeslot.endTime)) {
 			const dateStr = timerEnds ? format(timerEnds, 'd MMMM p') : '';
 			const timeStr = timeslot ? utils.hours2hours(timeslot.endTime, true) : '';
@@ -135,7 +136,7 @@
 		...DEFAULT_CONTROLVIEW,
 		control: control,
 		isFavorite: controlOptions.isFavorite,
-		iconName: store.getIcon(control, controlOptions.isSubControl),
+		iconName: controlStore.getIcon(control, controlOptions.isSubControl),
 		iconColor: (value > 0 ) ? 'dark:fill-primary-500 fill-primary-700' : 'fill-surface-950 dark:fill-surface-50',
 		badgeIconName: (override > 0) ? 'Timer' : '',
 		badgeIconColor: (override > 0) ? 'bg-purple-500' : '',

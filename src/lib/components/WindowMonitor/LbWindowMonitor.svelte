@@ -2,14 +2,14 @@
 	import LbControl from '$lib/components/Common/LbControl.svelte';
 	import type { Control, ControlOptions, ControlView, DialogView, WindowListItem, MoodList } from '$lib/types/models';
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
-	import { store } from '$lib/stores/Store.svelte';
+	import { appStore } from '$lib/stores/LbAppStore.svelte';
+	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 	import { Dialog, Portal } from '@skeletonlabs/skeleton-svelte';
 	import { XIcon, ChevronUpIcon, ChevronDownIcon } from '@lucide/svelte';
 	import { _ } from 'svelte-i18n';
 	import { fade } from 'svelte/transition';
 	import Info from '$lib/components/Common/LbInfo.svelte';
 	import { innerHeight } from 'svelte/reactivity/window';
-	import { tick } from 'svelte';
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
@@ -20,15 +20,15 @@
 	let showScrollTop = $state(false);
 	let showScrollBottom = $state(false);
 
-	let windowStates = $derived(String(store.getState(control.states.windowStates)));
+	let windowStates = $derived(String(controlStore.getState(control.states.windowStates)));
 	let windowStatesList = $derived(getSortedWindowList(windowStates.split(',')));
 
-	let numOpen = $derived(Number(store.getState(control.states.numOpen)));
-	let numClosed = $derived(Number(store.getState(control.states.numClosed))); // TODO
-	let numTilted = $derived(Number(store.getState(control.states.numTilted)));
-	let numOffline = $derived(Number(store.getState(control.states.numOffline))); // TODO
-	let numLocked = $derived(Number(store.getState(control.states.numLocked))); // TODO
-	let numUnlocked = $derived(Number(store.getState(control.states.numUnlocked)));
+	let numOpen = $derived(Number(controlStore.getState(control.states.numOpen)));
+	let numClosed = $derived(Number(controlStore.getState(control.states.numClosed))); // TODO
+	let numTilted = $derived(Number(controlStore.getState(control.states.numTilted)));
+	let numOffline = $derived(Number(controlStore.getState(control.states.numOffline))); // TODO
+	let numLocked = $derived(Number(controlStore.getState(control.states.numLocked))); // TODO
+	let numUnlocked = $derived(Number(controlStore.getState(control.states.numUnlocked)));
 	let allClosed = $derived((numOpen + numTilted + numUnlocked) == 0);
 
 	let windowHeight = $derived(innerHeight.current || 0);
@@ -80,15 +80,15 @@
 				prio: Math.min(prio[0], prio[1], prio[2], prio[3], prio[4], prio[5])
 			};
 		}
-		list.sort((a, b) => a.name.localeCompare(b.name, store.locale))
-			.sort((a, b) => a.roomName.localeCompare(b.roomName, store.locale))
+		list.sort((a, b) => a.name.localeCompare(b.name, appStore.locale))
+			.sort((a, b) => a.roomName.localeCompare(b.roomName, appStore.locale))
 			.sort((a, b) => a.prio - b.prio);
 		return list;
 	}
 
 	function getRoomName(i: number) {
-		if (windowList[i] && windowList[i].room && store.rooms[windowList[i].room]) {
-			return store.rooms[windowList[i].room].name;
+		if (windowList[i] && windowList[i].room && controlStore.rooms[windowList[i].room]) {
+			return controlStore.rooms[windowList[i].room].name;
 		} else {
 			return '';
 		} 
@@ -142,7 +142,7 @@
 		...DEFAULT_CONTROLVIEW,
 		control: control,
 		isFavorite: controlOptions.isFavorite,
-		iconName: store.getIcon(control, controlOptions.isSubControl),
+		iconName: controlStore.getIcon(control, controlOptions.isSubControl),
 		iconColor: allClosed ? 'dark:fill-primary-500 fill-primary-700' : 'fill-orange-500',
 		textName: control.name,
 		statusName: getStatus(),

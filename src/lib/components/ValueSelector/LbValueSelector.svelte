@@ -3,16 +3,16 @@
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import LbControl from '$lib/components/Common/LbControl.svelte';
 	import LbDialog from '$lib/components/Common/LbDialog.svelte';
-	import { store } from '$lib/stores/Store.svelte';
+	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 	import { loxWsClient } from '$lib/communication/LoxWsClient';
 	import fmt from 'sprintf-js';
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
-	let min = $derived(Number(store.getState(control.states.min)));
-	let max = $derived(Number(store.getState(control.states.max)));
-	let step = $derived(Number(store.getState(control.states.step)));
-	let value = $derived(Number(store.getState(control.states.value)));
+	let min = $derived(Number(controlStore.getState(control.states.min)));
+	let max = $derived(Number(controlStore.getState(control.states.max)));
+	let step = $derived(Number(controlStore.getState(control.states.step)));
+	let value = $derived(Number(controlStore.getState(control.states.value)));
 
 	let increaseOnly = control.details.increaseOnly;
 
@@ -53,7 +53,7 @@
 		...DEFAULT_CONTROLVIEW,
 		control: control,
 		isFavorite: controlOptions.isFavorite,
-		iconName: store.getIcon(control, controlOptions.isSubControl),
+		iconName: controlStore.getIcon(control, controlOptions.isSubControl),
 		textName: control.name,
 		statusName: fmt.sprintf(control.details.format, value),
 		buttons: increaseOnly ? buttonPlus : [...buttonMinus, ...buttonPlus],

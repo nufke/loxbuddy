@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { _ } from 'svelte-i18n';
   import { Progress } from '@skeletonlabs/skeleton-svelte';
-	import { store } from '$lib/stores/Store.svelte';
+	import { appStore } from '$lib/stores/LbAppStore.svelte';
 	import { BellIcon } from '@lucide/svelte';
 
 	let { maxPower, currentPower, mode } = $props();
@@ -11,7 +11,7 @@
 	function printValue(n: number, scale: string, unit: string, mode: number = -1) {
 		// 0 = Overload Manager, 1 = Peak Manager, 2 = Peak Overload Manager
 		let label = (mode > -1) ? ((mode == 1) ? $_('Average power') : $_('Current power')) : '';
-		return [label, (n.toLocaleString(store.locale, { minimumFractionDigits: 1 })), scale + unit].join(' ');
+		return [label, (n.toLocaleString(appStore.locale, { minimumFractionDigits: 1 })), scale + unit].join(' ');
 	}
 
 	function format(n: number, mode: number = -1) {

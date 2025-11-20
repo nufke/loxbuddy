@@ -7,7 +7,8 @@
 						XIcon, SettingsIcon, CircleIcon, SquareIcon, type Icon as IconType } from '@lucide/svelte';
 	import type { Route } from '$lib/types/models';
 	import { mqttClient } from '$lib/communication/MqttClient';
-	import { store } from '$lib/stores/Store.svelte';
+	import { appStore } from '$lib/stores/LbAppStore.svelte';
+	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 	import { loxWsClient } from '$lib/communication/LoxWsClient';
 	import { weatherStore } from '$lib/stores/WeatherStore.svelte';
 	import { _ } from 'svelte-i18n';
@@ -47,7 +48,7 @@
 		// connect to MQTT server
 		mqttClient.connect(env.MQTT_HOSTNAME, env.MQTT_PORT, env.MQTT_USERNAME, env.MQTT_PASSWORD, env.MQTT_TOPIC, isTest);
 		// connect to Miniserver via WebSocket
-		loxWsClient.connect(env.MS_HOST, env.MS_USERNAME, env.MS_PASSWORD, store.appId, 0, isTest);
+		loxWsClient.connect(env.MS_HOST, env.MS_USERNAME, env.MS_PASSWORD, appStore.appId, 0, isTest);
 	}
 
 	let { children } = $props();
@@ -56,14 +57,13 @@
 	let currentWeather = $derived(weatherStore.current);
 	let dailyForecast = $derived(weatherStore.daily);
 	let hourlyForecast = $derived(weatherStore.hourly);
-	let time = $derived(store.time);
-	let mqttStatus = $derived(store.mqttStatus);
-	let msStatus = $derived(store.msStatus);
-	let nav = $derived(store.nav);
+	let time = $derived(appStore.time);
+	let mqttStatus = $derived(appStore.mqttStatus);
+	let msStatus = $derived(appStore.msStatus);
+	let nav = $derived(appStore.nav);
 	let path = $derived(page.url.pathname);
-	let home = { label: 'Menu', href: '/menu', icon: MenuIcon }; // fixed for tablet
 	let weatherAvailable = $derived(currentWeather.time > 0 && dailyForecast.length && hourlyForecast[0]);
-	let activeNotifications = $derived(Object.values(store.notificationsMap).filter( items => items.status == 1));
+	let activeNotifications = $derived(Object.values(controlStore.notificationsMap).filter( items => items.status == 1));
 
 	function getCurrentIcon(cur: WeatherCurrentConditions) {
 		let sunRise = utils.time2epoch(cur.time, cur.sunRise);
@@ -73,11 +73,11 @@
 	}
 
 	const routes: Route[] = $derived([
-		{ label: 'Home', href: '/', icon: HouseIcon, badge: false },
-		{ label: 'Rooms', href: '/room', icon: Grid2x2Icon, badge: false },
-		{ label: 'Categories', href: '/category', icon: LayoutListIcon, badge: false },
-		{ label: 'Messages', href: '/messages', icon: FileTextIcon, badge: true },
-		{ label: 'Settings', href: '/settings', icon: SettingsIcon, badge: true },
+		{ label: 'Home', href: '/', icon: HouseIcon, badge: false, root: true },
+		{ label: 'Rooms', href: '/room', icon: Grid2x2Icon, badge: false, root: true },
+		{ label: 'Categories', href: '/category', icon: LayoutListIcon, badge: false, root: true },
+		{ label: 'Messages', href: '/messages', icon: FileTextIcon, badge: true, root: true },
+		{ label: 'Settings', href: '/settings', icon: SettingsIcon, badge: false, root: false },
 	]);
 
 	function checkUrl(href: string) {
@@ -89,8 +89,8 @@
 
 	function openWeather() {
 		if (currentWeather.time > 0) {
-			store.weatherDialog.state = true;
-			store.setWeatherDialogTimeout();
+			appStore.weatherDialog.state = true;
+			appStore.setWeatherDialogTimeout();
 		}
 	}
 
@@ -116,31 +116,18 @@
 
 	$effect( () => {
 		let found = routes.find ( item => item.href == path );
-		if (found) {
-			store.setNav({ label: 'Menu', href: '', icon: MenuIcon });
+		if (found && found.root) {
+			appStore.setNav({ label: 'Menu', href: '', icon: MenuIcon, root: true });
 		}
 	});
 
-	store.resetLockScreenDialogTimeout();
+	appStore.resetLockScreenDialogTimeout();
 
 	let localeSettings = localStorage.getItem('locale') || 'en';
-	store.locale = localeSettings;
+	appStore.locale = localeSettings;
 
 	let startPage = localStorage.getItem('startPage') || '/';
 	goto(startPage);
-
-	const linksSidebar = {
-		entertainment: [
-			{ label: 'Books', href: '#', icon: Grid2x2Icon },
-			{ label: 'Movies', href: '#', icon: LayoutListIcon },
-			{ label: 'Television', href: '#', icon: FileTextIcon },
-		],
-	 	recreation: [
-			{ label: 'Biking', href: '#', icon: Grid2x2Icon },
-			{ label: 'Sailing', href: '#', icon: LayoutListIcon },
-			{ label: 'Hiking', href: '#', icon: FileTextIcon },
-		]
-	};
 
 	let anchorRail = 'btn aspect-square pl-6 w-full max-w-[74px] flex flex-col items-center gap-0.5 ';
 	let anchorSidebar = 'btn justify-start px-2 w-full ';
@@ -164,7 +151,7 @@
 </svelte:head>
 
 <!-- click activity resets timeout for lockscreen -->
-<svelte:body onclick={() => {store.resetLockScreenDialogTimeout()}}/>
+<svelte:body onclick={() => {appStore.resetLockScreenDialogTimeout()}}/>
 
 {#if (innerWidth.current != undefined) && innerWidth.current > 768 } <!-- tabled / landscape mode  -->
 <div class="fixed w-full h-screen md:grid grid-cols-[auto_1fr]">
@@ -172,7 +159,7 @@
 							class={ layoutRail ? '' : 'grid grid-rows-[1fr_auto] gap-4 w-[180px]'}>
 		{#if layoutRail}
 			<Navigation.Header>
-				<div class="flex justify-center items-center" onclick={(e)=>{e.stopPropagation(); store.lockScreenDialog.state=true;}}>
+				<div class="flex justify-center items-center" onclick={(e)=>{e.stopPropagation(); appStore.lockScreenDialog.state=true;}}>
 					<p class="text-right text-2xl font-medium">{format(time, "p")}</p>
 			</div>
 			</Navigation.Header>
@@ -235,10 +222,10 @@
 				</a>
 			</div>
 			<div class="mr-1 flex flex-row gap-3 justify-end items-center">
-				<div onclick={(e)=>{e.stopPropagation(); store.lockScreenDialog.state=true;}}>
+				<div onclick={(e)=>{e.stopPropagation(); appStore.lockScreenDialog.state=true;}}>
 					<p class="text-right text-2xl font-medium">{format(time, "p")}</p>
 				</div>
-				{#if store.showStatus}
+				{#if appStore.showStatus}
 				<div class="flex flex-col justify-center items-center gap-2">
 					<CircleIcon class={getStatusColor(mqttStatus)} size="16"/>
 					<SquareIcon class={getStatusColor((mqttStatus==1) ? msStatus : 0)} size="16"/>
@@ -299,10 +286,10 @@
 </Dialog>
 
 <!-- loxbuddy logo and status in footer
-			<a class={store.showStatus ? "mb-1" : "mb-4"} href="/about">
+			<a class={appStore.showStatus ? "mb-1" : "mb-4"} href="/about">
 				<img src="/icons/svg/loxbuddy.svg" width="50" alt="about"/>
 			</a>
-			{#if store.showStatus}
+			{#if appStore.showStatus}
 				<div class="flex flex-row gap-3 mb-2">
 					<Circle class={getStatusColor(mqttStatus)} size="16"/>
 					<Square class={getStatusColor((mqttStatus==1) ? msStatus : 0)} size="16"/>

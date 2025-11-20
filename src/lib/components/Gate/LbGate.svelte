@@ -3,14 +3,14 @@
 	import type { Control, ControlOptions, ControlView, DialogView, SingleButtonView } from '$lib/types/models';
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import LbDialog from '$lib/components/Common/LbDialog.svelte';
-	import { store } from '$lib/stores/Store.svelte';
+	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 	import { loxWsClient } from '$lib/communication/LoxWsClient';
 	import { _ } from 'svelte-i18n';
 	import fmt from 'sprintf-js';
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
-	let position = $derived(Number(store.getState(control.states.position)) * 100);
+	let position = $derived(Number(controlStore.getState(control.states.position)) * 100);
 	let type = Number(control.details.animation);
 
 	/* Gate types (based on animation detail )
@@ -87,7 +87,7 @@
 		...DEFAULT_CONTROLVIEW,
 		control: control,
 		isFavorite: controlOptions.isFavorite,
-		iconName: store.getIcon(control, controlOptions.isSubControl),
+		iconName: controlStore.getIcon(control, controlOptions.isSubControl),
 		textName: control.name,
 		statusName: (position > 99) ? $_('Open') : ( (position < 1) ? $_('Closed') :  fmt.sprintf('%2.0f%% %s', position, $_('Open'))),
 		statusColor: (position > 1) ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700',

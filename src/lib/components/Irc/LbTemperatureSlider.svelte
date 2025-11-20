@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { _ } from 'svelte-i18n';
-	import { store } from '$lib/stores/Store.svelte';	
 
 	let { min, max, step, actual, target, onValueChange, manual } = $props();
 

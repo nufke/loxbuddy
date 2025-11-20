@@ -5,7 +5,7 @@
 	import { _ } from 'svelte-i18n';
 	import { fetchUrl } from '$lib/communication/fetchUrl.svelte';
 	import Info from '$lib/components/Common/LbInfo.svelte';
-	import { store } from '$lib/stores/Store.svelte';
+	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 	import { tick } from 'svelte';
 	import { SvelteMap } from 'svelte/reactivity';
 	import { loxWsClient } from '$lib/communication/LoxWsClient';
@@ -16,7 +16,7 @@
 
 	let imageIdx = 0; // image cache index
 	let img: any = $state();
-	let events = $derived(String(store.getState(controlView.control.states.lastBellEvents)));
+	let events = $derived(String(controlStore.getState(controlView.control.states.lastBellEvents)));
 	let lastBellEvents = $derived((events.includes('|') ? events.split('|').reverse(): []));
 	let selectedTab = $state(1);
 	let lastEvent = $derived(lastBellEvents[0]); // select latest (first) event

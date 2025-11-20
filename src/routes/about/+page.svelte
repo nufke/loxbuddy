@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { _ } from 'svelte-i18n';
-	import { store } from '$lib/stores/Store.svelte';
+	import { appStore } from '$lib/stores/LbAppStore.svelte';
 	import { ArrowLeftIcon, TriangleAlertIcon } from '@lucide/svelte';
 
 	let version = '0.0.1'; // TODO get version from package
-	store.setNav({ label: 'ArrowLeft', href: '/', icon: ArrowLeftIcon });
+	appStore.setNav({ label: 'ArrowLeft', href: '/', icon: ArrowLeftIcon });
 </script>
 
 <div class="container flex justify-center items-center h-full mx-auto max-w-[1280px] p-2">
@@ -19,6 +19,6 @@
 		<a href="https://www.buymeacoffee.com/nufke" target="_blank"><img src="/icons/svg/bmc.svg" alt="Buy Me A Coffee"></a>
 		<span class="mt-10 text-orange-500 "><TriangleAlertIcon size="40"/></span>
 		<p class="mt-2 text-md max-w-[600px] text-orange-500 font-medium">{$_("Warning_message")}</p>
-		<p class="mt-4 text-xs dark:text-surface-300 text-surface-700">App ID: {store.appId}</p>
+		<p class="mt-4 text-xs dark:text-surface-300 text-surface-700">App ID: {appStore.appId}</p>
 	</div>
 </div>

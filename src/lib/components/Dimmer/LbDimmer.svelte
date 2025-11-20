@@ -3,16 +3,16 @@
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import LbControl from '$lib/components/Common/LbControl.svelte';
 	import LbDialog from '$lib/components/Common/LbDialog.svelte';
-	import { store } from '$lib/stores/Store.svelte';
+	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 	import { loxWsClient } from '$lib/communication/LoxWsClient';
 	import { _ } from 'svelte-i18n';
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
-	let min = $derived(Number(store.getState(control.states.min)) || 0 );
-	let max = $derived(Number(store.getState(control.states.max)) || 100);
-	let step = $derived(Number(store.getState(control.states.step)) || 1);
-	let position = $derived(Number(store.getState(control.states.position)) || 0);
+	let min = $derived(Number(controlStore.getState(control.states.min)) || 0 );
+	let max = $derived(Number(controlStore.getState(control.states.max)) || 100);
+	let step = $derived(Number(controlStore.getState(control.states.step)) || 1);
+	let position = $derived(Number(controlStore.getState(control.states.position)) || 0);
 
 	let sliderBar: SliderBar = $derived({
 		min: min,
@@ -70,7 +70,7 @@
 		...DEFAULT_CONTROLVIEW,
 		control: control,
 		isFavorite: controlOptions.isFavorite,
-		iconName: store.getIcon(control, controlOptions.isSubControl),
+		iconName: controlStore.getIcon(control, controlOptions.isSubControl),
 		iconColor: position > 0 ? 'dark:fill-primary-500 fill-primary-700' : 'fill-surface-950 dark:fill-surface-50',
 		textName: control.name,
 		statusName: String(sliderBar.position) + ' %',

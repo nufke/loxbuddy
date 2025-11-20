@@ -6,11 +6,11 @@
 	import { XIcon } from '@lucide/svelte';
 	import { _ } from 'svelte-i18n';
 	import Info from '$lib/components/Common/LbInfo.svelte';
-	import { store } from '$lib/stores/Store.svelte';
+	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 
 	let { controlView = $bindable() }: { controlView: ControlView } = $props();
 
-	let autoActive = $derived(Number(store.getState(controlView.control.states.autoActive)));
+	let autoActive = $derived(Number(controlStore.getState(controlView.control.states.autoActive)));
 
 	function close() {
 		controlView.dialog.action(false);

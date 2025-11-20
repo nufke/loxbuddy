@@ -4,19 +4,20 @@
 	import type { SystemStatus, SystemStatusEntry, NotificationMessage } from '$lib/types/models';
 	import LbIcon from '$lib/components/Common/LbIconByName.svelte';
 	import { XIcon } from '@lucide/svelte';
-	import { store } from '$lib/stores/Store.svelte';
+	import { controlStore } from '$lib/stores/LbControlStore.svelte';
+
 	import { _ } from 'svelte-i18n';
 	import { format } from 'date-fns';
 	import { fetchUrl } from '$lib/communication/fetchUrl.svelte';
 
 	let group = $state('1');
-	let messageCenter = $derived(store.messageCenterList[0]); // select first message center
+	let messageCenter = $derived(controlStore.messageCenterList[0]); // select first message center
 	let resource = $derived(fetchUrl<string>(`jdev/sps/io/${messageCenter?.uuidAction}/getEntries/2`));
 	let	messages = $derived(resource.value ? JSON.parse(resource.value) : {}) as SystemStatus;
 	let activeMessages = $derived(messages && messages.entries ? messages.entries.filter( entry => entry.isHistoric == false) : []);
 	let pastMessages = $derived(messages && messages.entries ? messages.entries.filter( entry => entry.isHistoric == true) : []);
-	let notifications = $derived(store.notifications);
-	let notificationList = $derived(Object.values(store.notificationsMap).sort((a, b) => b.message.ts - a.message.ts));
+	let notifications = $derived(controlStore.notifications);
+	let notificationList = $derived(Object.values(controlStore.notificationsMap).sort((a, b) => b.message.ts - a.message.ts));
 	let activeNotifications = $derived(notificationList.filter( items => items.status < 3)); // new or read
 	let archivedNotifications = $derived(notificationList.filter( items => items.status == 3)); // new or read
 	let selectedEntry: SystemStatusEntry | undefined = $state();
@@ -25,11 +26,11 @@
 	let severity = ['', 'Info', 'Warning', 'Error'];
 
 	function didRead(notification: NotificationMessage) {
-		store.updateNotificationMap(notification, 2);
+		controlStore.updateNotificationMap(notification, 2);
 	}
 
 	function getRoomName(entry: SystemStatusEntry) {
-		return entry && entry.roomUuid && store.rooms[entry.roomUuid] ? store.rooms[entry.roomUuid].name : '';
+		return entry && entry.roomUuid && controlStore.rooms[entry.roomUuid] ? controlStore.rooms[entry.roomUuid].name : '';
 	}
 	
 	function showEntry(entry: SystemStatusEntry) {

@@ -3,7 +3,7 @@
 	import LbLightControllerV2 from '$lib/components/LightController/LbLightControllerV2.svelte'
 	import type { Control, ControlOptions, ControlView, DialogView, LightItem, MoodList } from '$lib/types/models';
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
-	import { store } from '$lib/stores/Store.svelte';
+	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 	import { Dialog, Portal } from '@skeletonlabs/skeleton-svelte';
 	import { XIcon, ChevronUpIcon, ChevronDownIcon } from '@lucide/svelte';
 	import { _ } from 'svelte-i18n';
@@ -27,12 +27,12 @@
 	let showScrollTop = $state(false);
 	let showScrollBottom = $state(false);
 
-	let lightControls = $derived(store.controlList.filter(
+	let lightControls = $derived(controlStore.controlList.filter(
 		(controls: Control) => lightsUuid.indexOf(controls.uuidAction) > -1
 	));
 
 	let lightsOff = $derived(
-		lightControls.filter((control: Control) => store.getState(control.states.activeMoodsNum) == 778)
+		lightControls.filter((control: Control) => controlStore.getState(control.states.activeMoodsNum) == 778)
 	);
 
 	let lightsOn = $derived(lightList.length - lightsOff.length);
@@ -87,7 +87,7 @@
 		...DEFAULT_CONTROLVIEW,
 		control: control,
 		isFavorite: controlOptions.isFavorite,
-		iconName: store.getIcon(control, controlOptions.isSubControl),
+		iconName: controlStore.getIcon(control, controlOptions.isSubControl),
 		iconColor: lightsOn ? 'dark:fill-primary-500 fill-primary-700' : 'fill-surface-950 dark:fill-surface-50',
 		textName: control.name,
 		statusName: getActiveLights(),
@@ -96,21 +96,21 @@
 	});
 
 	function getControlName(control: Control) {
-		return $_('LightControllerV2').split(',').includes(control.name) ? store.rooms[control.room].name : control.name;
+		return $_('LightControllerV2').split(',').includes(control.name) ? controlStore.rooms[control.room].name : control.name;
 	}
 
 	function getRoomName(control: Control) {
-		return $_('LightControllerV2').split(',').includes(control.name) ? '' : store.rooms[control.room].name;
+		return $_('LightControllerV2').split(',').includes(control.name) ? '' : controlStore.rooms[control.room].name;
 	}
 
 	function getStatusName(control: Control) {
-		let moodList = store.getState(control.states.moodList) as MoodList[];
-		let activeMoodsNum = Number(store.getState(control.states.activeMoodsNum));
+		let moodList = controlStore.getState(control.states.moodList) as MoodList[];
+		let activeMoodsNum = Number(controlStore.getState(control.states.activeMoodsNum));
 		return (activeMoodsNum < 0) ? $_('Manual') : moodList?.find((item:MoodList) => item.id == activeMoodsNum)?.name;
 	}
 
 	function getStatusColor(control: Control) {
-		let activeMoodsNum = Number(store.getState(control.states.activeMoodsNum));
+		let activeMoodsNum = Number(controlStore.getState(control.states.activeMoodsNum));
 		return activeMoodsNum == 778 ? 'text-surface-950 dark:text-surface-50' : 'dark:text-primary-500 text-primary-700';
 	}
 
@@ -130,8 +130,8 @@
 	function changeLight(mood: string) {
 		lightList.forEach( light => { 
 			if (light.selected) {
-				let control: Control | undefined = store.controlList.find( (control: Control) => control.uuidAction == light.uuid);
-				let moodList = store.getState(control?.states.moodList) as MoodList[];
+				let control: Control | undefined = controlStore.controlList.find( (control: Control) => control.uuidAction == light.uuid);
+				let moodList = controlStore.getState(control?.states.moodList) as MoodList[];
 				let moodCmd;
 				switch (mood) {
 					case 'On': moodCmd = String(moodList[0].id); break;
@@ -148,7 +148,7 @@
 	function selectScenes() {
 		if (!scenesEnabled) return; // more than one scene selected
 		let light = lightList.find( item => item.selected);
-		let control: Control | undefined = store.controlList.find( (control: Control) => control.uuidAction == light?.uuid);
+		let control: Control | undefined = controlStore.controlList.find( (control: Control) => control.uuidAction == light?.uuid);
 		if (control) {
 			selectedControl = control;
 			selectedControlOptions = {...DEFAULT_CONTROLOPTIONS, showDialog: true, showControl: false};

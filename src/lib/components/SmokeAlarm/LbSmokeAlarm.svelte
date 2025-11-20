@@ -3,17 +3,17 @@
 	import type { Control, ControlOptions, ControlView, DialogView, SingleButtonView } from '$lib/types/models';
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import LbControl from '$lib/components/Common/LbControl.svelte';
-	import { store } from '$lib/stores/Store.svelte';
+	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 	import { loxWsClient } from '$lib/communication/LoxWsClient';
 	import { _ } from 'svelte-i18n';
 	import { XIcon, WrenchIcon, InfoIcon, ChevronUpIcon, ChevronDownIcon } from '@lucide/svelte';
-	import Info2 from '$lib/components/Common/LbInfo.svelte';
+	import Info from '$lib/components/Common/LbInfo.svelte';
 	import { tick } from 'svelte';
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS}: { control: Control, controlOptions: ControlOptions } = $props();
 
-	let timeServiceMode = $derived(Number(store.getState(control.states.timeServiceMode)));
-	let level = $derived((timeServiceMode > 0) ? 99 : Number(store.getState(control.states.level)));
+	let timeServiceMode = $derived(Number(controlStore.getState(control.states.timeServiceMode)));
+	let level = $derived((timeServiceMode > 0) ? 99 : Number(controlStore.getState(control.states.level)));
 
 	let statusName = $state('');
 	let statusColor = $state('');
@@ -45,7 +45,7 @@
 			case 99: // service
 				statusName = 'Alarm suppression enabled'
 				duration = ' (' + ((timeServiceMode>60) ? 
-												(Math.round(timeServiceMode/60) + ' min)') : 
+												(Math.floor(timeServiceMode/60) + ' min)') : 
 												(timeServiceMode + ' sec)'));
 				statusColor = 'text-blue-500 fill-blue-500';
 				break;
@@ -97,7 +97,7 @@
 		...DEFAULT_CONTROLVIEW,
 		control: control,
 		isFavorite: controlOptions.isFavorite,
-		iconName: store.getIcon(control, controlOptions.isSubControl),
+		iconName: controlStore.getIcon(control, controlOptions.isSubControl),
 		iconColor: statusColor,
 		textName: control.name,
 		statusName: statusName,
@@ -108,7 +108,7 @@
 	async function close() {
 		controlView.dialog.action(false);
 		await tick();
-		selectedTab = 0;
+		selectedTab = 1;
 	}
 </script>
 
@@ -137,7 +137,7 @@
 						</header>
 						<Dialog.Description>
 							{#if selectedTab==1}
-							<div class="truncate justify-center text-center">
+							<div class="truncate justify-center text-center mb-2">
 								{#if controlView.statusName}
 									<p class="text-lg truncate {controlView.statusColor}">{$_(controlView.statusName)} {duration}</p>
 								{/if}
@@ -161,8 +161,7 @@
 								</div>
 							</div>
 							<div class="m-3">
-								<button type="button" class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50
-												{(serviceTime > 0) || (timeServiceMode > 0) ? 'text-primary-800-200' : 'text-primary-400-600'}" 
+								<button type="button" class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50" 
 												onclick={(e) => {e.stopPropagation(); e.preventDefault(); serviceButton.click();}}>
 									{#if serviceButton.name}
 										<span class="text-lg">{$_(serviceButton.name)}</span>
@@ -170,7 +169,7 @@
 								</button>
 							</div>
 							{/if}
-							<div class="sticky bottom-0 left-0 w-full h-16 pt-2">
+							<div class="sticky bottom-0 left-0 w-full h-16 pt-4">
 								<div class="grid h-full max-w-lg grid-cols-2 mx-auto">
 									<button type="button" class="inline-flex flex-col items-center justify-center px-5 group
 										{selectedTab==1 ? 'dark:text-primary-500 text-primary-700' : ''} " onclick={() => {selectedTab=1;}}>

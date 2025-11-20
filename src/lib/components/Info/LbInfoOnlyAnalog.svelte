@@ -3,7 +3,7 @@
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import LbControl from '$lib/components/Common/LbControl.svelte';
 	import LbDialog from '$lib/components/Common/LbDialog.svelte';
-	import { store } from '$lib/stores/Store.svelte';
+	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 	import { utils } from '$lib/helpers/Utils';
 	import { format } from 'date-fns';
 	import fmt from 'sprintf-js';
@@ -69,9 +69,9 @@
 		...DEFAULT_CONTROLVIEW,
 		control: control,
 		isFavorite: controlOptions.isFavorite,
-		iconName: store.getIcon(control, controlOptions.isSubControl),
+		iconName: controlStore.getIcon(control, controlOptions.isSubControl),
 		textName: control.name,
-		statusName: getFormattedString(String(store.getState(control.states.value))),
+		statusName: getFormattedString(String(controlStore.getState(control.states.value))),
 		dialog: dialog
 	});
 </script>

@@ -4,7 +4,8 @@
 	import { DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import LbIcon from '$lib/components/Common/LbIconByName.svelte';
 	import LbJalousieIcon from '$lib/components/Jalousie/LbJalousieIcon.svelte';
-	import { store } from '$lib/stores/Store.svelte';
+	import { appStore } from '$lib/stores/LbAppStore.svelte';
+	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 	import { _ } from 'svelte-i18n';
 	import { page } from '$app/state';
 	import { GripVerticalIcon } from '@lucide/svelte';
@@ -35,9 +36,9 @@
 	function label(control: Control) {
 		let label : Category | Room | undefined;
 		if (isCategory) {
-			label = store.roomList.find((room) => room.uuid === control.room);
+			label = controlStore.roomList.find((room) => room.uuid === control.room);
 		} else {
-			label = store.categoryList.find((cat) => cat.uuid === control.cat);
+			label = controlStore.categoryList.find((cat) => cat.uuid === control.cat);
 		}
 		if (label && label.name) {
 		 return label.name;
@@ -51,7 +52,7 @@
 	class="card m-0 flex justify-start rounded-lg shadow-sm border border-white/5
 					bg-surface-100-900 min-h-[150px] px-2 py-2 hover:border-white/10 relative">
 	<div class="flex w-full flex-col">
-		{#if store.dnd.isEnabled}
+		{#if appStore.dnd.isEnabled}
 			<div class="absolute right-1 text-surface-500 top-[40%]">
 				<GripVerticalIcon/>
 			</div>
@@ -124,7 +125,7 @@
 						{ controlView.isSubControl ? 'bg-surface-200-800 min-h-[64px]' :
 						( controlOptions.isLink ? 'bg-surface-200-800 min-h-[76px]' : 'bg-surface-100-900 min-h-[76px]') }  px-2 py-2 hover:border-white/10">
 	<div class="flex w-full justify-between">
-		{#if store.dnd.isEnabled}
+		{#if appStore.dnd.isEnabled}
 			<div class="absolute right-1 text-surface-500 top-[35%]">
 				<GripVerticalIcon/>
 			</div>
@@ -161,7 +162,7 @@
 				{/if}
 			</div>
 		</div>
-		<div class="flex flex-row items-center justify-center {store.dnd.isEnabled ? 'pr-5' : 'pr-0'}">
+		<div class="flex flex-row items-center justify-center {appStore.dnd.isEnabled ? 'pr-5' : 'pr-0'}">
 			{#if controlView.buttons.length}
 				{#each controlView.buttons as button, index}
 					{#if index > 0}

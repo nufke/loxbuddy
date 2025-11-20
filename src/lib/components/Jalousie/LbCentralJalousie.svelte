@@ -5,7 +5,7 @@
 	import LbJalousieIcon from '$lib/components/Jalousie/LbJalousieIcon.svelte';
 	import type { Control, ControlOptions, ControlView, DialogView, ScreenItem, SingleButtonView } from '$lib/types/models';
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
-	import { store } from '$lib/stores/Store.svelte';
+	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 	import { Dialog, Portal } from '@skeletonlabs/skeleton-svelte';
 	import { XIcon, ChevronUpIcon, ChevronDownIcon, BlindsIcon, SettingsIcon, OctagonMinusIcon } from '@lucide/svelte';
 	import { _ } from 'svelte-i18n';
@@ -24,7 +24,7 @@
 	screenList.forEach( item => item.selected = false); // default all screens unselected
 
 	let screenUuid = control.details.controls.map((item: ScreenItem) => item.uuid);
-	let screenControls = $derived(store.controlList.filter(
+	let screenControls = $derived(controlStore.controlList.filter(
 		(controls: Control) => screenUuid.indexOf(controls.uuidAction) > -1
 	));
 
@@ -34,7 +34,7 @@
 	let showScrollBottom = $state(false);
 	
 	let screensClosed = $derived(
-		screenControls.filter((control: Control) => Number(store.getState(control.states.position)) * 100 > 1)
+		screenControls.filter((control: Control) => Number(controlStore.getState(control.states.position)) * 100 > 1)
 	);
 
 	let selectedScreenCount = $derived(screenList.filter( item => item.selected == true).length);
@@ -82,7 +82,7 @@
 	function selectScreenOptions() {
 		if (!screenSelected) return; // more than one screen selected
 		let screen = screenList.find( item => item.selected);
-		let control: Control | undefined = store.controlList.find( (control: Control) => control.uuidAction == screen?.uuid);
+		let control: Control | undefined = controlStore.controlList.find( (control: Control) => control.uuidAction == screen?.uuid);
 		if (control) {
 			selectedControl = control;
 			selectedControlOptions = {...DEFAULT_CONTROLOPTIONS, showDialog: true, showControl: false};
@@ -97,11 +97,11 @@
 	});
 
 	function isAutoActive(control: Control) {
-		return Number(store.getState(control.states.autoActive));
+		return Number(controlStore.getState(control.states.autoActive));
 	}
 
 	function getStatusColor(control: Control) {
-		let position = Math.round(Number(store.getState(control.states.position)) * 100);
+		let position = Math.round(Number(controlStore.getState(control.states.position)) * 100);
 		return position > 1 ? 'dark:text-primary-500 text-primary-700' : 'text-surface-950 dark:text-surface-50';
 	}
 
@@ -122,11 +122,11 @@
 	}
 
 	function getControlName(control: Control) {
-		return $_('Jalousie').split(',').includes(control.name) ? store.rooms[control.room].name : control.name;
+		return $_('Jalousie').split(',').includes(control.name) ? controlStore.rooms[control.room].name : control.name;
 	}
 
 	function getRoomName(control: Control) {
-		return $_('LightControllerV2').split(',').includes(control.name) ? '' : store.rooms[control.room].name;
+		return $_('LightControllerV2').split(',').includes(control.name) ? '' : controlStore.rooms[control.room].name;
 	}
 
 	let buttons: SingleButtonView[] = $state([
@@ -148,7 +148,7 @@
 		...DEFAULT_CONTROLVIEW,
 		control: control,
 		isFavorite: controlOptions.isFavorite,
-		iconName: store.getIcon(control, controlOptions.isSubControl),
+		iconName: controlStore.getIcon(control, controlOptions.isSubControl),
 		iconColor: screensClosed.length ? 'dark:fill-primary-500 fill-primary-700' : 'dark:fill-surface-300 fill-surface-700',
 		textName: control.name,
 		statusName: getActiveScreens(),

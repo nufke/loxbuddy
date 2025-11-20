@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Dialog, Portal } from '@skeletonlabs/skeleton-svelte';
 	import { _ } from 'svelte-i18n';
-	import { store } from '$lib/stores/Store.svelte';
+	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 	import { tick } from 'svelte';
 	import { XIcon } from '@lucide/svelte';
 
@@ -14,7 +14,7 @@
 		nightLight: entry.nightLight
 	});
 
-	let opModes = $derived(store.structure.operatingModes);
+	let opModes = $derived(controlStore.structure.operatingModes);
 	let openDialog = $state(false);
 	let daysFull = $_('DaysFull').toLowerCase().split('|');
 	let weekDayNrs = $derived(Object.keys(opModes).filter( (key) => daysFull.includes(opModes[key].toLowerCase())));

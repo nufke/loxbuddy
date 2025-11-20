@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { _ } from 'svelte-i18n';
-	import { store } from '$lib/stores/Store.svelte';
+	import { appStore } from '$lib/stores/LbAppStore.svelte';
 	import { weatherStore } from '$lib/stores/WeatherStore.svelte';
 	import { slide, fade } from 'svelte/transition';
 	import LbIcon from '$lib/components/Common/LbIconByName.svelte';
@@ -15,7 +15,7 @@
 	let daily = $derived(weatherStore.daily);
 	let hourly = $derived(weatherStore.hourly);
 	let loaded = $derived(current.time > 0 && daily.length);
-	let time = $derived(store.time);
+	let time = $derived(appStore.time);
 
 	function openSlider(i: number) {
 		if (hourly[i]) {
@@ -60,7 +60,7 @@
 </script>
 
 <Dialog
-	open={store.weatherDialog.state}
+	open={appStore.weatherDialog.state}
 	onInteractOutside={close}>
 	<Portal>
 		<Dialog.Backdrop class="fixed top-0 left-0 right-0 bottom-0 z-10 dark:bg-surface-950 bg-surface-50" />
@@ -68,14 +68,14 @@
 			<Dialog.Content class="card p-4 space-y-4 shadow-xl">
 				<header class="sticky top-0 h-[40px] dark:bg-surface-950/50 bg-surface-50/50 z-1">
 					<div class="absolute right-1 top-1">
-						<button type="button" aria-label="close" class="btn-icon w-auto" onclick={()=> {store.weatherDialog.state = false; resetSlider();}}>
+						<button type="button" aria-label="close" class="btn-icon w-auto" onclick={()=> {appStore.weatherDialog.state = false; resetSlider();}}>
 							<XIcon/>
 						</button>
 					</div>
 				</header>
 				<Dialog.Description>
 					{#if loaded}
-					<div class="-mt-2 justify-center text-center" onscroll={() => {store.setWeatherDialogTimeout()}} onmousemove={() => {store.setWeatherDialogTimeout()}}>
+					<div class="-mt-2 justify-center text-center" onscroll={() => {appStore.setWeatherDialogTimeout()}} onmousemove={() => {appStore.setWeatherDialogTimeout()}}>
 						<p class="h5">{current.location}</p>
 						<p class="text-lg">{format(time, "PPP p")}</p>
 						<div class="grid grid-cols-2 mb-5">

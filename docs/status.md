@@ -11,7 +11,7 @@ or submit a [Pull Request](https://github.com/nufke/loxbuddy/pulls).
 | AalEmergency             | Not started       |                             |
 | AalSmartAlarm            | Not started       |                             |
 | ACControl                | Not started       |                             |
-| Alarm                    | Available         |                             |
+| Alarm                    | Under development | No alarm notification yet   |
 | AlarmCentral             | Not started       |                             |
 | AlarmChain               | Not started       |                             |
 | AlarmClock               | Available         |                             |
@@ -90,7 +90,7 @@ or submit a [Pull Request](https://github.com/nufke/loxbuddy/pulls).
 | Sauna                    | Not started       |                             |
 | Sequential               | Not started       |                             |
 | Slider                   | Available         |                             |
-| SmokeAlarm               | Available         |                             |
+| SmokeAlarm               | Under development | No alarm notification yet   |
 | SolarPump                | Not started       |                             |
 | SolarPumpController      | Not started       |                             |
 | SpotPriceOptimizer       | Not started       |                             |

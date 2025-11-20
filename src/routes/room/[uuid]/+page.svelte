@@ -5,7 +5,8 @@
 	import { DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import { _ } from 'svelte-i18n';
 	import { lbControl } from '$lib/helpers/LbControl';
-	import { store } from '$lib/stores/Store.svelte';
+	import { appStore } from '$lib/stores/LbAppStore.svelte';
+	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 	import { ArrowLeftIcon } from '@lucide/svelte';
 	import { flip } from 'svelte/animate';
 	import { customdnd } from '$lib/helpers/custom-drag-n-drop';
@@ -14,35 +15,35 @@
 
 	const key = 'room';
 	const fav = 'favorites';
-	let userSettings = $derived(store.userSettings);
+	let userSettings = $derived(appStore.userSettings);
 	let dragGroup = $state('');
 	let draggingItem: any;
 	let animatingItems = new Set();
 
-	store.setNav({ label: 'ArrowLeft', href: '/room', icon: ArrowLeftIcon }); // TODO change navigation concept
+	appStore.setNav({ label: 'ArrowLeftIcon', href: '/room', icon: ArrowLeftIcon, root: true }); // TODO change navigation concept
 
 	let controlOptions: ControlOptions = $derived(DEFAULT_CONTROLOPTIONS);
 
 	let filteredControls: Control[] = $derived(
-		store.controlList.filter((control) => (control.room === data.uuid) && ((control.restrictions & 1) != 1))
-		.sort((a, b) => a.name.localeCompare(b.name, store.locale))
+		controlStore.controlList.filter((control) => (control.room === data.uuid) && ((control.restrictions & 1) != 1))
+		.sort((a, b) => a.name.localeCompare(b.name, appStore.locale))
 		.sort((a, b) => getPosition(userSettings.userDefaultStructure, a, key + '/' + a.cat) - getPosition(userSettings.userDefaultStructure, b, key + '/' + b.cat))
 	);
 
 	let favorites: Control[] = $derived(
 		filteredControls.filter((control) => isFavorite(userSettings.userDefaultStructure, control, key))
-		.sort((a, b) => a.name.localeCompare(b.name, store.locale))
+		.sort((a, b) => a.name.localeCompare(b.name, appStore.locale))
 		.sort((a, b) => getPosition(userSettings.userDefaultStructure, a, key) - getPosition(userSettings.userDefaultStructure, b, key))
 	);
 
 	let labels: Category[] = $derived(
-		store.categoryList.filter((item) => filteredControls.map((control) => control.cat)
+		controlStore.categoryList.filter((item) => filteredControls.map((control) => control.cat)
 			.indexOf(item.uuid) > -1)
-			.sort((a, b) => a.name.localeCompare(b.name, store.locale))
+			.sort((a, b) => a.name.localeCompare(b.name, appStore.locale))
 	);
 
 	let pageTitle: Room | undefined = $derived(
-		store.roomList.find((item) => filteredControls[0].room == item.uuid)
+		controlStore.roomList.find((item) => filteredControls[0].room == item.uuid)
 	);
 
 	function isFavorite(obj: any, control: Control, key: string) {
@@ -60,7 +61,7 @@
 			return list;
 		}
 		animatingItems.add(item);
-		setTimeout(() => animatingItems.delete(item), store.dnd.duration);
+		setTimeout(() => animatingItems.delete(item), appStore.dnd.duration);
 		const itemA = list.indexOf(draggingItem);
 		const itemB = list.indexOf(item);
 		newList[itemA] = item;
@@ -77,8 +78,8 @@
 		<div class="mt-2 mb-2 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 lg:flex-wrap">
 			{#each favorites as control (control)}
 				{@const Component = lbControl.getControl(control.type)}
-				<div animate:flip={{ duration: store.dnd.duration }} use:customdnd
-					draggable={store.dnd.isEnabled}
+				<div animate:flip={{ duration: appStore.dnd.duration }} use:customdnd
+					draggable={appStore.dnd.isEnabled}
 					ondragstart={() => {draggingItem = control; dragGroup = fav}}
 					ondragend={() => {draggingItem = undefined; dragGroup = ''}}
 					ondragenter={() => { favorites = swapItems(favorites, control, fav)}}
@@ -94,8 +95,8 @@
 			<div class="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 lg:flex-wrap" >
 				{#each filteredControls.filter( item => item.cat == label.uuid) as control (control)}
 					{@const Component = lbControl.getControl(control.type)}
-					<div animate:flip={{ duration: store.dnd.duration }} use:customdnd
-						draggable={store.dnd.isEnabled}
+					<div animate:flip={{ duration: appStore.dnd.duration }} use:customdnd
+						draggable={appStore.dnd.isEnabled}
 						ondragstart={() => {draggingItem = control; dragGroup = label.name}}
 						ondragend={() => {draggingItem = undefined; dragGroup = ''}}
 						ondragenter={() => { filteredControls = swapItems(filteredControls, control, label.name)}}

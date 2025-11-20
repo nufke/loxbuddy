@@ -10,12 +10,12 @@
 	import { _ } from 'svelte-i18n';
 	import { slide } from 'svelte/transition'
 	import { loxWsClient } from '$lib/communication/LoxWsClient';
-	import { store } from '$lib/stores/Store.svelte';
+	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 
 	let { view = $bindable(), entries, selectedEntry, dayModes, temperatureList = [] } = $props();
 
 	let isAnalog = Boolean(view.control.details.analog);
-	let opModes = $derived(store.structure.operatingModes);
+	let opModes = $derived(controlStore.structure.operatingModes);
 	let isStartTime = $state(false);
 	let dateTime = $state();
 	let updatedEntries = $derived(entries.entry) as Entry[];

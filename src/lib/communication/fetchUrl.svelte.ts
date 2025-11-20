@@ -1,4 +1,4 @@
-import { store } from '$lib/stores/Store.svelte';
+import { appStore } from '$lib/stores/LbAppStore.svelte';
 
 export const fetchUrl = <T>(
 	url: string,
@@ -8,13 +8,13 @@ export const fetchUrl = <T>(
 	let req: Request;
 
 	$effect(() => {
-		if(store.loginCredentials.hostUrl.length) {
+		if(appStore.loginCredentials.hostUrl.length) {
 			const found = url.match(/^http/);
-			req = new Request(found ? url : `${store.loginCredentials.hostUrl}/${url}/`, {
+			req = new Request(found ? url : `${appStore.loginCredentials.hostUrl}/${url}/`, {
 				method: 'GET',
 				headers: {
 					'Content-Type': 'application/json',
-					'Authorization': 'Basic ' + store.loginCredentials.credentials
+					'Authorization': 'Basic ' + appStore.loginCredentials.credentials
 				}
 			});
 			fetch(req)

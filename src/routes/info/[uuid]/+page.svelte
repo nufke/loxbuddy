@@ -1,14 +1,14 @@
 <script lang="ts">
 	import type { PageProps } from './$types';
 	import type { Control } from '$lib/types/models';
-	import { store } from '$lib/stores/Store.svelte';
+	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 
 	let { data }: PageProps = $props();
 
 	let textarea: any;
 	let text = $derived('');
 	
-	let control: Control = store.controls[data.uuid];
+	let control: Control = controlStore.controls[data.uuid];
 	let states: [string,string][] = control && control.states ? Object.entries(control.states) : [];
 	let subControls = control && control.subControls ? Object.values(control.subControls) : [];
 
@@ -27,7 +27,7 @@
 	}
 
 	function getState(key: string) {
-		return store.getState(key);
+		return controlStore.getState(key);
 	}
 
 	function getSubStates(sub: Control) {

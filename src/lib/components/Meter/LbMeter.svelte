@@ -3,7 +3,8 @@
 	import LbMeterDialog from '$lib/components/Meter/LbMeterDialog.svelte';
 	import type { Control, ControlOptions, ControlView, DialogView } from '$lib/types/models';
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
-	import { store } from '$lib/stores/Store.svelte';
+	import { appStore } from '$lib/stores/LbAppStore.svelte';
+	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 	import { _ } from 'svelte-i18n';
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
@@ -11,21 +12,21 @@
 	let actualFormat = control.details.actualFormat;
 	let totalFormat = control.details.totalFormat;
 
-	let actual = $derived(Number(store.getState(control.states.actual))); 
-	let total = $derived(Number(store.getState(control.states.total)));
-	let totalDay = $derived(Number(store.getState(control.states.totalDay)));
-	let totalWeek = $derived(Number(store.getState(control.states.totalWeek)));
-	let totalMonth = $derived(Number(store.getState(control.states.totalMonth)));
-	let totalYear = $derived(Number(store.getState(control.states.totalYear)));
-	let storage = $derived(Number(store.getState(control.states.storage)));
-	let totalNeg = $derived(Number(store.getState(control.states.totalNeg)));
-	let totalNegDay = $derived(Number(store.getState(control.states.totalNegDay)));
-	let totalNegWeek = $derived(Number(store.getState(control.states.totalNegWeek)));
-	let totalNegMonth = $derived(Number(store.getState(control.states.totalNegMonth)));
-	let totalNegYear = $derived(Number(store.getState(control.states.totalNegYear)));
+	let actual = $derived(Number(controlStore.getState(control.states.actual))); 
+	let total = $derived(Number(controlStore.getState(control.states.total)));
+	let totalDay = $derived(Number(controlStore.getState(control.states.totalDay)));
+	let totalWeek = $derived(Number(controlStore.getState(control.states.totalWeek)));
+	let totalMonth = $derived(Number(controlStore.getState(control.states.totalMonth)));
+	let totalYear = $derived(Number(controlStore.getState(control.states.totalYear)));
+	let storage = $derived(Number(controlStore.getState(control.states.storage)));
+	let totalNeg = $derived(Number(controlStore.getState(control.states.totalNeg)));
+	let totalNegDay = $derived(Number(controlStore.getState(control.states.totalNegDay)));
+	let totalNegWeek = $derived(Number(controlStore.getState(control.states.totalNegWeek)));
+	let totalNegMonth = $derived(Number(controlStore.getState(control.states.totalNegMonth)));
+	let totalNegYear = $derived(Number(controlStore.getState(control.states.totalNegYear)));
 
 	function printValue(n: number, scale: string, unit: string) {
-		return [n.toLocaleString(store.locale), scale + unit];
+		return [n.toLocaleString(appStore.locale), scale + unit];
 	}
 
 	function getScale(s:string) {
@@ -94,7 +95,7 @@
 		'totalMonth': format(totalMonth),
 		'totalYear': format(totalYear),
 		'total': format(total),
-		'storage': (Math.round(storage * 10) / 10).toLocaleString(store.locale),
+		'storage': (Math.round(storage * 10) / 10).toLocaleString(appStore.locale),
 		'totalNegDay': format(totalNegDay),
 		'totalNegWeek': format(totalNegWeek),
 		'totalNegMonth': format(totalNegMonth),
@@ -111,7 +112,7 @@
 		...DEFAULT_CONTROLVIEW,
 		control: control,
 		isFavorite: controlOptions.isFavorite,
-		iconName: store.getIcon(control, controlOptions.isSubControl),
+		iconName: controlStore.getIcon(control, controlOptions.isSubControl),
 		iconColor: (actual > 0) ? 'dark:fill-primary-500 fill-primary-700' : ((actual == 0) ? 'dark:fill-surface-50 fill-surface-950' : 'dark:fill-tertiary-500 fill-tertiary-700'),
 		textName: control.name,
 		statusName: format(actual, false).join(' '),

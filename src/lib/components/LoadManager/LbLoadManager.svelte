@@ -3,7 +3,8 @@
 	import LbDialog from '$lib/components/Common/LbDialog.svelte';
 	import type { Control, ControlOptions, ControlView, DialogView } from '$lib/types/models';
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
-	import { store } from '$lib/stores/Store.svelte';
+	import { appStore } from '$lib/stores/LbAppStore.svelte';
+	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 	import { _ } from 'svelte-i18n';
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
@@ -11,17 +12,17 @@
 	let loads = control.details.loads;
 	let mode = control.details.mode;
 
-	let currentPower = $derived(Number(store.getState(control.states.currentPower)));
-	let peakOverloadPower = $derived(Number(store.getState(control.states.peakOverloadPower)));
-	let maxPower = $derived(Number(store.getState(control.states.maxPower)));
-	let availablePower = $derived(Number(store.getState(control.states.availablePower))); // remaining free power
-	let maxPowerExceeded = $derived(Number(store.getState(control.states.maxPowerExceeded)));
-	let maxTp = $derived(Number(store.getState(control.states.maxTp)));
-	let lockedLoads = $derived(Number(store.getState(control.states.lockedLoads)));
-	let statusLoads = $derived(Number(store.getState(control.states.statusLoads)));
+	let currentPower = $derived(Number(controlStore.getState(control.states.currentPower)));
+	let peakOverloadPower = $derived(Number(controlStore.getState(control.states.peakOverloadPower)));
+	let maxPower = $derived(Number(controlStore.getState(control.states.maxPower)));
+	let availablePower = $derived(Number(controlStore.getState(control.states.availablePower))); // remaining free power
+	let maxPowerExceeded = $derived(Number(controlStore.getState(control.states.maxPowerExceeded)));
+	let maxTp = $derived(Number(controlStore.getState(control.states.maxTp)));
+	let lockedLoads = $derived(Number(controlStore.getState(control.states.lockedLoads)));
+	let statusLoads = $derived(Number(controlStore.getState(control.states.statusLoads)));
 
 	function getPowerLevel(n: number) {
-		return (n.toLocaleString(store.locale, { maximumFractionDigits: 1, minimumFractionDigits: 1 })) + ' kW ' + $_('Available').toLowerCase();
+		return (n.toLocaleString(appStore.locale, { maximumFractionDigits: 1, minimumFractionDigits: 1 })) + ' kW ' + $_('Available').toLowerCase();
 	}
 
 	function setColor(powerRatio: number, text: boolean) {
@@ -41,7 +42,7 @@
 		...DEFAULT_CONTROLVIEW,
 		control: control,
 		isFavorite: controlOptions.isFavorite,
-		iconName: store.getIcon(control, controlOptions.isSubControl),
+		iconName: controlStore.getIcon(control, controlOptions.isSubControl),
 		iconColor: setColor(currentPower/maxPower, false),
 		textName: control.name,
 		statusName: getPowerLevel(availablePower),

@@ -4,7 +4,7 @@
 	import LbControl from '$lib/components/Common/LbControl.svelte';
 	import LbListDialog from '$lib/components/Common/LbListDialog.svelte';
 	import { loxWsClient } from '$lib/communication/LoxWsClient';
-	import { store } from '$lib/stores/Store.svelte';
+	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS } : {control: Control, controlOptions: ControlOptions } = $props();
 
@@ -40,7 +40,7 @@
 			name: String(entry[1])
 		})).concat([{ id: 0, name: control.details.allOff }]));
 
-	let selectedRadio = $derived(Number(store.getState(control.states.activeOutput)));
+	let selectedRadio = $derived(Number(controlStore.getState(control.states.activeOutput)));
 
 	let radioIndex = $derived(radioList.find( item => item.id == selectedRadio));
 
@@ -68,7 +68,7 @@
 		...DEFAULT_CONTROLVIEW,
 		control: control,
 		isFavorite: controlOptions.isFavorite,
-		iconName: store.getIcon(control, controlOptions.isSubControl),
+		iconName: controlStore.getIcon(control, controlOptions.isSubControl),
 		textName: control.name,
 		statusName: radioIndex ? radioIndex.name : 'unknown',
 		statusColor: selectedRadio ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700',

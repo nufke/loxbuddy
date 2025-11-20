@@ -3,7 +3,8 @@
 	import { Toast, createToaster } from '@skeletonlabs/skeleton-svelte';
 	import { SvelteDate } from 'svelte/reactivity';
 	import type { ControlView, ListItem, CalendarView, Entry, CalendarEntryView, CalendarListItem } from '$lib/types/models';
-	import { store } from '$lib/stores/Store.svelte';	
+	import { appStore } from '$lib/stores/LbAppStore.svelte';
+	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 	import { XIcon, TimerIcon, LeafIcon, FlameIcon, ListIcon, CalendarClockIcon } from '@lucide/svelte';
 	import { _ } from 'svelte-i18n';
 	import { loxWsClient } from '$lib/communication/LoxWsClient';
@@ -36,31 +37,31 @@
 	/* this dialog is used for V1 and V2, so we need to select the proper attributes */
 	let isV1 = controlView.control.type !== 'IRoomControllerV2'; 
 
-	let dayOfTheWeek = $derived(format(store.time, 'eeee'));
-	let opModes = $derived(store.structure.operatingModes);
+	let dayOfTheWeek = $derived(format(appStore.time, 'eeee'));
+	let opModes = $derived(controlStore.structure.operatingModes);
 	let temperatureList = $derived(controlView.list ? controlView.list.filter( item => item.visible == true) : []); // hide items not marked as visible 
 	let selectedItem = $derived(temperatureList.find( (item: ListItem) => $_(item.name) === controlView.statusName ));
 	let selectedTab = $state(1);
-	let tempActual = $derived(Number(store.getState(controlView.control?.states.tempActual)));
-	let tempTarget = $derived(Number(store.getState(controlView.control?.states.tempTarget)));
+	let tempActual = $derived(Number(controlStore.getState(controlView.control?.states.tempActual)));
+	let tempTarget = $derived(Number(controlStore.getState(controlView.control?.states.tempTarget)));
 	let date: SvelteDate = $state(new SvelteDate(Date.now() + 3600000));
 
-	let overrideV1 = $derived(Number(store.getState(controlView.control.states.override)));
-	let overrideEntriesV2 = store.getState(controlView.control.states.overrideEntries);
+	let overrideV1 = $derived(Number(controlStore.getState(controlView.control.states.override)));
+	let overrideEntriesV2 = controlStore.getState(controlView.control.states.overrideEntries);
 	let overrideV2 = $derived(overrideEntriesV2 && overrideEntriesV2[0] ? (overrideEntriesV2[0].isTimer ? 1: 0 ) : 0);
 
-	let modeV1 = $derived(Number(store.getState(controlView.control.states.mode)));
+	let modeV1 = $derived(Number(controlStore.getState(controlView.control.states.mode)));
 	let modeIdV1 = $derived(temperatureModeList && temperatureModeList[modeV1] ? temperatureModeList[modeV1].id : 0);
 	let isAutomaticV1 = $derived(modeIdV1<5);
 	let isHeatingV1 = $derived(modeIdV1==1 || modeIdV1==3 || modeIdV1==5);
 	let isCoolingV1 = $derived(modeIdV1==2 || modeIdV1==4 || modeIdV1==6);
 	let isEcoV1 = $derived(selectedItem?.id == 0);
 
-	let modeV2 = $derived(Number(store.getState(controlView.control.states.currentMode)));
-	let isAutomaticV2 = $derived(Number(store.getState(controlView.control.states.operatingMode))<3);
+	let modeV2 = $derived(Number(controlStore.getState(controlView.control.states.currentMode)));
+	let isAutomaticV2 = $derived(Number(controlStore.getState(controlView.control.states.operatingMode))<3);
 	let isHeatingV2 = $derived(modeV2==1 || modeV2 == 4);
 	let isCoolingV2 = $derived(modeV2==2 || modeV2 == 5);
-	let isEcoV2 = $derived(Number(store.getState(controlView.control.states.activeMode))==0);
+	let isEcoV2 = $derived(Number(controlStore.getState(controlView.control.states.activeMode))==0);
 
 	let override = $derived(isV1 ? overrideV1 : overrideV2);
 	let isAutomatic = $derived(isV1 ? isAutomaticV1 : isAutomaticV2);
@@ -84,9 +85,9 @@
 	let selectedSubControl = $derived(isV1 ? (subControls.find( subControl => subControl.name == (isHeating ? 'Heating' : 'Cooling')) || subControls[0] ):
 																	subControls[0]);
 
-	let entries = $derived(utils.extractEntries(store.getState(selectedSubControl.states.entriesAndDefaultValue)));
-	let modeList = $derived(String(store.getState(selectedSubControl.states.modeList))); 
-	let mode = $derived(Number(store.getState(selectedSubControl.states.mode))); 
+	let entries = $derived(utils.extractEntries(controlStore.getState(selectedSubControl.states.entriesAndDefaultValue)));
+	let modeList = $derived(String(controlStore.getState(selectedSubControl.states.modeList))); 
+	let mode = $derived(Number(controlStore.getState(selectedSubControl.states.mode))); 
 	let dayModes = $derived(utils.extractDayModes(modeList));
 
 	let margin = 250;
@@ -222,14 +223,14 @@
 	}
 
 	function tempFormat(temp: number | undefined) {
-		return temp?.toLocaleString(store.locale, { maximumFractionDigits: 1, minimumFractionDigits: 1 }) + '°';
+		return temp?.toLocaleString(appStore.locale, { maximumFractionDigits: 1, minimumFractionDigits: 1 }) + '°';
 	}
 
 	function getTemperature(item: any) {
 		const mode = Number(item.value);
 		let obj = temperatureList.find( item => item.id == mode);
 		return (obj && obj.value) ? 
-			' ('+ obj.value.toLocaleString(store.locale, { maximumFractionDigits: 1, minimumFractionDigits: 1 }) + '°)' // TODO Fahrenheit
+			' ('+ obj.value.toLocaleString(appStore.locale, { maximumFractionDigits: 1, minimumFractionDigits: 1 }) + '°)' // TODO Fahrenheit
 			: '';
 	}
 
@@ -274,7 +275,7 @@
 	}
 
 	$effect( () => {
-		timerEndsV1 = new SvelteDate(store.time.valueOf() + overrideV1*1000);
+		timerEndsV1 = new SvelteDate(appStore.time.valueOf() + overrideV1*1000);
 		timerEndsV2 = new SvelteDate(getTimerEpoch(overrideEntriesV2));
 	});
 </script>

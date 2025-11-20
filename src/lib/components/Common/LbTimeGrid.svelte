@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { utils } from '$lib/helpers/Utils';
-	import { store } from '$lib/stores/Store.svelte';
+	import { appStore } from '$lib/stores/LbAppStore.svelte';
 	import { format } from 'date-fns';
 
 	let { mode, entries, overrideDate, override } = $props();
@@ -9,7 +9,7 @@
 	let dt = 13; // grid
 	let o = 8;  // offset
 
-	let time = $derived(store.time); // current time (dynamic)
+	let time = $derived(appStore.time); // current time (dynamic)
 	let m = $derived(utils.hours2dec(format(time, 'p'))); // marker
 	let os = $derived(utils.hours2dec(format(overrideDate.start, 'p'))); // override start
 	let oe = $derived(utils.hours2dec(format(overrideDate.end, 'p')) || 24); // override end (correction for 24h)

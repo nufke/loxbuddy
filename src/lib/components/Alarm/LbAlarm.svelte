@@ -3,14 +3,14 @@
 	import LbDialog from '$lib/components/Common/LbDialog.svelte';
 	import type { Control, ControlOptions, ControlView, DialogView, SingleButtonView } from '$lib/types/models';
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
-	import { store } from '$lib/stores/Store.svelte';
+	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 	import { loxWsClient } from '$lib/communication/LoxWsClient';
 	import { _ } from 'svelte-i18n';
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
-	let armed = $derived(Number(store.getState(control.states.armed))==1);
-	let disabledMove = $derived(Number(store.getState(control.states.disabledMove))==1);
+	let armed = $derived(Number(controlStore.getState(control.states.armed))==1);
+	let disabledMove = $derived(Number(controlStore.getState(control.states.disabledMove))==1);
 
 	function setUnsetAlarm(delay: boolean = false) {
 		let cmd = armed ? 'off' : (delay ? 'delayedon/' : 'on/');
@@ -65,7 +65,7 @@
 		...DEFAULT_CONTROLVIEW,
 		control: control,
 		isFavorite: controlOptions.isFavorite,
-		iconName: store.getIcon(control, controlOptions.isSubControl),
+		iconName: controlStore.getIcon(control, controlOptions.isSubControl),
 		iconColor: armed ? 'dark:fill-primary-500 fill-primary-700' : 'fill-surface-950 dark:fill-surface-50',
 		textName: control.name,
 		statusName: getStatus(),

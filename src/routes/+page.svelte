@@ -3,7 +3,8 @@
 	import { lbControl } from '$lib/helpers/LbControl';
 	import type { Control, ControlOptions } from '$lib/types/models';
 	import { DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
-	import { store } from '$lib/stores/Store.svelte';
+	import { appStore } from '$lib/stores/LbAppStore.svelte';
+	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 	import { Tabs } from '@skeletonlabs/skeleton-svelte';
 	import { flip } from 'svelte/animate';
 	import { customdnd } from '$lib/helpers/custom-drag-n-drop';
@@ -12,19 +13,19 @@
 	let draggingItem: any;
 	let animatingItems = new Set();
 
-	let userSettings = $derived(store.userSettings);
-	let room = $derived(store.roomList.find( (room) => room.name == $_('General') || room.name == $_('Central')));
+	let userSettings = $derived(appStore.userSettings);
+	let room = $derived(controlStore.roomList.find( (room) => room.name == $_('General') || room.name == $_('Central')));
 	let controlOptions: ControlOptions = $derived(DEFAULT_CONTROLOPTIONS);
 
 	let favoriteControls = $derived(
-		store.controlList.filter((control) => isFavorite(userSettings.userDefaultStructure, control, fav))
-		.sort((a, b) => a.name.localeCompare(b.name, store.locale))
+		controlStore.controlList.filter((control) => isFavorite(userSettings.userDefaultStructure, control, fav))
+		.sort((a, b) => a.name.localeCompare(b.name, appStore.locale))
 		.sort((a, b) => getPosition(userSettings.userDefaultStructure, a, fav) - getPosition(userSettings.userDefaultStructure, b, fav))
 	);
 
 	let centralControls = $derived(
-		store.controlList.filter((control) => (control.room === room?.uuid && isFavorite(userSettings.userDefaultStructure, control, 'room')) )
-		.sort((a, b) => a.name.localeCompare(b.name, store.locale))
+		controlStore.controlList.filter((control) => (control.room === room?.uuid && isFavorite(userSettings.userDefaultStructure, control, 'room')) )
+		.sort((a, b) => a.name.localeCompare(b.name, appStore.locale))
 	);
 
 	function isFavorite(obj: any, control: Control, key: string) {
@@ -42,7 +43,7 @@
 			return list;
 		}
 		animatingItems.add(item);
-		setTimeout(() => animatingItems.delete(item), store.dnd.duration);
+		setTimeout(() => animatingItems.delete(item), appStore.dnd.duration);
 		const itemA = list.indexOf(draggingItem);
 		const itemB = list.indexOf(item);
 		newList[itemA] = item;
@@ -62,8 +63,8 @@
 			<div class="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 lg:flex-wrap">
 				{#each favoriteControls as control (control)}
 					{@const Component = lbControl.getControl(control.type)}
-					<div animate:flip={{ duration: store.dnd.duration }} use:customdnd
-						draggable={store.dnd.isEnabled}
+					<div animate:flip={{ duration: appStore.dnd.duration }} use:customdnd
+						draggable={appStore.dnd.isEnabled}
 						ondragstart={() => {draggingItem = control}}
 						ondragend={() => {draggingItem = undefined}}
 	  				ondragenter={() => { favoriteControls = swapItems(favoriteControls, control)}}
@@ -77,8 +78,8 @@
 			<div class="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 lg:flex-wrap">
 				{#each centralControls as control (control)}
 					{@const Component = lbControl.getControl(control.type)}
-					<div animate:flip={{ duration: store.dnd.duration }} use:customdnd
-						draggable={store.dnd.isEnabled}
+					<div animate:flip={{ duration: appStore.dnd.duration }} use:customdnd
+						draggable={appStore.dnd.isEnabled}
 						ondragstart={() => {draggingItem = control}}
 						ondragend={() => {draggingItem = undefined}}
 		  			ondragenter={() => { centralControls = swapItems(centralControls, control)}}

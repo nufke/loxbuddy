@@ -3,7 +3,7 @@
 	import LbDialog from '$lib/components/Common/LbDialog.svelte';
 	import type { Control, ControlOptions, ControlView, DialogView } from '$lib/types/models';
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
-	import { store } from '$lib/stores/Store.svelte';
+	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 	import fmt from 'sprintf-js';
 	import { _ } from 'svelte-i18n';
 
@@ -11,8 +11,8 @@
 
 	const prod = $_('Production');
 	const cons = $_('Consumption');
-	let prodCurr = $derived(Number(store.getState(control.states.prodCurr)));
-	let consCurr = $derived(Number(store.getState(control.states.consCurr)));
+	let prodCurr = $derived(Number(controlStore.getState(control.states.prodCurr)));
+	let consCurr = $derived(Number(controlStore.getState(control.states.consCurr)));
 
 	let dialog: DialogView = $state({
 		action: (state: boolean) => {dialog.state = state},
@@ -23,7 +23,7 @@
 		...DEFAULT_CONTROLVIEW,
 		control: control,
 		isFavorite: controlOptions.isFavorite,
-		iconName: store.getIcon(control, controlOptions.isSubControl),
+		iconName: controlStore.getIcon(control, controlOptions.isSubControl),
 		textName: control.name,
 		statusName: fmt.sprintf('%s %.2f kW • %s %.2f kW', prod[0], prodCurr, cons[0], consCurr),
 		statusColor: 'dark:text-primary-500 text-primary-700',

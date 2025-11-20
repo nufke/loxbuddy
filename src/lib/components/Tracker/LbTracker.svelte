@@ -3,13 +3,13 @@
 	import type { Control, ControlOptions, ControlView, DialogView } from '$lib/types/models';
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import LbDialog from '$lib/components/Common/LbDialog.svelte';
-	import { store } from '$lib/stores/Store.svelte';
+	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 	import { utils } from '$lib/helpers/Utils';
 	import { format } from 'date-fns';
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
-	let entries = $derived(store.getState(control.states.entries)) as String;
+	let entries = $derived(controlStore.getState(control.states.entries)) as String;
 	let entryList = $derived(entries ? entries.split('|') : []);
 	let entryMap = $derived(updateEntries(entryList));
 	let lastEntryDate = $derived(Object.keys(entryMap)[0]);
@@ -50,7 +50,7 @@
 		...DEFAULT_CONTROLVIEW,
 		control: control,
 		isFavorite: controlOptions.isFavorite,
-		iconName: store.getIcon(control, controlOptions.isSubControl),
+		iconName: controlStore.getIcon(control, controlOptions.isSubControl),
 		textName: control.name,
 		statusName: getStatus(),
 		dialog: {

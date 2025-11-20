@@ -2,7 +2,7 @@
 	import { Dialog, Portal } from '@skeletonlabs/skeleton-svelte';
 	import { _ } from 'svelte-i18n';
 	import { XIcon } from '@lucide/svelte';
-	import { store } from '$lib/stores/Store.svelte';
+	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 	import { innerHeight } from 'svelte/reactivity/window';
 	import { tick } from 'svelte';
 
@@ -14,7 +14,7 @@
 
 	function reorderEntries(modes: any, hideEntries: boolean = true) {
 		let items: any[] = [];
-		let opModes = store.structure.operatingModes;
+		let opModes = controlStore.structure.operatingModes;
 		Object.keys(opModes).forEach( key => { 
 			items.push({
 				mode: key,

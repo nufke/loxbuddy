@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { ControlView } from '$lib/types/models';
 	import LbIcon from '$lib/components/Common/LbIconByName.svelte';
-	import { store } from '$lib/stores/Store.svelte';
+	import { appStore } from '$lib/stores/LbAppStore.svelte';
 	import { Dialog, Portal } from '@skeletonlabs/skeleton-svelte';
 	import { XIcon } from '@lucide/svelte';
 	import { _ } from 'svelte-i18n';
@@ -116,7 +116,7 @@
 									</div>
 									{/if}
 									<div class="relative w-full flex justify-center items-center">
-										<p class="text-md">{getWeekDates(store.time)}</p>
+										<p class="text-md">{getWeekDates(appStore.time)}</p>
 									</div>
 									<div class="relative w-full flex justify-center items-center">
 										<p class="text-lg dark:text-primary-500 text-primary-700">{controlView.dialog.details['totalWeek'].join(' ')}</p>
@@ -127,7 +127,7 @@
 									</div>
 									{/if}
 									<div class="relative w-full flex justify-center items-center">
-										<p class="text-md">{format(store.time, 'MMMM')}</p>
+										<p class="text-md">{format(appStore.time, 'MMMM')}</p>
 									</div>
 									<div class="relative w-full flex justify-center items-center">
 										<p class="text-lg dark:text-primary-500 text-primary-700">{controlView.dialog.details['totalMonth'].join(' ')}</p>
@@ -138,7 +138,7 @@
 									</div>
 									{/if}
 									<div class="relative w-full flex justify-center items-center">
-										<p class="text-md">{format(store.time, 'u')}</p>
+										<p class="text-md">{format(appStore.time, 'u')}</p>
 									</div>
 									<div class="relative w-full flex justify-center items-center">
 										<p class="text-lg dark:text-primary-500 text-primary-700">{controlView.dialog.details['totalYear'].join(' ')}</p>

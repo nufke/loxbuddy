@@ -3,7 +3,8 @@
 	import LbIcon from '$lib/components/Common/LbIconByName.svelte';
 	import LbSimpleSlider from '$lib/components/Common/LbSimpleSlider.svelte';
 	import LbStatusBar from '$lib/components/Common/LbStatusBar.svelte';
-	import { store } from '$lib/stores/Store.svelte';
+	import { appStore } from '$lib/stores/LbAppStore.svelte';
+	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 	import { lbControl } from '$lib/helpers/LbControl';
 	import { DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import { Switch } from '@skeletonlabs/skeleton-svelte';
@@ -52,7 +53,7 @@
 	}
 
 	function getPowerLevel(n: number) {
-		return (n.toLocaleString(store.locale, { minimumFractionDigits: 1 })) + ' kW max.';
+		return (n.toLocaleString(appStore.locale, { minimumFractionDigits: 1 })) + ' kW max.';
 	}
 
 	function getPowerStatus(mask: number) {
@@ -65,8 +66,8 @@
 	}
 
 	let linkedControls: Control[] = $derived(
-		store.controlList.filter((control) => controlView.links ? controlView.links.includes(control.uuidAction) : null)
-			.sort((a, b) => a.name.localeCompare(b.name, store.locale)));
+		controlStore.controlList.filter((control) => controlView.links ? controlView.links.includes(control.uuidAction) : null)
+			.sort((a, b) => a.name.localeCompare(b.name, appStore.locale)));
 
 	function getMargin(control: Control) {
 		let margin: number = 200;

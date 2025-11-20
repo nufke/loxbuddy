@@ -2,7 +2,7 @@
 	import { onDestroy, onMount } from 'svelte';
 	import iro from '@jaames/iro';
 	import type { Control, ColorType } from '$lib/types/models';
-	import { store } from '$lib/stores/Store.svelte';
+	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 	import { utils } from '$lib/helpers/Utils';
 	import { loxWsClient } from '$lib/communication/LoxWsClient';
 	import { _ } from 'svelte-i18n';
@@ -39,7 +39,7 @@
 	]);
 
 	let busy = $state(false);
-	let color = $derived(String(store.getState(control.states.color)));
+	let color = $derived(String(controlStore.getState(control.states.color)));
 	let {rgbColor, tempColor, brightness, isTempColor} = $derived(getColor(color));
 
 	$effect(() => {

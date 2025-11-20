@@ -549,6 +549,7 @@ export type Route = {
 	href: string;
 	icon: typeof IconType;
 	badge?: boolean;
+	root: boolean;
 };
 
 export type ColorType = { 
