@@ -52,9 +52,9 @@
 <div class="container mx-auto max-w-[1280px] space-y-3 p-3">
 	<Tabs defaultValue={'notifications'} onValueChange={(e) => (group = e.value)}>
 		<Tabs.List class="border-b-[2px] border-transparent">
-			<Tabs.Trigger value="notifications" class="flex-1 text-lg">{$_("Notifications")}</Tabs.Trigger>
-			<Tabs.Trigger value="systemstatus" class="flex-1 text-lg">{$_("System status")}</Tabs.Trigger>
-			<Tabs.Trigger value="history" class="flex-1 text-lg">{$_("History")}</Tabs.Trigger>
+			<Tabs.Trigger value="notifications" class="flex-1 h5">{$_("Notifications")}</Tabs.Trigger>
+			<Tabs.Trigger value="systemstatus" class="flex-1 h5">{$_("System status")}</Tabs.Trigger>
+			<Tabs.Trigger value="history" class="flex-1 h5">{$_("History")}</Tabs.Trigger>
 			<Tabs.Indicator/>
 		</Tabs.List>
 		<Tabs.Content value="notifications">
@@ -102,17 +102,6 @@
 		<Dialog.Positioner class="fixed inset-0 z-10 flex justify-center items-center p-4">
 			<Dialog.Content class="card bg-surface-100-900 p-4 pt-3 shadow-sm rounded-lg border border-white/5 hover:border-white/10
 								md:max-w-9/10 md:max-h-9/10 w-[450px]">
-				<!--<header class="grid grid-cols-[5%_90%_5%]">
-					<div></div>
-					<div>
-						<Dialog.Title class="h5 flex justify-center items-center">{$_("Startpage")}</Dialog.Title>
-					</div>
-					<div class="flex justify-center items-center">
-						<button type="button" class="btn-icon hover:preset-tonal" onclick={() => openDialog=false}>
-							<XIcon class="size-4"/>
-						</button>
-					</div>
-				</header> -->
 		<header class="relative">
 			<div class="flex justify-center">
 				<div class="relative inline-flex h-18 w-18 items-center justify-center overflow-hidden rounded-full border border-white/5 dark:bg-surface-950">

@@ -157,20 +157,26 @@
 <div class="fixed w-full h-screen md:grid grid-cols-[auto_1fr]">
 	<Navigation layout={ layoutRail ? 'rail' : 'sidebar'}
 							class={ layoutRail ? '' : 'grid grid-rows-[1fr_auto] gap-4 w-[180px]'}>
-		{#if layoutRail}
-			<Navigation.Header>
+		<Navigation.Content>
+					<Navigation.Header>
+				<a class="flex justify-center items-center mb-1 {layoutRail ? '' : '-mt-2'}" href="/about">
+					<img src="/icons/svg/loxbuddy.svg" width="50" alt="about"/>
+				</a>
 				<div class="flex justify-center items-center" onclick={(e)=>{e.stopPropagation(); appStore.lockScreenDialog.state=true;}}>
 					<p class="text-right text-2xl font-medium">{format(time, "p")}</p>
-			</div>
-			</Navigation.Header>
-		{/if}
-		<Navigation.Content>
+				</div>
+					</Navigation.Header>
 			<Navigation.Menu>
 			{#if layoutRail}
 				{#each routes as link (link)}
 					{@const Icon = link.icon}
 					<a href={link.href} class={anchorRail}>
-						<Icon class={checkUrl(link.href) ? 'dark:text-primary-500 text-primary-700' : 'white'}/>
+						<div class="relative inline-block">
+							{#if link.badge && activeNotifications.length}
+								<span class="badge-icon size-[2px] font-semibold preset-filled-primary-500 absolute -right-2 -top-2 z-10">{activeNotifications.length}</span>
+							{/if}
+							<Icon class={checkUrl(link.href) ? 'dark:text-primary-500 text-primary-700' : 'white'}/>
+						</div>
 						<span class="text-[12px] + {checkUrl(link.href) ? 'dark:text-primary-500 text-primary-700' : 'white'}">{link.label}</span>
 					</a>
 				{/each}
@@ -195,6 +201,12 @@
 			<button type="button" class={layoutRail ? anchorRail : anchorSidebar} onclick={toggleLayout}>
 					<ArrowLeftRightIcon/>
 			</button>
+			{#if appStore.showStatus}
+				<div class="flex flex-row gap-3 justify-center items-center {layoutRail ? '' : '-mb-2'}">
+					<CircleIcon class={getStatusColor(mqttStatus)} size="16"/>
+					<SquareIcon class={getStatusColor((mqttStatus==1) ? msStatus : 0)} size="16"/>
+				</div>
+			{/if}
 		</Navigation.Footer>
 	</Navigation>
 	<div class="w-full h-screen overflow-auto" onclick={() => {layoutRail = true}}>
@@ -239,10 +251,15 @@
 	</div>
 	<Navigation layout="bar" class="fixed bottom-0 h-[65px] shadow-inner">
 		<Navigation.Menu class="grid grid-cols-4 gap-2">
-			{#each routes as link (link)}
+			{#each routes.slice(0, 4) as link (link)} <!-- only select first 4 elements -->
 				{@const Icon = link.icon}
 				<a href={link.href} class={anchorBar}>
-					<Icon class="size-5 {checkUrl(link.href) ? 'dark:text-primary-500 text-primary-700' : 'white'}" />
+					<div class="relative inline-block">
+						{#if link.badge && activeNotifications.length}
+							<span class="badge-icon size-[2px] font-semibold preset-filled-primary-500 absolute -right-2 -top-2 z-10">{activeNotifications.length}</span>
+						{/if}
+						<Icon class="size-5 {checkUrl(link.href) ? 'dark:text-primary-500 text-primary-700' : 'white'}" />
+					</div>
 					<span class="text-[12px] {checkUrl(link.href) ? 'dark:text-primary-500 text-primary-700' : 'white'}">{link.label}</span>
 				</a>
 			{/each}
@@ -284,26 +301,3 @@
 		</Dialog.Positioner>
 	</Portal>
 </Dialog>
-
-<!-- loxbuddy logo and status in footer
-			<a class={appStore.showStatus ? "mb-1" : "mb-4"} href="/about">
-				<img src="/icons/svg/loxbuddy.svg" width="50" alt="about"/>
-			</a>
-			{#if appStore.showStatus}
-				<div class="flex flex-row gap-3 mb-2">
-					<Circle class={getStatusColor(mqttStatus)} size="16"/>
-					<Square class={getStatusColor((mqttStatus==1) ? msStatus : 0)} size="16"/>
-				</div>
-			{/if}
--->
-			
-<!-- message badge 
- 
-					<div class="relative inline-block">
-						{#if badge && activeNotifications.length}
-						<span class="absolute w-[17px] h-[17px] rounded-full bg-red-500 dark:text-white text-white -right-2 -top-2 text-xs flex justify-center items-center"
-									transition:fade={{ duration: 300 }}><span class="-mb-[2px]">{activeNotifications.length}</span></span>
-						{/if}
-						<Icon class={checkUrl(href) ? 'dark:text-primary-500 text-primary-700' : 'white'} />
-					</div>
--->

@@ -33,7 +33,7 @@ class LbControlStore {
 		const msg = notifications as NotificationMessage;
 		if (msg && msg.uid) {
 			map[msg.uid] = {
-				status: statusOverride || (map[msg.uid].status || 1),
+				status: statusOverride || (map[msg.uid] ? map[msg.uid].status : 1),
 				message: msg
 			};
 			localStorage.setItem('notifications', utils.serialize(map));

@@ -1,0 +1,13 @@
+{
+	"uid": "1",
+	"ts": 0,
+	"sound": 0,
+	"title": "Title",
+	"message": "System reboot",
+	"type": 10,
+	"data": {
+		"mac": "123",
+		"lvl": 1,
+		"uuid": ""
+	}
+}

@@ -5,6 +5,7 @@ import { utils } from '$lib/helpers/Utils';
 import structure from '$lib/test/demoStructure.json';
 import states from '$lib/test/demoStates.json';
 import userSettings from '$lib/test/userSettings.json';
+import notification from '$lib/test/notifications.json';
 
 type IntervalMap = {
 	[key: string]: NodeJS.Timeout;
@@ -38,6 +39,7 @@ class Test {
 		setTimeout( () => {
 			controlStore.setInitialStates(states);
 			appStore.userSettings = userSettings;
+			controlStore.updateNotificationMap(notification);
 		}, 2000);
 
 		// Meter
