@@ -1,4 +1,3 @@
-import { appStore } from '$lib/stores/LbAppStore.svelte';
 import { controlStore } from '$lib/stores/LbControlStore.svelte';
 import type { Control, AlarmClockEntries } from '$lib/types/models';
 import { utils } from '$lib/helpers/Utils';
@@ -6,6 +5,7 @@ import structure from '$lib/test/demoStructure.json';
 import states from '$lib/test/demoStates.json';
 import userSettings from '$lib/test/userSettings.json';
 import notification from '$lib/test/notifications.json';
+import messageCenter from '$lib/test/messageCenter.json';
 
 type IntervalMap = {
 	[key: string]: NodeJS.Timeout;
@@ -38,7 +38,7 @@ class Test {
 
 		setTimeout( () => {
 			controlStore.setInitialStates(states);
-			appStore.userSettings = userSettings;
+			controlStore.userSettings = userSettings;
 			controlStore.updateNotificationMap(notification);
 		}, 2000);
 
@@ -480,6 +480,25 @@ class Test {
 			i++;
 		});
 		controlStore.setState(modeListId, modeListStr);
+	}
+	
+	/**
+	 * Dummy fetch in test mode
+	 */
+	fetch(url: string) {
+		console.log('TEST fetch:', url);
+		switch (url) {
+			case 'jdev/sps/io/__uuid_messageCenter/getEntries/2' : return this.createPromise(JSON.stringify(messageCenter)); // original miniserver response is a string, not an object
+			default: return this.createPromise({text: 'default reponse'});
+		}
+	}
+
+	private createPromise(msg: any) {
+		return new Promise((resolve) => {
+			setTimeout(() => {
+				resolve(msg);
+			}, 300);
+		});
 	}
 }
 

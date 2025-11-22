@@ -13,7 +13,7 @@
 	let draggingItem: any;
 	let animatingItems = new Set();
 
-	let userSettings = $derived(appStore.userSettings);
+	let userSettings = $derived(controlStore.userSettings);
 
 	let items: Room[] = $derived(
 		controlStore.roomList.filter((item) => controlStore.controlList.map((control) => control.room)

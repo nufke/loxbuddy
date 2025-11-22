@@ -1,6 +1,6 @@
 import { SvelteMap } from 'svelte/reactivity';
-import { INITIAL_STRUCTURE } from '$lib/types/models';
-import type { Structure, Control, Category, Room, NotificationMap, NotificationList, Icon,
+import { INITIAL_STRUCTURE, DEFAULT_USERSETTINGS, EMPTY_SYSTEM_STATUS } from '$lib/types/models';
+import type { Structure, Control, Category, Room, NotificationMap, NotificationList, UserSettings, SystemStatus,
 							ControlsMap, CategoriesMap, RoomsMap, MessageCenter, NotificationMessage } from '$lib/types/models';
 import { utils } from '$lib/helpers/Utils';
 import { lbControl } from '$lib/helpers/LbControl';
@@ -19,10 +19,11 @@ class LbControlStore {
 	controlList: Control[] = $derived(Object.values(this.structure.controls));
 	categoryList: Category[] = $derived(Object.values(this.structure.cats));
 	roomList: Room[] = $derived(Object.values(this.structure.rooms));
-	time: Date = $state(new Date());
+	userSettings: UserSettings = $state(DEFAULT_USERSETTINGS);
+	systemStatus: SystemStatus = $state(EMPTY_SYSTEM_STATUS);
 	notifications: NotificationMessage | NotificationList = $derived(this.getState(this.structure.globalStates.notifications));
 	notificationsMap: NotificationMap = $derived(this.updateNotificationMap(this.notifications));
-	iconList: Icon[] | undefined = $state();
+	msStatus: number = $derived(this.systemStatus.entries ? Math.max(...this.systemStatus.entries.filter( item => item.isHistoric == false).map( item => item.severity)) : 0);
 
 	constructor() {
 		this.notificationsMap = utils.deserialize(localStorage.getItem('notifications')) || {};

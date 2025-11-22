@@ -1637,20 +1637,29 @@
 				]
 			},
 			"states": {
-				"jLocked": "__uuid__controls_intercom_jLocked",
-				"bell": "__uuid__controls_intercom_bell",
-				"lastBellEvents": "__uuid__controls_intercom_lastBellEvents",
-				"lastBellTimestamp": "__uuid__controls_intercom_lastBellTimestamp"
+				"jLocked": "__uuid__controls_intercom_states_jLocked",
+				"bell": "__uuid__controls_intercom_states_bell",
+				"lastBellEvents": "__uuid__controls_intercom_states_lastBellEvents",
+				"lastBellTimestamp": "__uuid__controls_intercom_states_lastBellTimestamp"
 			},
 			"subControls": {}
 		}
 	},
+	"weatherServer": {},
 	"modes": {},
 	"times": {},
 	"caller": {},
 	"mailer": {},
-	"mediaServer": {},
 	"autopilot": {},
-	"messageCenter": {},
+	"messageCenter": {
+		"__uuid_messageCenter": {
+			"name": "Systeemstatus",
+			"uuidAction": "__uuid_messageCenter",
+			"states": {
+				"changed": "__uuid_messageCenter_states_changed"
+			}
+		}
+	},
+	"mediaServer": {},
 	"structureDate": "2025-11-18 11:11:11"
 }

@@ -1,5 +1,5 @@
-import {  DEFAULT_USERSETTINGS, NO_LOGIN, EMPTY_SYSTEM_STATUS } from '$lib/types/models';
-import type {  SystemStatus, Route, DialogView, UserSettings, LoginCredentials } from '$lib/types/models';
+import { NO_LOGIN } from '$lib/types/models';
+import type { Route, DialogView, LoginCredentials, Icon } from '$lib/types/models';
 import { utils } from '$lib/helpers/Utils';
 import { MenuIcon } from '@lucide/svelte';
 
@@ -16,10 +16,8 @@ class LbAppStore {
 	startPage: string = $state('/');
 	locale: string = $state('en'); // default English
 	loginCredentials: LoginCredentials = $state(NO_LOGIN);
-	userSettings: UserSettings = $state(DEFAULT_USERSETTINGS);
-	systemStatus: SystemStatus = $state(EMPTY_SYSTEM_STATUS);
-	msStatus: number = $derived(this.systemStatus.entries ? Math.max(...this.systemStatus.entries.filter( item => item.isHistoric == false).map( item => item.severity)) : 0);
 	dnd = $state({isEnabled: false, duration: 300}); // TODO make configurable via menu
+	iconList: Icon[] | undefined = $state();
 
 	weatherDialog: DialogView = $state({
 		action: () => {},
@@ -49,13 +47,6 @@ class LbAppStore {
 		localStorage.setItem('appId', this.appId);
 
 		this.showStatus = localStorage.getItem('showStatus') == '1' ? true : false;
-	}
-
-	updateCredentials(url: string, cred: string) {
-		this.loginCredentials = {
-			hostUrl: url,
-			credentials: btoa(cred)
-		}
 	}
 
 	setNav(route: Route) {

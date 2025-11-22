@@ -13,7 +13,7 @@
 	let draggingItem: any;
 	let animatingItems = new Set();
 
-	let userSettings = $derived(appStore.userSettings);
+	let userSettings = $derived(controlStore.userSettings);
 	let room = $derived(controlStore.roomList.find( (room) => room.name == $_('General') || room.name == $_('Central')));
 	let controlOptions: ControlOptions = $derived(DEFAULT_CONTROLOPTIONS);
 

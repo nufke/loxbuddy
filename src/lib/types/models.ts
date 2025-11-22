@@ -27,7 +27,7 @@ export type Structure = {
 	cats: CategoriesMap;
 	modes: ModesMap;
 	controls: ControlsMap;
-	weatherServer?: WeatherServer;
+	weatherServer: WeatherServer;
 	times: TimesMap;
 	caller: CallerMap;
 	mailer: MailerMap;
@@ -550,6 +550,7 @@ export type Route = {
 	icon: typeof IconType;
 	badge?: boolean;
 	root: boolean;
+	nav: boolean;
 };
 
 export type ColorType = { 

@@ -13,7 +13,7 @@
 	let draggingItem: any;
 	let animatingItems = new Set();
 
-	let userSettings = $derived(appStore.userSettings);
+	let userSettings = $derived(controlStore.userSettings);
 	let items: Category[] = $derived(
 		controlStore.categoryList.filter((item) => controlStore.controlList.map((control) => control.cat)
 		.indexOf(item.uuid) > -1)

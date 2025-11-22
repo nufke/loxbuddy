@@ -1,5 +1,4 @@
 import LoxClient from 'svelte-lox-client';
-import { appStore } from '$lib/stores/LbAppStore.svelte';
 import { controlStore } from '$lib/stores/LbControlStore.svelte';
 import { utils } from '$lib/helpers/Utils';
 import { test } from '$lib/test/Test';
@@ -85,7 +84,6 @@ export class LoxWsClient {
 	registerEvents() {
 		this.client.on('connected', () => {
 			console.info(`LoxClient with ID ${this.appId} connected to Miniserver`);
-			appStore.updateCredentials(this.hostUrl, this.username + ':' + this.passwd);
 		});
 
 		this.client.on('disconnected', () => {
@@ -142,39 +140,58 @@ export class LoxWsClient {
 	}
 	
 	getUserSettings() {
-		fetch(`${appStore.loginCredentials.hostUrl}/jdev/sps/getusersettings`, {
+		fetch(`${this.hostUrl}/jdev/sps/getusersettings`, {
 			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json',
-				'Authorization': 'Basic ' + appStore.loginCredentials.credentials
+				'Authorization': 'Basic ' + btoa(this.username + ':' + this.passwd)
 			}
 		})
 		.then((response) => response.json())
-		.then((data) => { appStore.userSettings = data })
+		.then((data) => { controlStore.userSettings = data })
 	}
 
 	getSystemStatus() {
-		fetch(`${appStore.loginCredentials.hostUrl}/jdev/sps/io/${controlStore.messageCenterList[0].uuidAction}/getEntries/2`, {
+		fetch(`${this.hostUrl}/jdev/sps/io/${controlStore.messageCenterList[0].uuidAction}/getEntries/2`, {
 			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json',
-				'Authorization': 'Basic ' + appStore.loginCredentials.credentials
+				'Authorization': 'Basic ' + btoa(this.username + ':' + this.passwd)
 			}
 		})
 		.then((response) => response.json())
-		.then((data) => { appStore.systemStatus = JSON.parse(data.LL.value); })
+		.then((data) => { controlStore.systemStatus = JSON.parse(data.LL.value); })
 	}
 
 	getIconList() {
-		fetch(`${appStore.loginCredentials.hostUrl}/jdev/sps/geticonlist`, {
+		fetch(`${this.hostUrl}/jdev/sps/geticonlist`, {
 			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json',
-				'Authorization': 'Basic ' + appStore.loginCredentials.credentials
+				'Authorization': 'Basic ' + btoa(this.username + ':' + this.passwd)
 			}
 		})
 		.then((response) => response.json())
 		.then((data) => { controlStore.iconList = data })
+	}
+
+	async fetch(url: string) {
+		if (this.isTest) {
+			return test.fetch(url);
+		}
+		const req = new Request(`${this.hostUrl}/${url}/`, {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json',
+					'Authorization': 'Basic ' + btoa(this.username + ':' + this.passwd)
+				}
+			});
+		return fetch(req)
+			.then((response) => response.json())
+			.then((data) => {
+				//console.log('data', data)
+				return (data?.LL?.value) ? data.LL.value : data;
+			})
 	}
 
 }

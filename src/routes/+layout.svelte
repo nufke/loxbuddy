@@ -3,7 +3,7 @@
 	import '../global.css';
 	import { Navigation, Dialog, Portal } from '@skeletonlabs/skeleton-svelte';
 	import { innerWidth } from 'svelte/reactivity/window';
-	import { HouseIcon, FileTextIcon, Grid2x2Icon, MenuIcon, LayoutListIcon, ArrowLeftRightIcon, 
+	import { HouseIcon, InfoIcon, FileTextIcon, Grid2x2Icon, MenuIcon, LayoutListIcon, ArrowLeftRightIcon, 
 						XIcon, SettingsIcon, CircleIcon, SquareIcon, type Icon as IconType } from '@lucide/svelte';
 	import type { Route } from '$lib/types/models';
 	import { mqttClient } from '$lib/communication/MqttClient';
@@ -59,7 +59,7 @@
 	let hourlyForecast = $derived(weatherStore.hourly);
 	let time = $derived(appStore.time);
 	let mqttStatus = $derived(appStore.mqttStatus);
-	let msStatus = $derived(appStore.msStatus);
+	let msStatus = $derived(controlStore.msStatus);
 	let nav = $derived(appStore.nav);
 	let path = $derived(page.url.pathname);
 	let weatherAvailable = $derived(currentWeather.time > 0 && dailyForecast.length && hourlyForecast[0]);
@@ -73,11 +73,12 @@
 	}
 
 	const routes: Route[] = $derived([
-		{ label: 'Home', href: '/', icon: HouseIcon, badge: false, root: true },
-		{ label: 'Rooms', href: '/room', icon: Grid2x2Icon, badge: false, root: true },
-		{ label: 'Categories', href: '/category', icon: LayoutListIcon, badge: false, root: true },
-		{ label: 'Messages', href: '/messages', icon: FileTextIcon, badge: true, root: true },
-		{ label: 'Settings', href: '/settings', icon: SettingsIcon, badge: false, root: false },
+		{ label: 'Home', href: '/', icon: HouseIcon, badge: false, root: true, nav: true },
+		{ label: 'Rooms', href: '/room', icon: Grid2x2Icon, badge: false, root: true, nav: true },
+		{ label: 'Categories', href: '/category', icon: LayoutListIcon, badge: false, root: true, nav: true },
+		{ label: 'Messages', href: '/messages', icon: FileTextIcon, badge: true, root: true, nav: true },
+		{ label: 'Settings', href: '/settings', icon: SettingsIcon, badge: false, root: false, nav: false },
+		{ label: 'About', href: '/about', icon: InfoIcon, badge: false, root: false, nav: false }
 	]);
 
 	function checkUrl(href: string) {
@@ -158,19 +159,19 @@
 	<Navigation layout={ layoutRail ? 'rail' : 'sidebar'}
 							class={ layoutRail ? '' : 'grid grid-rows-[1fr_auto] gap-4 w-[180px]'}>
 		<Navigation.Content>
-					<Navigation.Header>
+			<Navigation.Header>
 				<a class="flex justify-center items-center mb-1 {layoutRail ? '' : '-mt-2'}" href="/about">
 					<img src="/icons/svg/loxbuddy.svg" width="50" alt="about"/>
 				</a>
 				<div class="flex justify-center items-center" onclick={(e)=>{e.stopPropagation(); appStore.lockScreenDialog.state=true;}}>
 					<p class="text-right text-2xl font-medium">{format(time, "p")}</p>
 				</div>
-					</Navigation.Header>
+			</Navigation.Header>
 			<Navigation.Menu>
 			{#if layoutRail}
-				{#each routes as link (link)}
+				{#each routes.filter((m) => m.nav) as link (link)}
 					{@const Icon = link.icon}
-					<a href={link.href} class={anchorRail}>
+					<div onclick={() => { goto(link.href)}} class={anchorRail}>
 						<div class="relative inline-block">
 							{#if link.badge && activeNotifications.length}
 								<span class="badge-icon size-[2px] font-semibold preset-filled-primary-500 absolute -right-2 -top-2 z-10">{activeNotifications.length}</span>
@@ -178,7 +179,7 @@
 							<Icon class={checkUrl(link.href) ? 'dark:text-primary-500 text-primary-700' : 'white'}/>
 						</div>
 						<span class="text-[12px] + {checkUrl(link.href) ? 'dark:text-primary-500 text-primary-700' : 'white'}">{link.label}</span>
-					</a>
+					</div>
 				{/each}
 			{:else}
 				<Navigation.Group>
@@ -251,9 +252,9 @@
 	</div>
 	<Navigation layout="bar" class="fixed bottom-0 h-[65px] shadow-inner">
 		<Navigation.Menu class="grid grid-cols-4 gap-2">
-			{#each routes.slice(0, 4) as link (link)} <!-- only select first 4 elements -->
+			{#each routes.filter((m) => m.nav) as link (link)}
 				{@const Icon = link.icon}
-				<a href={link.href} class={anchorBar}>
+				<div onclick={() => {goto(link.href)}}  class={anchorBar}>
 					<div class="relative inline-block">
 						{#if link.badge && activeNotifications.length}
 							<span class="badge-icon size-[2px] font-semibold preset-filled-primary-500 absolute -right-2 -top-2 z-10">{activeNotifications.length}</span>
@@ -261,7 +262,7 @@
 						<Icon class="size-5 {checkUrl(link.href) ? 'dark:text-primary-500 text-primary-700' : 'white'}" />
 					</div>
 					<span class="text-[12px] {checkUrl(link.href) ? 'dark:text-primary-500 text-primary-700' : 'white'}">{link.label}</span>
-				</a>
+				</div>
 			{/each}
 		</Navigation.Menu>
 	</Navigation>

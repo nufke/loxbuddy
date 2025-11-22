@@ -156,10 +156,6 @@
 		<p>{$_("Startpage")}</p>
 		<p>{getStartpageName(startPage)}</p>
 	</button>
-		<a aria-current="true" type="button" class="flex w-full justify-between border-b dark:border-surface-900 border-surface-200 p-3 pr-5 pl-5 text-left text-lg" 
-						href="/about">
-		<p>{$_("About")}</p>
-		</a>
 </div>
 
 <Dialog

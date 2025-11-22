@@ -15,7 +15,7 @@
 
 	let key = 'category';
 	let room = 'room';
-	let userSettings = $derived(appStore.userSettings);
+	let userSettings = $derived(controlStore.userSettings);
 	let dragGroup = $state('');
 	let draggingItem: any;
 	let animatingItems = new Set();

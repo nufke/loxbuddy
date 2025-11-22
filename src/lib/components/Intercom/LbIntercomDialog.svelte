@@ -3,7 +3,6 @@
 	import { type ControlView, type SecuredDetails, type SecuredDetailsValue } from '$lib/types/models';
 	import { XIcon, VideoIcon, CameraIcon, HistoryIcon } from '@lucide/svelte';
 	import { _ } from 'svelte-i18n';
-	import { fetchUrl } from '$lib/communication/fetchUrl.svelte';
 	import Info from '$lib/components/Common/LbInfo.svelte';
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 	import { tick } from 'svelte';
@@ -23,15 +22,15 @@
 	let dialogHeight = $state(500);
 	let imageHeight = $state(200);
 	let history = $derived(lastBellEvents.length);
-	let resource = $derived(fetchUrl<string>(`jdev/sps/io/${uuid}/securedDetails`));
-	let	securedDetails = $derived(resource.value ? JSON.parse(resource.value) : {});
+	let resource = $derived(uuid ? await loxWsClient.fetch(`jdev/sps/io/${uuid}/securedDetails`) : {});
+	let	securedDetails = $derived(resource ? JSON.parse(resource) : {});
 	let bellImages = $derived(new SvelteMap<string, string>());
 	let isJpgVideo = $derived(securedDetails?.videoInfo?.streamUrl.match(/.cgi$/) ? 1 : 0);
 
 	$effect( () => {
 		if (isJpgVideo) {
 			setInterval( () => {
-				securedDetails = resource.value ? JSON.parse(resource.value) : {};
+				securedDetails = resource ? JSON.parse(resource) : {};
 			}, 1000); // refresh resource every second
 		}
 	});
