@@ -1,5 +1,5 @@
 import { NO_LOGIN } from '$lib/types/models';
-import type { Route, DialogView, LoginCredentials, Icon } from '$lib/types/models';
+import type { Route, DialogView, LoginCredentials } from '$lib/types/models';
 import { utils } from '$lib/helpers/Utils';
 import { MenuIcon } from '@lucide/svelte';
 
@@ -8,7 +8,7 @@ import { MenuIcon } from '@lucide/svelte';
  */
 class LbAppStore {
 	appId: string = $state('');
-	nav: Route = $state({ label: 'Menu', href: '', icon: MenuIcon, root: true });
+	nav: Route = $state({ label: 'Menu', href: '', icon: MenuIcon, root: true, nav: true });
 	time: Date = $state(new Date());
 	mqttStatus: number = $state(0); // 0=disconnected (grey), 1=connected/ok/info (green), 2=warning/issue (yellow), 3=error (red)
 	msAlive: boolean = $state(false);
@@ -17,7 +17,6 @@ class LbAppStore {
 	locale: string = $state('en'); // default English
 	loginCredentials: LoginCredentials = $state(NO_LOGIN);
 	dnd = $state({isEnabled: false, duration: 300}); // TODO make configurable via menu
-	iconList: Icon[] | undefined = $state();
 
 	weatherDialog: DialogView = $state({
 		action: () => {},

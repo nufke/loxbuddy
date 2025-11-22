@@ -2,8 +2,8 @@
 	"uid": "1",
 	"ts": 1763831,
 	"sound": 0,
-	"title": "Title",
-	"message": "System reboot",
+	"title": "System notification",
+	"message": "System will reboot",
 	"type": 10,
 	"data": {
 		"mac": "123",

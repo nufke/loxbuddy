@@ -221,5 +221,7 @@
   "__uuid__controls_loadmanager_states_statusLoads": "2",
   
   "__uuid__controls_smoke_alarm_level": 0,
-  "__uuid__controls_smoke_alarm_timeServiceMode": 0
+  "__uuid__controls_smoke_alarm_timeServiceMode": 0,
+  
+  "__uuid__controls_intercom_securedDetails" : "{\"videoInfo\":{\"alertImage\":\"\",\"streamUrl\":\"http://84.35.147.6/mjpg/video.mjpg?camera=1\",\"deviceUuid\":\"__uuid_device\",\"user\":\"\",\"pass\":\"\"}}"
 }

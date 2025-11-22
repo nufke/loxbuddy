@@ -31,7 +31,7 @@
 			"title": "Systeem message",
 			"roomUuid": null,
 			"installationPlace": null,
-			"isHistoric": true,
+			"isHistoric": false,
 			"setHistoricAt": 1761430352,
 			"confirmedAt": null,
 			"timestamps": [1761425459],

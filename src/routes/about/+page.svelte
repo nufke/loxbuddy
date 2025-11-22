@@ -3,7 +3,7 @@
 	import { appStore } from '$lib/stores/LbAppStore.svelte';
 	import { ArrowLeftIcon, TriangleAlertIcon } from '@lucide/svelte';
 
-	let version = '0.0.1'; // TODO get version from package
+	let version = __VERSION__;
 	appStore.setNav({ label: 'ArrowLeft', href: '/', icon: ArrowLeftIcon });
 </script>
 

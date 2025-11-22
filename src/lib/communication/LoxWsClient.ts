@@ -179,14 +179,13 @@ export class LoxWsClient {
 		if (this.isTest) {
 			return test.fetch(url);
 		}
-		const req = new Request(`${this.hostUrl}/${url}/`, {
+		return fetch(`${this.hostUrl}/${url}/`, {
 				method: 'GET',
 				headers: {
 					'Content-Type': 'application/json',
 					'Authorization': 'Basic ' + btoa(this.username + ':' + this.passwd)
 				}
-			});
-		return fetch(req)
+			})
 			.then((response) => response.json())
 			.then((data) => {
 				//console.log('data', data)

@@ -22,7 +22,7 @@
 	let dialogHeight = $state(500);
 	let imageHeight = $state(200);
 	let history = $derived(lastBellEvents.length);
-	let resource = $derived(uuid ? await loxWsClient.fetch(`jdev/sps/io/${uuid}/securedDetails`) : {});
+	let resource = $derived(uuid ? await loxWsClient.fetch(`jdev/sps/io/${uuid}/securedDetails`) : null);
 	let	securedDetails = $derived(resource ? JSON.parse(resource) : {});
 	let bellImages = $derived(new SvelteMap<string, string>());
 	let isJpgVideo = $derived(securedDetails?.videoInfo?.streamUrl.match(/.cgi$/) ? 1 : 0);
@@ -96,7 +96,7 @@
 						</div>
 					</header>
 					<Dialog.Description>
-						<div class="">
+						<div class="mt-2">
 							{#if selectedTab==1 && getImages()}
 								<div class="relative" style="height: {imageHeight}px;">
 									<img class="absolute z-2" style="max-height: 560px;" bind:this={img} height={imageHeight}
@@ -127,27 +127,27 @@
 								</div>
 							{/if}
 						</div>
-						<div class="sticky bottom-0 left-0 w-full h-16 pb-2">
-							<div class="grid h-full max-w-lg lg:max-w-xl { history ? 'grid-cols-3' : 'grid-cols-2'} mx-auto">
-								<button type="button" class="inline-flex flex-col items-center justify-center px-5
-												group {selectedTab==1 ? 'dark:text-primary-500 text-primary-700' : ''} " onclick={() => selectedTab=1}>
-									<VideoIcon/>
-									<span class="mt-1 text-xs">{$_("Video")}</span>
-								</button>
-								{#if history}
-									<button type="button" class="inline-flex flex-col items-center justify-center px-5
-													group {selectedTab==2 ? 'dark:text-primary-500 text-primary-700' : ''} " onclick={() => selectedTab=2}>
-										<CameraIcon/>
-										<span class="mt-1 text-xs">{$_("Image")}</span>
-									</button>
-									<button type="button" class="inline-flex flex-col items-center justify-center px-5
-													group {selectedTab==3 ? 'dark:text-primary-500 text-primary-700' : ''} " onclick={() => selectedTab=3}>
-										<HistoryIcon/>
-										<span class="mt-1 text-xs">{$_("History")}</span>
-									</button>
-								{/if}
+						{#if history}
+							<div class="sticky bottom-0 left-0 w-full h-16 pb-2">
+								<div class="grid h-full max-w-lg lg:max-w-xl grid-cols-3 mx-auto">
+										<button type="button" class="inline-flex flex-col items-center justify-center px-5
+													group {selectedTab==1 ? 'dark:text-primary-500 text-primary-700' : ''} " onclick={() => selectedTab=1}>
+											<VideoIcon/>
+											<span class="mt-1 text-xs">{$_("Video")}</span>
+										</button>
+										<button type="button" class="inline-flex flex-col items-center justify-center px-5
+														group {selectedTab==2 ? 'dark:text-primary-500 text-primary-700' : ''} " onclick={() => selectedTab=2}>
+											<CameraIcon/>
+											<span class="mt-1 text-xs">{$_("Image")}</span>
+										</button>
+										<button type="button" class="inline-flex flex-col items-center justify-center px-5
+														group {selectedTab==3 ? 'dark:text-primary-500 text-primary-700' : ''} " onclick={() => selectedTab=3}>
+											<HistoryIcon/>
+											<span class="mt-1 text-xs">{$_("History")}</span>
+										</button>
+								</div>
 							</div>
-						</div>
+						{/if}
 					</Dialog.Description>
 				</Dialog.Content>
 			</Dialog.Positioner>

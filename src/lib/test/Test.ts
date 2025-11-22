@@ -489,7 +489,8 @@ class Test {
 		console.log('TEST fetch:', url);
 		switch (url) {
 			case 'jdev/sps/io/__uuid_messageCenter/getEntries/2' : return this.createPromise(JSON.stringify(messageCenter)); // original miniserver response is a string, not an object
-			default: return this.createPromise({text: 'default reponse'});
+			case 'jdev/sps/io/__uuid__controls_intercom/securedDetails' : return this.createPromise(states.__uuid__controls_intercom_securedDetails);
+			default: return this.createPromise(JSON.stringify({text: 'default reponse'}));
 		}
 	}
 

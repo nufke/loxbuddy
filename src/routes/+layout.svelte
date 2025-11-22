@@ -281,12 +281,16 @@
 		<Dialog.Positioner class="fixed inset-0 z-50 flex justify-start">
 			<Dialog.Content class="h-screen card bg-surface-100-900 w-sm p-4 space-y-4 shadow-xl transition transition-discrete opacity-0 
 					-translate-x-full starting:data-[state=open]:opacity-0 starting:data-[state=open]:-translate-x-full data-[state=open]:opacity-100 
-					data-[state=open]:translate-x-0  max-w-[300px]">
-				<header class="flex justify-between items-center">
-					<Dialog.Title class="h4">Menu</Dialog.Title>
+					data-[state=open]:translate-x-0 max-w-[200px]">
+				<header class="grid grid-cols-2 gap-2">
+					<div class="ml-1 flex justify-left items-center">
+						<img src="/icons/svg/loxbuddy.svg" width="50" alt="about"/>
+					</div>
+					<div class="flex justify-end">
 						<button type="button" class="btn-icon hover:preset-tonal" onclick={() => mobileMenuDialog = false}>
 							<XIcon class="size-4"/>
 						</button>
+					</div>
 				</header>
 				<div class="flex flex-col">
 					{#each routes as link (link)}

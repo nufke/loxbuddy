@@ -12,7 +12,7 @@
 
 	let group = $state('1');
 	let messageCenter = $derived(controlStore.messageCenterList[0]); // select first message center
-	let resource = $derived( messageCenter?.uuidAction ? await loxWsClient.fetch(`jdev/sps/io/${messageCenter?.uuidAction}/getEntries/2`) : {});
+	let resource = $derived( messageCenter?.uuidAction ? await loxWsClient.fetch(`jdev/sps/io/${messageCenter?.uuidAction}/getEntries/2`) : null);
 	let	messages = $derived(resource ? JSON.parse(resource) : {}) as SystemStatus;
 	let activeMessages = $derived(messages && messages.entries ? messages.entries.filter( entry => entry.isHistoric == false) : []);
 	let pastMessages = $derived(messages && messages.entries ? messages.entries.filter( entry => entry.isHistoric == true) : []);
@@ -84,7 +84,6 @@
 				<div class="{entry.severity == 3 && entry.confirmedAt == null ? 'pl-2 border-l-5 dark:border-l-red-500' : 
 										(entry.severity == 2 && entry.confirmedAt == null ? 'pl-2 border-l-5 dark:border-l-orange-500' : 'pl-[13px]') } border-b dark:border-surface-900 border-surface-200 cursor-pointer pt-3 pb-3 pr-3"
 											onclick={()=>{showEntry(entry)}}>
-											{entry.timestamps}
 					<p class="text-md { entry.severity == 3 ? 'text-red-500' : (entry.severity == 2 ? 'text-orange-500' : 'dark:text-surface-300 text-surface-700')}">
 						{$_(severity[entry.severity]).toUpperCase()}: <span class="dark:text-surface-300 text-surface-700"> {entry.timestamps.length ? getDate(Number(entry.timestamps[0])) : ''} {getRoomName(entry)}</span></p>
 					<p class="text-lg">{@html entry.title}</p>
