@@ -10,7 +10,7 @@
 	import { utils } from '$lib/helpers/Utils';
 	import { Dialog, Portal } from '@skeletonlabs/skeleton-svelte';
 
-	let slider = $state(Array.from({length: 10}, (v,i) => v = (i==0))); // open first slider at start
+	let slider = $state(Array.from({length: 8}, (v,i) => v = (i==0))); // open first slider at start
 	let current = $derived(weatherStore.current);
 	let daily = $derived(weatherStore.daily);
 	let hourly = $derived(weatherStore.hourly);
@@ -24,7 +24,7 @@
 	}
 
 	function resetSlider() {
-		slider = Array.from({length: 10}, (v,i) => v = (i==0));
+		slider = Array.from({length: 8}, (v,i) => v = (i==0));
 	}
 
 	function getCurrentIcon(cur: WeatherCurrentConditions) {
@@ -35,10 +35,10 @@
 	}
 
 	function getDayIcon(day: WeatherDailyForecast) {
-		let sunRise = utils.time2epoch(day.time, day.sunRise);
-		let sunSet = utils.time2epoch(day.time, day.sunSet);
+		let sunRise = utils.time2epoch(day.time, current.sunRise); // TODO get sunRise for each day
+		let sunSet = utils.time2epoch(day.time, current.sunSet); // TODO get sunSet for each day
 		let currentDay = utils.time2epoch(current.time, '00:00');
-		let dayOrNight = (((time.valueOf() > sunRise) && (time.valueOf() < sunSet)) || (day.time != currentDay)) ? '-day.svg' : '-night.svg';
+		let dayOrNight = (((time.valueOf()/1000 > sunRise) && (time.valueOf()/1000 < sunSet)) || (day.time != currentDay)) ? '-day.svg' : '-night.svg';
 		return '/meteocons/svg/' + day.icon + dayOrNight;
 	}
 
@@ -50,33 +50,35 @@
 	}
 
 	function getHourly(day: WeatherDailyForecast) {
-		let hours = hourly.filter( hours => (hours.time >= day.time) && hours.time <= (day.time + 86400000))
+		let hours = hourly.filter( hours => (hours.time >= day.time) && hours.time < (day.time + 86400000))
 		if (hours.length < 11) {
 			let cnt = 11-hours.length;
-			hours = hourly.filter( hours => (hours.time >= day.time) && hours.time <= (day.time + 86400000 + cnt * 3600000))
+			hours = hourly.filter( hours => (hours.time >= day.time) && hours.time < (day.time + 86400000 + cnt * 3600000))
 		}
 		return hours; 
 	}
 </script>
 
+<div class="flex justify-center items-center relative">
 <Dialog
-	open={appStore.weatherDialog.state}
-	onInteractOutside={close}>
+	open={appStore.weatherDialog.state}>
 	<Portal>
-		<Dialog.Backdrop class="fixed top-0 left-0 right-0 bottom-0 z-10 dark:bg-surface-950 bg-surface-50" />
-		<Dialog.Positioner class="fixed top-0 left-0 w-full h-full z-10">
-			<Dialog.Content class="card p-4 space-y-4 shadow-xl">
+		<Dialog.Backdrop class="absolute top-0 left-0 right-0 bottom-0 z-100 dark:bg-surface-950 bg-surface-50" />
+		<Dialog.Positioner class="absolute top-0 left-0 w-full h-full z-100">
+			<Dialog.Content class="card p-2 space-y-4 shadow-xl h-full overflow-y-auto">
 				<header class="sticky top-0 h-[40px] dark:bg-surface-950/50 bg-surface-50/50 z-1">
+					<div>
+						<Dialog.Title class="h5 flex justify-center items-center">{current.location}</Dialog.Title>
+					</div>
 					<div class="absolute right-1 top-1">
-						<button type="button" aria-label="close" class="btn-icon w-auto" onclick={()=> {appStore.weatherDialog.state = false; resetSlider();}}>
-							<XIcon/>
+						<button type="button" aria-label="close" class="btn-icon text-left hover:preset-tonal" onclick={()=> {appStore.weatherDialog.state = false; resetSlider();}}>
+							<XIcon class="size-4"/>
 						</button>
 					</div>
 				</header>
 				<Dialog.Description>
 					{#if loaded}
-					<div class="-mt-2 justify-center text-center" onscroll={() => {appStore.setWeatherDialogTimeout()}} onmousemove={() => {appStore.setWeatherDialogTimeout()}}>
-						<p class="h5">{current.location}</p>
+					<div class="-mt-5 text-center m-auto max-w-[768px]">
 						<p class="text-lg">{format(time, "PPP p")}</p>
 						<div class="grid grid-cols-2 mb-5">
 							<div>
@@ -101,8 +103,10 @@
 									<p class="text-lg"><span class="font-medium">{current.stationPressure}</span> mbar</p>
 								</div>
 								<div class="flex gap-2">
-									<LbIcon name={"/icons/svg/lighting.svg"} width="32" height="25"/>
-									<p class="text-lg">{current.lightingStrikeCount1h} / {current.lightingStrikeDistance} km</p>
+									{#if current.lightingStrikeDistance}
+										<LbIcon name={"/icons/svg/lighting.svg"} width="32" height="25"/>
+										<p class="text-lg">{current.lightingStrikeCount1h} / {current.lightingStrikeDistance} km</p>
+									{/if}
 								</div>
 							</div>
 							<div class="flex flex-col gap-4 mt-8 m-auto">
@@ -113,16 +117,15 @@
 								<div class="flex gap-2">
 									<LbIcon name={"/icons/svg/sun-solid.svg"} width="32" height="32"/>
 									<p class="text-lg"><span class="font-medium">{current.solarRadiation}</span> W/m²</p>
-									<p class="text-lg"><span class="font-medium">{current.uv}</span> UV</p>
 								</div>
 								<div class="flex gap-2">
 									<LbIcon name={"/icons/svg/rain-meter.svg"} fill="white" width="32" height="25"/>
-									<p class="text-lg"><span class="font-medium">{current.precipitationToday}</span> mm today</p>
+									<p class="text-lg"><span class="font-medium">{current.precipitationToday}</span> mm</p>
 								</div>
 							</div>
 						</div>
 						{#each daily as day, i}
-						<div class="mt-2 max-w-[768px] bg-surface-100-900" onclick={() => openSlider(i)}>
+						<div class="mt-2 m-auto max-w-[768px] bg-surface-100-900" onclick={() => openSlider(i)}>
 							<div class="grid grid-cols-8 p-2 h-[85px]">
 								<div class="col-span-3 pl-2 pr-0 my-auto">
 									<p class="text-left text-lg font-medium truncate">{format(new Date(day.time), "eeee d")}</p>
@@ -146,23 +149,25 @@
 							</div>
 						</div> 
 						{#if slider[i]}
-						<div class="max-w-[768px] bg-surface-100-900" transition:slide={{ duration: 400 }} >
+						<div class="m-auto max-w-[768px] bg-surface-100-900" transition:slide={{ duration: 400 }} >
 							<div transition:fade={{ duration: 200 }}>
-								<div class="grid grid-cols-2 hr p-1">
-									<div class="flex m-auto">
-										<span class="mr-2"><SunriseIcon size="22"/></span>
-										<p class="text-lg">{day.sunRise}</p>
+								{#if (day.sunRise && day.sunSet) || i==0 }
+									<div class="grid grid-cols-2 hr p-1">
+										<div class="flex m-auto">
+											<span class="mr-2"><SunriseIcon size="22"/></span>
+											<p class="text-lg">{day.sunRise}</p>
+										</div>
+										<div class="flex m-auto">
+											<span class="mr-2"><SunsetIcon size="22"/></span>
+											<p class="text-lg">{day.sunSet}</p>
+										</div>
 									</div>
-									<div class="flex m-auto">
-										<span class="mr-2"><SunsetIcon size="22"/></span>
-										<p class="text-lg">{day.sunSet}</p>
-									</div>
-								</div>
+								{/if}
 								<div class="grid auto-cols-[62px] grid-flow-col overflow-x-auto gap-2 hr h-48">
 									{#each getHourly(day) as hour, j}
 									<div class="grid-mw pl-2 flex flex-col vr">
 										<div class="flex align-middle m-auto">
-											<p class="text-lg">{format(new Date(hour.time), "H")}</p>
+											<p class="text-lg">{hour.hour}</p>
 										</div>
 										<div class="flex m-auto">
 											<span class="align-middle m-auto"><LbIcon name={getHourIcon(hour)} width="45" height="45"/></span>
@@ -185,7 +190,7 @@
 						</div>
 						{/if}
 						{/each}
-					</div>
+						</div>
 					{:else}
 					<div class="flex h-screen">
 						<div class="m-auto">
@@ -198,6 +203,7 @@
 		</Dialog.Positioner>
 	</Portal>
 </Dialog>
+</div>
 
 <!--
 <iframe width="650" height="450" src="https://embed.windy.com/embed2.html?lat=42.850&lon=-78.959&detailLat=42.890&detailLon=-78.880&width=650&height=450&zoom=7&level=surface&overlay=radar&product=radar&menu=&message=&marker=&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=default&metricTemp=default&radarRange=-1" frameborder="0"></iframe>

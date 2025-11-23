@@ -12,6 +12,7 @@
 	let openThemeDialog = $state(false);
 	let openStartpageDialog = $state(false);
 	let showStatus = $state(localStorage.getItem('showStatus') || '0');
+	let showWeather = $state(localStorage.getItem('showWeather') || '0');
 	let theme = $state(localStorage.getItem('theme') || 'LoxBuddy');
 	let mode = $state(localStorage.getItem('mode') || 'dark');
 	let startPage = $state(localStorage.getItem('startPage') || '/');
@@ -116,10 +117,16 @@
 		localStorage.setItem('showStatus', showStatus);
 		appStore.showStatus = event.checked;
 	};
+
+	const onShowWeather = (event: { checked: boolean }) => {
+		showWeather = event.checked ? '1' : '0';
+		localStorage.setItem('showWeather', showWeather);
+		appStore.showWeather = event.checked;
+	};
 </script>
 
 <div class="sticky container flex max-w-[1280px] flex-col">
-	<button aria-current="true" type="button" class="w-full border-b dark:border-surface-900 border-surface-200 p-3 pr-5 pl-5 text-left text-lg">
+	<button aria-current="true" type="button" class="mt-1 w-full border-b dark:border-surface-900 border-surface-200 p-3 pr-5 pl-5 text-left text-lg">
 		<div class="flex w-full justify-between">
 			<p>{$_("Dark mode")}</p>
 			<Switch checked={mode == "dark"} onCheckedChange={onDarkModeChange}>
@@ -134,6 +141,17 @@
 		<div class="flex w-full justify-between">
 			<p>{$_("Show connection status")}</p>
 			<Switch checked={showStatus == "1"} onCheckedChange={onShowStatusChange}>
+				<Switch.Control class="w-12 h-8 mr-1 data-[state=checked]:preset-filled-primary-500">
+					<Switch.Thumb />
+				</Switch.Control>
+				<Switch.HiddenInput />
+			</Switch>
+		</div>
+	</button>
+	<button aria-current="true" type="button" class="w-full border-b dark:border-surface-900 border-surface-200 p-3 pr-5 pl-5 text-left text-lg">
+		<div class="flex w-full justify-between">
+			<p>{$_("Show weather conditions")}</p>
+			<Switch checked={showWeather == "1"} onCheckedChange={onShowWeather}>
 				<Switch.Control class="w-12 h-8 mr-1 data-[state=checked]:preset-filled-primary-500">
 					<Switch.Thumb />
 				</Switch.Control>

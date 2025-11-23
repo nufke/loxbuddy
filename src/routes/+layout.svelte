@@ -51,6 +51,8 @@
 		loxWsClient.connect(env.MS_HOST, env.MS_USERNAME, env.MS_PASSWORD, appStore.appId, 0, isTest);
 	}
 
+	weatherStore.startWeatherForecast(env.WEATHER_URL);
+
 	let { children } = $props();
 
 	let mobileMenuDialog = $state(false);
@@ -62,7 +64,7 @@
 	let msStatus = $derived(controlStore.msStatus);
 	let nav = $derived(appStore.nav);
 	let path = $derived(page.url.pathname);
-	let weatherAvailable = $derived(currentWeather.time > 0 && dailyForecast.length && hourlyForecast[0]);
+	let showWeather = $derived(appStore.showWeather && currentWeather.time > 0 && dailyForecast.length && hourlyForecast[0]);
 	let activeNotifications = $derived(Object.values(controlStore.notificationsMap).filter( items => items.status == 1));
 
 	function getCurrentIcon(cur: WeatherCurrentConditions) {
@@ -77,6 +79,7 @@
 		{ label: 'Rooms', href: '/room', icon: Grid2x2Icon, badge: false, root: true, nav: true },
 		{ label: 'Categories', href: '/category', icon: LayoutListIcon, badge: false, root: true, nav: true },
 		{ label: 'Messages', href: '/messages', icon: FileTextIcon, badge: true, root: true, nav: true },
+		{ label: 'Weather', href: '/weather', icon: FileTextIcon, badge: false, root: true, nav: false },
 		{ label: 'Settings', href: '/settings', icon: SettingsIcon, badge: false, root: false, nav: false },
 		{ label: 'About', href: '/about', icon: InfoIcon, badge: false, root: false, nav: false }
 	]);
@@ -108,10 +111,10 @@
 	}
 
 	function navigate(s: string) {
-		if (s.length) {
-			goto(s);
-		} else {
-			mobileMenuDialog = true;
+		switch (s) {
+			case '' : mobileMenuDialog = true; break;
+			case '/weather' : openWeather(); break;
+			default: goto(s);
 		}
 	}
 
@@ -163,15 +166,23 @@
 				<a class="flex justify-center items-center mb-1 {layoutRail ? '' : '-mt-2'}" href="/about">
 					<img src="/icons/svg/loxbuddy.svg" width="50" alt="about"/>
 				</a>
+				{#if showWeather}
+					<div class="mt-2 flex justify-center items-center">
+						<button class="flex flex-row items-center" onclick={openWeather}>
+							<LbIcon name={getCurrentIcon(currentWeather)} width="48" height="48"/>	
+							<span class="text-lg truncate">{currentWeather.airTemperature}°</span>
+						</button>
+					</div>
+				{/if}
 				<div class="flex justify-center items-center" onclick={(e)=>{e.stopPropagation(); appStore.lockScreenDialog.state=true;}}>
-					<p class="text-right text-2xl font-medium">{format(time, "p")}</p>
+					<p class="text-right text-xl font-medium">{format(time, "p")}</p>
 				</div>
 			</Navigation.Header>
 			<Navigation.Menu>
 			{#if layoutRail}
 				{#each routes.filter((m) => m.nav) as link (link)}
 					{@const Icon = link.icon}
-					<div onclick={() => { goto(link.href)}} class={anchorRail}>
+					<div onclick={() => { navigate(link.href)}} class={anchorRail}>
 						<div class="relative inline-block">
 							{#if link.badge && activeNotifications.length}
 								<span class="badge-icon size-[2px] font-semibold preset-filled-primary-500 absolute -right-2 -top-2 z-10">{activeNotifications.length}</span>
@@ -187,7 +198,7 @@
 					<Navigation.Menu>
 						{#each routes as link (link)}
 							{@const Icon = link.icon}
-							<div onclick={() => { toggleLayout(); goto(link.href)}} class={anchorSidebar} 
+							<div onclick={() => { toggleLayout(); navigate(link.href)}} class={anchorSidebar} 
 								aria-label={link.label}>
 								<Icon class="size-4 {checkUrl(link.href) ? 'dark:text-primary-500 text-primary-700' : 'white'}"/>
 								<span class="{checkUrl(link.href) ? 'dark:text-primary-500 text-primary-700' : 'white'}">{link.label}</span>
@@ -222,7 +233,7 @@
 				<button class="ml-4 mr-0 text-left" onclick={() => {navigate(nav.href)}}>
 					<LbIcon name={nav.label}/>
 				</button>
-				{#if weatherAvailable}
+				{#if showWeather}
 					<button class="ml-0 m-auto flex flex-row items-center" onclick={openWeather}>
 						<LbIcon name={getCurrentIcon(currentWeather)} width="48" height="48"/>	
 						<span class="text-lg truncate">{currentWeather.airTemperature}°</span>
@@ -254,7 +265,7 @@
 		<Navigation.Menu class="grid grid-cols-4 gap-2">
 			{#each routes.filter((m) => m.nav) as link (link)}
 				{@const Icon = link.icon}
-				<div onclick={() => {goto(link.href)}}  class={anchorBar}>
+				<div onclick={() => {navigate(link.href)}}  class={anchorBar}>
 					<div class="relative inline-block">
 						{#if link.badge && activeNotifications.length}
 							<span class="badge-icon size-[2px] font-semibold preset-filled-primary-500 absolute -right-2 -top-2 z-10">{activeNotifications.length}</span>
@@ -295,7 +306,7 @@
 				<div class="flex flex-col">
 					{#each routes as link (link)}
 						{@const Icon = link.icon}
-						<div onclick={() => { mobileMenuDialog = false; goto(link.href)}} class={anchorSidebar} 
+						<div onclick={() => { mobileMenuDialog = false; navigate(link.href)}} class={anchorSidebar} 
 							aria-label={link.label}>
 							<Icon class="size-4 {checkUrl(link.href) ? 'dark:text-primary-500 text-primary-700' : 'white'}"/>
 							<span class="{checkUrl(link.href) ? 'dark:text-primary-500 text-primary-700' : 'white'}">{link.label}</span>

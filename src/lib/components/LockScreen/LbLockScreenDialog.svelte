@@ -35,16 +35,18 @@
 						</button>
 					</header>
 					<Dialog.Description class="flex justify-center items-center h-screen">
+						<div class="flex flex-col">
 						{#if currentWeather && currentWeather.airTemperature}
-							<div class="flex flex-row items-center m-auto">
+							<div class="flex justify-left items-center">
 								<LbIcon name={getCurrentIcon(currentWeather)} width="80" height="80"/>	
 								<span class="text-4xl truncate">{currentWeather.airTemperature}°</span>
 							</div>
 						{/if}
-						<div class="m-auto">
+						<div class="">
 							<p class="mt-2 pl-3 text-7xl font-bold">{format(time, "p")}</p>
-							<p class="mt-2 pl-3 text-4xl font-bold">{format(time, "eeee PPP")}</p>
+							<p class="mt-2 pl-3 text-4xl">{format(time, "eeee PPP")}</p>
 						</div>
+					</div>
 					</Dialog.Description>
 				</Dialog.Content>
 			</Dialog.Positioner>

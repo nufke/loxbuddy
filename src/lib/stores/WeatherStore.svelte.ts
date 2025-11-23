@@ -1,134 +1,63 @@
 import { SvelteMap } from 'svelte/reactivity';
 import type { WeatherCurrentConditions, WeatherDailyForecast, WeatherHourlyForecast } from '$lib/types/weather';
 
-const weatherIcons: any = {
-	wind: 'wind',
-	tstorms: 'thunderstorms',
-	sunny: 'clear',
-	snow: 'snow',
-	sleet: 'sleet',
-	rain: 'rain',
-	partlysunny: 'partly-cloudy',
-	partlycloudy: 'partly-cloudy',
-	overcast: 'overcast',
-	mostlysunny: 'mostly-clear',
-	mostlycloudy: 'overcast',
-	hazy: 'haze',
-	fog: 'fog',
-	flurries: 'flurries',
-	cloudy: 'overcast',
-	clear: 'clear',
-	chancetstorms: 'thunderstorms',
-	chancesnow: 'snow',
-	chancesleet: 'sleet',
-	chancerain: 'rain',
-	chanceflurries: 'flurries'
-}
-
-const weatherCodes: any = {
-	1: 'Clear',
-	2: 'Partly cloudy',
-	3: 'Mostly cloudy',
-	4: 'Cloudy',
-	5: 'Hazy',
-	6: 'Foggy',
-	7: 'Very hot',
-	8: 'Very cold',
-	9: 'Blowing snow',
-	10: 'Showers possible',
-	11: 'Showers',
-	12: 'Rain likely',
-	13: 'Rain',
-	14: 'Thunderstorms possible',
-	15: 'Thunderstorms',
-	16: 'Flurry',
-	18: 'Flurries possible',
-	19: 'Sleet',
-	20: 'Snow possible',
-	21: 'Snow',
-	22: 'Windy',
-	23: 'Rain and snow',
-	26: 'Rain and snow',
-	28: 'Light rain and snow ',
-	29: 'Rain and snow',
+const LoxWeatherCodes: any = {
+	1: ['Clear', 'clear'],
+	2: ['Bright', 'clear'],
+	3: ['Bright', 'clear'],
+	4: ['Bright', 'clear'],
+	5: ['Bright', 'clear'],
+	6: ['Bright', 'clear'],
+	7: ['Cloudy', 'partly-cloudy'],
+	8: ['Cloudy', 'partly-cloudy'],
+	9: ['Cloudy', 'partly-cloudy'],
+	10: ['Cloudy', 'partly-cloudy'],
+	11: ['Cloudy', 'partly-cloudy'],
+	12: ['Cloudy', 'partly-cloudy'],
+	13: ['Clear', 'clear'],
+	14: ['Bright', 'clear'],
+	15: ['Bright', 'clear'],
+	16: ['Fog', 'fog'],
+	17: ['Fog', 'fog'],
+	18: ['Fog', 'fog'],
+	19: ['Very cloudy', 'cloudy'],
+	20: ['Very cloudy', 'cloudy'],
+	21: ['Very cloudy', 'cloudy'],
+	22: ['Overcast', 'overcast'],
+	23: ['Rain', 'rain'],
+	24: ['Snow', 'snow'],
+	25: ['Heavy rain', 'rain'],
+	26: ['Heavy snow', 'snow'],
+	27: ['Heavy thunderstorm', 'thunderstorms'],
+	28: ['Thunderstorm', 'thunderstorms'],
+	29: ['Heavy snow showers', 'snow'],
+	30: ['Heavy thunderstorm', 'thunderstorms'],
+	31: ['Light rain showers', 'rain'],
+	32: ['Light snow showers', 'snow'],
+	33: ['Light rain', 'rain'],
+	34: ['Light snow showers', 'snow'],
+	35: ['Sleet', 'sleet']
 }
 
 class WeatherStore {
 	observations = new SvelteMap();
-	current: WeatherCurrentConditions = $derived(this.processCurrent()); //WeatherCurrentConditions
-	daily: WeatherDailyForecast[] = $derived(this.processDaily());
-	hourly: WeatherHourlyForecast[] = $derived(this.processHourly());
+	current: WeatherCurrentConditions = $derived({});
+	daily: WeatherDailyForecast[] = $derived([]);
+	hourly: WeatherHourlyForecast[] = $derived([]);
+	days = $state(0);
+
+	id: string = '';
+	name: string = '';
+	longitude: string = '';
+	latitude: string = '';
+	height: string = '';
+	country: string = '';
+	timezone: string = '';
+	utcDelta: string = '';
+	sunrise: string = '';
+	sunset: string = '';
 
 	constructor() {
-	}
-
-	processCurrent() {
-		const current = String(this.observations.get('current'));
-		const field = current.split('|');
-		const item = {
-			time: new Date(String(field[1])).valueOf(),
-			conditions: weatherCodes[field[28]],
-			icon: weatherIcons[field[27]], 
-			location: String(field[5]),
-			airTemperature: Math.round(Number(field[11])),
-			stationPressure: Math.round(Number(field[19])),
-			relativeHumidity: Math.round(Number(field[13])),
-			windAverage: Math.round(Number(field[16])),
-			windDirection: Math.round(Number(field[15]))+180,
-			uv: Math.round(Number(field[24])),
-			feelsLike: Math.round(Number(field[12])),
-			lightingStrikeCount1h: 0, // TODO not in weather forecast?
-			lightingStrikeDistance: 25, // TODO not in weather forecast?
-			precipitationToday: Math.round(Number(field[26])),
-			solarRadiation: Math.round(Number(field[22])),
-			sunRise: String(Number(field[34])) + ':' + String(field[35]),
-			sunSet: String(Number(field[36])) + ':' + String(field[37])
-		}
-		//console.log('current', item, field, field[1] );
-		return item;
-	}
-
-	processDaily() {
-		const temp: WeatherDailyForecast[] = [];
-		const daily = String(this.observations.get('daily'));
-		const days = daily.split('\n');
-		days.forEach(day => {
-			const field = day.split('|');
-			const item: WeatherDailyForecast = {
-				time: Number(field[1])*1000,
-				conditions: weatherCodes[field[26]],
-				icon: weatherIcons[field[25]], 
-				sunRise: String(Number(field[33])) + ':' + String(field[34]),
-				sunSet: String(Number(field[35])) + ':' + String(field[36]),
-				airTemperatureHigh: Math.round(Number(field[11])),
-				airTemperatureLow: Math.round(Number(field[12])),
-				precipitationProbability: Math.round(Number(field[13])),
-			};
-			if (item.time) temp.push(item);
-		});
-		//console.log("days", daily, days);
-		return temp;
-	}
-
-	processHourly() {
-		const temp: WeatherHourlyForecast[] = [];
-		const hourly = String(this.observations.get('hourly'));
-		const hours = hourly.split('\n');
-		hours.forEach(hour => {
-			const field = hour.split('|');
-			const item: WeatherHourlyForecast = {
-				time: Number(field[1])*1000,
-				conditions: String(field[29]),
-				icon: weatherIcons[field[28]], 
-				airTemperature: Math.round(Number(field[11])),
-				precipitationProbability: Math.round(Number(field[26])),
-				windAverage: Math.round(Number(field[17])),
-				windDirection: Math.round(Number(field[16]))+180,
-			};
-			if (item.time) temp.push(item);
-		});
-		//console.log("hourly", hourly, hours);
-		return temp;
 	}
 
 	getObservation(id: string) {
@@ -138,6 +67,120 @@ class WeatherStore {
 	setObservation(key: string, data: any) {
 		const item = $state(data);
 		this.observations.set(key, item);
+	}
+
+	startWeatherForecast(url: string) {
+		this.fetchWeatherForecast(url); 
+		setInterval( () => {
+			this.fetchWeatherForecast(url);
+		}, 1000 * 60 * 5); // fetch weather forecast every 5 minutes
+	}
+
+	fetchWeatherForecast(url: string) {
+		console.log('Fetch weather forecast');
+		fetch(url)
+		.then(response => response.text())
+		.then(data => this.grabWeatherData(data));
+	}
+
+	grabWeatherData(data: string) {
+		const regex = new RegExp('<station>(.*)</station>', 's');
+		const found = data.match(regex);
+		let list: string[];
+		if (found && found[1]) {
+			list = found[1].split('\n');
+			this.processCurrent(list);
+			this.processHourly(list);
+			this.processDaily();
+		}
+	}
+
+	processCurrent(list: string[]) {
+		const station = list[1].replace(/\t/g,'').split(';');
+		const current = list[2].replace(/\t/g,'').split(';');
+		this.id = station[0];
+		this.name = station[1];
+		this.longitude = station[2];
+		this.latitude = station[3];
+		this.height = station[4];
+		this.country = station[5];
+		this.timezone = station[6];
+		this.utcDelta = station[7].slice(3).replace('.', ':'); // transform to +HH:mm notation
+		this.sunrise = station[8];
+		this.sunset = station[9];
+		const dateArr = current[0].split('.');
+		const dateStr = `${dateArr[2]}-${dateArr[1]}-${dateArr[0]}T${current[2]}:00:00.000${this.utcDelta}`; // format YYYY-MM-DDTHH:mm:ss.sss+HH:mm
+
+		this.current = {
+			time: new Date(dateStr).valueOf(),
+			conditions: LoxWeatherCodes[current[17]][0],
+			icon: LoxWeatherCodes[current[17]][1], 
+			location: station[1],
+			airTemperature: Math.round(Number(current[3])),
+			stationPressure: Math.round(Number(current[14])),
+			relativeHumidity: Math.round(Number(current[15])),
+			windAverage: Math.round(Number(current[5])),
+			windDirection: Math.round(Number(current[6]))+180,
+			feelsLike: Math.round(Number(current[4])),
+			precipitationToday: Math.round(Number(current[11])),
+			solarRadiation: Math.round(Number(current[18])),
+			sunRise: station[8],
+			sunSet: station[9]
+		}
+		//console.log('current', this.current);
+	}
+
+	processHourly(list: string[]) {
+		const temp: WeatherHourlyForecast[] = [];
+		let dayCount = 0;
+		let prevDay = '';
+		for(let i = 2; i < list.length-1; i++) {
+			const hour = list[i].replace(/\t/g,'').split(';');
+			const dateArr = hour[0].split('.');
+			const timeStr = `${dateArr[2]}-${dateArr[1]}-${dateArr[0]}T${hour[2]}:00:00.000${this.utcDelta}`;
+			const dateStr = `${dateArr[2]}-${dateArr[1]}-${dateArr[0]}T00:00:00.000${this.utcDelta}`;
+			if (prevDay != dateArr[0]) {
+				dayCount++;
+				prevDay = dateArr[0];
+			}
+			const item: WeatherHourlyForecast = {
+				time: new Date(timeStr).valueOf(),
+				date: new Date(dateStr).valueOf(),
+				hour: Number(hour[2]),
+				conditions: LoxWeatherCodes[Number(hour[17])][0],
+				icon: LoxWeatherCodes[(Number(hour[17]))][1], 
+				airTemperature: Math.round(Number(hour[3])),
+				precipitationProbability: Math.round(Number(hour[12])),
+				windAverage: Math.round(Number(hour[5])),
+				windDirection: Math.round(Number(hour[6]))+180,
+			};
+			if (item.time) temp.push(item)
+		}
+		this.hourly = temp;
+		this.days = dayCount;
+		//console.log('hourly', this.hourly, dayCount)
+	}
+
+	processDaily() {
+		const temp: WeatherDailyForecast[] = []; 
+		const startDate = this.hourly[0].date;
+		for(let i = 1; i <= this.days; i++) {
+			const hours = this.hourly.filter(h => h.date == startDate + (i-1) * 24 * 3600 * 1000 );
+			const noon = hours.find( n => n.hour == 12)
+			const item: WeatherDailyForecast = {
+				time: hours[0].date,
+				conditions: noon ? noon.conditions : hours[0].conditions,
+				icon: noon ? noon.icon : hours[0].icon,
+				airTemperatureHigh: Math.max(...hours.map( h => h.airTemperature)),
+				airTemperatureLow: Math.min(...hours.map( h => h.airTemperature)),  
+				precipitationProbability: Math.max(...hours.map( h => h.precipitationProbability)),
+				sunRise: (i==1) ? this.current.sunRise : '',
+				sunSet: (i==1) ? this.current.sunSet : '',
+			};
+			if (item.time) temp.push(item)
+		}
+		this.daily = temp;
+		//console.log('daily', this.daily)
 	}
 }
 

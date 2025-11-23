@@ -13,6 +13,7 @@ class LbAppStore {
 	mqttStatus: number = $state(0); // 0=disconnected (grey), 1=connected/ok/info (green), 2=warning/issue (yellow), 3=error (red)
 	msAlive: boolean = $state(false);
 	showStatus: boolean = $state(true);
+	showWeather: boolean = $state(true);
 	startPage: string = $state('/');
 	locale: string = $state('en'); // default English
 	loginCredentials: LoginCredentials = $state(NO_LOGIN);
@@ -45,7 +46,8 @@ class LbAppStore {
 		this.appId = localStorage.getItem('appId') || utils.generateUuid();
 		localStorage.setItem('appId', this.appId);
 
-		this.showStatus = localStorage.getItem('showStatus') == '1' ? true : false;
+		this.showStatus = localStorage.getItem('showStatus') == '1';
+		this.showWeather = localStorage.getItem('showWeather') == '1';
 	}
 
 	setNav(route: Route) {
@@ -63,7 +65,7 @@ class LbAppStore {
 	}
 
 	resetWeatherDialogTimeout() {
-		this.weatherDialog.state = false; 
+		//this.weatherDialog.state = false; 
 		clearTimeout(this.weatherDialog.timeout); 
 		this.setWeatherDialogTimeout();
 	}
