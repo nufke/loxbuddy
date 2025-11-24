@@ -3,7 +3,7 @@
 	import { Tabs } from '@skeletonlabs/skeleton-svelte';
 	import { Dialog, Portal } from '@skeletonlabs/skeleton-svelte';
 	import type { Room, Category, GeneralView } from '$lib/types/models';
-	import { _, locale } from 'svelte-i18n';
+	import { _ } from 'svelte-i18n';
 	import { appStore } from '$lib/stores/LbAppStore.svelte';
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 	import { ArrowLeftIcon, XIcon } from '@lucide/svelte';
@@ -35,10 +35,7 @@
 	];
 
 	async function setLocale(s: number) {
-		appStore.locale = loc[s];
-		localStorage.setItem('locale', appStore.locale);
-		locale.set(appStore.locale); // reset svelte-i18n
-		console.info('Set locale to', appStore.locale);
+		appStore.setLocale(loc[s]);
 	}
 
 	let languageSelectView: GeneralView = $state({

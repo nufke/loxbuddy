@@ -11,7 +11,7 @@ export const load: LayoutLoad = async () => {
 		localeSettings = window.navigator.language;
 		localStorage.setItem('locale', localeSettings);
 	}
-	setDefaultOptions({ locale: getDateLocale(localeSettings) })
+	setDefaultOptions({ locale: getDateLocale(localeSettings) });
 	await waitLocale();
 	locale.set(localeSettings);
 }

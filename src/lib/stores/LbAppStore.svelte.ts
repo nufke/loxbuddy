@@ -2,6 +2,9 @@ import { NO_LOGIN } from '$lib/types/models';
 import type { Route, DialogView, LoginCredentials } from '$lib/types/models';
 import { utils } from '$lib/helpers/Utils';
 import { MenuIcon } from '@lucide/svelte';
+import { nl, enGB, de } from 'date-fns/locale'
+import { locale } from 'svelte-i18n';
+import { setDefaultOptions } from 'date-fns'
 
 /**
  * App store to maintain App state
@@ -48,6 +51,15 @@ class LbAppStore {
 
 		this.showStatus = localStorage.getItem('showStatus') == '1';
 		this.showWeather = localStorage.getItem('showWeather') == '1';
+	}
+
+	async setLocale(loc: string) {
+		const dateFnsLocale: any = {nl: nl, en: enGB, de: de};
+		this.locale = loc;
+		localStorage.setItem('locale', loc);
+		locale.set(loc); // set svelte-i18n
+		setDefaultOptions({locale: dateFnsLocale[loc]});
+		console.info('Locale set to', appStore.locale);
 	}
 
 	setNav(route: Route) {

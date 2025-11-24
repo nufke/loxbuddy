@@ -16,6 +16,8 @@ export type WeatherCurrentConditions = {
 	solarRadiation: number;
 	sunRise: string;										// hh:mm
 	sunSet: string;											// hh:mm
+	moonPhase: number;
+	moonPercent: number;
 };
 
 export type WeatherDailyForecast = {

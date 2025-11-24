@@ -1,5 +1,7 @@
 import { SvelteMap } from 'svelte/reactivity';
 import type { WeatherCurrentConditions, WeatherDailyForecast, WeatherHourlyForecast } from '$lib/types/weather';
+import * as SunCalc from 'suncalc';
+import { utils } from '$lib/helpers/Utils';
 
 const LoxWeatherCodes: any = {
 	1: ['Clear', 'clear'],
@@ -70,6 +72,7 @@ class WeatherStore {
 	}
 
 	startWeatherForecast(url: string) {
+		if (!url.length) return;
 		this.fetchWeatherForecast(url); 
 		setInterval( () => {
 			this.fetchWeatherForecast(url);
@@ -110,7 +113,8 @@ class WeatherStore {
 		this.sunset = station[9];
 		const dateArr = current[0].split('.');
 		const dateStr = `${dateArr[2]}-${dateArr[1]}-${dateArr[0]}T${current[2]}:00:00.000${this.utcDelta}`; // format YYYY-MM-DDTHH:mm:ss.sss+HH:mm
-
+		const moon = SunCalc.getMoonIllumination(new Date());
+		console.log(moon);
 		this.current = {
 			time: new Date(dateStr).valueOf(),
 			conditions: LoxWeatherCodes[current[17]][0],
@@ -125,7 +129,9 @@ class WeatherStore {
 			precipitationToday: Math.round(Number(current[11])),
 			solarRadiation: Math.round(Number(current[18])),
 			sunRise: station[8],
-			sunSet: station[9]
+			sunSet: station[9],
+			moonPhase: moon.phase,
+			moonPercent: Math.round((moon.fraction*100)*10)/10
 		}
 		//console.log('current', this.current);
 	}
@@ -166,7 +172,8 @@ class WeatherStore {
 		const startDate = this.hourly[0].date;
 		for(let i = 1; i <= this.days; i++) {
 			const hours = this.hourly.filter(h => h.date == startDate + (i-1) * 24 * 3600 * 1000 );
-			const noon = hours.find( n => n.hour == 12)
+			const noon = hours.find( n => n.hour == 12);
+			const sunTime = SunCalc.getTimes(new Date(hours[0].date + 12 * 3600 * 1000), Number(this.latitude), Number(this.longitude));
 			const item: WeatherDailyForecast = {
 				time: hours[0].date,
 				conditions: noon ? noon.conditions : hours[0].conditions,
@@ -174,8 +181,8 @@ class WeatherStore {
 				airTemperatureHigh: Math.max(...hours.map( h => h.airTemperature)),
 				airTemperatureLow: Math.min(...hours.map( h => h.airTemperature)),  
 				precipitationProbability: Math.max(...hours.map( h => h.precipitationProbability)),
-				sunRise: (i==1) ? this.current.sunRise : '',
-				sunSet: (i==1) ? this.current.sunSet : '',
+				sunRise: utils.epoch2TimeStr(sunTime.sunrise.valueOf()/1000),
+				sunSet: utils.epoch2TimeStr(sunTime.sunset.valueOf()/1000)
 			};
 			if (item.time) temp.push(item)
 		}
