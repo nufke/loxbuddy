@@ -10,12 +10,12 @@ const LoxWeatherCodes: any = {
 	4: ['Bright', 'clear'],
 	5: ['Bright', 'clear'],
 	6: ['Bright', 'clear'],
-	7: ['Cloudy', 'partly-cloudy'],
-	8: ['Cloudy', 'partly-cloudy'],
-	9: ['Cloudy', 'partly-cloudy'],
-	10: ['Cloudy', 'partly-cloudy'],
-	11: ['Cloudy', 'partly-cloudy'],
-	12: ['Cloudy', 'partly-cloudy'],
+	7: ['Partly cloudy', 'partly-cloudy'],
+	8: ['Partly cloudy', 'partly-cloudy'],
+	9: ['Partly cloudy', 'partly-cloudy'],
+	10: ['Partly cloudy', 'partly-cloudy'],
+	11: ['Partly cloudy', 'partly-cloudy'],
+	12: ['Partly cloudy', 'partly-cloudy'],
 	13: ['Clear', 'clear'],
 	14: ['Bright', 'clear'],
 	15: ['Bright', 'clear'],
@@ -39,6 +39,13 @@ const LoxWeatherCodes: any = {
 	33: ['Light rain', 'rain'],
 	34: ['Light snow showers', 'snow'],
 	35: ['Sleet', 'sleet']
+}
+
+const solarRadiationClass: any = {
+	0: '0 - 20%',
+	1: '20 - 40%',
+	2: '40 - 60%',
+	3: '60 - 100%',
 }
 
 class WeatherStore {
@@ -114,7 +121,7 @@ class WeatherStore {
 		const dateArr = current[0].split('.');
 		const dateStr = `${dateArr[2]}-${dateArr[1]}-${dateArr[0]}T${current[2]}:00:00.000${this.utcDelta}`; // format YYYY-MM-DDTHH:mm:ss.sss+HH:mm
 		const moon = SunCalc.getMoonIllumination(new Date());
-		console.log(moon);
+
 		this.current = {
 			time: new Date(dateStr).valueOf(),
 			conditions: LoxWeatherCodes[current[17]][0],
@@ -127,13 +134,21 @@ class WeatherStore {
 			windDirection: Math.round(Number(current[6]))+180,
 			feelsLike: Math.round(Number(current[4])),
 			precipitationToday: Math.round(Number(current[11])),
-			solarRadiation: Math.round(Number(current[18])),
+			solarRadiation: this.calcSolarRadiationClass(Number(current[18])),
 			sunRise: station[8],
 			sunSet: station[9],
 			moonPhase: moon.phase,
 			moonPercent: Math.round((moon.fraction*100)*10)/10
 		}
 		//console.log('current', this.current);
+	}
+
+	calcSolarRadiationClass(radiation: number) {
+		const percent100 = 1376; // 100% = 1376 W/m2
+		if (radiation < percent100/5) return solarRadiationClass[0]; 
+		if (radiation < (percent100/5)*2) return solarRadiationClass[1];
+		if (radiation < (percent100/5)*3) return solarRadiationClass[2];
+		return solarRadiationClass[4];
 	}
 
 	processHourly(list: string[]) {

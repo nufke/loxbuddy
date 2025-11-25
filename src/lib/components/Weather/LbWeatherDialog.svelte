@@ -39,13 +39,13 @@
 		let sunRise = utils.time2epoch(day.time, day.sunRise);
 		let sunSet = utils.time2epoch(day.time, day.sunSet);
 		let currentDay = utils.time2epoch(current.time, '00:00');
-		let dayOrNight = (((time.valueOf()/1000 > sunRise) && (time.valueOf()/1000 < sunSet)) || (day.time != currentDay)) ? '-day.svg' : '-night.svg';
+		let dayOrNight = (((time.valueOf()/1000 > sunRise) && (time.valueOf()/1000 < sunSet)) || (day.date != currentDay)) ? '-day.svg' : '-night.svg';
 		return '/meteocons/svg/' + day.icon + dayOrNight;
 	}
 
-	function getHourIcon(hour: WeatherHourlyForecast) {
-		let sunRise = utils.time2epoch(hour.time, current.sunRise);
-		let sunSet = utils.time2epoch(hour.time, current.sunSet);
+	function getHourIcon(hour: WeatherHourlyForecast, day: WeatherDailyForecast) {
+		let sunRise = utils.time2epoch(hour.time, day.sunRise);
+		let sunSet = utils.time2epoch(hour.time, day.sunSet);
 		let dayOrNight = (hour.time > sunRise) && (hour.time < sunSet) ? '-day.svg' : '-night.svg';
 		return '/meteocons/svg/' + hour.icon + dayOrNight;
 	}
@@ -104,7 +104,7 @@
 								</div>
 								<div class="flex gap-2">
 									<LbMoon phase={current.moonPhase}/>
-									<p class="text-lg">Moon</p> <!--({current.moonPercent}%)-->
+									<p class="text-lg">{$_("Moonphase")}</p> <!--({current.moonPercent}%)-->
 								</div>
 							</div>
 							<div class="flex flex-col gap-4 mt-8 m-auto">
@@ -114,7 +114,7 @@
 								</div>
 								<div class="flex gap-2">
 									<LbIcon name={"/icons/svg/sun-solid.svg"} width="32" height="32"/>
-									<p class="text-lg"><span class="font-medium">{current.solarRadiation}</span> W/m²</p>
+									<p class="text-lg"><span class="font-medium">{current.solarRadiation}</span></p>
 								</div>
 								<div class="flex gap-2">
 									<LbIcon name={"/icons/svg/rain-meter.svg"} fill="white" width="32" height="25"/>
@@ -168,7 +168,7 @@
 											<p class="text-lg">{hour.hour}</p>
 										</div>
 										<div class="flex m-auto">
-											<span class="align-middle m-auto"><LbIcon name={getHourIcon(hour)} width="45" height="45"/></span>
+											<span class="align-middle m-auto"><LbIcon name={getHourIcon(hour, day)} width="45" height="45"/></span>
 										</div>
 										<div>
 											<p class="text-lg">{hour.airTemperature}°</p>
