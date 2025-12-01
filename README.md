@@ -2,11 +2,19 @@
 
 # LoxBuddy 
 
-LoxBuddy is a modern and fast (Web)App to control your [Loxone](https://www.loxone.com/) and [LoxBerry](https://wiki.loxberry.de/start) based Smart Home.
+LoxBuddy is a modern and fast (Web)App to control your [Loxone](https://www.loxone.com/) and [LoxBerry](https://wiki.loxberry.de/start) based Smart Home. The user interface is optimized for mobile and tablet usage.
 
 LoxBuddy establishes a WebSocket connection to your Miniserver to control and monitor the state of the available controls. In addition, LoxBuddy can interface with LoxBerry using MQTT.
 
 **WARNING: The LoxBuddy App is in early developement, thus unstable and incomplete, and may impact the stability of your Smart Home. Use it at your own risk.**
+
+## Screenshots
+
+<img src="https://github.com/nufke/loxbuddy/blob/main/docs/screenshot_mobile_home.png" height=800 alt="Screenshot Mobile Home">
+
+<img src="https://github.com/nufke/loxbuddy/blob/main/docs/screenshot_mobile_heating.png" height=800 alt="Screenshot Mobile Heating">
+
+[More screenshots](https://github.com/nufke/loxbuddy/wiki/Screenshots)
 
 ## Development environment
 
