@@ -116,7 +116,7 @@
 									</div>
 									{/if}
 									<div class="relative w-full flex justify-center items-center">
-										<p class="text-md">{getWeekDates(appStore.time)}</p>
+										<p class="text-md">{getWeekDates(appStore.date)}</p>
 									</div>
 									<div class="relative w-full flex justify-center items-center">
 										<p class="text-lg dark:text-primary-500 text-primary-700">{controlView.dialog.details['totalWeek'].join(' ')}</p>
@@ -127,7 +127,7 @@
 									</div>
 									{/if}
 									<div class="relative w-full flex justify-center items-center">
-										<p class="text-md">{format(appStore.time, 'MMMM')}</p>
+										<p class="text-md">{format(appStore.date, 'MMMM')}</p>
 									</div>
 									<div class="relative w-full flex justify-center items-center">
 										<p class="text-lg dark:text-primary-500 text-primary-700">{controlView.dialog.details['totalMonth'].join(' ')}</p>
@@ -138,7 +138,7 @@
 									</div>
 									{/if}
 									<div class="relative w-full flex justify-center items-center">
-										<p class="text-md">{format(appStore.time, 'u')}</p>
+										<p class="text-md">{format(appStore.date, 'u')}</p>
 									</div>
 									<div class="relative w-full flex justify-center items-center">
 										<p class="text-lg dark:text-primary-500 text-primary-700">{controlView.dialog.details['totalYear'].join(' ')}</p>

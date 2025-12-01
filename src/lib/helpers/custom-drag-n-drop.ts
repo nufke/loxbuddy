@@ -1,5 +1,5 @@
 /** Customized Drag-and-Drop API
- * 
+ *
  * The HTML5 drag-and-drop API shows the draggable item in 50% transparency,
  * which makes is difficult to read on a mobile device.
  * This API shows the draggable item in its regular shape, without transparency,
@@ -20,19 +20,18 @@ export function customdnd(node: any) {
 		hideDragImage.style.opacity = 0;
 		document.body.appendChild(hideDragImage);
 		document.body.appendChild(dragImage);
-		ev.dataTransfer.setDragImage(hideDragImage, 0, 0);
 	};
 
 	const onDrag = (ev: any) => {
 		const dragImage = document.getElementById('dragImage');
 		ev.target.style.opacity = 0.2; // somewhat hide start/end location
 		if (dragImage) {
-			dragImage.style.left = 	(ev.pageX - offset.x) + 'px';
+			dragImage.style.left = (ev.pageX - offset.x) + 'px';
 			dragImage.style.top = Math.floor(ev.pageY - offset.y) + 'px';
 			dragImage.style.width = node.clientWidth + 'px';
 			dragImage.style.pointerEvents = 'none';
 			dragImage.style.zIndex = '999999';
-			dragImage.style.cursor = 'move'
+			dragImage.style.cursor = 'move';
 		}
 	};
 

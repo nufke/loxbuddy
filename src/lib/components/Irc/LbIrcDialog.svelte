@@ -37,7 +37,7 @@
 	/* this dialog is used for V1 and V2, so we need to select the proper attributes */
 	let isV1 = controlView.control.type !== 'IRoomControllerV2'; 
 
-	let dayOfTheWeek = $derived(format(appStore.time, 'eeee'));
+	let dayOfTheWeek = $derived(format(appStore.date, 'eeee'));
 	let opModes = $derived(controlStore.structure.operatingModes);
 	let temperatureList = $derived(controlView.list ? controlView.list.filter( item => item.visible == true) : []); // hide items not marked as visible 
 	let selectedItem = $derived(temperatureList.find( (item: ListItem) => $_(item.name) === controlView.statusName ));
@@ -275,7 +275,7 @@
 	}
 
 	$effect( () => {
-		timerEndsV1 = new SvelteDate(appStore.time.valueOf() + overrideV1*1000);
+		timerEndsV1 = new SvelteDate(appStore.date.valueOf() + overrideV1 * 1000);
 		timerEndsV2 = new SvelteDate(getTimerEpoch(overrideEntriesV2));
 	});
 </script>

@@ -12,7 +12,7 @@ import { setDefaultOptions } from 'date-fns'
 class LbAppStore {
 	appId: string = $state('');
 	nav: Route = $state({ label: 'Menu', href: '', icon: MenuIcon, root: true, nav: true });
-	time: Date = $state(new Date());
+	date: Date = $state(new Date());
 	mqttStatus: number = $state(0); // 0=disconnected (grey), 1=connected/ok/info (green), 2=warning/issue (yellow), 3=error (red)
 	msAlive: boolean = $state(false);
 	showStatus: boolean = $state(true);
@@ -20,7 +20,7 @@ class LbAppStore {
 	startPage: string = $state('/');
 	locale: string = $state('en'); // default English
 	loginCredentials: LoginCredentials = $state(NO_LOGIN);
-	dnd = $state({isEnabled: false, duration: 300}); // TODO make configurable via menu
+	dnd = $state({isEnabled: false, duration: 300});
 
 	weatherDialog: DialogView = $state({
 		action: () => {},
@@ -38,7 +38,7 @@ class LbAppStore {
 
 	constructor() {
 		setInterval(() => {
-			this.time = new Date();
+			this.date = new Date();
 		}, 1000);
 
 		this._stateUpdate = setTimeout(() => {

@@ -10,7 +10,7 @@
 	import { Dialog, Portal } from '@skeletonlabs/skeleton-svelte';
 
 	let currentWeather = $derived(weatherStore.current);
-	let time = $derived(appStore.time);
+	let date = $derived(appStore.date);
 
 	function getCurrentIcon(cur: WeatherCurrentConditions) {
 		let sunRise = utils.time2epoch(cur.time, cur.sunRise);
@@ -43,8 +43,8 @@
 							</div>
 						{/if}
 						<div class="">
-							<p class="mt-2 pl-3 text-7xl font-bold">{format(time, "p")}</p>
-							<p class="mt-2 pl-3 text-4xl">{format(time, "eeee PPP")}</p>
+							<p class="mt-2 pl-3 text-7xl font-bold">{format(date, "p")}</p>
+							<p class="mt-2 pl-3 text-4xl">{format(date, "eeee PPP")}</p>
 						</div>
 					</div>
 					</Dialog.Description>

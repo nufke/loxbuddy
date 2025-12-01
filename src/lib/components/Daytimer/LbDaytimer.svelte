@@ -22,7 +22,7 @@
 
 	const toaster = createToaster({duration: 1500});
 
-	let dayOfTheWeek = $derived(format(appStore.time, 'eeee'));
+	let dayOfTheWeek = $derived(format(appStore.date, 'eeee'));
 
 	let isAnalog = Boolean(control.details.analog);
 	let value = $derived(Number(controlStore.getState(control.states.value)));
@@ -32,7 +32,7 @@
 	let entries = $derived(utils.extractEntries(controlStore.getState(control.states.entriesAndDefaultValue))) as EntriesAndDefaultValue;
 	let modeList = $derived(String(controlStore.getState(control.states.modeList))); 
 
-	let currentTime = $derived(appStore.time);
+	let currentTime = $derived(appStore.date);
 	let dayModes = $derived(utils.extractDayModes(modeList)) as WeekDays;
 	let status = $derived(isAnalog ? valueFormatted : ( value ? control.details.text.on : control.details.text.off)) as string;
 	let override = $derived(Number(controlStore.getState(control.states.override)));
@@ -42,7 +42,7 @@
 
 	function getDuration() {
 		let statusExt = '';
-		const timerEnds = appStore.time.valueOf() + override * 1000;
+		const timerEnds = appStore.date.valueOf() + override * 1000;
 		if (override > 0 || (timeslot && timeslot.endTime)) {
 			const dateStr = timerEnds ? format(timerEnds, 'd MMMM p') : '';
 			const timeStr = timeslot ? utils.hours2hours(timeslot.endTime, true) : '';

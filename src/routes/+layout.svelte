@@ -59,7 +59,7 @@
 	let currentWeather = $derived(weatherStore.current);
 	let dailyForecast = $derived(weatherStore.daily);
 	let hourlyForecast = $derived(weatherStore.hourly);
-	let time = $derived(appStore.time);
+	let date = $derived(appStore.date);
 	let mqttStatus = $derived(appStore.mqttStatus);
 	let msStatus = $derived(controlStore.msStatus);
 	let nav = $derived(appStore.nav);
@@ -83,6 +83,8 @@
 		{ label: 'Settings', href: '/settings', icon: SettingsIcon, badge: false, root: false, nav: false },
 		{ label: 'About', href: '/about', icon: InfoIcon, badge: false, root: false, nav: false }
 	]);
+
+	const bottomMenus = $derived(routes.filter((m) => m.nav));
 
 	function checkUrl(href: string) {
 		if (href === '/') {
@@ -175,7 +177,7 @@
 					</div>
 				{/if}
 				<div class="flex justify-center items-center" onclick={(e)=>{e.stopPropagation(); appStore.lockScreenDialog.state=true;}}>
-					<p class="text-right text-xl font-medium">{format(time, "p")}</p>
+					<p class="text-right text-xl font-medium">{format(date, "p")}</p>
 				</div>
 			</Navigation.Header>
 			<Navigation.Menu>
@@ -213,10 +215,16 @@
 			<button type="button" class={layoutRail ? anchorRail : anchorSidebar} onclick={toggleLayout}>
 					<ArrowLeftRightIcon/>
 			</button>
-			{#if appStore.showStatus}
-				<div class="flex flex-row gap-3 justify-center items-center {layoutRail ? '' : '-mb-2'}">
-					<CircleIcon class={getStatusColor(mqttStatus)} size="16"/>
-					<SquareIcon class={getStatusColor((mqttStatus==1) ? msStatus : 0)} size="16"/>
+			{#if appStore.showStatus && !layoutRail}
+				<div class="mt-3 ml-2 mb-1 flex flex-col justify-left gap-2 {layoutRail ? '' : '-mb-2'}">
+					<div class="flex flex-row items-center gap-2">
+						<CircleIcon class={getStatusColor(mqttStatus)} size="16"/>
+						<span class="text-xs">MQTT</span>
+					</div>
+					<div class="flex flex-row items-center gap-2">
+						<SquareIcon class={getStatusColor((mqttStatus==1) ? msStatus : 0)} size="16"/>
+						<span class="text-xs">Miniserver</span>
+					</div>
 				</div>
 			{/if}
 		</Navigation.Footer>
@@ -227,14 +235,14 @@
 </div>
 {:else} <!-- mobile / portait mode -->
 <div class="w-full h-screen grid grid-rows-[1fr_auto]">
-	<Navigation layout="bar" class="fixed top-0 h-[60px] flex justify-center items-center z-10 shadow-md">
-		<Navigation.Menu class="grid grid-cols-3 gap-2 text-center">
-			<div class="flex flex-row text-center items-center gap-3">
+	<Navigation layout="bar" class="fixed top-0 h-[65px] flex justify-center items-center z-10 shadow-md w-screen">
+		<Navigation.Menu class="grid grid-cols-3 gap-2">
+			<div class="flex flex-row text-center items-center gap-2">
 				<button class="ml-4 mr-0 text-left" onclick={() => {navigate(nav.href)}}>
 					<LbIcon name={nav.label}/>
 				</button>
 				{#if showWeather}
-					<button class="ml-0 m-auto flex flex-row items-center" onclick={openWeather}>
+					<button class="ml-0 m-auto flex flex-row items-center gap-1" onclick={openWeather}>
 						<LbIcon name={getCurrentIcon(currentWeather)} width="48" height="48"/>	
 						<span class="text-lg truncate">{currentWeather.airTemperature}°</span>
 					</button>
@@ -245,38 +253,34 @@
 					<span class="text-xl dark:text-primary-500 text-primary-700 font-medium">LoxBuddy</span>
 				</a>
 			</div>
-			<div class="mr-1 flex flex-row gap-3 justify-end items-center">
+			<div class="mr-2 pb-1 flex flex-row gap-3 justify-end items-center">
 				<div onclick={(e)=>{e.stopPropagation(); appStore.lockScreenDialog.state=true;}}>
-					<p class="text-right text-2xl font-medium">{format(time, "p")}</p>
+					<p class="text-right text-2xl font-medium">{format(date, "p")}</p>
 				</div>
-				{#if appStore.showStatus}
-				<div class="flex flex-col justify-center items-center gap-2">
-					<CircleIcon class={getStatusColor(mqttStatus)} size="16"/>
-					<SquareIcon class={getStatusColor((mqttStatus==1) ? msStatus : 0)} size="16"/>
-				</div>
-				{/if}
 			</div>
 		</Navigation.Menu>
 	</Navigation>
-	<div class="pt-[55px] pb-[60px]">
+	<div class="pt-[55px]">
 		{@render children()}
 	</div>
-	<Navigation layout="bar" class="fixed bottom-0 h-[65px] shadow-inner">
-		<Navigation.Menu class="grid grid-cols-4 gap-2">
-			{#each routes.filter((m) => m.nav) as link (link)}
-				{@const Icon = link.icon}
-				<div onclick={() => {navigate(link.href)}}  class={anchorBar}>
-					<div class="relative inline-block">
-						{#if link.badge && activeNotifications.length}
-							<span class="badge-icon size-[2px] font-semibold preset-filled-primary-500 absolute -right-2 -top-2 z-10">{activeNotifications.length}</span>
-						{/if}
-						<Icon class="size-5 {checkUrl(link.href) ? 'dark:text-primary-500 text-primary-700' : 'white'}" />
+	{#if bottomMenus.find ( item => item.href == path )}
+		<Navigation layout="bar" class="sticky bottom-0 h-[68px] shadow-inner">
+			<Navigation.Menu class="grid grid-cols-4 gap-2">
+				{#each bottomMenus as link (link)}
+					{@const Icon = link.icon}
+					<div onclick={() => {navigate(link.href)}}  class={anchorBar}>
+						<div class="relative inline-block">
+							{#if link.badge && activeNotifications.length}
+								<span class="badge-icon size-[2px] font-semibold preset-filled-primary-500 absolute -right-2 -top-2 z-10">{activeNotifications.length}</span>
+							{/if}
+							<Icon class="size-5 {checkUrl(link.href) ? 'dark:text-primary-500 text-primary-700' : 'white'}" />
+						</div>
+						<span class="text-[12px] {checkUrl(link.href) ? 'dark:text-primary-500 text-primary-700' : 'white'}">{link.label}</span>
 					</div>
-					<span class="text-[12px] {checkUrl(link.href) ? 'dark:text-primary-500 text-primary-700' : 'white'}">{link.label}</span>
-				</div>
-			{/each}
-		</Navigation.Menu>
-	</Navigation>
+				{/each}
+			</Navigation.Menu>
+		</Navigation>
+	{/if}
 </div>
 {/if}
 
@@ -313,6 +317,20 @@
 						</div>
 					{/each}
 				</div>
+				{#if appStore.showStatus}
+					<footer class="fixed left-0 bottom-0">
+						<div class="ml-4 mb-4 flex flex-col justify-left gap-2">
+							<div class="flex flex-row items-center gap-2">
+								<CircleIcon class={getStatusColor(mqttStatus)} size="16"/>
+								<span class="text-xs">MQTT</span>
+							</div>
+							<div class="flex flex-row items-center gap-2">
+								<SquareIcon class={getStatusColor((mqttStatus==1) ? msStatus : 0)} size="16"/>
+								<span class="text-xs">Miniserver</span>
+							</div>
+						</div>
+					</footer>
+				{/if}
 			</Dialog.Content>
 		</Dialog.Positioner>
 	</Portal>

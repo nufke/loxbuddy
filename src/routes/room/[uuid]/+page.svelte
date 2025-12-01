@@ -66,7 +66,7 @@
 		const itemB = list.indexOf(item);
 		newList[itemA] = item;
 		newList[itemB] = draggingItem;
-		return newList; // update list (triggers effect)
+		return [...newList]; // update list (triggers effect)
 	}
 </script>
 

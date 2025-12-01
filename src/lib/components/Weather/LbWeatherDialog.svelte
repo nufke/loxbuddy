@@ -16,7 +16,7 @@
 	let daily = $derived(weatherStore.daily);
 	let hourly = $derived(weatherStore.hourly);
 	let loaded = $derived(current.time > 0 && daily.length);
-	let time = $derived(appStore.time);
+	let date = $derived(appStore.date);
 
 	function openSlider(i: number) {
 		if (hourly[i]) {
@@ -39,7 +39,7 @@
 		let sunRise = utils.time2epoch(day.time, day.sunRise);
 		let sunSet = utils.time2epoch(day.time, day.sunSet);
 		let currentDay = utils.time2epoch(current.time, '00:00');
-		let dayOrNight = (((time.valueOf()/1000 > sunRise) && (time.valueOf()/1000 < sunSet)) || (day.date != currentDay)) ? '-day.svg' : '-night.svg';
+		let dayOrNight = (((date.valueOf() > sunRise) && (date.valueOf() < sunSet)) || (day.time != currentDay)) ? '-day.svg' : '-night.svg';
 		return '/meteocons/svg/' + day.icon + dayOrNight;
 	}
 
@@ -51,10 +51,10 @@
 	}
 
 	function getHourly(day: WeatherDailyForecast) {
-		let hours = hourly.filter( hours => (hours.time > time) && (hours.time >= day.time) && hours.time < (day.time + 86400000))
+		let hours = hourly.filter( hours => (hours.time > date) && (hours.time >= day.time) && hours.time < (day.time + 86400000))
 		if (hours.length < 11) {
 			let cnt = 11-hours.length;
-			hours = hourly.filter( hours => (hours.time > time) && (hours.time >= day.time) && hours.time < (day.time + 86400000 + cnt * 3600000));
+			hours = hourly.filter( hours => (hours.time > date) && (hours.time >= day.time) && hours.time < (day.time + 86400000 + cnt * 3600000));
 		}
 		return hours; 
 	}
@@ -79,7 +79,7 @@
 				<Dialog.Description>
 					{#if loaded}
 					<div class="-mt-5 text-center m-auto max-w-[768px]">
-						<p class="text-lg">{format(time, "PPP p")}</p>
+						<p class="text-lg">{format(date, "PPP p")}</p>
 						<div class="ml-1 grid grid-cols-2 mb-5">
 							<div>
 								<p class="text-[120px] font-medium ml-8">{current.airTemperature}<span class="font-normal">°</span></p>
@@ -205,12 +205,3 @@
 <!--
 <iframe width="650" height="450" src="https://embed.windy.com/embed2.html?lat=42.850&lon=-78.959&detailLat=42.890&detailLon=-78.880&width=650&height=450&zoom=7&level=surface&overlay=radar&product=radar&menu=&message=&marker=&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=default&metricTemp=default&radarRange=-1" frameborder="0"></iframe>
 -->
-
-<style>
-/* to resolve css blowout issue with slider */ 
-:global {
-	main {
-		min-width: 0!important;
-	}
-}
-</style>

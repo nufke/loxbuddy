@@ -315,7 +315,7 @@
 			"links": ["__uuid_unknonw", "__uuid_unknown"]
 		},
 		"__uuid__controls_battery": {
-			"name": "Batterie",
+			"name": "Battery",
 			"type": "Meter",
 			"uuidAction": "__uuid__controls_battery",
 			"room": "__uuid__rooms_central",

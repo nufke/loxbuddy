@@ -18,6 +18,7 @@
 	let startPage = $state(localStorage.getItem('startPage') || '/');
  	let group = $state('room');
 	let localeSettings = $derived(appStore.locale);
+	let sorting = $derived(appStore.dnd.isEnabled);
 
 	const loc = ['en', 'de', 'nl'];
 	const language: any = {
@@ -28,7 +29,7 @@
 
 	let lang = $derived(language[localeSettings]);
 
-	appStore.setNav({ label: 'ArrowLeftIcon', href: '/', icon: ArrowLeftIcon, root: true }); // TODO change navigation concept
+	appStore.setNav({ label: 'ArrowLeftIcon', href: '/', icon: ArrowLeftIcon, root: true, nav: false  }); // TODO change navigation concept
 
 	let other = [
 		{ name: 'Home', uuid: '/'}
@@ -120,6 +121,11 @@
 		localStorage.setItem('showWeather', showWeather);
 		appStore.showWeather = event.checked;
 	};
+	
+	const onSorting = (event: { checked: boolean }) => {
+		sorting = event.checked;
+		appStore.dnd.isEnabled = event.checked;
+	}
 </script>
 
 <div class="sticky container flex max-w-[1280px] flex-col">
@@ -149,6 +155,17 @@
 		<div class="flex w-full justify-between">
 			<p>{$_("Show weather conditions")}</p>
 			<Switch checked={showWeather == "1"} onCheckedChange={onShowWeather}>
+				<Switch.Control class="w-12 h-8 mr-1 data-[state=checked]:preset-filled-primary-500">
+					<Switch.Thumb />
+				</Switch.Control>
+				<Switch.HiddenInput />
+			</Switch>
+		</div>
+	</button>
+	<button aria-current="true" type="button" class="w-full border-b dark:border-surface-900 border-surface-200 p-3 pr-5 pl-5 text-left text-lg">
+		<div class="flex w-full justify-between">
+			<p>{$_("Enable sorting")}</p>
+			<Switch checked={sorting} onCheckedChange={onSorting}>
 				<Switch.Control class="w-12 h-8 mr-1 data-[state=checked]:preset-filled-primary-500">
 					<Switch.Thumb />
 				</Switch.Control>
