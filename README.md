@@ -10,9 +10,10 @@ LoxBuddy establishes a WebSocket connection to your Miniserver to control and mo
 
 ## Screenshots
 
-<img src="https://github.com/nufke/loxbuddy/blob/main/docs/screenshot_mobile_home.png" height=800 alt="Screenshot Mobile Home">
-
-<img src="https://github.com/nufke/loxbuddy/blob/main/docs/screenshot_mobile_heating.png" height=800 alt="Screenshot Mobile Heating">
+<div class="flex flex-row gap-2">
+  <img src="https://github.com/nufke/loxbuddy/blob/main/docs/screenshot_mobile_home.png" height=800 alt="Screenshot Mobile Home">
+  <img src="https://github.com/nufke/loxbuddy/blob/main/docs/screenshot_mobile_heating.png" height=800 alt="Screenshot Mobile Heating">
+</div>
 
 [More screenshots](https://github.com/nufke/loxbuddy/wiki/Screenshots)
 
