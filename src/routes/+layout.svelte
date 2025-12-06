@@ -4,7 +4,7 @@
 	import { Navigation, Dialog, Portal } from '@skeletonlabs/skeleton-svelte';
 	import { innerWidth } from 'svelte/reactivity/window';
 	import { HouseIcon, InfoIcon, FileTextIcon, Grid2x2Icon, MenuIcon, LayoutListIcon, ArrowLeftRightIcon, 
-						XIcon, SettingsIcon, CircleIcon, SquareIcon, type Icon as IconType } from '@lucide/svelte';
+						XIcon, SettingsIcon, CircleIcon, SquareIcon, Logs, type Icon as IconType } from '@lucide/svelte';
 	import type { Route } from '$lib/types/models';
 	import { mqttClient } from '$lib/communication/MqttClient';
 	import { appStore } from '$lib/stores/LbAppStore.svelte';
@@ -21,6 +21,7 @@
 	import { format } from 'date-fns';
 	import { goto } from '$app/navigation';
 	import { test } from '$lib/test/Test';
+	import { Logger, LogLevel } from '$lib/helpers/Logger';
 	import { enableDragDropTouch } from '$lib/helpers/drag-drop-touch';
 
 	const options = {
@@ -40,6 +41,8 @@
 
 	const env = page.data.env;
 	const isTest = Number(env.TEST) ? true : false;
+
+	Logger(Number(env.APP_LOGLEVEL), true);
 
 	if (isTest) {
 		/* load test demo structure */
@@ -81,7 +84,8 @@
 		{ label: 'Messages', href: '/messages', icon: FileTextIcon, badge: true, root: true, nav: true },
 		{ label: 'Weather', href: '/weather', icon: FileTextIcon, badge: false, root: true, nav: false },
 		{ label: 'Settings', href: '/settings', icon: SettingsIcon, badge: false, root: false, nav: false },
-		{ label: 'About', href: '/about', icon: InfoIcon, badge: false, root: false, nav: false }
+		{ label: 'About', href: '/about', icon: InfoIcon, badge: false, root: false, nav: false },
+		{ label: 'Log', href: '/log', icon: Logs, badge: false, root: false, nav: false }
 	]);
 
 	const bottomMenus = $derived(routes.filter((m) => m.nav));

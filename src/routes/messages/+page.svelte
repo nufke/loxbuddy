@@ -59,12 +59,12 @@
 	}
 </script>
 
-<div class="container mx-auto max-w-[800px]">
-	<Tabs defaultValue={'notifications'} onValueChange={(e) => (group = e.value)} class="">
+<div class="container flex mx-auto max-w-[800px] w-screen">
+	<Tabs defaultValue={'notifications'} onValueChange={(e) => (group = e.value)} class="w-screen">
 		<Tabs.List class="pt-2 bg-surface-50-950 sticky" style="top: {setTabsTop()}px">
-			<Tabs.Trigger value="notifications" class=" h5">{$_("Notifications")}</Tabs.Trigger>
-			<Tabs.Trigger value="systemstatus" class=" h5">{$_("System status")}</Tabs.Trigger>
-			<Tabs.Trigger value="history" class=" h5">{$_("History")}</Tabs.Trigger>
+			<Tabs.Trigger value="notifications" class="p-2 flex-1 h5 text-wrap">{$_("Notifications")}</Tabs.Trigger>
+			<Tabs.Trigger value="systemstatus" class="p-2 flex-1 h5 text-wrap">{$_("System status")}</Tabs.Trigger>
+			<Tabs.Trigger value="history" class="p-2 m-0 flex-1 h5 text-wrap">{$_("History")}</Tabs.Trigger>
 			<Tabs.Indicator/>
 		</Tabs.List>
 			<div class="overflow-y-auto h-full"> <!--style="height: {innerHeight.current-100}px"-->

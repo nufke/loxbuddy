@@ -87,7 +87,7 @@ class WeatherStore {
 	}
 
 	fetchWeatherForecast(url: string) {
-		console.log('Fetch weather forecast');
+		console.info('Fetch weather forecast');
 		fetch(url)
 		.then(response => response.text())
 		.then(data => this.grabWeatherData(data));
@@ -188,7 +188,7 @@ class WeatherStore {
 		for(let i = 1; i <= this.days; i++) {
 			const hours = this.hourly.filter(h => h.date == startDate + (i-1) * 24 * 3600 * 1000 );
 			const noon = hours.find( n => n.hour == 12);
-			const sunTime = SunCalc.getTimes(new Date(hours[0].date + 12 * 3600 * 1000), Number(this.latitude), Number(this.longitude));
+			const sunTime = hours.length ? SunCalc.getTimes(new Date(hours[0].date + 12 * 3600 * 1000), Number(this.latitude), Number(this.longitude)) : null;
 			const item: WeatherDailyForecast = {
 				time: hours[0].date,
 				conditions: noon ? noon.conditions : hours[0].conditions,
@@ -196,8 +196,8 @@ class WeatherStore {
 				airTemperatureHigh: Math.max(...hours.map( h => h.airTemperature)),
 				airTemperatureLow: Math.min(...hours.map( h => h.airTemperature)),  
 				precipitationProbability: Math.max(...hours.map( h => h.precipitationProbability)),
-				sunRise: utils.epoch2TimeStr(sunTime.sunrise.valueOf()/1000),
-				sunSet: utils.epoch2TimeStr(sunTime.sunset.valueOf()/1000)
+				sunRise: sunTime ? utils.epoch2TimeStr(sunTime.sunrise.valueOf()/1000) : '',
+				sunSet: sunTime ? utils.epoch2TimeStr(sunTime.sunset.valueOf()/1000) : ''
 			};
 			if (item.time) temp.push(item)
 		}

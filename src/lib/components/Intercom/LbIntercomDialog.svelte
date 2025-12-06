@@ -25,7 +25,7 @@
 	let resource = $derived(uuid ? await loxWsClient.fetch(`jdev/sps/io/${uuid}/securedDetails`) : null);
 	let	securedDetails = $derived(resource ? JSON.parse(resource) : {});
 	let bellImages = $derived(new SvelteMap<string, string>());
-	let isJpgVideo = $derived(securedDetails?.videoInfo?.streamUrl.match(/.cgi$/) ? 1 : 0);
+	let isJpgVideo = $derived(securedDetails?.videoInfo?.streamUrl.match(/.jpg$/) ? 1 : 0);
 
 	$effect( () => {
 		if (isJpgVideo) {
