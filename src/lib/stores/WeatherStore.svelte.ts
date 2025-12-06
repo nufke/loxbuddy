@@ -190,7 +190,7 @@ class WeatherStore {
 			const noon = hours.find( n => n.hour == 12);
 			const sunTime = hours.length ? SunCalc.getTimes(new Date(hours[0].date + 12 * 3600 * 1000), Number(this.latitude), Number(this.longitude)) : null;
 			const item: WeatherDailyForecast = {
-				time: hours[0].date,
+				time: hours.length ? hours[0].date : 0,
 				conditions: noon ? noon.conditions : hours[0].conditions,
 				icon: noon ? noon.icon : hours[0].icon,
 				airTemperatureHigh: Math.max(...hours.map( h => h.airTemperature)),

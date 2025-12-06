@@ -70,23 +70,25 @@ class Test {
 	}
 
 	exec(uuid: string, msg: string) {
+		let parentControl;
 		let control: Control = controlStore.controls[uuid];
 		if (!control) { // if no control found, check if the uuid is a subcontrol
-			const parentControl = controlStore.controlList.find( control => control.subControls && control.subControls[uuid])
+			parentControl = controlStore.controlList.find( control => control.subControls && control.subControls[uuid])
 			if (parentControl) {
+				//console.log('parentControl', parentControl.uuidAction);
 				control = parentControl.subControls[uuid];
 			}
 		}
 		if (control) {
-			this.action(control, msg);
+			this.action(control, msg, parentControl);
 		} else {
 			console.error('Control or subControl not found:', uuid);
 		}
 	}
 
-	action(control: Control, msg: string) {
+	action(control: Control, msg: string, parentControl: Control | undefined) {
 		switch (control.type) {
-			case 'Switch' : this.switch(control, msg); break;
+			case 'Switch' : this.switch(control, msg, parentControl); break;
 			case 'TimedSwitch': this.timedSwitch(control, msg); break;
 			case 'Jalousie': this.jalousie(control, msg); break;
 			case 'ValueSelector': this.valueSelector(control, msg); break;
@@ -94,8 +96,8 @@ class Test {
 			case 'Slider': this.slider(control, msg); break;
 			case 'InfoOnlyDigital': this.infoOnlyDigital(control, msg); break;
 			case 'LightControllerV2': this.lightControllerV2(control, msg); break;
-			case 'Dimmer': this.dimmer(control, msg); break;
-			case 'ColorPickerV2': this.colorPickerV2(control, msg); break;
+			case 'Dimmer': this.dimmer(control, msg, parentControl); break;
+			case 'ColorPickerV2': this.colorPickerV2(control, msg, parentControl); break;
 			case 'Gate': this.gate(control, msg); break;
 			case 'Alarm': this.alarm(control, msg); break;
 			case 'AlarmClock': this.alarmClock(control, msg); break;
@@ -110,54 +112,107 @@ class Test {
 		}
 	}
 
-	switch(control: Control, msg: string) {
-		const stateId = control.states.active;
+	switch(control: Control, msg: string, parentControl: Control | undefined) {
+		const activeId = control.states.active;
 		let val;
 		if (msg == 'on') val = '1';
 		if (msg == 'off') val = '0';
-		controlStore.setState(stateId, val);
+		controlStore.setState(activeId, val);
+		if (parentControl && parentControl.type === 'LightControllerV2') {
+			controlStore.setState(parentControl.states.activeMoodsNum, '-1'); // manual
+		}
 	}
 
 	radio(control: Control, msg: string) {
-		const stateId = control.states.activeOutput;
+		const activeOutputId = control.states.activeOutput;
 		const val = msg =='reset' ? 0 : msg;
-		controlStore.setState(stateId, val);
+		controlStore.setState(activeOutputId, val);
 	}
 
-	dimmer(control: Control, msg: string) {
-		const stateId = control.states.position;
+	dimmer(control: Control, msg: string, parentControl: Control | undefined) {
+		const positionId = control.states.position;
 		if (Number(msg) > 0) {
 			this.dimmerLastValue[control.uuidAction] = msg; // store last value;
 		}
 		let val = msg;
 		if (msg == 'off') val = '0'; 
 		if (msg == 'on') val = this.dimmerLastValue[control.uuidAction];
-		controlStore.setState(stateId, val);
+		controlStore.setState(positionId, val);
+		if (parentControl && parentControl.type === 'LightControllerV2') {
+			controlStore.setState(parentControl.states.activeMoodsNum, '-1'); // manual
+		}
 	}
 
-	colorPickerV2(control: Control, msg: string) {
-		const stateId = control.states.color;
-		controlStore.setState(stateId, msg);
+	colorPickerV2(control: Control, msg: string, parentControl: Control | undefined) {
+		const colorId = control.states.color;
+		controlStore.setState(colorId, msg);
+		if (parentControl && parentControl.type === 'LightControllerV2') {
+			controlStore.setState(parentControl.states.activeMoodsNum, '-1'); // manual
+		}
 	}
 
 	valueSelector(control: Control, msg: string) {
-		const stateId = control.states.value;
-		controlStore.setState(stateId, msg);
+		const valueId = control.states.value;
+		controlStore.setState(valueId, msg);
 	}
 
 	slider(control: Control, msg: string) {
-		const stateId = control.states.value;
-		controlStore.setState(stateId, msg);
+		const valueId = control.states.value;
+		controlStore.setState(valueId, msg);
 	}
 
 	infoOnlyDigital(control: Control, msg: string) {
-		const stateId = control.states.active;
-		controlStore.setState(stateId, msg);
+		const activeId = control.states.active;
+		controlStore.setState(activeId, msg);
 	}
 
 	lightControllerV2(control: Control, msg: string) {
 		const stateId = control.states.activeMoodsNum;
+		const lights = Object.values(control.subControls);
 		const val = msg.split('/');
+		switch (val[1]) {
+			case '778': { /* off */
+				lights.forEach( light => {
+					switch(light.type) {
+						case 'Dimmer': controlStore.setState(light.states.position, '0'); break;
+						case 'ColorPickerV2' : { 
+							const hsv = this.getHsv(String(controlStore.getState(light.states.color)));
+							controlStore.setState(light.states.color, `hsv(${hsv[0]},${hsv[1]},0)`);
+							break; 
+						}
+						case 'Switch': controlStore.setState(light.states.active, '0'); break;
+					}
+				}); 
+				break;
+			}
+			case '777': { /* on */
+				lights.forEach( light => {
+					switch(light.type) {
+						case 'Dimmer': controlStore.setState(light.states.position, '100'); break;
+						case 'ColorPickerV2' : { 
+							const hsv = this.getHsv(String(controlStore.getState(light.states.color)));
+							controlStore.setState(light.states.color, `hsv(${hsv[0]},${hsv[1]},100)`);
+							break; 
+						}
+						case 'Switch': controlStore.setState(light.states.active, '1'); break;
+					}
+				});
+				break;
+			}
+			case '1': { /* default */
+				lights.forEach( light => {
+					switch(light.type) {
+						case 'Dimmer': controlStore.setState(light.states.position, '20'); break;
+						case 'ColorPickerV2' : { 
+							const hsv = this.getHsv(String(controlStore.getState(light.states.color)));
+							controlStore.setState(light.states.color, `hsv(${hsv[0]},${hsv[1]},80)`);
+							break; 
+						}
+						case 'Switch': controlStore.setState(light.states.active, '0'); break;
+					}
+				});
+			}
+		}
 		controlStore.setState(stateId, val[1]);
 	}
 
@@ -207,14 +262,14 @@ class Test {
 		if (this.jalousieIntervalMap[control.uuidAction]) {
 			clearInterval(this.jalousieIntervalMap[control.uuidAction]);
 		}
-		const posId = control.states.position;
-		let pos: number = Number(controlStore.getState(posId));
+		const positionId = control.states.position;
+		let pos: number = Number(controlStore.getState(positionId));
 		this.jalousieIntervalMap[control.uuidAction] = setInterval(() => {
 			if (pos <= 1 && pos >= 0 ) {
 				pos += 0.1 * direction;
 				if (pos > 1) { pos = 1; clearInterval(this.jalousieIntervalMap[control.uuidAction]);}
 				if (pos < 0) { pos = 0; clearInterval(this.jalousieIntervalMap[control.uuidAction]);}
-				controlStore.setState(posId, String(pos));
+				controlStore.setState(positionId, String(pos));
 			} else {
 				clearInterval(this.jalousieIntervalMap[control.uuidAction]);
 			}
@@ -222,24 +277,24 @@ class Test {
 	}
 
 	timedSwitch(control: Control, msg: string) {
-		const stateId= control.states.deactivationDelay;
+		const deactivationDelayId= control.states.deactivationDelay;
 		let val: number = 0;
 		switch (msg) {
-			case 'on': clearInterval(this.timedSwitchIntervalMap[control.uuidAction]); val = -1; controlStore.setState(stateId, String(val)); break;
-			case 'off': clearInterval(this.timedSwitchIntervalMap[control.uuidAction]); val = 0; controlStore.setState(stateId, String(val)); break;
+			case 'on': clearInterval(this.timedSwitchIntervalMap[control.uuidAction]); val = -1; controlStore.setState(deactivationDelayId, String(val)); break;
+			case 'off': clearInterval(this.timedSwitchIntervalMap[control.uuidAction]); val = 0; controlStore.setState(deactivationDelayId, String(val)); break;
 			case 'pulse': this.startTimedSwitch(control); break;
 			default: console.error('Command', msg, 'not found for Control', control.uuidAction, control.type);
 		}
 	}
 
 	startTimedSwitch(control: Control) {
-		let val = controlStore.getState(control.states.deactivationDelayTotal);
+		let deactivationDelayTotalId = controlStore.getState(control.states.deactivationDelayTotal);
 		const stateId = control.states.deactivationDelay;
 		clearInterval(this.timedSwitchIntervalMap[control.uuidAction]);
 		this.timedSwitchIntervalMap[control.uuidAction] = setInterval(() => {
-			if (val > 0) {
-				val--;
-				controlStore.setState(stateId, String(val));
+			if (deactivationDelayTotalId > 0) {
+				deactivationDelayTotalId--;
+				controlStore.setState(stateId, String(deactivationDelayTotalId));
 			}
 		}, 1000);
 	}
@@ -332,23 +387,23 @@ class Test {
 
 	smokeAlarmServiceMode(control: Control, msgItems: string[]) {
 		let time = Number(msgItems[1]); // Override time given in seconds
-		const timeServiceMode = control.states.timeServiceMode;
-		const level = control.states.level;
+		const timeServiceModeId = control.states.timeServiceMode;
+		const levelId = control.states.level;
 		if (!time) {
 			clearInterval(this.smokeAlarmIntervalMap[control.uuidAction]);
-			controlStore.setState(level, '0'); // 0 = no alarm
-			controlStore.setState(timeServiceMode, '0');
+			controlStore.setState(levelId, '0'); // 0 = no alarm
+			controlStore.setState(timeServiceModeId, '0');
 			return;
 		}
 		clearInterval(this.smokeAlarmIntervalMap[control.uuidAction]);
 		this.smokeAlarmIntervalMap[control.uuidAction] = setInterval(() => {
 			if (time > 0) {
 				time--;
-				controlStore.setState(level, '99'); // 99 = service mode
-				controlStore.setState(timeServiceMode, String(time));
+				controlStore.setState(levelId, '99'); // 99 = service mode
+				controlStore.setState(timeServiceModeId, String(time));
 			} else {
-				controlStore.setState(level, '0'); // 0 = no alarm'
-				controlStore.setState(timeServiceMode, '0');
+				controlStore.setState(levelId, '0'); // 0 = no alarm'
+				controlStore.setState(timeServiceModeId, '0');
 				clearInterval(this.smokeAlarmIntervalMap[control.uuidAction]);
 			}
 		}, 1000);
@@ -370,8 +425,8 @@ class Test {
 	}
 
 	startIRCV1Timer(control: Control, msgItems: string[]) {
-		const mode = controlStore.getState(control.states.mode);
-		const isCooling = (mode == 2 || mode == 4 || mode == 6);
+		const modeId = controlStore.getState(control.states.mode);
+		const isCooling = (modeId == 2 || modeId == 4 || modeId == 6);
 		let time = Number(msgItems[2])*60; // Override time given in minutes
 		const overrideId = control.states.override;
 		this.daytimerOldValue = controlStore.getState(control.states.value);
@@ -447,7 +502,7 @@ class Test {
 	}
 	
 	setDayTimer(control: Control, msgItems: string[]) {
-		const entriesId = control.states.entriesAndDefaultValue;
+		const entriesAndDefaultValueId = control.states.entriesAndDefaultValue;
 		let entries = '{defValue: 0, entries: ' + msgItems[1] + ', entry: [\n';
 		const modeList: string[] = [];
 		for( let i = 0; i < Number(msgItems[1]); i++) {
@@ -462,7 +517,7 @@ class Test {
 		}
 		entries += '], uuid: 1}'; // TOOD replace by valid UUID
 		this.setDayTimerModes(control, modeList);
-		controlStore.setState(entriesId, entries);
+		controlStore.setState(entriesAndDefaultValueId, entries);
 	}
 	
 	setDayTimerModes(control: Control, modeList: string[]) {
@@ -500,6 +555,12 @@ class Test {
 				resolve(msg);
 			}, 300);
 		});
+	}
+	
+	private getHsv(color: string) {
+		const regex = new RegExp('hsv\\(([0-9]+),([0-9]+),([0-9]+)\\)');
+		const found = color.match(regex);
+		return found ? [found[1], found[2], found[3]] : []
 	}
 }
 

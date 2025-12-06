@@ -36,7 +36,6 @@
 		statusName: buttonActive ? $_('On') : $_('Off'),
 		statusColor: buttonActive ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700',
 		textName: control.name,
-		textColor: controlOptions.isSubControl && buttonActive ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-50 text-surface-950',
 		buttonState: buttonActive,
 		buttons: buttons,
 		dialog: dialog,

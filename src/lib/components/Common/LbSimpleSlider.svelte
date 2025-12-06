@@ -37,7 +37,9 @@
 </script>
 
 <div class="ml-1 mr-1 mb-1 { (orientation == 'vertical' && windowHeight > 630) ? 'rotate-270 m-3 ml-3 mb-8':''}">
-	<input bind:this={viewport} type="range" id="vol" name="vol" min={min} max={max} step={step} bind:value={value} onmouseup={handleMouseUp} onmousedown={handleMouseDown} onmousemove={handleMouseMove}
+	<input bind:this={viewport} type="range" id="vol" name="vol" min={min} max={max} step={step} bind:value={value} 
+		onmouseup={handleMouseUp} onmousedown={handleMouseDown} onmousemove={handleMouseMove}
+		ontouchstart={handleMouseDown} ontouchmove={handleMouseMove} ontouchend={handleMouseUp}
 					class=" {classes} { (classes == 'dimmer' && windowHeight < 630 ) ? 'h-[60px] w-[250px]' : 'h-[150px] w-[200px] '}"
 					style=" {style} { classes == 'dimmer' ? dimmerBackground() : ''}" />
 </div>

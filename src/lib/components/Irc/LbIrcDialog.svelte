@@ -189,7 +189,7 @@
 	function setTimerOverride(item: ListItem) {
 		let coeff = 1000 * 60; // round to minute
 		let overrideTimeSec = Math.round((date.getTime() - Date.now())/coeff)*coeff/1000;
-
+		
 		if (overrideTimeSec > 60 && controlView.control) {// TODO define minimum time of 1 minute
 			let cmd = isV1 ? 'starttimer/' : 'override/';
 			overrideTimeSec += (isV1 ? 0 : Math.round((Date.now() - utils.loxTimeRef)/1000)); // V2 starts to count from 1-1-2009

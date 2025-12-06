@@ -78,7 +78,7 @@
 
   "__uuid__controls_phase_1": "0",
   
-  "__uuid__controls_lightcontrollerv2_1_states_activeMoodsNum": "778",
+  "__uuid__controls_lightcontrollerv2_1_states_activeMoodsNum": "1",
   "__uuid__controls_lightcontrollerv2_1_states_moodList": [
     {
         "name": "Default",
@@ -109,7 +109,7 @@
   "__uuid__controls_lightcontrollerv2_1/AI3_states_color": "hsv(144,33,82)",
   "__uuid__controls_lightcontrollerv2_1/AI4_states_color": "hsv(144,33,82)",
 
-  "__uuid__controls_lightcontrollerv2_2_states_activeMoodsNum": "778",
+  "__uuid__controls_lightcontrollerv2_2_states_activeMoodsNum": "1",
   "__uuid__controls_lightcontrollerv2_2_states_moodList": [
     {
         "name": "Default",

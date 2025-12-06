@@ -115,24 +115,24 @@
 		<Dialog.Positioner class="fixed inset-0 z-10 flex justify-center items-center p-4">
 			<Dialog.Content class="card bg-surface-100-900 p-4 pt-3 shadow-sm rounded-lg border border-white/5 hover:border-white/10
 								md:max-w-9/10 md:max-h-9/10 w-[450px]">
-		<header class="relative">
-			<div class="flex justify-center">
-				<div class="relative inline-flex h-18 w-18 items-center justify-center overflow-hidden rounded-full border border-white/5 dark:bg-surface-950">
-					{#if selectedEntry?.severity == 3}
-						<LbIcon class="text-red-500" name='/icons/svg/error.svg' width="36" height="36"/>
-					{:else if selectedEntry?.severity == 2}
-						<LbIcon class="text-orange-500" name='/icons/svg/warning.svg' width="36" height="36"/>
-					{:else}
-						<LbIcon class="text-cyan-500" name='/icons/svg/info.svg' width="36" height="36"/>
-					{/if}
-				</div>
-			</div>
-			<div class="absolute right-0 top-0">
-				<button type="button" aria-label="close" class="btn-icon w-auto" onclick={() => { openDialog = false }}>
-					<XIcon/>
-				</button>
-			</div>
-		</header>
+				<header class="relative">
+					<div class="flex justify-center">
+						<div class="relative inline-flex h-18 w-18 items-center justify-center overflow-hidden rounded-full border border-white/5 dark:bg-surface-950">
+							{#if selectedEntry?.severity == 3}
+								<LbIcon class="text-red-500" name='/icons/svg/error.svg' width="36" height="36"/>
+							{:else if selectedEntry?.severity == 2}
+								<LbIcon class="text-orange-500" name='/icons/svg/warning.svg' width="36" height="36"/>
+							{:else}
+								<LbIcon class="text-cyan-500" name='/icons/svg/info.svg' width="36" height="36"/>
+							{/if}
+						</div>
+					</div>
+					<div class="absolute right-0 top-0">
+						<button type="button" aria-label="close" class="btn-icon w-auto" onclick={() => { openDialog = false }}>
+							<XIcon class="size-4"/>
+						</button>
+					</div>
+				</header>
 				<Dialog.Description>
 					<div class="flex flex-col items-center justify-center mt-2">
 						<div>

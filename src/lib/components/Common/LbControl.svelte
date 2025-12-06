@@ -112,7 +112,7 @@
 		</div>
 		<div class="pl-1 pt-2 truncate">
 			<p class="truncate text-xs dark:text-surface-300 text-surface-700">{label(controlView.control)}</p>
-			<p class="truncate text-lg {controlView.textColor}">{controlView.textName}</p>
+			<p class="truncate text-lg">{controlView.textName}</p>
 			<p class="text-md truncate {controlView.statusColor}" style={getStatusColorHex(controlView.statusColor)}>{controlView.statusName}</p>
 		</div>
 	</div>
@@ -156,7 +156,7 @@
 				</div>
 			{/if}
 			<div class="m-0 ml-2 truncate">
-				<p class="truncate text-lg {controlView.textColor}">{controlView.textName}</p>
+				<p class="truncate text-lg">{controlView.textName}</p>
 				{#if controlView.statusName}
 					<p class="text-md truncate {controlView.statusColor}" style={getStatusColorHex(controlView.statusColor)}>{controlView.statusName}</p>
 				{/if}

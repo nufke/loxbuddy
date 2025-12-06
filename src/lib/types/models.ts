@@ -480,7 +480,6 @@ export type ControlView = {
 	badgeIconName?: string;
 	badgeIconColor?: string;
 	textName: string;
-	textColor?: string;
 	statusName: string;
 	statusColor: string;
 	buttonState?: boolean;
@@ -516,7 +515,6 @@ export const DEFAULT_CONTROLVIEW: ControlView = {
 	iconColor: 'dark:fill-surface-50 fill-surface-950',
 	textName: '',
 	iconText: '',
-	textColor: 'dark:text-surface-50 text-surface-950',
 	statusName: '',
 	statusColor: 'dark:text-surface-300 text-surface-700',
 	buttons: [],
