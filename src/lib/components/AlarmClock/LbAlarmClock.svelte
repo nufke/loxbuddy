@@ -143,9 +143,8 @@
 	}
 
 	function getAlarmTime() {
-		const loxTimeRef = 1230764400000;
-		let date = new Date(nextEntryTime * 1000 + loxTimeRef);
-		date = utils.isDST(date) ? new Date(nextEntryTime * 1000 + loxTimeRef - 3600000) : date;
+		let date = new Date(nextEntryTime * 1000 + utils.loxTimeRef);
+		date = utils.isDST(date) ? new Date(nextEntryTime * 1000 + utils.loxTimeRef - 3600000) : date;
 		return format(date, 'PPP p');
 	}
 

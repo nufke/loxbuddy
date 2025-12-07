@@ -67,11 +67,14 @@ class Utils {
 		let obj;
 		try {
 			obj = JSON.parse(str);
-		} catch (e) {
+		} catch {
 			return false;
 		}
-		if (typeof obj === 'object') return true;
-		else false;
+		if (typeof obj === 'object') {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	hours2dec(time: string) {

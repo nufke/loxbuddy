@@ -189,17 +189,19 @@ class WeatherStore {
 			const hours = this.hourly.filter(h => h.date == startDate + (i-1) * 24 * 3600 * 1000 );
 			const noon = hours.find( n => n.hour == 12);
 			const sunTime = hours.length ? SunCalc.getTimes(new Date(hours[0].date + 12 * 3600 * 1000), Number(this.latitude), Number(this.longitude)) : null;
-			const item: WeatherDailyForecast = {
-				time: hours.length ? hours[0].date : 0,
-				conditions: noon ? noon.conditions : hours[0].conditions,
-				icon: noon ? noon.icon : hours[0].icon,
-				airTemperatureHigh: Math.max(...hours.map( h => h.airTemperature)),
-				airTemperatureLow: Math.min(...hours.map( h => h.airTemperature)),  
-				precipitationProbability: Math.max(...hours.map( h => h.precipitationProbability)),
-				sunRise: sunTime ? utils.epoch2TimeStr(sunTime.sunrise.valueOf()/1000) : '',
-				sunSet: sunTime ? utils.epoch2TimeStr(sunTime.sunset.valueOf()/1000) : ''
-			};
-			if (item.time) temp.push(item)
+			if (hours.length) {
+				const item: WeatherDailyForecast = {
+					time: hours[0].date,
+					conditions: noon ? noon.conditions : hours[0].conditions,
+					icon: noon ? noon.icon : hours[0].icon,
+					airTemperatureHigh: Math.max(...hours.map( h => h.airTemperature)),
+					airTemperatureLow: Math.min(...hours.map( h => h.airTemperature)),  
+					precipitationProbability: Math.max(...hours.map( h => h.precipitationProbability)),
+					sunRise: sunTime ? utils.epoch2TimeStr(sunTime.sunrise.valueOf()/1000) : '',
+					sunSet: sunTime ? utils.epoch2TimeStr(sunTime.sunset.valueOf()/1000) : ''
+				};
+				if (item.time) temp.push(item);
+			}
 		}
 		this.daily = temp;
 		//console.log('daily', this.daily)

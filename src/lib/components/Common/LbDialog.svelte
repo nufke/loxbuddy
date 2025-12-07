@@ -164,7 +164,7 @@
 							</div>
 							{/if}
 							{#if controlView && controlView.slider && controlView.slider.position >= min}
-								<div class="container flex justify-center items-center m-2 p-0">
+								<div class="container flex justify-center items-center p-1 pb-3">
 									{#if controlView.control?.type=='Dimmer'}
 										<LbSimpleSlider classes='dimmer' {orientation} {min} {max} {step} {locked} {value} onValueChange={(e: any) => {setPostion(e.value)}}/>
 									{:else}

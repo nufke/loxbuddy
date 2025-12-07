@@ -15,6 +15,8 @@
 
 	let imageIdx = 0; // image cache index
 	let img: any = $state();
+	let resource = $state();
+
 	let events = $derived(String(controlStore.getState(controlView.control.states.lastBellEvents)));
 	let lastBellEvents = $derived((events.includes('|') ? events.split('|').reverse(): []));
 	let selectedTab = $state(1);
@@ -22,10 +24,15 @@
 	let dialogHeight = $state(500);
 	let imageHeight = $state(200);
 	let history = $derived(lastBellEvents.length);
-	let resource = $derived(uuid ? await loxWsClient.fetch(`jdev/sps/io/${uuid}/securedDetails`) : null);
 	let	securedDetails = $derived(resource ? JSON.parse(resource) : {});
 	let bellImages = $derived(new SvelteMap<string, string>());
 	let isJpgVideo = $derived(securedDetails?.videoInfo?.streamUrl.match(/.jpg$/) ? 1 : 0);
+
+	$effect( async () => {
+		if (uuid) {
+			resource = await loxWsClient.fetch(`jdev/sps/io/${uuid}/securedDetails`);
+		}
+	});
 
 	$effect( () => {
 		if (isJpgVideo) {

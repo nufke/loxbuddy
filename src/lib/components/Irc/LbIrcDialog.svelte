@@ -47,8 +47,8 @@
 	let date: SvelteDate = $state(new SvelteDate(Date.now() + 3600000));
 
 	let overrideV1 = $derived(Number(controlStore.getState(controlView.control.states.override)));
-	let overrideEntriesV2 = controlStore.getState(controlView.control.states.overrideEntries);
-	let overrideV2 = $derived(overrideEntriesV2 && overrideEntriesV2[0] ? (overrideEntriesV2[0].isTimer ? 1: 0 ) : 0);
+	let overrideEntriesV2 = $derived(controlStore.getState(controlView.control.states.overrideEntries));
+	let overrideV2 = $derived(overrideEntriesV2 && overrideEntriesV2[0] ? (overrideEntriesV2[0].isTimer ? 1: 0 ) : 0); // TODO, we might have more entries
 
 	let modeV1 = $derived(Number(controlStore.getState(controlView.control.states.mode)));
 	let modeIdV1 = $derived(temperatureModeList && temperatureModeList[modeV1] ? temperatureModeList[modeV1].id : 0);
@@ -57,10 +57,11 @@
 	let isCoolingV1 = $derived(modeIdV1==2 || modeIdV1==4 || modeIdV1==6);
 	let isEcoV1 = $derived(selectedItem?.id == 0);
 
-	let modeV2 = $derived(Number(controlStore.getState(controlView.control.states.currentMode)));
-	let isAutomaticV2 = $derived(Number(controlStore.getState(controlView.control.states.operatingMode))<3);
-	let isHeatingV2 = $derived(modeV2==1 || modeV2 == 4);
-	let isCoolingV2 = $derived(modeV2==2 || modeV2 == 5);
+	let operatingModeV2 = $derived(Number(controlStore.getState(controlView.control.states.operatingMode)));
+	let currentModeV2 = $derived(Number(controlStore.getState(controlView.control.states.currentMode)));
+	let isAutomaticV2 = $derived(operatingModeV2<3);
+	let isHeatingV2 = $derived(currentModeV2==1 || currentModeV2 == 4);
+	let isCoolingV2 = $derived(currentModeV2==2 || currentModeV2 == 5);
 	let isEcoV2 = $derived(Number(controlStore.getState(controlView.control.states.activeMode))==0);
 
 	let override = $derived(isV1 ? overrideV1 : overrideV2);
@@ -238,7 +239,7 @@
 		if (!entries) return;
 		if (entries.length ==0) return;
 		let timerDate = entries[0].end * 1000 + utils.loxTimeRef;
-		return utils.isDST(new Date(timerDate)) ? timerDate+3600000 : timerDate;
+		return utils.isDST(new Date(timerDate)) ? timerDate + 3600000 : timerDate;
 	}
 
 	async function close() {
@@ -341,7 +342,7 @@
 											<h2 class="m-2 text-md text-center dark:text-surface-50 text-surface-950">{dayOfTheWeek}</h2>
 										</div>
 									</div>
-								<div class="text-center">{overrideEntriesV2}
+								<div class="text-center">
 									{#if override > 0}
 										<p class="mt-2 mb-2 text-lg">{$_("Duration")} { isV1 ? format(timerEndsV1, 'PPP p') : format(timerEndsV2, 'PPP p')} </p>
 										<button type="button" class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50"

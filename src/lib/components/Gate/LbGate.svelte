@@ -62,13 +62,13 @@
 		class: 'grid-cols-2',
 		buttons: [
 			{
-				name: $_('Closing'),
+				name: $_('Close'),
 				type: 'button',
 				color: '',
 				click: () => loxWsClient.control(control.uuidAction, 'close'),
 			},
 			{
-				name: $_('Opening'),
+				name: $_('Open'),
 				type: 'button',
 				color: '',
 				click: () => loxWsClient.control(control.uuidAction, 'open'),
@@ -89,7 +89,7 @@
 		isFavorite: controlOptions.isFavorite,
 		iconName: controlStore.getIcon(control, controlOptions.isSubControl),
 		textName: control.name,
-		statusName: (position > 99) ? $_('Open') : ( (position < 1) ? $_('Closed') :  fmt.sprintf('%2.0f%% %s', position, $_('Open'))),
+		statusName: (position > 99) ? $_('Opened') : ( (position < 1) ? $_('Closed') :  fmt.sprintf('%2.0f%% %s', position, $_('Opened'))),
 		statusColor: (position > 1) ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700',
 		buttons: buttons,
 		dialog: dialog

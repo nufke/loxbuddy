@@ -20,7 +20,9 @@
 		let newValue = value + step * isUp;
 		if (newValue > max) newValue = max;
 		if (newValue < min) newValue = min;
-		loxWsClient.control(control.uuidAction, String(newValue));
+		if (newValue != value) {
+			loxWsClient.control(control.uuidAction, String(newValue));
+		}
 	}
 
 	let buttonMinus: SingleButtonView[] = $state([

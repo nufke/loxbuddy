@@ -18,7 +18,7 @@ class Test {
 	private gateIntervalMap: IntervalMap = {};
 	private daytimerIntervalMap: IntervalMap = {};
 	private daytimerOldValue: {[key: string]: string} = {};
-	private ircv1timerIntervalMap: IntervalMap = {};
+	private ircTimerIntervalMap: IntervalMap = {};
 	private smokeAlarmIntervalMap: IntervalMap = {};
 
 	start() {
@@ -419,7 +419,7 @@ class Test {
 			return;
 		}
 		switch (msg) {
-			case 'stoptimer': clearInterval(this.ircv1timerIntervalMap[control.uuidAction]); controlStore.setState(overrideId, '0'); controlStore.setState(valueId, '0'); break;
+			case 'stoptimer': clearInterval(this.ircTimerIntervalMap[control.uuidAction]); controlStore.setState(overrideId, '0'); controlStore.setState(valueId, '0'); break;
 			default: console.error('Command', msg, 'not found for Control', control.uuidAction, control.type);
 		}
 	}
@@ -434,8 +434,8 @@ class Test {
 		const ircDaytimerSelected = ircDaytimer.find( item => item.name == (isCooling ? 'Cooling' : 'Heating'));
 		const valueId = ircDaytimerSelected?.states.value;
 		const tempTargetId = control.states.tempTargetId;
-		clearInterval(this.ircv1timerIntervalMap[control.uuidAction]);
-		this.ircv1timerIntervalMap[control.uuidAction] = setInterval(() => {
+		clearInterval(this.ircTimerIntervalMap[control.uuidAction]); /* stop time if still running */
+		this.ircTimerIntervalMap[control.uuidAction] = setInterval(() => {
 			if (time > 0) {
 				time--;
 				controlStore.setState(overrideId, String(time));
@@ -444,14 +444,71 @@ class Test {
 			} else {
 				controlStore.setState(valueId, '0'); // TODO check schedule
 				controlStore.setState(tempTargetId, '21.0'); // TODO check schedule
-				clearInterval(this.ircv1timerIntervalMap[control.uuidAction]);
+				clearInterval(this.ircTimerIntervalMap[control.uuidAction]);
 			}
 		}, 1000);
 	}
 
 	ircv2(control: Control, msg: string) {
-		// TODO
-		console.error('Command', msg, 'not found for Control', control.uuidAction, control.type);
+		const msgItems = msg.split('/');
+		if (msg.includes('override/')) {
+			this.startIRCV2Timer(control, msgItems);
+			return;
+		}
+		switch (msg) {
+			case 'stopOverride': this.stopIRCV2Timer(control); break;
+			default: console.error('Command', msg, 'not found for Control', control.uuidAction, control.type);
+		}
+	}
+
+	startIRCV2Timer(control: Control, msgItems: string[]) {
+		const selectedMode = Number(msgItems[1]);
+		const currentMode = Number(controlStore.getState(control.states.currentMode));
+		const isHeating = (currentMode == 1) || (currentMode == 4);
+		const comfortTemperature = Number(controlStore.getState(control.states.comfortTemperature));
+		const frostProtectTemperature = Number(controlStore.getState(control.states.frostProtectTemperature))
+		const comfortTemperatureCool = Number(controlStore.getState(control.states.comfortTemperatureCool));
+		const absentMaxOffset = Number(controlStore.getState(control.states.absentMaxOffset));
+		let temp: number;
+		switch (selectedMode) { /* mode */
+			case 0: /* eco */ temp = (isHeating ? comfortTemperature : comfortTemperatureCool) - absentMaxOffset; break;
+			case 1: /* comfort */ temp = (isHeating ? comfortTemperature : comfortTemperatureCool); break;
+			case 2: /* build protect */ temp = frostProtectTemperature; break;
+			case 3: /* manual */ temp = 22.2; break;
+			case 4: /* off */ temp = frostProtectTemperature; break;
+		}
+		let time = Math.round((Number(msgItems[2])*1000 + utils.loxTimeRef - Date.now())/1000);
+		const overrideEntries = [{ 
+			start: String(Math.round((Date.now() - utils.loxTimeRef)/1000)),
+			end: msgItems[2],
+			reason: '0', /* TODO, now None */
+			source: null,
+			isTimer: true
+		}];
+		clearInterval(this.ircTimerIntervalMap[control.uuidAction]); /* stop time if still running */
+		this.ircTimerIntervalMap[control.uuidAction] = setInterval(() => {
+			if (time > 0) {
+				time--;
+				controlStore.setState(control.states.overrideEntries, overrideEntries);
+				controlStore.setState(control.states.activeMode, msgItems[1]);
+				controlStore.setState(control.states.tempTarget, String(temp)); // TODO check via schedule
+			} else {
+				this.stopIRCV2Timer(control);
+			}
+		}, 1000);
+	}
+
+	stopIRCV2Timer(control: Control) {
+		const overrideOff = [{ 
+			start: String(Math.round((Date.now() - utils.loxTimeRef)/1000)),
+			end: String(Math.round((Date.now() - utils.loxTimeRef)/1000)),
+			reason: '0', /* None */
+			source: null,
+			isTimer: false
+		}];
+		controlStore.setState(control.states.overrideEntries, overrideOff); // TODO check schedule
+		controlStore.setState(control.states.tempTarget, '21.0'); // TODO check schedule
+		clearInterval(this.ircTimerIntervalMap[control.uuidAction]);
 	}
 
 	daytimer(control: Control, msg: string) {

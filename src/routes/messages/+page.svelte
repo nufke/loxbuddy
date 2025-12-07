@@ -11,8 +11,9 @@
 	import { innerHeight, innerWidth } from 'svelte/reactivity/window';
 
 	let group = $state('1');
+	let resource = $state();
+
 	let messageCenter = $derived(controlStore.messageCenterList[0]); // select first message center
-	let resource = $derived( messageCenter?.uuidAction ? await loxWsClient.fetch(`jdev/sps/io/${messageCenter?.uuidAction}/getEntries/2`) : null);
 	let	messages = $derived(resource ? JSON.parse(resource) : {}) as SystemStatus;
 	let activeMessages = $derived(messages && messages.entries ? messages.entries.filter( entry => entry.isHistoric == false) : []);
 	let pastMessages = $derived(messages && messages.entries ? messages.entries.filter( entry => entry.isHistoric == true) : []);
@@ -24,6 +25,12 @@
 	let openDialog = $state(false);
 
 	let severity = ['', 'Info', 'Warning', 'Error'];
+
+	$effect( async () => {
+		if (messageCenter && messageCenter.uuidAction) {
+			resource = await loxWsClient.fetch(`jdev/sps/io/${messageCenter?.uuidAction}/getEntries/2`);
+		}
+	});
 
 	function didRead(notification: NotificationMessage) {
 		controlStore.updateNotificationMap(notification, 2);
