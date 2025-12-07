@@ -164,7 +164,7 @@
 <svelte:body onclick={() => {appStore.resetLockScreenDialogTimeout()}}/>
 
 {#if (innerWidth.current != undefined) && innerWidth.current > 768 } <!-- tabled / landscape mode  -->
-<div class="fixed w-full h-screen md:grid grid-cols-[auto_1fr]">
+<div class="w-full h-screen md:grid grid-cols-[auto_1fr]">
 	<Navigation layout={ layoutRail ? 'rail' : 'sidebar'}
 							class={ layoutRail ? '' : 'grid grid-rows-[1fr_auto] gap-4 w-[180px]'}>
 		<Navigation.Content>
@@ -195,7 +195,7 @@
 							{/if}
 							<Icon class={checkUrl(link.href) ? 'dark:text-primary-500 text-primary-700' : 'white'}/>
 						</div>
-						<span class="text-[12px] + {checkUrl(link.href) ? 'dark:text-primary-500 text-primary-700' : 'white'}">{link.label}</span>
+						<span class="text-[12px] + {checkUrl(link.href) ? 'dark:text-primary-500 text-primary-700' : 'white'}">{$_(link.label)}</span>
 					</div>
 				{/each}
 			{:else}
@@ -207,7 +207,7 @@
 							<div onclick={() => { toggleLayout(); navigate(link.href)}} class={anchorSidebar} 
 								aria-label={link.label}>
 								<Icon class="size-4 {checkUrl(link.href) ? 'dark:text-primary-500 text-primary-700' : 'white'}"/>
-								<span class="{checkUrl(link.href) ? 'dark:text-primary-500 text-primary-700' : 'white'}">{link.label}</span>
+								<span class="{checkUrl(link.href) ? 'dark:text-primary-500 text-primary-700' : 'white'}">{$_(link.label)}</span>
 							</div>
 						{/each}
 					</Navigation.Menu>
@@ -241,14 +241,14 @@
 <div class="w-full h-screen grid grid-rows-[1fr_auto]">
 	<Navigation layout="bar" class="fixed top-0 h-[65px] flex justify-center items-center z-10 shadow-md w-screen">
 		<Navigation.Menu class="grid grid-cols-3 gap-2">
-			<div class="flex flex-row text-center items-center gap-2">
-				<button class="ml-4 mr-0 text-left" onclick={() => {navigate(nav.href)}}>
+			<div class="flex flex-row justify-left items-center gap-2">
+				<button class="ml-2" onclick={() => {navigate(nav.href)}}>
 					<LbIcon name={nav.label}/>
 				</button>
 				{#if showWeather}
-					<button class="ml-0 m-auto flex flex-row items-center gap-1" onclick={openWeather}>
+					<button class="-ml-1 flex flex-row justify-center items-center gap-1" onclick={openWeather}>
 						<LbIcon name={getCurrentIcon(currentWeather)} width="48" height="48"/>	
-						<span class="text-lg truncate">{currentWeather.airTemperature}°</span>
+						<span class="-ml-1 text-lg truncate">{currentWeather.airTemperature}°</span>
 					</button>
 				{/if}
 			</div>
@@ -279,7 +279,7 @@
 							{/if}
 							<Icon class="size-5 {checkUrl(link.href) ? 'dark:text-primary-500 text-primary-700' : 'white'}" />
 						</div>
-						<span class="text-[12px] {checkUrl(link.href) ? 'dark:text-primary-500 text-primary-700' : 'white'}">{link.label}</span>
+						<span class="text-[12px] {checkUrl(link.href) ? 'dark:text-primary-500 text-primary-700' : 'white'}">{$_(link.label)}</span>
 					</div>
 				{/each}
 			</Navigation.Menu>
@@ -317,7 +317,7 @@
 						<div onclick={() => { mobileMenuDialog = false; navigate(link.href)}} class={anchorSidebar} 
 							aria-label={link.label}>
 							<Icon class="size-4 {checkUrl(link.href) ? 'dark:text-primary-500 text-primary-700' : 'white'}"/>
-							<span class="{checkUrl(link.href) ? 'dark:text-primary-500 text-primary-700' : 'white'}">{link.label}</span>
+							<span class="{checkUrl(link.href) ? 'dark:text-primary-500 text-primary-700' : 'white'}">{$_(link.label)}</span>
 						</div>
 					{/each}
 				</div>

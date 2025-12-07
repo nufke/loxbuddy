@@ -310,7 +310,7 @@
 								<div class="w-full mt-4 m-2 p-2 dark:bg-surface-950 bg-surface-50 rounded-lg border border-white/15 hover:border-white/50">
 									<div class="flex flex-row items-center justify-between">
 										<div>
-											<p class="pl-2 text-lg text-left truncate {controlView.statusColor}">{$_(controlView?.statusName)} ({tempFormat(selectedItem?.value)})</p>
+											<p class="pl-2 text-base text-left truncate {controlView.statusColor}">{$_(controlView?.statusName)} ({tempFormat(selectedItem?.value)})</p>
 										</div>
 										<div class="relative flex items-center justify-end">
 											{#if isAutomatic}
@@ -332,7 +332,7 @@
 									</div>
 									<div class="flex flex-col items-center justify-center" onclick={(e) => {e.stopPropagation(); }}> <!-- workaround wrapper to stop propagation -->
 										<LbTemperatureSlider min={5} max={28} step={0.1} target={tempTarget} manual={!isAutomatic} actual={tempActual} onValueChange={(e: any) => {updatePosition(e.value)}}/>
-										<div class="text-md dark:text-surface-50 text-surface-950">Actual: {tempFormat(tempActual)}</div>
+										<div class="text-md dark:text-surface-50 text-surface-950">{$_("Actual")}: {tempFormat(tempActual)}</div>
 									</div>
 								</div>
 									<div class="w-full dark:bg-surface-950 bg-surface-50 rounded-lg border border-white/15 hover:border-white/50"
@@ -434,7 +434,6 @@
 	<LbCalendarDialog bind:view={calendarView} {mode} {dayModes} {entries} {temperatureList}/>
 	<LbCalendarEntryDialog bind:view={calendarEntryView} {entries} {selectedEntry} {dayModes} {temperatureList}/>
 {/if}
-
 <Toast.Group {toaster}>
 	{#snippet children(toast)}
 		<Toast {toast}>
@@ -442,7 +441,7 @@
 				<Toast.Title>{toast.title}</Toast.Title>
 				<Toast.Description>{toast.description}</Toast.Description>
 			</Toast.Message>
-			<Toast.CloseTrigger />
+			<Toast.CloseTrigger/>
 		</Toast>
 	{/snippet}
 </Toast.Group>

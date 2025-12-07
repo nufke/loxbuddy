@@ -16,6 +16,7 @@
 	import { utils } from '$lib/helpers/Utils';
 	import Info from '$lib/components/Common/LbInfo.svelte';
 	import { innerHeight } from 'svelte/reactivity/window';
+	import { slide, fade } from 'svelte/transition';
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
@@ -71,7 +72,7 @@
 
 	function updateSize() {
 		size = (windowHeight * 0.9 - viewport?.clientHeight - margin);
-		style = size > 0 && viewport?.clientHeight == viewport?.scrollHeight ? 'height: 100%' : 'height: ' + (viewport?.clientHeight + size) + 'px';
+		style = viewport?.clientHeight == viewport?.scrollHeight ? 'height: 100%' : 'height: ' + (viewport?.clientHeight + size) + 'px';
 	}
 
 	function newId() {
@@ -200,7 +201,7 @@
 						<Dialog.Description>
 							<div class="mt-2 overflow-y-auto w-full" {style} bind:this={viewport}>
 								{#each entryList as entry, i}
-									<div class="mt-2 p-4 dark:bg-surface-950 bg-surface-50 rounded-lg">
+									<div class="mt-2 p-4 dark:bg-surface-950 bg-surface-50 rounded-lg" transition:slide={{ duration: 200 }}>
 										<div class="flex w-full m-auto h-[72px] justify-between">
 											<div>
 												<h1 class="text-lg truncate">

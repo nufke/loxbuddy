@@ -128,8 +128,8 @@
 	}
 </script>
 
-<div class="sticky container flex max-w-[1280px] flex-col">
-	<button aria-current="true" type="button" class="mt-1 w-full border-b dark:border-surface-900 border-surface-200 p-3 pr-5 pl-5 text-left text-lg">
+<div class="container pt-3 flex max-w-[1280px] flex-col">
+	<button aria-current="true" type="button" class="w-full border-b dark:border-surface-900 border-surface-200 p-3 pr-5 pl-5 text-left text-lg">
 		<div class="flex w-full justify-between">
 			<p>{$_("Dark mode")}</p>
 			<Switch checked={mode == "dark"} onCheckedChange={onDarkModeChange}>
@@ -142,7 +142,7 @@
 	</button>
 	<button aria-current="true" type="button" class="w-full border-b dark:border-surface-900 border-surface-200 p-3 pr-5 pl-5 text-left text-lg">
 		<div class="flex w-full justify-between">
-			<p>{$_("Show connection status")}</p>
+			<p>{$_("Connection status")}</p>
 			<Switch checked={showStatus == "1"} onCheckedChange={onShowStatusChange}>
 				<Switch.Control class="w-12 h-8 mr-1 data-[state=checked]:preset-filled-primary-500">
 					<Switch.Thumb />
@@ -153,7 +153,7 @@
 	</button>
 	<button aria-current="true" type="button" class="w-full border-b dark:border-surface-900 border-surface-200 p-3 pr-5 pl-5 text-left text-lg">
 		<div class="flex w-full justify-between">
-			<p>{$_("Show weather conditions")}</p>
+			<p>{$_("Weather")}</p>
 			<Switch checked={showWeather == "1"} onCheckedChange={onShowWeather}>
 				<Switch.Control class="w-12 h-8 mr-1 data-[state=checked]:preset-filled-primary-500">
 					<Switch.Thumb />
@@ -164,7 +164,7 @@
 	</button>
 	<button aria-current="true" type="button" class="w-full border-b dark:border-surface-900 border-surface-200 p-3 pr-5 pl-5 text-left text-lg">
 		<div class="flex w-full justify-between">
-			<p>{$_("Enable sorting")}</p>
+			<p>{$_("Sorting")}</p>
 			<Switch checked={sorting} onCheckedChange={onSorting}>
 				<Switch.Control class="w-12 h-8 mr-1 data-[state=checked]:preset-filled-primary-500">
 					<Switch.Thumb />

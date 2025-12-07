@@ -217,10 +217,8 @@
 			</Portal>
 		</Dialog>
 	{/if}
-
 	<LbDateTimePickerDialog date={overrideDate.end} bind:view={dateTimeView} onValueChange={(e:any)=>{ updateTimer(e)}}/>
 	<LbCalendarDialog bind:view={calendarView} {mode} {dayModes} {entries}/>
-
 	<Toast.Group {toaster}>
 		{#snippet children(toast)}
 			<Toast {toast}>
@@ -228,7 +226,7 @@
 					<Toast.Title>{toast.title}</Toast.Title>
 					<Toast.Description>{toast.description}</Toast.Description>
 				</Toast.Message>
-				<Toast.CloseTrigger />
+				<Toast.CloseTrigger/>
 			</Toast>
 		{/snippet}
 	</Toast.Group>
