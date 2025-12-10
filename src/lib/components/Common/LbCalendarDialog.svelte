@@ -6,6 +6,8 @@
 	import LbCalendarEntryDialog from '$lib/components/Common/LbCalendarEntryDialog.svelte';
 	import { _ } from 'svelte-i18n';
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
+	import { appStore } from '$lib/stores/LbAppStore.svelte';
+	import { format } from 'date-fns';
 
 	let { view = $bindable(), mode, dayModes, entries, temperatureList = [] } = $props();
 
@@ -17,17 +19,19 @@
 	let length = 0;
 	let initialModes: number[] = [];
 
+	let selectedEntry = $state();
+
 	let modeEntries: number[] = $derived(entries.entry.map( (m: Entry) => m.mode));
 	let modes = $derived(modeEntries.filter((mode, idx) => modeEntries.indexOf(mode) == idx));
 	let opModes = $derived(controlStore.structure.operatingModes);
 
-	let selectedEntry = $state();
+	let currentTime = $derived(format(appStore.date, 'p'));
 
 	$effect( () => {
 		if (entries && initialEntries.length < entries.entry.length) {
 			initialEntries = entries.entry;
 			initialModes = modes;
-			length = initialEntries.length * 156 + 60;
+			length = initialModes.length * 155;
 		}
 	});
 
@@ -165,10 +169,10 @@
 							</svg>
 						</div>
 						<div>
-							<svg width={length-80} height="1050">
+							<svg width={length+20} height="1050">
 								<rect class="dark:fill-surface-900 fill-surface-100" x={0+getModeIndex(mode)*156} y="55" width="150" height="960" fill="currentColor"></rect>
-								{#each initialModes as mode,i}
-									<text class="dark:fill-surface-50 fill-surface-950" font-size="15px" text-anchor="middle" x={75+i*156} y="40">{opModes[mode]}</text>
+								{#each initialModes as mode}
+									<text class="dark:fill-surface-50 fill-surface-950" font-size="15px" text-anchor="middle" x={75+getModeIndex(mode)*156} y="40">{opModes[mode]}</text>
 								{/each}
 								{#each hours as hour,j}
 									<path class="stroke-surface-500" stroke-width="1" stroke-dasharray="150 6" d="m 0 {55+j*40} H {length}"></path>
@@ -191,6 +195,7 @@
 										{/if}
 									</g>
 								{/each}
+								<path class="dark:stroke-surface-50 stroke-surface-950" stroke-width="2" d="m 0 {55+getTime(currentTime)*40} H {length}"></path>
 							</svg>
 						</div>
 					</div>

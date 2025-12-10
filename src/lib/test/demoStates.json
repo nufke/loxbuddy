@@ -156,7 +156,6 @@
 
   "__uuid__controls_daytimer": "{defValue: 0, entries: 7, entry: [\n{mode: 3, from: 9:00, to: 11:00, needActivate: 0, value: 0}\n{mode: 3, from: 15:00, to: 22:00, needActivate: 0, value: 0}\n{mode: 4, from: 15:00, to: 18:00, needActivate: 0, value: 0}\n{mode: 5, from: 15:00, to: 18:00, needActivate: 0, value: 0}\n{mode: 6, from: 15:00, to: 18:00, needActivate: 0, value: 0}\n{mode: 7, from: 15:00, to: 18:00, needActivate: 0, value: 0}\n{mode: 8, from: 15:00, to: 18:00, needActivate: 0, value: 0}\n{mode: 9, from: 15:00, to: 18:00, needActivate: 0, value: 0}\n], uuid: \"__uuid__unknown\"}",
   "__uuid__controls_daytimer_states_modeList": "0:mode=3;name=\\\"Monday\\\",1:mode=4;name=\\\"Tuesday\\\",2:mode=5;name=\\\"Wednesday\\\",3:mode=6;name=\\\"Thursday\\\",4:mode=7;name=\\\"Friday\\\",5:mode=8;name=\\\"Saturday\\\",6:mode=9;name=\\\"Sunday\\\"",
-  "__uuid__controls_daytimer_states_mode": "3",
   "__uuid__controls_dayimer_states_value": "0",
   
   "__uuid__controls_alarmclock_states_entryList": {

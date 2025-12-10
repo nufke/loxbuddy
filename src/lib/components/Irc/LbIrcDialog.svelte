@@ -73,7 +73,7 @@
 	let timerEndsV1 = $state(new SvelteDate());
 	let timerEndsV2 = $state(new SvelteDate());
 	let selectedEntry = $state();
-	let overrideDate = $state({start: new SvelteDate(), end: new SvelteDate(), active: false});
+	let overrideDate = $state({start: new SvelteDate(), end: new SvelteDate()});
 
 	let viewport: any = $state(); // TODO make HTMLDivElement
 	let hasScroll = $state(true);
@@ -192,6 +192,11 @@
 		let overrideTimeSec = Math.round((date.getTime() - Date.now())/coeff)*coeff/1000;
 		
 		if (overrideTimeSec > 60 && controlView.control) {// TODO define minimum time of 1 minute
+			overrideDate = {
+				start: Date.now(),
+				end: Date.now() + overrideTimeSec*1000
+			}
+			override = true;
 			let cmd = isV1 ? 'starttimer/' : 'override/';
 			overrideTimeSec += (isV1 ? 0 : Math.round((Date.now() - utils.loxTimeRef)/1000)); // V2 starts to count from 1-1-2009
 			overrideTimeSec += (!isV1 && utils.isDST(date) ? -3600 : 0); // DST correction for V2
@@ -208,6 +213,7 @@
 		if (controlView.control) {
 			loxWsClient.control(controlView.control.uuidAction, isV1 ? 'stoptimer' : 'stopOverride');
 		}
+		override = false;
 	}
 
 	function updatePosition(e: any) { // TODO

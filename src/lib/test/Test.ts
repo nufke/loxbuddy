@@ -6,6 +6,8 @@ import states from '$lib/test/demoStates.json';
 import userSettings from '$lib/test/userSettings.json';
 import notification from '$lib/test/notifications.json';
 import messageCenter from '$lib/test/messageCenter.json';
+import { appStore } from '$lib/stores/LbAppStore.svelte';
+import { format } from 'date-fns';
 
 type IntervalMap = {
 	[key: string]: NodeJS.Timeout;
@@ -67,6 +69,13 @@ class Test {
 			controlStore.setState("__uuid__controls_heating_request", k ? "1": "0");
 			k = !k;
 		}, 1000);
+
+		// Daytimer, set mode to today
+		const today = format(appStore.date, 'eeee');
+		const obj = Object.entries(structure.operatingModes).find( e => e[1] === today );
+		if (obj && obj[0]) {
+			controlStore.setState("__uuid__controls_daytimer_states_mode", obj[0]);
+		}
 	}
 
 	exec(uuid: string, msg: string) {
