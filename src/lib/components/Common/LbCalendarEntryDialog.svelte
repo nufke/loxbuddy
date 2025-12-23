@@ -9,7 +9,6 @@
 	import type { Entry, Button, GeneralView } from '$lib/types/models';
 	import { _ } from 'svelte-i18n';
 	import { slide } from 'svelte/transition'
-	import { loxWsClient } from '$lib/communication/LoxWsClient';
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 
 	let { view = $bindable(), entries, selectedEntry, dayModes, temperatureList = [] } = $props();
@@ -139,7 +138,7 @@
 		});
 
 		let control = view.isIRC ? view.subControl.uuidAction : view.control.uuidAction; // for IRC we need to use the subControl
-		loxWsClient.control(control, cmd);
+		controlStore.setControl(control, cmd);
 		close();
 	}
 

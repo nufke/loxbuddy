@@ -7,7 +7,6 @@
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 	import { tick } from 'svelte';
 	import { SvelteMap } from 'svelte/reactivity';
-	import { loxWsClient } from '$lib/communication/LoxWsClient';
 
 	let { controlView = $bindable() }: { controlView: ControlView } = $props();
 
@@ -30,7 +29,7 @@
 
 	$effect( async () => {
 		if (uuid) {
-			resource = await loxWsClient.fetch(`jdev/sps/io/${uuid}/securedDetails`);
+			resource = await controlStore.fetchUrl(uuid, `jdev/sps/io/${uuid}/securedDetails`);
 		}
 	});
 
@@ -48,12 +47,12 @@
 
 	function getImages() {
 		if (lastBellEvents.length) {
-			// Miniserver Gen1 needs time to fetch these images, therefore we introduce a serious delay (300ms)
+			// Miniserver Gen1 needs time to fetch these images, therefore we introduce a delay (300ms)
 			setInterval( async () => { 
 				if (imageIdx < lastBellEvents.length) {
 					const event = lastBellEvents[imageIdx++];
 					console.info('get intercom image', event);
-					const file = await loxWsClient.getFile(`camimage/${controlView.control.uuidAction}/${event}`);
+					const file = await controlStore.getFile(uuid, `camimage/${controlView.control.uuidAction}/${event}`);
 					const url = `data:image/jpeg;base64,${arrayBufferToBase64(file.data)}`;
 					bellImages.set(event, url);
 				}

@@ -3,7 +3,6 @@ import { appStore } from '$lib/stores/LbAppStore.svelte';
 import { controlStore } from '$lib/stores/LbControlStore.svelte';
 import { weatherStore } from '$lib/stores/WeatherStore.svelte';
 import { utils } from '$lib/helpers/Utils';
-import { test } from '$lib/test/Test';
 
 /**
  * Class to connect to MQTT Server
@@ -14,7 +13,6 @@ export class MqttClient {
 	private port: number = 0;
 	private username: string = '';
 	private passwd: string = '';
-	private isTest: boolean = true;									// not initialized means test mode
 	private isConnected: boolean = false;
 	private topicPrefix: string = 'loxone'; 				// TODO configure prefix in GUI
 	private weatherPrefix: string = 'weather4lox'; 	// TODO configure prefix in GUI
@@ -32,14 +30,12 @@ export class MqttClient {
 	 * @param hostname port of MQTT server
 	 * @param username Name of the user
 	 * @param passwd Password of the user
-	 * @param isTest flag defining if we run in test mode
 	 */
-	async connect(hostname: string, port: string, username: string, passwd: string, topicPrefix: string, isTest: boolean) {
+	async connect(hostname: string, port: string, username: string, passwd: string, topicPrefix: string) {
 		this.hostname = hostname;
 		this.port = Number(port) || 1883;
 		this.username = username;
 		this.passwd = passwd;
-		this.isTest = isTest;
 		this.topicPrefix = topicPrefix;
 
 		if (!username.length) {
@@ -79,7 +75,7 @@ export class MqttClient {
 		this.client.on('close', () => {
 			console.info('MQTT client disconnected');
 			this.isConnected = false;
-			appStore.setMqttStatus(0); // diconnnect=grey
+			appStore.mqttStatus = 0; // diconnnect
 		});
 	}
 
@@ -89,7 +85,7 @@ export class MqttClient {
 	onConnect() {
 		console.info('MQTT client connected\n');
 		this.isConnected = true;
-		appStore.setMqttStatus(1); // connect=green
+		appStore.mqttStatus = 1; // connected=green
 
 		const registerTopics = [
 			this.topicPrefix + '/#',
@@ -131,12 +127,9 @@ export class MqttClient {
 		const qos = 1; // TODO add to configuration?
 		const serialNr = controlStore.structure.msInfo.serialNr;
 		const topic = this.topicPrefix + '/' + serialNr + '/' + uuid + '/cmd';
-		if (this.isConnected && serialNr && !this.isTest) {
+		if (this.isConnected && serialNr) {
 			console.info('MQTT client publish:', topic, msg);
 			this.client.publish(topic, msg, { retain, qos });
-		} else {
-			console.info('TEST publish:', topic, msg);
-			test.exec(uuid, msg);
 		}
 	}
 
@@ -149,7 +142,7 @@ export class MqttClient {
 		const regex = new RegExp(this.topicPrefix + '/(.*)/structure');
 		const found = topic.match(regex);
 		if (found && found[1]) {
-			controlStore.initStructure(JSON.parse(msg));
+			controlStore.initStructure(JSON.parse(msg), this);
 			const serialNr = controlStore.structure.msInfo.serialNr;
 			if (serialNr == found[1]) {
 				console.info('Miniserver registered: ', serialNr);

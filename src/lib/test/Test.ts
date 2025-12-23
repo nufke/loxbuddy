@@ -6,14 +6,13 @@ import states from '$lib/test/demoStates.json';
 import userSettings from '$lib/test/userSettings.json';
 import notification from '$lib/test/notifications.json';
 import messageCenter from '$lib/test/messageCenter.json';
-import { appStore } from '$lib/stores/LbAppStore.svelte';
 import { format } from 'date-fns';
 
 type IntervalMap = {
 	[key: string]: NodeJS.Timeout;
 }
 
-class Test {
+export class Test {
 	private timedSwitchIntervalMap: IntervalMap = {};
 	private jalousieIntervalMap: IntervalMap = {};
 	private dimmerLastValue: {[key: string]: string} = {};
@@ -22,6 +21,9 @@ class Test {
 	private daytimerOldValue: {[key: string]: string} = {};
 	private ircTimerIntervalMap: IntervalMap = {};
 	private smokeAlarmIntervalMap: IntervalMap = {};
+
+	constructor() {
+	}
 
 	start() {
 		console.info('TEST MODE: Use demo structure');
@@ -35,7 +37,7 @@ class Test {
 
 		// loadding of structure and states delayed to test uninitialized variables
 		setTimeout( () => {
-			controlStore.initStructure(structure);
+			controlStore.initStructure(structure, this);
 		}, 100);
 
 		setTimeout( () => {
@@ -46,39 +48,40 @@ class Test {
 
 		// Meter
 		setInterval(() => {
-			controlStore.setState("__uuid_controls_pv_meter_states_actual", val[i]);
-			controlStore.setState("__uuid_controls_battery_states_actual", val[2+i]);
-			controlStore.setState("__uuid_controls_net_states_actual", val[4+i]);
+			controlStore.setState('__uuid_controls_pv_meter_states_actual', val[i]);
+			controlStore.setState('__uuid_controls_battery_states_actual', val[2+i]);
+			controlStore.setState('__uuid_controls_net_states_actual', val[4+i]);
 			if (i==2) { i = 0; } else { i++; }
 		}, 2000);
 
 		// Meter (battery)
 		setInterval(() => {
-			controlStore.setState("__uuid_controls_battery_states_storage", soc[j]);
+			controlStore.setState('__uuid_controls_battery_states_storage', soc[j]);
 			if (j==5) { j = 0; } else { j++; }
 		}, 1000);
 
 		// InfoOnlyAnalog
 		setInterval(() => {
-			controlStore.setState("__uuid__controls_phase_1", fase[m]);
+			controlStore.setState('__uuid__controls_phase_1', fase[m]);
 			if (m==5) { m = 0; } else { m++; }
 		}, 2000);
 
 		// InfoOnlyDigital
 		setInterval(() => {
-			controlStore.setState("__uuid__controls_heating_request", k ? "1": "0");
+			controlStore.setState('__uuid__controls_heating_request', k ? "1": "0");
 			k = !k;
 		}, 1000);
 
 		// Daytimer, set mode to today
-		const today = format(appStore.date, 'eeee');
+		const today = format(new Date(), 'eeee');
 		const obj = Object.entries(structure.operatingModes).find( e => e[1] === today );
 		if (obj && obj[0]) {
-			controlStore.setState("__uuid__controls_daytimer_states_mode", obj[0]);
+			controlStore.setState('__uuid__controls_daytimer_states_mode', obj[0]);
 		}
 	}
 
-	exec(uuid: string, msg: string) {
+	control(uuid: string, msg: string) {
+		console.info('TEST control:', uuid, msg);
 		let parentControl;
 		let control: Control = controlStore.controls[uuid];
 		if (!control) { // if no control found, check if the uuid is a subcontrol
@@ -566,7 +569,7 @@ class Test {
 			}
 		}, 1000);
 	}
-	
+
 	setDayTimer(control: Control, msgItems: string[]) {
 		const entriesAndDefaultValueId = control.states.entriesAndDefaultValue;
 		let entries = '{defValue: 0, entries: ' + msgItems[1] + ', entry: [\n';
@@ -585,7 +588,7 @@ class Test {
 		this.setDayTimerModes(control, modeList);
 		controlStore.setState(entriesAndDefaultValueId, entries);
 	}
-	
+
 	setDayTimerModes(control: Control, modeList: string[]) {
 		const modeListId = control.states.modeList;
 		const opModes = controlStore.structure.operatingModes;
@@ -602,7 +605,14 @@ class Test {
 		});
 		controlStore.setState(modeListId, modeListStr);
 	}
-	
+
+	/**
+	 * Dummy getFile in test mode
+	 */
+	getFile(url: string) {
+		console.log('TEST: getFile not yet implemented');
+	}
+
 	/**
 	 * Dummy fetch in test mode
 	 */
@@ -622,12 +632,10 @@ class Test {
 			}, 300);
 		});
 	}
-	
+
 	private getHsv(color: string) {
 		const regex = new RegExp('hsv\\(([0-9]+),([0-9]+),([0-9]+)\\)');
 		const found = color.match(regex);
 		return found ? [found[1], found[2], found[3]] : []
 	}
 }
-
-export const test = new Test();

@@ -10,7 +10,6 @@
 	import { XIcon, ChevronUpIcon, ChevronDownIcon, BlindsIcon, SettingsIcon, OctagonMinusIcon } from '@lucide/svelte';
 	import { _ } from 'svelte-i18n';
 	import { fade } from 'svelte/transition';
-	import { loxWsClient } from '$lib/communication/LoxWsClient';
 	import Info from '$lib/components/Common/LbInfo.svelte';
 	import { innerHeight } from 'svelte/reactivity/window';
 
@@ -116,7 +115,7 @@
 	function screenAction(action: string) {
 		screenList.forEach( screen => { 
 			if (screen.selected) {
-				loxWsClient.control(screen.uuid, action);
+				controlStore.setControl(screen.uuid, action);
 			}
 		});
 	}
@@ -134,13 +133,13 @@
 			iconName: 'ChevronDownIcon',
 			type: 'button',
 			color: '',
-			click: () => loxWsClient.control(control.uuidAction, 'FullDown')
+			click: () => controlStore.setControl(control.uuidAction, 'FullDown')
 		},
 		{
 			iconName: 'ChevronUpIcon',
 			type: 'button',
 			color: '',
-			click: () => loxWsClient.control(control.uuidAction, 'FullUp')
+			click: () => controlStore.setControl(control.uuidAction, 'FullUp')
 		}
 	]);
 

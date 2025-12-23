@@ -2,7 +2,6 @@
 	import type { Control, ControlOptions, ControlView, MoodList, SingleButtonView, DialogView } from '$lib/types/models';
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import LbControl from '$lib/components/Common/LbControl.svelte';
-	import { loxWsClient } from '$lib/communication/LoxWsClient';
 	import LbListDialog from '$lib/components/Common/LbListDialog.svelte';
 	import { _ } from 'svelte-i18n';
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
@@ -23,7 +22,7 @@
 		} else {
 			moodIndex = e.checked;
 		}
-		loxWsClient.control(control.uuidAction, 'changeTo/' + String(moodList[moodIndex].id));
+		controlStore.setControl(control.uuidAction, 'changeTo/' + String(moodList[moodIndex].id));
 	}
 
 	function getTextName() {

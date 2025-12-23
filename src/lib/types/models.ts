@@ -546,9 +546,7 @@ export type Route = {
 	label: string;
 	href: string;
 	icon: typeof IconType;
-	badge?: boolean;
-	root: boolean;
-	nav: boolean;
+	menu: boolean;
 };
 
 export type ColorType = { 
@@ -701,14 +699,14 @@ export const DEFAULT_USERSETTINGS: UserSettings = {
 	userDefaultStructure: {}
 }
 
-export type LoginCredentials = {
-	hostUrl: string;
-	credentials: string;
+export type Credentials = {
+	hostname: string;
+	username: string;
 }
 
-export const NO_LOGIN: LoginCredentials = {
-	hostUrl: '',
-	credentials: ''
+export const NO_LOGIN: Credentials = {
+	hostname: '',
+	username: ''
 }
 
 export type Icon = {

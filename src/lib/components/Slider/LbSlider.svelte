@@ -4,7 +4,6 @@
 	import LbControl from '$lib/components/Common/LbControl.svelte';
 	import LbDialog from '$lib/components/Common/LbDialog.svelte';
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
-	import { loxWsClient } from '$lib/communication/LoxWsClient';
 	import fmt from 'sprintf-js';
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
@@ -25,7 +24,7 @@
 		} else { // is slider
 			newPosition = e.sliderPosition;
 		}
-		loxWsClient.control(control.uuidAction, String(newPosition));
+		controlStore.setControl(control.uuidAction, String(newPosition));
 	}
 
 	let buttons: SingleButtonView[] = $state([

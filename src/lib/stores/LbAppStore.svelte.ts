@@ -1,5 +1,5 @@
 import { NO_LOGIN } from '$lib/types/models';
-import type { Route, DialogView, LoginCredentials } from '$lib/types/models';
+import type { Route, DialogView, Credentials } from '$lib/types/models';
 import { utils } from '$lib/helpers/Utils';
 import { MenuIcon } from '@lucide/svelte';
 import { nl, enGB, de } from 'date-fns/locale'
@@ -11,15 +11,16 @@ import { setDefaultOptions } from 'date-fns'
  */
 class LbAppStore {
 	appId: string = $state('');
+	token: string | undefined = $state();
 	nav: Route = $state({ label: 'Menu', href: '', icon: MenuIcon, root: true, nav: true });
 	date: Date = $state(new Date());
 	mqttStatus: number = $state(0); // 0=disconnected (grey), 1=connected/ok/info (green), 2=warning/issue (yellow), 3=error (red)
-	msAlive: boolean = $state(false);
+	loxStatus: number = $state(0);  // 0=disconnected (grey), 1=connected/ok/info (green), 2=warning/issue (yellow), 3=error (red)
 	showStatus: boolean = $state(true);
 	showWeather: boolean = $state(true);
 	startPage: string = $state('/');
 	locale: string = $state('en'); // default English
-	loginCredentials: LoginCredentials = $state(NO_LOGIN);
+	credentials: Credentials = $state(NO_LOGIN);
 	dnd = $state({isEnabled: false, duration: 300});
 
 	weatherDialog: DialogView = $state({
@@ -34,16 +35,9 @@ class LbAppStore {
 		timeout: undefined
 	});
 
-	_stateUpdate: NodeJS.Timeout;
-
 	constructor() {
 		setInterval(() => {
 			this.date = new Date();
-		}, 1000);
-
-		this._stateUpdate = setTimeout(() => {
-			this.msAlive = false;
-			console.error("No state update received from Miniserver") 
 		}, 1000);
 
 		this.appId = localStorage.getItem('appId') || utils.generateUuid();
@@ -51,6 +45,19 @@ class LbAppStore {
 
 		this.showStatus = localStorage.getItem('showStatus') == '1';
 		this.showWeather = localStorage.getItem('showWeather') == '1';
+		this.locale = localStorage.getItem('locale') || 'en';
+		this.token = localStorage.getItem('token') || undefined;
+		this.credentials = utils.deserialize(localStorage.getItem('credentials')) || NO_LOGIN;
+	}
+
+	storeToken(token: string) {
+		this.token = token;
+		localStorage.setItem('token', token);
+	}
+
+	storeCredentials(credentials: Credentials) {
+		this.credentials = credentials;
+		localStorage.setItem('credentials', utils.serialize(credentials));
 	}
 
 	async setLocale(loc: string) {
@@ -64,10 +71,6 @@ class LbAppStore {
 
 	setNav(route: Route) {
 		this.nav = route;
-	}
-
-	setMqttStatus(s: number) {
-		this.mqttStatus = s;
 	}
 
 	resetLockScreenDialogTimeout() {

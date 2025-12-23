@@ -2,7 +2,6 @@
 	import type { Control, ControlOptions, ControlView, SingleButtonView, DialogView } from '$lib/types/models';
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import LbControl from '$lib/components/Common/LbControl.svelte';
-	import { loxWsClient } from '$lib/communication/LoxWsClient';
 	import LbDialog from '$lib/components/Common/LbDialog.svelte';
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 
@@ -13,13 +12,13 @@
 			iconName: 'ChevronDownIcon',
 			type: 'button',
 			color: '',
-			click: () => loxWsClient.control(control.uuidAction, 'PulseDown')
+			click: () => controlStore.setControl(control.uuidAction, 'PulseDown')
 		},
 		{
 			iconName: 'ChevronUpIcon',
 			type: 'button',
 			color: '',
-			click: () => loxWsClient.control(control.uuidAction, 'PulseUp')
+			click: () => controlStore.setControl(control.uuidAction, 'PulseUp')
 		}
 	]);
 

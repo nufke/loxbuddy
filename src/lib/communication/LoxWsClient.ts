@@ -1,81 +1,90 @@
 import LoxClient from 'svelte-lox-client';
 import { controlStore } from '$lib/stores/LbControlStore.svelte';
+import { appStore } from '$lib/stores/LbAppStore.svelte';
 import { utils } from '$lib/helpers/Utils';
-import { test } from '$lib/test/Test';
 
 /**
  * Class to connect to Miniserver using WebSocket
  */
 export class LoxWsClient {
- 	private client!: LoxClient;
+	private client: LoxClient;
 	private hostUrl: string = '';
 	private username: string = '';
-	private passwd: string = '';
-	private appId: string = '';
-	private isTest: boolean = true; // not initialized means test mode
-
-	/** 
-	 * Constructor is empty as we initialize the WebSocket after reading the environment variables.
-	 * Instead we use the connect method to initialize the client
-	 */
-	constructor() {
-	}
 
 	/**
-	 * Establish WebSocket connection to Miniserver
+	 * Constructor to initialize WebSocket to the Miniserver
 	 * @param hostname Miniserver IP address and port
 	 * @param username Name of the user
-	 * @param passwd Password of the user
+	 * @param password Password of the user
 	 * @param appId Unique application ID for each client
 	 * @param logLevel logger level
-	 * @param isTest flag defining if we run in test mode
 	 */
-	async connect(hostname: string, username: string, passwd: string, appId: string, logLevel: number, isTest: boolean) {
+	constructor(hostname: string, username: string, password: string, appId: string, logLevel: number) {
 		this.hostUrl = 'http://' + hostname; // TODO swich protocol http(s) depending on TLS
 		this.username = username;
-		this.passwd = passwd;
-		this.isTest = isTest;
-		this.appId = appId;
-		
+
 		if (!appId.length) {
-			console.error('Invalid App ID, cannot connect to Miniserver');
+			console.error('LoxWsClient: Invalid App ID, cannot connect to Miniserver');
 		}
 
 		if (!username.length) {
-			console.error('Invalid username, cannot connect to Miniserver');
+			console.error('LoxWsClient: Invalid username, cannot connect to Miniserver');
 		}
 
-		if (!passwd.length) {
-			console.error('Invalid password, cannot connect to Miniserver');
-		}
+		this.client = new LoxClient(hostname, username, password, appId, { logLevel: logLevel });
 
-		this.client = new LoxClient(hostname, username, passwd, appId, { logLevel: logLevel });
+		// register event callbacks
 		this.registerEvents();
+	}
 
-		// initiate connection
-		console.info('LoxClient connecting to miniserver...');
-		await this.client.connect();
+	/**
+	 * Establish connection to Miniserver
+	 * @param token (optional) active token for the connection 
+	 */
+	async connect(token?: string) {
+		try {
+			if (token) {
+				console.info('LoxWsClient: Connecting to Miniserver using existing token...');
+				await this.client.connect(token);
+			}	else {
+				console.info('LoxWsClient Connecting to Miniserver requesting new token...');
+				await this.client.connect();
+				const newToken = this.client.auth.tokenHandler.token;
+				if (newToken) {
+					appStore.storeToken(newToken);
+					console.info('LoxClient: Token received and stored:');
+				}
+			}
+		}	catch {
+			console.log('LoxWsClient: A error!');
+			return;
+		}
+		this.getSettings();
+	}
 
-		// get structure file
-		console.info('LoxClient: Get structure file...');
-		const structure = await this.client.getStructureFile();
-		controlStore.initStructure(structure);
-		this.client.parseStructureFile();
+	async getSettings() {
+		if (appStore.loxStatus) { // make sure we are connected
+			// get structure file
+			console.info('LoxWsClient: Get structure file...');
+			const structure = await this.client.getStructureFile();
+			controlStore.initStructure(structure, this);
+			this.client.parseStructureFile();
 
-		// initiates streaming of all events
-		await this.client.enableUpdates();
-		
-		// get UserSettings for sorting and favorites
-		console.info('LoxClient: Get user settings...');
-		this.getUserSettings();
-		
-		// get UserSettings for sorting and favorites
-		console.info('LoxClient: Get system status...');
-		this.getSystemStatus();
+			// initiates streaming of all events
+			await this.client.enableUpdates();
 
-		// get UserSettings for sorting and favorites
-		console.info('LoxClient: Get icons...');
-		this.getIconList();
+			// get UserSettings for sorting and favorites
+			console.info('LoxWsClient: Get user settings...');
+			this.getUserSettings();
+
+			// get System status
+			console.info('LoxWsClient: Get system status...');
+			this.getSystemStatus();
+
+			// get icon list
+			console.info('LoxWsClient: Get icons...');
+			this.getIconList();
+		}
 	}
 
 	/**
@@ -83,26 +92,34 @@ export class LoxWsClient {
 	 */
 	registerEvents() {
 		this.client.on('connected', () => {
-			console.info(`LoxClient with ID ${this.appId} connected to Miniserver`);
+			console.info(`LoxWsClient: Connection to Miniserver established`);
+		});
+
+		this.client.on('authenticated', () => {
+			console.info(`LoxWsClient: User ${this.username} authenticated`);
+			appStore.loxStatus = 1;
 		});
 
 		this.client.on('disconnected', () => {
-			console.info('LoxClient disconnected from Miniserver');
+			console.info('LoxClient: Disconnected from Miniserver');
+			appStore.loxStatus = 0;
 		});
 
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		this.client.on('error', (error: any) => {
-			console.error(`LoxClient error: ${error.message}`, error);
+			console.error(`LoxClient: Error received: ${error.message}`, error);
 		});
 
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		this.client.on("event_value", (event: any) => {
+		this.client.on('event_value', (event: any) => {
+			console.debug(`LoxClient: event_value received: ${event}`);
 			controlStore.setState(event.detail.uuid.stringValue, event.detail.value);
 		});
 
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		this.client.on("event_text", (event: any) => {
+		this.client.on('event_text', (event: any) => {
 			const text = event.detail.text;
+			console.debug(`LoxClient: event_text received: ${text}`);
 			const objOrText = utils.isValidJSONObject(text) ? JSON.parse(text) : text;
 			controlStore.setState(event.detail.uuid.stringValue, objOrText);
 		});
@@ -110,17 +127,12 @@ export class LoxWsClient {
 
 	/**
 	 * Send control state to Miniserver
-	 * @param uuid unique ID of the control
+	 * @param uuid universally unique ID of the control
 	 * @param value value of the control
 	 */
 	async control(uuid: string, value: string) {
-		if (this.isTest) {
-			console.info('TEST control:', uuid, value);
-			test.exec(uuid, value);
-		} else {
-			console.info('LoxClient control:', uuid, value);
-			await this.client.control(uuid, value);
-		}
+		console.info('LoxClient control:', uuid, value);
+		await this.client.control(uuid, value);
 	}
 
 	/**
@@ -133,66 +145,96 @@ export class LoxWsClient {
 	}
 
 	/**
-	 * Disconnect Miniserver and token gets invalidated
+	 * Disconnect Miniserver and preserve token
 	 */
 	async disconnect() {
-		await this.client.disconnect();
+		await this.client.disconnect(true);
+		appStore.loxStatus = 0;
 	}
-	
+
+	/**
+	 * Retrieve user settings (e.g. sorting/order of controls)
+	 */
 	getUserSettings() {
-		fetch(`${this.hostUrl}/jdev/sps/getusersettings`, {
+		fetch(`${this.hostUrl}/jdev/sps/getusersettings?autht=${appStore.token}&user=${this.username}`)
+		.then((response) => {
+			if (response.ok) {
+				return response.json();
+			} else {
+				throw new Error('getusersettings failed');
+			}
+		})
+		.then((data) => {
+			controlStore.userSettings = data;
+		})
+		.catch(e => console.error('fetch error: ', e))
+	}
+
+	/**
+	 * Check credentials using HTTP webservice (no login)
+	 */
+	async checkCredentials(username: string, password: string) {
+		await fetch(`${this.hostUrl}/jdev/cfg/apiKey`, {
 			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json',
-				'Authorization': 'Basic ' + btoa(this.username + ':' + this.passwd)
+				'Authorization': 'Basic ' + btoa(username + ':' + password)
 			}
 		})
-		.then((response) => response.json())
-		.then((data) => { controlStore.userSettings = data })
+		.then((response) => {
+			if (response.status != 200) {
+				throw new Error('LoxWsClient checkCredentials: Credentials failed');
+			};
+		});
 	}
 
+	/**
+	 * Retrieve Miniserver system status
+	 */
 	getSystemStatus() {
-		fetch(`${this.hostUrl}/jdev/sps/io/${controlStore.messageCenterList[0].uuidAction}/getEntries/2`, {
-			method: 'GET',
-			headers: {
-				'Content-Type': 'application/json',
-				'Authorization': 'Basic ' + btoa(this.username + ':' + this.passwd)
+		fetch(`${this.hostUrl}/jdev/sps/io/${controlStore.messageCenterList[0].uuidAction}/getEntries/2?autht=${appStore.token}&user=${this.username}`)
+		.then((response) => {
+			if (response.ok) {
+				return response.json();
 			}
 		})
-		.then((response) => response.json())
-		.then((data) => { controlStore.systemStatus = JSON.parse(data.LL.value); })
+		.then((data) => {
+			controlStore.systemStatus = JSON.parse(data.LL.value);
+		});
 	}
 
+	/**
+	 * Retrieve Miniserver icon list
+	 */
 	getIconList() {
-		fetch(`${this.hostUrl}/jdev/sps/geticonlist`, {
-			method: 'GET',
-			headers: {
-				'Content-Type': 'application/json',
-				'Authorization': 'Basic ' + btoa(this.username + ':' + this.passwd)
-			}
-		})
+		fetch(`${this.hostUrl}/jdev/sps/geticonlist?autht=${appStore.token}&user=${this.username}`)
 		.then((response) => response.json())
-		.then((data) => { controlStore.iconList = data })
+		.then((data) => {
+			controlStore.iconList = data;
+		});
 	}
 
+	/**
+	 * Generic webservice command using Miniserver user credentials
+	 * @param url webservices endpoint (e.g., /jdev/sps/io/...)
+	*/
 	async fetch(url: string) {
-		if (this.isTest) {
-			return test.fetch(url);
-		}
-		return fetch(`${this.hostUrl}/${url}/`, {
-				method: 'GET',
-				headers: {
-					'Content-Type': 'application/json',
-					'Authorization': 'Basic ' + btoa(this.username + ':' + this.passwd)
-				}
-			})
-			.then((response) => response.json())
-			.then((data) => {
-				//console.log('data', data)
-				return (data?.LL?.value) ? data.LL.value : data;
-			})
+		return fetch(`${this.hostUrl}/${url}?autht=${appStore.token}&user=${this.username}`)
+		.then((response) => response.json())
+		.then((data) => {
+			//console.log('data', data)
+			return data?.LL?.value ? data.LL.value : data;
+		});
 	}
-
 }
 
-export const loxWsClient = new LoxWsClient();
+export const startLoxWsClient = async () => {
+	const token = localStorage.getItem('token') || undefined;
+	const cred = utils.deserialize(localStorage.getItem('credentials'));
+	const appId = localStorage.getItem('appId') || undefined;
+
+	if (cred.hostname && cred.username && appId && token) {
+		const loxClient = new LoxWsClient(cred.hostname, cred.username, '', appId, 0);
+		await loxClient.connect(token);
+	}
+}

@@ -2,13 +2,14 @@
 	import * as icons from '@lucide/svelte';
 	import { inlineSvg } from '@svelte-put/inline-svg';
 	import { Image } from '@lucide/svelte';
-	export let name;
+
+	let { name, ...others } = $props();
 </script>
 
-{#if name == '/loxicons/'} <!-- no icon name given -->
-	<Image/> 
+{#if name.includes('svg')}
+	<svg use:inlineSvg={name} {...others}></svg>
 {:else if icons[name]}
-	<svelte:component this={icons[name]} {...$$props} />
+	<svelte:component this={icons[name]} {...others} />
 {:else}
-	<svg use:inlineSvg={name} {...$$props}></svg>
+	<Image/> <!-- no icon name given -->
 {/if}

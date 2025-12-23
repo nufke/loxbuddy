@@ -8,20 +8,20 @@ export default defineConfig({
 		tailwindcss(),
 		sveltekit(),
 		nodePolyfills({
+      include: [
+        'buffer',
+        'crypto',
+        'stream',
+        'util',
+        'vm'
+      ],
 			globals: {
 				Buffer: true,
 				global: true,
 				process: true
-			},
-			protocolImports: true
+			}
 		})
 	],
-	resolve: {
-		alias: {
-			crypto: 'crypto-browserify',
-			buffer: 'buffer/'
-		}
-	},
 	define: {
 		__VERSION__: JSON.stringify(process.env.npm_package_version)
 	}

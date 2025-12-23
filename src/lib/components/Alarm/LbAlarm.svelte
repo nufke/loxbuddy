@@ -4,7 +4,6 @@
 	import type { Control, ControlOptions, ControlView, DialogView, SingleButtonView } from '$lib/types/models';
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
-	import { loxWsClient } from '$lib/communication/LoxWsClient';
 	import { _ } from 'svelte-i18n';
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
@@ -15,12 +14,12 @@
 	function setUnsetAlarm(delay: boolean = false) {
 		let cmd = armed ? 'off' : (delay ? 'delayedon/' : 'on/');
 		cmd += armed ? '' : (disabledMove ? '0' : '1');
-		loxWsClient.control(control.uuidAction, cmd);
+		controlStore.setControl(control.uuidAction, cmd);
 	}
 
 	function setUnsetMmovement(e: any) {
 		let cmd = 'dismv/' + (e.checked ? '0' : '1');
-		loxWsClient.control(control.uuidAction, cmd);
+		controlStore.setControl(control.uuidAction, cmd);
 	}
 
 	let buttons: SingleButtonView[] = $derived([

@@ -4,12 +4,11 @@
 	import { Navigation, Dialog, Portal } from '@skeletonlabs/skeleton-svelte';
 	import { innerWidth } from 'svelte/reactivity/window';
 	import { HouseIcon, InfoIcon, FileTextIcon, Grid2x2Icon, MenuIcon, LayoutListIcon, ArrowLeftRightIcon, 
-						XIcon, SettingsIcon, CircleIcon, SquareIcon, Logs, type Icon as IconType } from '@lucide/svelte';
+						XIcon, SettingsIcon, CircleIcon, SquareIcon, Logs, LogIn, LogOut, type Icon as IconType } from '@lucide/svelte';
 	import type { Route } from '$lib/types/models';
 	import { mqttClient } from '$lib/communication/MqttClient';
 	import { appStore } from '$lib/stores/LbAppStore.svelte';
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
-	import { loxWsClient } from '$lib/communication/LoxWsClient';
 	import { weatherStore } from '$lib/stores/WeatherStore.svelte';
 	import { _ } from 'svelte-i18n';
 	import { page } from '$app/state';
@@ -20,9 +19,20 @@
 	import LbLockScreenDialog from '$lib/components/LockScreen/LbLockScreenDialog.svelte';
 	import { format } from 'date-fns';
 	import { goto } from '$app/navigation';
-	import { test } from '$lib/test/Test';
-	import { Logger, LogLevel } from '$lib/helpers/Logger';
+	import { Logger } from '$lib/helpers/Logger';
 	import { enableDragDropTouch } from '$lib/helpers/drag-drop-touch';
+	import { Test } from '$lib/test/Test';
+	import { LoxWsClient, startLoxWsClient } from '$lib/communication/LoxWsClient';
+	import { NO_LOGIN } from '$lib/types/models';
+
+	const env = page.data.env;
+	const isTest = env && env.TEST ? Number(env.TEST) : 0;
+	const logLevel = env && env.APP_LOGLEVEL ? Number(env.APP_LOGLEVEL) : 0;
+	const weatherUrl =  env && env.WEATHER_URL ? env.WEATHER_URL : '';
+
+	const anchorRail = 'btn aspect-square pl-6 w-full max-w-[74px] flex flex-col items-center gap-0.5 ';
+	const anchorSidebar = 'btn justify-start px-2 w-full ';
+	const anchorBar = 'btn hover:preset-tonal flex-col items-center gap-1';
 
 	const options = {
 		allowDragScroll: true,
@@ -37,38 +47,34 @@
 		pressHoldMargin: 25,
 		pressHoldThresholdPixels: 0
 	};
-	enableDragDropTouch(document, document, options);
-
-	const env = page.data.env;
-	const isTest = Number(env.TEST) ? true : false;
-
-	Logger(Number(env.APP_LOGLEVEL), true);
-
-	if (isTest) {
-		/* load test demo structure */
-		test.start();
-	} else {
-		// connect to MQTT server
-		mqttClient.connect(env.MQTT_HOSTNAME, env.MQTT_PORT, env.MQTT_USERNAME, env.MQTT_PASSWORD, env.MQTT_TOPIC, isTest);
-		// connect to Miniserver via WebSocket
-		loxWsClient.connect(env.MS_HOST, env.MS_USERNAME, env.MS_PASSWORD, appStore.appId, 0, isTest);
-	}
-
-	weatherStore.startWeatherForecast(env.WEATHER_URL);
 
 	let { children } = $props();
 
 	let mobileMenuDialog = $state(false);
+	let layoutRail = $state(true);
 	let currentWeather = $derived(weatherStore.current);
 	let dailyForecast = $derived(weatherStore.daily);
 	let hourlyForecast = $derived(weatherStore.hourly);
 	let date = $derived(appStore.date);
 	let mqttStatus = $derived(appStore.mqttStatus);
-	let msStatus = $derived(controlStore.msStatus);
+	let loxStatus = $derived(appStore.loxStatus); // TODO use controlStore.msStatus?
 	let nav = $derived(appStore.nav);
 	let path = $derived(page.url.pathname);
 	let showWeather = $derived(appStore.showWeather && currentWeather.time > 0 && dailyForecast.length && hourlyForecast[0]);
 	let activeNotifications = $derived(Object.values(controlStore.notificationsMap).filter( items => items.status == 1));
+	let navigation = $derived(routes.filter((m) => !m.menu));
+
+	let routes: Route[] = $derived([
+		{ label: 'Home', href: '/', icon: HouseIcon, menu: false },
+		{ label: 'Rooms', href: '/room', icon: Grid2x2Icon, menu: false },
+		{ label: 'Categories', href: '/category', icon: LayoutListIcon,  menu: false },
+		{ label: 'Messages', href: '/messages', icon: FileTextIcon, menu: false },
+//		{ label: 'Login', href: '/login', icon: LogIn, menu: true },
+		{ label: 'Weather', href: '/weather', icon: FileTextIcon, menu: true },
+		{ label: 'Settings', href: '/settings', icon: SettingsIcon,  menu: true },
+		{ label: 'About', href: '/about', icon: InfoIcon, menu: true },
+		{ label: 'Log', href: '/log', icon: Logs, menu: true },
+	]);
 
 	function getCurrentIcon(cur: WeatherCurrentConditions) {
 		let sunRise = utils.time2epoch(cur.time, cur.sunRise);
@@ -76,19 +82,6 @@
 		let dayOrNight = (cur.time > sunRise) && (cur.time < sunSet) ? '-day.svg' : '-night.svg';
 		return '/meteocons/svg/' + cur.icon + dayOrNight;
 	}
-
-	const routes: Route[] = $derived([
-		{ label: 'Home', href: '/', icon: HouseIcon, badge: false, root: true, nav: true },
-		{ label: 'Rooms', href: '/room', icon: Grid2x2Icon, badge: false, root: true, nav: true },
-		{ label: 'Categories', href: '/category', icon: LayoutListIcon, badge: false, root: true, nav: true },
-		{ label: 'Messages', href: '/messages', icon: FileTextIcon, badge: true, root: true, nav: true },
-		{ label: 'Weather', href: '/weather', icon: FileTextIcon, badge: false, root: true, nav: false },
-		{ label: 'Settings', href: '/settings', icon: SettingsIcon, badge: false, root: false, nav: false },
-		{ label: 'About', href: '/about', icon: InfoIcon, badge: false, root: false, nav: false },
-		{ label: 'Log', href: '/log', icon: Logs, badge: false, root: false, nav: false }
-	]);
-
-	const bottomMenus = $derived(routes.filter((m) => m.nav));
 
 	function checkUrl(href: string) {
 		if (href === '/') {
@@ -124,29 +117,34 @@
 		}
 	}
 
-	$effect( () => {
-		let found = routes.find ( item => item.href == path );
-		if (found && found.root) {
-			appStore.setNav({ label: 'Menu', href: '', icon: MenuIcon, root: true });
-		}
-	});
-
-	appStore.resetLockScreenDialogTimeout();
-
-	let localeSettings = localStorage.getItem('locale') || 'en';
-	appStore.locale = localeSettings;
-
-	let startPage = localStorage.getItem('startPage') || '/';
-	goto(startPage);
-
-	let anchorRail = 'btn aspect-square pl-6 w-full max-w-[74px] flex flex-col items-center gap-0.5 ';
-	let anchorSidebar = 'btn justify-start px-2 w-full ';
-	let anchorBar = 'btn hover:preset-tonal flex-col items-center gap-1';
-	let layoutRail = $state(true);
-
 	function toggleLayout() {
 		layoutRail = !layoutRail;
 	}
+
+	$effect( () => {
+		let found = routes.find ( item => item.href == path );
+		if (found && !found.menu) {
+			appStore.setNav({ label: 'Menu', href: '', icon: MenuIcon, menu: false });
+		}
+	});
+
+	// connect to MQTT server
+	//mqttClient.connect(env.MQTT_HOSTNAME, env.MQTT_PORT, env.MQTT_USERNAME, env.MQTT_PASSWORD, env.MQTT_TOPIC);
+
+	if (isTest) {
+		const test = new Test();
+		test.start();
+	} else {
+		await startLoxWsClient();
+	}
+
+	Logger(logLevel, false);
+	enableDragDropTouch(document, document, options);
+	weatherStore.startWeatherForecast(weatherUrl);
+
+	// goto startpage if specified
+	const startPage = (loxStatus || isTest) ? (localStorage.getItem('startPage') || '/') : '/login';
+	goto(startPage);
 </script>
 
 <svelte:head>
@@ -186,11 +184,11 @@
 			</Navigation.Header>
 			<Navigation.Menu>
 			{#if layoutRail}
-				{#each routes.filter((m) => m.nav) as link (link)}
+				{#each navigation as link (link)}
 					{@const Icon = link.icon}
 					<div onclick={() => { navigate(link.href)}} class={anchorRail}>
 						<div class="relative inline-block">
-							{#if link.badge && activeNotifications.length}
+							{#if link.label == "Messages" && activeNotifications.length}
 								<span class="badge-icon size-[2px] font-semibold preset-filled-primary-500 absolute -right-2 -top-2 z-10">{activeNotifications.length}</span>
 							{/if}
 							<Icon class={checkUrl(link.href) ? 'dark:text-primary-500 text-primary-700' : 'white'}/>
@@ -226,7 +224,7 @@
 						<span class="text-xs">MQTT</span>
 					</div>
 					<div class="flex flex-row items-center gap-2">
-						<SquareIcon class={getStatusColor((mqttStatus==1) ? msStatus : 0)} size="16"/>
+						<SquareIcon class={getStatusColor(loxStatus)} size="16"/>
 						<span class="text-xs">Miniserver</span>
 					</div>
 				</div>
@@ -239,7 +237,7 @@
 </div>
 {:else} <!-- mobile / portait mode -->
 <div class="w-full h-screen grid grid-rows-[1fr_auto]">
-	<Navigation layout="bar" class="fixed top-0 h-[65px] flex justify-center items-center z-10 shadow-md w-screen">
+	<Navigation layout="bar" class="fixed top-0 h-[65px] flex justify-center items-center shadow-md w-screen">
 		<Navigation.Menu class="grid grid-cols-3 gap-2">
 			<div class="flex flex-row justify-left items-center gap-2">
 				<button class="ml-2" onclick={() => {navigate(nav.href)}}>
@@ -267,14 +265,14 @@
 	<div class="pt-[55px]">
 		{@render children()}
 	</div>
-	{#if bottomMenus.find ( item => item.href == path )}
+	{#if navigation.find ( item => item.href == path )}
 		<Navigation layout="bar" class="sticky bottom-0 h-[68px] shadow-inner">
 			<Navigation.Menu class="grid grid-cols-4 gap-2">
-				{#each bottomMenus as link (link)}
+				{#each navigation as link (link)}
 					{@const Icon = link.icon}
 					<div onclick={() => {navigate(link.href)}}  class={anchorBar}>
 						<div class="relative inline-block">
-							{#if link.badge && activeNotifications.length}
+							{#if link.label == "Messages" && activeNotifications.length}
 								<span class="badge-icon size-[2px] font-semibold preset-filled-primary-500 absolute -right-2 -top-2 z-10">{activeNotifications.length}</span>
 							{/if}
 							<Icon class="size-5 {checkUrl(link.href) ? 'dark:text-primary-500 text-primary-700' : 'white'}" />
@@ -312,7 +310,7 @@
 					</div>
 				</header>
 				<div class="flex flex-col">
-					{#each routes as link (link)}
+					{#each routes.filter((m) => m.menu) as link (link)}
 						{@const Icon = link.icon}
 						<div onclick={() => { mobileMenuDialog = false; navigate(link.href)}} class={anchorSidebar} 
 							aria-label={link.label}>
@@ -329,7 +327,7 @@
 								<span class="text-xs">MQTT</span>
 							</div>
 							<div class="flex flex-row items-center gap-2">
-								<SquareIcon class={getStatusColor((mqttStatus==1) ? msStatus : 0)} size="16"/>
+								<SquareIcon class={getStatusColor(loxStatus)} size="16"/>
 								<span class="text-xs">Miniserver</span>
 							</div>
 						</div>

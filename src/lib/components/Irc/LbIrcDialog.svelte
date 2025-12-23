@@ -7,7 +7,6 @@
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 	import { XIcon, TimerIcon, LeafIcon, FlameIcon, ListIcon, CalendarClockIcon } from '@lucide/svelte';
 	import { _ } from 'svelte-i18n';
-	import { loxWsClient } from '$lib/communication/LoxWsClient';
 	import LbTemperatureSlider from '$lib/components/Irc/LbTemperatureSlider.svelte';
 	import LbTimeGrid from '$lib/components/Common/LbTimeGrid.svelte';
 	import LbIcon from '$lib/components/Common/LbIconByName.svelte';
@@ -184,7 +183,7 @@
 	function setTempManual() {
 		let cmd = isCooling ? 'setComfortTemperatureCool/' : 'setComfortTemperature/';
 		cmd += tempTarget;
-		loxWsClient.control(controlView.control.uuidAction, cmd);
+		controlStore.setControl(controlView.control.uuidAction, cmd);
 	}
 
 	function setTimerOverride(item: ListItem) {
@@ -202,7 +201,7 @@
 			overrideTimeSec += (!isV1 && utils.isDST(date) ? -3600 : 0); // DST correction for V2
 			overrideTimeSec = (isV1 ? Math.round(overrideTimeSec/60) : overrideTimeSec); // V1 in minutes!!
 			cmd += String(item.id) + '/' + String(overrideTimeSec);
-			loxWsClient.control(controlView.control.uuidAction, cmd);
+			controlStore.setControl(controlView.control.uuidAction, cmd);
 		} else {
 			console.error('IRC: timer period to low:', overrideTimeSec);
 			toaster.info({ title: 'Timer period invalid!'});
@@ -211,7 +210,7 @@
 
 	function cancelOverride() {
 		if (controlView.control) {
-			loxWsClient.control(controlView.control.uuidAction, isV1 ? 'stoptimer' : 'stopOverride');
+			controlStore.setControl(controlView.control.uuidAction, isV1 ? 'stoptimer' : 'stopOverride');
 		}
 		override = false;
 	}

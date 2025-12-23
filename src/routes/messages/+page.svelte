@@ -7,7 +7,6 @@
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 	import { _ } from 'svelte-i18n';
 	import { format } from 'date-fns';
-	import { loxWsClient } from '$lib/communication/LoxWsClient';
 	import { innerHeight, innerWidth } from 'svelte/reactivity/window';
 
 	let group = $state('1');
@@ -28,7 +27,7 @@
 
 	$effect( async () => {
 		if (messageCenter && messageCenter.uuidAction) {
-			resource = await loxWsClient.fetch(`jdev/sps/io/${messageCenter?.uuidAction}/getEntries/2`);
+			resource = await controlStore.fetchUrl(messageCenter.uuidAction, `jdev/sps/io/${messageCenter?.uuidAction}/getEntries/2`);
 		}
 	});
 

@@ -4,7 +4,6 @@
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import LbControl from '$lib/components/Common/LbControl.svelte';
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
-	import { loxWsClient } from '$lib/communication/LoxWsClient';
 	import { _ } from 'svelte-i18n';
 	import { XIcon, WrenchIcon, InfoIcon, ChevronUpIcon, ChevronDownIcon } from '@lucide/svelte';
 	import Info from '$lib/components/Common/LbInfo.svelte';
@@ -57,7 +56,7 @@
 
 	function stopService() {
 		if (timeServiceMode > 0) { // only stop if servicemode is running
-			loxWsClient.control(control.uuidAction, 'servicemode/0');
+			controlStore.setControl(control.uuidAction, 'servicemode/0');
 		}
 		duration = '';
 	}
@@ -65,7 +64,7 @@
 	function startService() {
 		if (serviceTime > 0) { // TODO minimal time for service
 			let cmd = 'servicemode/' + String(serviceTime);
-			loxWsClient.control(control.uuidAction, cmd);
+			controlStore.setControl(control.uuidAction, cmd);
 		}
 	}
 

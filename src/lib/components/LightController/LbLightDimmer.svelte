@@ -3,7 +3,6 @@
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import { utils } from '$lib/helpers/Utils';
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
-	import { loxWsClient } from '$lib/communication/LoxWsClient';
 	import { _ } from 'svelte-i18n';
 	import LbSimpleSlider from '$lib/components/Common/LbSimpleSlider.svelte'
 	import { ChevronRightIcon } from '@lucide/svelte';
@@ -45,14 +44,14 @@
 		if (newPosition == position) return; // same position, do not update
 
 		if (control.type === 'Dimmer') {
-			loxWsClient.control(control.uuidAction, String(e));
+			controlStore.setControl(control.uuidAction, String(e));
 		}
 
 		if (control.type === 'ColorPickerV2') {
 			let hsv = color.match(/hsv\(([0-9]*),([0-9]*),([0-9]*)\)/);
 			if (hsv) {
 				let newColor = 'hsv(' + hsv[1] + ',' + hsv[2] + ',' + String(e) + ')';
-				loxWsClient.control(control.uuidAction, newColor);
+				controlStore.setControl(control.uuidAction, newColor);
 			}
 		}
 	}

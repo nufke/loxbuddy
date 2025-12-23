@@ -12,7 +12,6 @@
 	import LbInPlaceEdit from '$lib/helpers/in-place-ediit.svelte';
 	import LbDateTimePickerDialog from '$lib/components/Common/LbDateTimePickerDialog.svelte';
 	import LbAlarmClockDayPickerDialog from '$lib/components/AlarmClock/LbAlarmClockDayPickerDialog.svelte';
-	import { loxWsClient } from '$lib/communication/LoxWsClient';
 	import { utils } from '$lib/helpers/Utils';
 	import Info from '$lib/components/Common/LbInfo.svelte';
 	import { innerHeight } from 'svelte/reactivity/window';
@@ -91,7 +90,7 @@
 			entry.name + extName + '/' + entry.alarmTime + '/' + 
 			(entry.isActive ? '1' : '0') + '/' + setting;
 		//console.log('cmd', cmd, id, entryListIds);
-		loxWsClient.control(control.uuidAction, cmd);
+		controlStore.setControl(control.uuidAction, cmd);
 	}
 
 	function updateName(i: number, e: any) {
@@ -140,7 +139,7 @@
 
 	function deleteEntry(i: number) {
 		let cmd = 'entryList/delete/' + entryIds[i];
-		loxWsClient.control(control.uuidAction, cmd);
+		controlStore.setControl(control.uuidAction, cmd);
 	}
 
 	function getAlarmTime() {

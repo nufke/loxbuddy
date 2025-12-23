@@ -3,7 +3,6 @@
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import LbControl from '$lib/components/Common/LbControl.svelte';
 	import LbListDialog from '$lib/components/Common/LbListDialog.svelte';
-	import { loxWsClient } from '$lib/communication/LoxWsClient';
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS } : {control: Control, controlOptions: ControlOptions } = $props();
@@ -31,7 +30,7 @@
 
 		let msg = String(radioList[idx].id);
 		if (msg === '0') msg = 'reset'; // off requires text "reset" instead of id 0
-		loxWsClient.control(control.uuidAction, msg);
+		controlStore.setControl(control.uuidAction, msg);
 	}
 
 	let radioList = $derived(

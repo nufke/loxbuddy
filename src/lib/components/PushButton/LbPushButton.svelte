@@ -3,7 +3,6 @@
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import LbControl from '$lib/components/Common/LbControl.svelte';
 	import LbDialog from '$lib/components/Common/LbDialog.svelte';
-	import { loxWsClient } from '$lib/communication/LoxWsClient';
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
@@ -20,7 +19,7 @@
 			type: 'button',
 			color: '',
 			click: () => {
-				loxWsClient.control(control.uuidAction, 'pulse');
+				controlStore.setControl(control.uuidAction, 'pulse');
 			}
 		}
 	]);

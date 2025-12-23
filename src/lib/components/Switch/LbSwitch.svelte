@@ -3,7 +3,6 @@
 	import type { Control, ControlOptions, ControlView, SingleButtonView, DialogView } from '$lib/types/models';
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import LbDialog from '$lib/components/Common/LbDialog.svelte';
-	import { loxWsClient } from '$lib/communication/LoxWsClient';
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 	import { _ } from 'svelte-i18n';
 
@@ -16,7 +15,7 @@
 			name: buttonActive ? 'Switch off' : 'Switch on',
 			type: 'switch',
 			click: (e: any) => {
-				loxWsClient.control(control.uuidAction, e.checked ? 'on' : 'off');
+				controlStore.setControl(control.uuidAction, e.checked ? 'on' : 'off');
 			}
 		}
 	]);

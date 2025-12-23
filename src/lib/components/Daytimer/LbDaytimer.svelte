@@ -14,7 +14,6 @@
 	import fmt from 'sprintf-js';
 	import { _ } from 'svelte-i18n';
 	import { format, isAfter, isBefore, setHours, setMinutes, setSeconds } from 'date-fns';
-	import { loxWsClient } from '$lib/communication/LoxWsClient';
 	import Info from '$lib/components/Common/LbInfo.svelte';
 	import { utils } from '$lib/helpers/Utils';
 
@@ -88,7 +87,7 @@
 
 	function startStopTimer() {
 		if (override > 0) { // Timer active, so deactivate
-			loxWsClient.control(control.uuidAction, 'stopOverride');
+			controlStore.setControl(control.uuidAction, 'stopOverride');
 			return;
 		}
 		overrideDate.start = new SvelteDate(); // save start time for visualization
@@ -99,7 +98,7 @@
 
 		if (overrideTimeSec > 60) {// TODO define minimum time of 1 minute
 			let cmd = 'startOverride/' + String(overrideValue) + '/' + String(overrideTimeSec);
-			loxWsClient.control(control.uuidAction, cmd);
+			controlStore.setControl(control.uuidAction, cmd);
 		} else {
 			console.error('Daytimer override timeperiod to low:', overrideTimeSec);
 			toaster.info({ title: 'Timer period invalid!'});

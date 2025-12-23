@@ -4,7 +4,6 @@
 	import LbControl from '$lib/components/Common/LbControl.svelte';
 	import LbDialog from '$lib/components/Common/LbDialog.svelte';
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
-	import { loxWsClient } from '$lib/communication/LoxWsClient';
 	import { _ } from 'svelte-i18n';
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
@@ -31,7 +30,7 @@
 		} else { // is slider
 			newPosition = e.sliderPosition;
 		}
-		loxWsClient.control(control.uuidAction, String(newPosition));
+		controlStore.setControl(control.uuidAction, String(newPosition));
 	}
 
 	let plusMinusButtons: SingleButtonView[] = $state([
@@ -55,7 +54,7 @@
 			type: 'button',
 			class: 'col-span-2',
 			click: (e: any) => {
-				loxWsClient.control(control.uuidAction, (position == 0) ? 'on' : 'off');
+				controlStore.setControl(control.uuidAction, (position == 0) ? 'on' : 'off');
 			}
 		}
 	);

@@ -5,7 +5,6 @@
 	import LbJalousieDialog from '$lib/components/Jalousie/LbJalousieDialog.svelte';
 	import fmt from 'sprintf-js';
 	import { _ } from 'svelte-i18n';
-	import { loxWsClient } from '$lib/communication/LoxWsClient';
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
@@ -31,13 +30,13 @@
 			iconName: 'ChevronDownIcon',
 			type: 'button',
 			color: '',
-			click: () => loxWsClient.control(control.uuidAction, 'FullDown')
+			click: () => controlStore.setControl(control.uuidAction, 'FullDown')
 		},
 		{
 			iconName: 'ChevronUpIcon',
 			type: 'button',
 			color: '',
-			click: () => loxWsClient.control(control.uuidAction, 'FullUp')
+			click: () => controlStore.setControl(control.uuidAction, 'FullUp')
 		}
 	]);
 
@@ -50,22 +49,22 @@
 				type: 'button',
 				color: '',
 				click: () => {},  // do nothing
-				mousedown: () => { loxWsClient.control(control.uuidAction, 'down')},
-				mouseup: () => { loxWsClient.control(control.uuidAction, 'DownOff')}
+				mousedown: () => { controlStore.setControl(control.uuidAction, 'down')},
+				mouseup: () => { controlStore.setControl(control.uuidAction, 'DownOff')}
 			},
 			{
 				iconName: 'ChevronUpIcon',
 				type: 'button',
 				color: '',
 				click: () => {}, // do nothing
-				mousedown: () => loxWsClient.control(control.uuidAction, 'up'),
-				mouseup: () => loxWsClient.control(control.uuidAction, 'UpOff')
+				mousedown: () => controlStore.setControl(control.uuidAction, 'up'),
+				mouseup: () => controlStore.setControl(control.uuidAction, 'UpOff')
 			},
 			{
 				iconName: 'ArrowDownToLine',
 				type: 'button',
 				color: '',
-				click: () => loxWsClient.control(control.uuidAction, 'FullDown'),
+				click: () => controlStore.setControl(control.uuidAction, 'FullDown'),
 				mousedown: () => {}, // do nothing
 				mouseup: () => {} // do nothing
 			},
@@ -73,7 +72,7 @@
 				iconName: 'ArrowUpToLine',
 				type: 'button',
 				color: '',
-				click: () => loxWsClient.control(control.uuidAction, 'FullUp'),
+				click: () => controlStore.setControl(control.uuidAction, 'FullUp'),
 				mousedown: () => {}, // do nothing
 				mouseup: () => {} // do nothing
 			},
@@ -82,7 +81,7 @@
 				type: 'button',
 				color: '',
 				class: 'col-span-2',
-				click: () => loxWsClient.control(control.uuidAction, 'shade'),
+				click: () => controlStore.setControl(control.uuidAction, 'shade'),
 				mousedown: () => {}, // do nothing
 				mouseup: () => {} // do nothing
 			}

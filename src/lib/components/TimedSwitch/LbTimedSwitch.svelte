@@ -5,7 +5,6 @@
 	import LbDialog from '$lib/components/Common/LbDialog.svelte';
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 	import { _ } from 'svelte-i18n';
-	import { loxWsClient } from '$lib/communication/LoxWsClient';
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
@@ -23,7 +22,7 @@
 			type: 'button',
 			color: '',
 			click: (e: any) => {
-				loxWsClient.control(control.uuidAction, (deactivationDelay == 0) ? 'on' : ( (deactivationDelay == -1) ? 'off' : 'on' ));
+				controlStore.setControl(control.uuidAction, (deactivationDelay == 0) ? 'on' : ( (deactivationDelay == -1) ? 'off' : 'on' ));
 			}
 		}
 	);
@@ -34,7 +33,7 @@
 			type: 'button',
 			color: '',
 			click: () => {
-				loxWsClient.control(control.uuidAction, (deactivationDelay == 0) ? 'pulse' : 'off');
+				controlStore.setControl(control.uuidAction, (deactivationDelay == 0) ? 'pulse' : 'off');
 			}
 		}
 	);
@@ -45,7 +44,7 @@
 			type: 'button',
 			color: '',
 			click: () => {
-				loxWsClient.control(control.uuidAction, 'pulse');
+				controlStore.setControl(control.uuidAction, 'pulse');
 			}
 		}
 	);
@@ -75,7 +74,7 @@
 			type: 'button',
 			iconColor: 'dark:fill-surface-50 fill-surface-950',
 			click: () => {
-				loxWsClient.control(control.uuidAction, 'pulse');
+				controlStore.setControl(control.uuidAction, 'pulse');
 			}
 		}
 	]);

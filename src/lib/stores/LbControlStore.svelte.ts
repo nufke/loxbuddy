@@ -10,7 +10,9 @@ import { loxiconsPath } from '$lib/helpers/paths';
  * ControlStore to maintain control states
  */
 class LbControlStore {
+	client: SvelteMap<string, any> = new SvelteMap();
 	controlState: SvelteMap<string, any> = new SvelteMap();
+	controlClient: SvelteMap<string, any> = new SvelteMap();
 	structure: Structure = $state(INITIAL_STRUCTURE);
 	controls: ControlsMap = $derived(this.structure.controls);
 	rooms: RoomsMap = $derived(this.structure.rooms);
@@ -30,6 +32,11 @@ class LbControlStore {
 		this.notificationsMap = utils.deserialize(localStorage.getItem('notifications')) || {};
 	}
 
+	setControl(uuid: string, cmd: string) {
+		const client = this.controlClient.get(uuid);
+		client.control(uuid, cmd);
+	}
+
 	updateNotificationMap(notifications: NotificationMessage | NotificationList, statusOverride: number = 0 ) {
 		const map: NotificationMap = utils.deserialize(localStorage.getItem('notifications')) || {};
 		const msg = notifications as NotificationMessage;
@@ -47,8 +54,15 @@ class LbControlStore {
 		return map;
 	}
 
-	initStructure(data: Structure) {
+	initStructure(data: Structure, client: any) {
 		Object.assign(this.structure, data);
+		// Mapping table to associate control UUIDs for each backend
+		Object.values(this.structure.controls).forEach( (control) => {
+			this.controlClient.set(control.uuidAction, client);
+		});
+		// Add message center to mapping table
+		const messageCenter = Object.values(this.structure.messageCenter);
+		this.controlClient.set(messageCenter[0].uuidAction, client);
 	}
 
 	getState(uuid: string) {
@@ -56,10 +70,8 @@ class LbControlStore {
 	}
 
 	setState(uuid: string, data: any) {
-		//console.log('setState', uuid, data);
 		const item = $state(data);
 		this.controlState.set(uuid, item);
-		//clearTimeout(this._stateUpdate);
 	}
 
 	setInitialStates(data: any) {
@@ -82,6 +94,16 @@ class LbControlStore {
 			return cat ? loxiconsPath + cat.image : '';
 		}
 		return ''; // no icon found / used (TODO: keep empty?)
+	}
+
+	async getFile(uuid: string, url: string) {
+		const client = this.controlClient.get(uuid);
+		return await client.getFile(url);
+	}
+
+	async fetchUrl(uuid: string, url: string) {
+		const client = this.controlClient.get(uuid);
+		return await client.fetch(url);
 	}
 
 }

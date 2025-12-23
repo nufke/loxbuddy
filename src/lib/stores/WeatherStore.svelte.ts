@@ -79,7 +79,10 @@ class WeatherStore {
 	}
 
 	startWeatherForecast(url: string) {
-		if (!url.length) return;
+		if (!url.length) {
+			console.info('No weatherforecast since weatherUrl is empty');
+			return;
+		}
 		this.fetchWeatherForecast(url); 
 		setInterval( () => {
 			this.fetchWeatherForecast(url);

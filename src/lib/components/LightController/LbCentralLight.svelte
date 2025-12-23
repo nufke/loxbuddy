@@ -8,7 +8,6 @@
 	import { XIcon, ChevronUpIcon, ChevronDownIcon } from '@lucide/svelte';
 	import { _ } from 'svelte-i18n';
 	import { fade } from 'svelte/transition';
-	import { loxWsClient } from '$lib/communication/LoxWsClient';
 	import fmt from 'sprintf-js';
 	import Info from '$lib/components/Common/LbInfo.svelte';
 	import { innerHeight } from 'svelte/reactivity/window';
@@ -139,7 +138,7 @@
 					default: /* none */
 				}
 				if (control && moodList && moodCmd) {
-					loxWsClient.control(control.uuidAction, 'changeTo/' + moodCmd);
+					controlStore.setControl(control.uuidAction, 'changeTo/' + moodCmd);
 				}
 			}
 		});

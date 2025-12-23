@@ -4,7 +4,6 @@
 	import LbControl from '$lib/components/Common/LbControl.svelte';
 	import LbDialog from '$lib/components/Common/LbDialog.svelte';
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
-	import { loxWsClient } from '$lib/communication/LoxWsClient';
 	import fmt from 'sprintf-js';
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
@@ -21,7 +20,7 @@
 		if (newValue > max) newValue = max;
 		if (newValue < min) newValue = min;
 		if (newValue != value) {
-			loxWsClient.control(control.uuidAction, String(newValue));
+			controlStore.setControl(control.uuidAction, String(newValue));
 		}
 	}
 
