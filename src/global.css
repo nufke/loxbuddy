@@ -43,3 +43,14 @@ p {
 		margin-top: calc(50vh - 200px);
 	}
 }
+
+/* fix: navigation bar buttons should not reduce brightness */
+.btn {
+	&:not(:disabled) {
+		&:hover {
+			&:where([data-mode="dark"], [data-mode="dark"] *) {
+				filter: brightness(100%); /* was 75% */
+			}
+		}
+	}
+}

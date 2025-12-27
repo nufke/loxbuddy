@@ -51,10 +51,10 @@
 	}
 
 	function getHourly(day: WeatherDailyForecast) {
-		let hours = hourly.filter( hours => (hours.time > date) && (hours.time >= day.time) && hours.time < (day.time + 86400000))
+		let hours = hourly.filter( hours => (hours.time > date.valueOf()) && (hours.time >= day.time) && hours.time < (day.time + 86400000));
 		if (hours.length < 11) {
 			let cnt = 11-hours.length;
-			hours = hourly.filter( hours => (hours.time > date) && (hours.time >= day.time) && hours.time < (day.time + 86400000 + cnt * 3600000));
+			hours = hourly.filter( hours => (hours.time > date.valueOf()) && (hours.time >= day.time) && hours.time < (day.time + 86400000 + cnt * 3600000));
 		}
 		return hours; 
 	}

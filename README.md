@@ -10,7 +10,7 @@ LoxBuddy establishes a WebSocket connection to your Miniserver to control and mo
 
 ## Screenshots
 
-<div class="flex flex-row gap-2">
+<div class="flex flex-row gap-3">
   <img src="https://github.com/nufke/loxbuddy/blob/main/docs/screenshot_mobile_home.png" height=800 alt="Screenshot Mobile Home">
   <img src="https://github.com/nufke/loxbuddy/blob/main/docs/screenshot_mobile_heating.png" height=800 alt="Screenshot Mobile Heating">
 </div>
@@ -27,7 +27,7 @@ git clone https://github.com/nufke/loxbuddy.git
 cd loxbuddy
 npm install
 
-# update environment variables (Miniserver login and MQTT settings)
+# update environment variables (MQTT settings)
 cp .env.example .env.local
 code .env.local
 
@@ -51,10 +51,10 @@ To deploy LoxBuddy to a webserver (e.g. running on LoxBerry), follow the steps d
 
 Visit the [Wiki Status](https://github.com/nufke/loxbuddy/wiki/Status) page for the latest updates on supported controls and features.
 
-## Issues, questions and requests
+## Issues and requests
 
-Please submit your issues, questions or requests via the GitHub [issue tracker](https://github.com/nufke/loxbuddy/issues) 
-or submit a [Pull Request](https://github.com/nufke/loxbuddy/pulls).
+Please submit your issues or requests via the GitHub [issue tracker](https://github.com/nufke/loxbuddy/issues) 
+or submit a [pull request](https://github.com/nufke/loxbuddy/pulls).
 
 ## Credits
 

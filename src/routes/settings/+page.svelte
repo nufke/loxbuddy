@@ -29,7 +29,7 @@
 
 	let lang = $derived(language[localeSettings]);
 
-	appStore.setNav({ label: 'ArrowLeftIcon', href: '/', icon: ArrowLeftIcon, root: true, nav: false  }); // TODO change navigation concept
+	appStore.setNav({ label: 'ArrowLeftIcon', href: '/', icon: ArrowLeftIcon });
 
 	let other = [
 		{ name: 'Home', uuid: '/'}
@@ -128,7 +128,10 @@
 	}
 </script>
 
-<div class="container pt-3 flex max-w-[1280px] flex-col">
+<div class="container pt-3 flex flex-col max-w-[640px] w-screen mx-auto">
+	<div>
+		<p class="pl-5 h5">Settings</p>
+	</div>
 	<button aria-current="true" type="button" class="w-full border-b dark:border-surface-900 border-surface-200 p-3 pr-5 pl-5 text-left text-lg">
 		<div class="flex w-full justify-between">
 			<p>{$_("Dark mode")}</p>
@@ -197,7 +200,7 @@
 		<Dialog.Backdrop class="fixed inset-0 z-10 bg-surface-50-950/75 backdrop-blur-sm"/>
 		<Dialog.Positioner class="fixed inset-0 z-10 flex justify-center items-center p-4">
 			<Dialog.Content class="card bg-surface-100-900 p-4 pt-3 shadow-sm rounded-lg border border-white/5 hover:border-white/10
-								md:max-w-9/10 md:max-h-9/10 w-[450px]">
+								md:max-w-9/10 md:max-h-9/10 w-full max-w-[450px]">
 				<header class="grid grid-cols-[5%_90%_5%]">
 					<div></div>
 					<div>
@@ -210,7 +213,7 @@
 					</div>
 				</header>
 				<Dialog.Description>
-					<div class="mt-2 grid md:grid-cols-1 lg:grid-cols-2 gap-2 overflow-y-auto h-[500px]">
+					<div class="mt-2 grid grid-cols-1 md:grid-cols-2 gap-2 overflow-y-auto h-[500px]">
 						<button data-theme="catppuccin" onclick={() => {onChangeTheme("Catppuccin")}}
 							class="bg-surface-50-950 preset-outlined-surface-100-900 hover:preset-outlined-surface-950-50 grid w-full
 								grid-cols-[auto_1fr_auto] items-center gap-4 rounded-md p-3">
@@ -481,7 +484,7 @@
 		<Dialog.Backdrop class="fixed inset-0 z-10 bg-surface-50-950/75 backdrop-blur-sm"/>
 		<Dialog.Positioner class="fixed inset-0 z-10 flex justify-center items-center p-4">
 			<Dialog.Content class="card bg-surface-100-900 p-4 pt-3 shadow-sm rounded-lg border border-white/5 hover:border-white/10
-								md:max-w-9/10 md:max-h-9/10 w-[450px]">
+								md:max-w-9/10 md:max-h-9/1 w-full w-[450px]">
 				<header class="grid grid-cols-[5%_90%_5%]">
 					<div></div>
 					<div>
@@ -497,13 +500,13 @@
 					<div class="mt-2">
 						<Tabs value={group} onValueChange={(e) => (group = e.value)}>
 							<Tabs.List class="border-b-[2px] border-transparent">
-								<Tabs.Trigger value="room" class="flex-1 text-lg">{$_("Rooms")}</Tabs.Trigger>
-								<Tabs.Trigger value="category" class="flex-1 text-lg">{$_("Categories")}</Tabs.Trigger>
-								<Tabs.Trigger value="other" class="flex-1 text-lg">{$_("Other")}</Tabs.Trigger>
+								<Tabs.Trigger value="room" class="truncate flex-1 text-lg">{$_("Rooms")}</Tabs.Trigger>
+								<Tabs.Trigger value="category" class="truncate flex-1 text-lg">{$_("Categories")}</Tabs.Trigger>
+								<Tabs.Trigger value="other" class="truncate flex-1 text-lg">{$_("Other")}</Tabs.Trigger>
 								<Tabs.Indicator/>
 							</Tabs.List>
 							<Tabs.Content value="room">
-								<div class="h-[580px] overflow-y-auto">
+								<div class="overflow-y-auto">
 									{#each rooms as room}
 										<button type="button" class="w-full mt-2 btn btn-lg {(room.name == getStartpageName(startPage)) ? 'dark:bg-surface-800 bg-surface-200' : 'dark:bg-surface-950 bg-surface-50' }
 													shadow-sm rounded-lg border border-white/15 hover:border-white/50"
@@ -514,7 +517,7 @@
 								</div>
 							</Tabs.Content>
 							<Tabs.Content value="category">
-								<div class="h-[580px] overflow-y-auto">
+								<div class="overflow-y-auto">
 									{#each categories as category}
 										<button type="button" class="w-full mt-2 btn btn-lg {(category.name == getStartpageName(startPage)) ? 'dark:bg-surface-800 bg-surface-200' : 'dark:bg-surface-950 bg-surface-50' }
 													shadow-sm rounded-lg border border-white/15 hover:border-white/50"
@@ -525,7 +528,7 @@
 								</div>
 							</Tabs.Content>
 							<Tabs.Content value="other">
-								<div class="h-[580px] overflow-y-auto">
+								<div class="overflow-y-auto">
 									{#each other as item}
 										<button type="button" class="w-full mt-2 btn btn-lg {(item.name == getStartpageName(startPage)) ? 'dark:bg-surface-800 bg-surface-200' : 'dark:bg-surface-950 bg-surface-50' }
 													shadow-sm rounded-lg border border-white/15 hover:border-white/50"

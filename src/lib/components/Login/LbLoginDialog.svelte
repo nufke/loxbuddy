@@ -1,17 +1,12 @@
 <script lang="ts">
-	import type { PageProps } from './$types';
 	import { Dialog, Portal  } from '@skeletonlabs/skeleton-svelte';
 	import { appStore } from '$lib/stores/LbAppStore.svelte';
-	import { ArrowLeftIcon, EyeIcon, EyeOffIcon, SearchIcon, XIcon } from '@lucide/svelte';
+	import { EyeIcon, EyeOffIcon, SearchIcon, XIcon } from '@lucide/svelte';
 	import { _ } from 'svelte-i18n';
-	import { LoxWsClient } from '$lib/communication/LoxWsClient';
+	import { LoxWsClient , startLoxWsClient} from '$lib/communication/LoxWsClient';
 	import { goto } from "$app/navigation";
 
-	let { data }: PageProps = $props();
-
-	appStore.setNav({ label: 'ArrowLeft', href: '/', icon: ArrowLeftIcon });
-
-	let openDialog = $state(false);
+	let openPopup = $state(false);
 	let hostname = $state('');
 	let username = $state('');
 	let password = $state('');
@@ -19,13 +14,28 @@
 	let list: any = $state([]);
 	let showSpinner: boolean = $state(false);
 
-	let dialogView = $state({
+	let popupView = $state({
 		title: 'Search Miniserver',
 		isSearch: true,
 		description: ''
 	})
 
+	function startDemo() {
+		appStore.setDemo(1);
+		appStore.loginDialog.state = false;
+		goto('/');
+	}
+
+	async function reconnect() {
+		if (appStore.token && appStore.credentials) {
+			appStore.setDemo(0); // clear demo mode
+			await startLoxWsClient();
+			goto('/')
+		}
+	}
+
 	async function validate() {
+		appStore.setDemo(0); // clear demo mode
 		if (hostname.length && username.length && password.length) {
 			// 1. Establish WebSocket connection 
 			const loxClient = new LoxWsClient(hostname, username, password, appStore.appId, 0);
@@ -49,7 +59,8 @@
 			appStore.storeCredentials({ hostname: hostname, username: username });
 			// 5. connect with hostname, username and token if available
 			await loxClient.connect(appStore.token);
-			// 6. redirect to home/root page
+			// 6. close login dialog and start at home page
+			appStore.loginDialog.state = false;
 			goto('/');
 		}
 	}
@@ -57,7 +68,7 @@
 	async function search() {
 		list = [];
 		showSpinner = true;
-		const response = await fetch('/login');
+		const response = await fetch('/login'); // Svelte server call
 		const resp = await response.json();
 		list = Object.values(resp);
 		showSpinner = false;
@@ -65,96 +76,111 @@
 
 	function select(item: any) {
 		hostname = item.ipaddr;
-		openDialog = false;
+		openPopup = false;
 	}
 
 	async function doSearch() {
-		dialogView = {
+		popupView = {
 			title: 'Search Miniserver',
 			isSearch: true,
 			description: ''
 		};
-		openDialog = true;
+		openPopup = true;
 		await search();
 	}
 	
 	 function showDialog(description: string) {
-		dialogView = {
+		popupView = {
 			title: '',
 			isSearch: false,
 			description: description
 		};
-		openDialog = true;
+		openPopup = true;
 	}
 </script>
 
-<div class="p-3 flex justify-center items-center flex-col gap-3 w-full">
-<div class="pt-3 flex justify-center items-center flex-col gap-3">
-	<img src="/icons/svg/loxbuddy.svg" width="80" alt="about" />
-	<p class="h5">Miniserver {$_("Login").toLowerCase()}</p>
-</div>
-<form class="p-3 space-y-4 w-full max-w-[400px]" onsubmit={validate}>
-	<fieldset class="space-y-4">
-		<label class="label">
-			<div class="flex flex-row gap-3">
-				<span class="label-text">{$_("Miniserver")}</span>
-			</div>
-			<div class="input-group grid-cols-[1fr_auto]">
-				<input class="ig-input" type="text" bind:value={hostname} placeholder={$_("IP address")} />
-				<div class="ig-btn preset-tonal" onclick={doSearch}>
-					<SearchIcon size={16} />
-				</div>
-			</div>
-		</label>
-		<label class="label">
-			<div class="flex flex-row gap-3">
-				<span class="label-text">{$_("Username")}</span>
-			</div>
-			<input class="input" type="text" bind:value={username} placeholder={$_("Username")} />
-		</label>
-		<label class="label">
-			<div class="flex flex-row gap-3">
-				<span class="label-text">{$_("Password")}</span>
-			</div>
-			<div class="input-group grid-cols-[1fr_auto]">
-				<input class="input" type={hidePassword ? "password" : "text"} bind:value={password} placeholder={$_("Password")} />
-				<div class="ig-btn preset-tonal" onclick={() => {hidePassword = !hidePassword}}>
-					{#if hidePassword}
-						<EyeIcon size={16} />
-					{:else}
-						<EyeOffIcon size={16} />
-					{/if}
-				</div>
-			</div>
-		</label>
-	</fieldset>
-	<fieldset class="pt-3 flex justify-center">
-		<button type="submit" class="w-full btn { hostname.length && username.length > 0 && password.length > 0 ? 'preset-filled-primary-500' : 'preset-outlined-surface-300-700'}">{$_("Connect")}</button>
-	</fieldset>
-</form>
-</div>
+<Dialog
+	open={appStore.loginDialog.state}>
+	<Portal>
+		<Dialog.Backdrop class="fixed top-0 left-0 right-0 bottom-0 z-100 dark:bg-surface-950 bg-surface-50" />
+		<Dialog.Positioner class="fixed top-0 left-0 w-full h-full z-100">
+			<Dialog.Content class="card p-2 space-y-4 shadow-xl h-full">
+				<Dialog.Description class="flex justify-center items-center h-screen p-3">
+					<div class="flex justify-center items-center flex-col gap-3 w-full">
+						<div class="pt-3 flex justify-center items-center flex-col gap-3">
+							<div onclick={reconnect}>
+								<img src="/icons/svg/loxbuddy.svg" width="80" alt="about" />
+							</div>
+							<p class="h5">Miniserver {$_("Login").toLowerCase()}</p>
+						</div>
+						<form class="p-3 space-y-4 w-full max-w-[400px]" onsubmit={validate}>
+							<fieldset class="space-y-4">
+								<label class="label">
+									<div class="flex flex-row gap-3">
+										<span class="label-text">{$_("Miniserver")}</span>
+									</div>
+									<div class="input-group grid-cols-[1fr_auto]">
+										<input class="ig-input" type="text" bind:value={hostname} placeholder={$_("IP address")} />
+										<div class="ig-btn preset-tonal" onclick={doSearch}>
+											<SearchIcon size={16} />
+										</div>
+									</div>
+								</label>
+								<label class="label">
+									<div class="flex flex-row gap-3">
+										<span class="label-text">{$_("Username")}</span>
+									</div>
+									<input class="input" type="text" bind:value={username} placeholder={$_("Username")} autocomplete="username"/>
+								</label>
+								<label class="label">
+									<div class="flex flex-row gap-3">
+										<span class="label-text">{$_("Password")}</span>
+									</div>
+									<div class="input-group grid-cols-[1fr_auto]">
+										<input class="input" type={hidePassword ? "password" : "text"} bind:value={password} placeholder={$_("Password")} autocomplete="current-password"/>
+										<div class="ig-btn preset-tonal" onclick={() => {hidePassword = !hidePassword}}>
+											{#if hidePassword}
+												<EyeIcon size={16} />
+											{:else}
+												<EyeOffIcon size={16} />
+											{/if}
+										</div>
+									</div>
+								</label>
+							</fieldset>
+							<fieldset class="pt-3 flex justify-center">
+								<button type="submit" class="w-full btn { hostname.length && username.length > 0 && password.length > 0 ? 'preset-filled-primary-500' : 'preset-outlined-surface-300-700'}">{$_("Connect")}</button>
+							</fieldset>
+						</form>
+						<button class="w-full p-3 dark:text-primary-500 text-primary-700" onclick={startDemo}>{$_("Demo mode")}</button>
+					</div>
+				</Dialog.Description>
+			</Dialog.Content>
+		</Dialog.Positioner>
+	</Portal>
+</Dialog>
 
 <Dialog
-	open={openDialog}
-	onInteractOutside={()=>{openDialog=false}}>
+	open={openPopup}
+	onInteractOutside={()=>{openPopup=false}}>
 	<Portal>
-		<Dialog.Backdrop class="fixed inset-0 z-40 bg-surface-50-950/75 backdrop-blur-sm"/>
-		<Dialog.Positioner class="fixed inset-0 z-40 flex justify-center items-center p-4">
+		<Dialog.Backdrop class="fixed inset-0 z-150 bg-surface-50-950/75 backdrop-blur-sm"/>
+		<Dialog.Positioner class="fixed inset-0 z-150 flex justify-center items-center p-4">
 			<Dialog.Content class="card bg-surface-100-900 p-4 pt-3 shadow-sm rounded-lg border border-white/5 hover:border-white/10
 								md:max-w-9/10 md:max-h-9/10 w-[350px]">
-				{#if dialogView.title.length}
+				{#if popupView.title.length}
 					<header class="grid grid-cols-[5%_90%_5%]">
 						<div class="flex justify-center items-center"></div><!-- placeholder for menu -->
-						<Dialog.Title class="h5 flex justify-center items-center">{$_(dialogView.title)}</Dialog.Title>
+						<Dialog.Title class="h5 flex justify-center items-center">{$_(popupView.title)}</Dialog.Title>
 						<div class="flex justify-center items-center">
-							<button type="button" class="btn-icon hover:preset-tonal" onclick={()=>{openDialog=false}}>
+							<button type="button" class="btn-icon hover:preset-tonal" onclick={()=>{openPopup=false}}>
 								<XIcon class="size-4"/>
 							</button>
 						</div>
 					</header>
 				{/if}
 				<Dialog.Description>
-					{#if dialogView.isSearch}
+					{#if popupView.isSearch}
 						{#if list.length}
 							<div class="w-full mt-4 mb-2 grid gap-2">
 								{#each list as item}
@@ -185,18 +211,18 @@
 						{/if}
 					{:else}
 						<div class="flex justify-center items-center p-3">
-							<p>{dialogView.description}</p>
+							<p>{popupView.description}</p>
 						</div>
 					{/if}
 					<div class="mt-4">
-						{#if dialogView.isSearch}
+						{#if popupView.isSearch}
 							<button class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
 											onclick={doSearch}>
 								<span class="flex justify-center items-center truncate text-lg"><SearchIcon size={18} />&nbsp;{$_("Search")}</span>
 							</button>
 						{:else}
 							<button class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
-											onclick={() => {openDialog=false}}>
+											onclick={() => {openPopup=false}}>
 								<span class="flex justify-center items-center truncate text-lg">OK</span>
 							</button>
 						{/if}

@@ -3,7 +3,7 @@
 	import { type ControlView, type SecuredDetails, type SecuredDetailsValue } from '$lib/types/models';
 	import { XIcon, VideoIcon, CameraIcon, HistoryIcon } from '@lucide/svelte';
 	import { _ } from 'svelte-i18n';
-	import Info from '$lib/components/Common/LbInfo.svelte';
+	import LbInfo from '$lib/components/Common/LbInfo.svelte';
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 	import { tick } from 'svelte';
 	import { SvelteMap } from 'svelte/reactivity';
@@ -14,7 +14,7 @@
 
 	let imageIdx = 0; // image cache index
 	let img: any = $state();
-	let resource = $state();
+	let resource = $state('');
 
 	let events = $derived(String(controlStore.getState(controlView.control.states.lastBellEvents)));
 	let lastBellEvents = $derived((events.includes('|') ? events.split('|').reverse(): []));
@@ -27,9 +27,9 @@
 	let bellImages = $derived(new SvelteMap<string, string>());
 	let isJpgVideo = $derived(securedDetails?.videoInfo?.streamUrl.match(/.jpg$/) ? 1 : 0);
 
-	$effect( async () => {
+	$effect( () => {
 		if (uuid) {
-			resource = await controlStore.fetchUrl(uuid, `jdev/sps/io/${uuid}/securedDetails`);
+			controlStore.fetchUrl(uuid, `jdev/sps/io/${uuid}/securedDetails`).then( resp => resource = resp );
 		}
 	});
 
@@ -87,7 +87,7 @@
 			<Dialog.Positioner class="fixed inset-0 z-10 flex justify-center items-center p-4" >
 				<Dialog.Content class="card bg-surface-100-900 p-4 pt-3 shadow-sm rounded-lg border border-white/5 hover:border-white/10
 									md:max-w-9/10 md:max-h-9/10  w-[680px] lg:w-[800px]">
-					<!--<Info control={controlView.control}/>-->
+					<LbInfo control={controlView.control}/>
 					<header>
 						<div class="grid grid-cols-[5%_90%_5%]">
 							<div class="flex justify-center items-center"></div><!-- placeholder for menu -->

@@ -27,14 +27,11 @@ class Utils {
 		let rr: number;
 		let gg: number;
 		let bb: number;
-		let h: any;
+		let h: number = 0;
 		let s: number;
-		let v: number;
-		let diff;
-		let diffc;
-		v = Math.max(rabs, gabs, babs),
-			diff = v - Math.min(rabs, gabs, babs);
-		diffc = (c: number) => (v - c) / 6 / diff + 1 / 2;
+		const v = Math.max(rabs, gabs, babs);
+		const diff = v - Math.min(rabs, gabs, babs);
+		const diffc = (c: number) => (v - c) / 6 / diff + 1 / 2;
 		if (diff == 0) {
 			h = s = 0;
 		} else {
@@ -42,7 +39,6 @@ class Utils {
 			rr = diffc(rabs);
 			gg = diffc(gabs);
 			bb = diffc(babs);
-
 			if (rabs === v) {
 				h = bb - gg;
 			} else if (gabs === v) {
@@ -138,9 +134,9 @@ class Utils {
 		return fmt.sprintf('%02i:%02i', hrs, min); 
 	}
 
-	time2epoch(dateEpoch: number, time: string) {
-		if (!time) return ''; // empty input
-		if (!time.includes(':')) return ''; // empty or invalid input
+	time2epoch(dateEpoch: number, time: string | undefined) {
+		if (!time) return 0; // empty input
+		if (!time.includes(':')) return 0; // empty or invalid input
 		const hhmm = time.split(':'); // HH:mm:ss notation, we ignore seconds
 		const date = new Date(dateEpoch);
 		const dayStart = new Date(date.getFullYear(), date.getMonth(), date.getDate(), Number(hhmm[0]), Number(hhmm[1]));
@@ -163,7 +159,7 @@ class Utils {
 		return JSON.stringify(value);
 	}
 
-	deserialize(item: string | null): any {
+	deserialize(item: string | null) {
 		return item ? JSON.parse(item) : null;
 	}
 	

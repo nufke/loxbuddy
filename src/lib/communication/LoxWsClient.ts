@@ -52,7 +52,7 @@ export class LoxWsClient {
 				const newToken = this.client.auth.tokenHandler.token;
 				if (newToken) {
 					appStore.storeToken(newToken);
-					console.info('LoxClient: Token received and stored:');
+					console.info('LoxWslient: Token received and stored:');
 				}
 			}
 		}	catch {
@@ -98,28 +98,29 @@ export class LoxWsClient {
 		this.client.on('authenticated', () => {
 			console.info(`LoxWsClient: User ${this.username} authenticated`);
 			appStore.loxStatus = 1;
+			appStore.loginDialog.state = false; // close login dialog
 		});
 
 		this.client.on('disconnected', () => {
-			console.info('LoxClient: Disconnected from Miniserver');
+			console.info('LoxWsClient: Disconnected from Miniserver');
 			appStore.loxStatus = 0;
 		});
 
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		this.client.on('error', (error: any) => {
-			console.error(`LoxClient: Error received: ${error.message}`, error);
+			console.error(`LoxWsClient: Error received: ${error.message}`, error);
 		});
 
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		this.client.on('event_value', (event: any) => {
-			console.debug(`LoxClient: event_value received: ${event}`);
+			console.debug(`LoxWsClient: event_value received: ${event}`);
 			controlStore.setState(event.detail.uuid.stringValue, event.detail.value);
 		});
 
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		this.client.on('event_text', (event: any) => {
 			const text = event.detail.text;
-			console.debug(`LoxClient: event_text received: ${text}`);
+			console.debug(`LoxWsClient: event_text received: ${text}`);
 			const objOrText = utils.isValidJSONObject(text) ? JSON.parse(text) : text;
 			controlStore.setState(event.detail.uuid.stringValue, objOrText);
 		});
@@ -131,7 +132,7 @@ export class LoxWsClient {
 	 * @param value value of the control
 	 */
 	async control(uuid: string, value: string) {
-		console.info('LoxClient control:', uuid, value);
+		console.info('LoxWsClient control:', uuid, value);
 		await this.client.control(uuid, value);
 	}
 
@@ -236,5 +237,7 @@ export const startLoxWsClient = async () => {
 	if (cred.hostname && cred.username && appId && token) {
 		const loxClient = new LoxWsClient(cred.hostname, cred.username, '', appId, 0);
 		await loxClient.connect(token);
+	} else {
+		appStore.loginDialog.state = true; 
 	}
 }

@@ -1,4 +1,5 @@
 import { type Icon as IconType } from '@lucide/svelte';
+import { type Locale } from 'date-fns/locale';
 
 export type MQTTStatus = {
 	enabled: boolean;
@@ -546,7 +547,7 @@ export type Route = {
 	label: string;
 	href: string;
 	icon: typeof IconType;
-	menu: boolean;
+	menu?: boolean;
 };
 
 export type ColorType = { 
@@ -704,13 +705,12 @@ export type Credentials = {
 	username: string;
 }
 
-export const NO_LOGIN: Credentials = {
-	hostname: '',
-	username: ''
-}
-
 export type Icon = {
 	id: string;
 	name: string;
 	filterTags?: string;
+}
+
+export type	DateFnsLocale = {
+	[key: string]: Locale;
 }

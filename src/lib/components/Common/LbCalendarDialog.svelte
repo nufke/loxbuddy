@@ -72,8 +72,8 @@
 		return (idx != -1) ? temperatureList[idx].value + '°' : '';
 	}
 
-	function getModeIndex(mode: string) { // check index using the initial modes, as entries could have been removed
-		return initialModes.findIndex(item => item == Number(mode));
+	function getModeIndex(mode: number) { // check index using the initial modes, as entries could have been removed
+		return initialModes.findIndex(item => item == mode);
 	}
 
 	// although we calculate with 24:00 for the graphics, we use 00:00 notation to display time 
@@ -143,7 +143,6 @@
 		<Dialog.Backdrop class="fixed z-20 top-0 left-0 right-0 bottom-0 dark:bg-surface-950 bg-surface-50" />
 		<Dialog.Positioner class="fixed z-20 top-0 left-0 w-full h-full">
 			<Dialog.Content class="card p-2 space-y-4 shadow-xl overflow-auto h-full"> <!-- container mx-auto max-w-full w-full overflow-auto h-full-->
-				<!--<Info control={controlView.control}/>-->
 				<header class="fixed w-full top-0 left-0 preset-filled-surface-100-900 z-1 shadow-md">
 					<div class="grid grid-cols-2 text-center items-center m-auto h-[60px]">
 						<div class="flex flex-row text-center items-center gap-3">

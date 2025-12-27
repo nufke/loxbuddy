@@ -9,9 +9,8 @@
 
 <div class="container flex justify-center items-center h-full mx-auto max-w-[1280px] p-2">
 	<div class="flex flex-col justify-center align-center text-center items-center m-auto">
-		<p class="m-5 h4">{$_("About")}</p>
-		<img src="/icons/svg/loxbuddy.svg" width="150" alt="about"/>
-		<p class="mt-2 h3 dark:text-primary-500 text-primary-700">LoxBuddy</p>
+		<img src="/icons/svg/loxbuddy.svg" width="100" alt="about"/>
+		<p class="text-base mt-2 h3 dark:text-primary-500 text-primary-700">LOXBUDDY</p>
 		<p class="text-sm dark:text-surface-300 text-surface-700">{$_("Version").toLocaleLowerCase()} {version}</p>
 		<p class="mt-2 text-lg font-medium">{$_("The Smarter Home App")}</p>
 		<a class="mt-2 text-md text-primary-500" href="https://github.com/nufke/loxbuddy" target="_blank">{$_("Visit")} GitHub</a>

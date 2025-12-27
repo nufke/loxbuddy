@@ -16,23 +16,23 @@
 	import type { WeatherCurrentConditions } from '$lib/types/weather';
 	import LbIcon from '$lib/components/Common/LbIconByName.svelte';
 	import LbWeatherDialog from '$lib/components/Weather/LbWeatherDialog.svelte';
+	import LbLoginDialog from '$lib/components/Login/LbLoginDialog.svelte';
 	import LbLockScreenDialog from '$lib/components/LockScreen/LbLockScreenDialog.svelte';
+	import { startLoxWsClient} from '$lib/communication/LoxWsClient';
 	import { format } from 'date-fns';
 	import { goto } from '$app/navigation';
 	import { Logger } from '$lib/helpers/Logger';
 	import { enableDragDropTouch } from '$lib/helpers/drag-drop-touch';
-	import { Test } from '$lib/test/Test';
-	import { LoxWsClient, startLoxWsClient } from '$lib/communication/LoxWsClient';
-	import { NO_LOGIN } from '$lib/types/models';
+	import { Demo } from '$lib/demo/Demo';
 
 	const env = page.data.env;
-	const isTest = env && env.TEST ? Number(env.TEST) : 0;
 	const logLevel = env && env.APP_LOGLEVEL ? Number(env.APP_LOGLEVEL) : 0;
 	const weatherUrl =  env && env.WEATHER_URL ? env.WEATHER_URL : '';
 
 	const anchorRail = 'btn aspect-square pl-6 w-full max-w-[74px] flex flex-col items-center gap-0.5 ';
 	const anchorSidebar = 'btn justify-start px-2 w-full ';
 	const anchorBar = 'btn hover:preset-tonal flex-col items-center gap-1';
+	const demo = new Demo();
 
 	const options = {
 		allowDragScroll: true,
@@ -50,6 +50,18 @@
 
 	let { children } = $props();
 
+	let routes: Route[] = $state([
+		{ label: 'Login', href: '/login', icon: LogIn, menu: true },
+		{ label: 'Weather', href: '/weather', icon: FileTextIcon, menu: true },
+		{ label: 'Settings', href: '/settings', icon: SettingsIcon,  menu: true },
+		{ label: 'About', href: '/about', icon: InfoIcon, menu: true },
+		{ label: 'Log', href: '/log', icon: Logs, menu: true },
+		{ label: 'Home', href: '/', icon: HouseIcon, menu: false },
+		{ label: 'Rooms', href: '/room', icon: Grid2x2Icon, menu: false },
+		{ label: 'Categories', href: '/category', icon: LayoutListIcon,  menu: false },
+		{ label: 'Messages', href: '/messages', icon: FileTextIcon, menu: false },
+	]);
+
 	let mobileMenuDialog = $state(false);
 	let layoutRail = $state(true);
 	let currentWeather = $derived(weatherStore.current);
@@ -59,22 +71,11 @@
 	let mqttStatus = $derived(appStore.mqttStatus);
 	let loxStatus = $derived(appStore.loxStatus); // TODO use controlStore.msStatus?
 	let nav = $derived(appStore.nav);
+	let isDemo = $derived(appStore.isDemo);
 	let path = $derived(page.url.pathname);
 	let showWeather = $derived(appStore.showWeather && currentWeather.time > 0 && dailyForecast.length && hourlyForecast[0]);
 	let activeNotifications = $derived(Object.values(controlStore.notificationsMap).filter( items => items.status == 1));
 	let navigation = $derived(routes.filter((m) => !m.menu));
-
-	let routes: Route[] = $derived([
-		{ label: 'Home', href: '/', icon: HouseIcon, menu: false },
-		{ label: 'Rooms', href: '/room', icon: Grid2x2Icon, menu: false },
-		{ label: 'Categories', href: '/category', icon: LayoutListIcon,  menu: false },
-		{ label: 'Messages', href: '/messages', icon: FileTextIcon, menu: false },
-//		{ label: 'Login', href: '/login', icon: LogIn, menu: true },
-		{ label: 'Weather', href: '/weather', icon: FileTextIcon, menu: true },
-		{ label: 'Settings', href: '/settings', icon: SettingsIcon,  menu: true },
-		{ label: 'About', href: '/about', icon: InfoIcon, menu: true },
-		{ label: 'Log', href: '/log', icon: Logs, menu: true },
-	]);
 
 	function getCurrentIcon(cur: WeatherCurrentConditions) {
 		let sunRise = utils.time2epoch(cur.time, cur.sunRise);
@@ -113,6 +114,8 @@
 		switch (s) {
 			case '' : mobileMenuDialog = true; break;
 			case '/weather' : openWeather(); break;
+			case '/login' : appStore.loginDialog.state = true; break;
+			case '/logout' : if (demo) { appStore.setDemo(0); } controlStore.disconnectClient(); break;
 			default: goto(s);
 		}
 	}
@@ -128,23 +131,32 @@
 		}
 	});
 
+	$effect( () => {
+		if (loxStatus || isDemo) { // connected or demo
+			routes[0] = { label: 'Logout', href: '/logout', icon: LogOut, menu: true };
+			if (isDemo) {
+				demo.start();
+			}
+			navigate((localStorage.getItem('startPage') || '/'));
+		} else { // not connected
+			routes[0] = { label: 'Login', href: '/login', icon: LogIn, menu: true };
+			appStore.loginDialog.state = true; 
+		}
+	});
+
+	// try to connect once (or start demo)
+	if (isDemo) {
+		demo.start();
+	} else {
+		startLoxWsClient();
+	}
+
 	// connect to MQTT server
 	//mqttClient.connect(env.MQTT_HOSTNAME, env.MQTT_PORT, env.MQTT_USERNAME, env.MQTT_PASSWORD, env.MQTT_TOPIC);
 
-	if (isTest) {
-		const test = new Test();
-		test.start();
-	} else {
-		await startLoxWsClient();
-	}
-
-	Logger(logLevel, false);
+	Logger(logLevel, true);
 	enableDragDropTouch(document, document, options);
 	weatherStore.startWeatherForecast(weatherUrl);
-
-	// goto startpage if specified
-	const startPage = (loxStatus || isTest) ? (localStorage.getItem('startPage') || '/') : '/login';
-	goto(startPage);
 </script>
 
 <svelte:head>
@@ -174,7 +186,7 @@
 					<div class="mt-2 flex justify-center items-center">
 						<button class="flex flex-row items-center" onclick={openWeather}>
 							<LbIcon name={getCurrentIcon(currentWeather)} width="48" height="48"/>	
-							<span class="text-lg truncate">{currentWeather.airTemperature}°</span>
+							<span class="text-[20px] truncate">{currentWeather.airTemperature}°</span>
 						</button>
 					</div>
 				{/if}
@@ -237,7 +249,7 @@
 </div>
 {:else} <!-- mobile / portait mode -->
 <div class="w-full h-screen grid grid-rows-[1fr_auto]">
-	<Navigation layout="bar" class="fixed top-0 h-[65px] flex justify-center items-center shadow-md w-screen">
+	<Navigation layout="bar" class="fixed top-0 z-1 h-[65px] flex justify-center items-center shadow-md w-screen">
 		<Navigation.Menu class="grid grid-cols-3 gap-2">
 			<div class="flex flex-row justify-left items-center gap-2">
 				<button class="ml-2" onclick={() => {navigate(nav.href)}}>
@@ -246,13 +258,13 @@
 				{#if showWeather}
 					<button class="-ml-1 flex flex-row justify-center items-center gap-1" onclick={openWeather}>
 						<LbIcon name={getCurrentIcon(currentWeather)} width="48" height="48"/>	
-						<span class="-ml-1 text-lg truncate">{currentWeather.airTemperature}°</span>
+						<span class="-ml-1 text-[22px] truncate">{currentWeather.airTemperature}°</span>
 					</button>
 				{/if}
 			</div>
 			<div class="flex justify-center items-center">
 				<a href="/about">
-					<span class="text-xl dark:text-primary-500 text-primary-700 font-medium">LoxBuddy</span>
+					<span class="text-[20px] dark:text-primary-500 text-primary-700 font-medium">LOXBUDDY</span>
 				</a>
 			</div>
 			<div class="mr-2 pb-1 flex flex-row gap-3 justify-end items-center">
@@ -287,6 +299,7 @@
 {/if}
 
 <LbWeatherDialog />
+<LbLoginDialog />
 <LbLockScreenDialog />
 
 <Dialog

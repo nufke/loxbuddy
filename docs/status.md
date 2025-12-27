@@ -52,11 +52,11 @@ or submit a [Pull Request](https://github.com/nufke/loxbuddy/pulls).
 | InfoView                 | Not started       |                             |
 | Intercom                 | Under development | No SIP communication yet    |
 | IntercomV2               | Not started       |                             |
-| IRCDaytimer              | Under development |                             |
-| IRCV2Daytimer            | Under development |                             |
+| IRCDaytimer              | Available         |                             |
+| IRCV2Daytimer            | Available         |                             |
 | IRoom                    | Not started       |                             |
-| IRoomController          | Under development |                             |
-| IRoomControllerV2        | Under development |                             |
+| IRoomController          | Available         |                             |
+| IRoomControllerV2        | Available         |                             |
 | IRoomControllerV2021     | Not started       |                             |
 | Irrigation               | Not started       |                             |
 | Jalousie                 | Available         |                             |
@@ -68,7 +68,7 @@ or submit a [Pull Request](https://github.com/nufke/loxbuddy/pulls).
 | LightControllerV2        | Available         |                             |
 | LightsceneRGB            | Not started       |                             |
 | LightV2                  | Not started       |                             |
-| LoadManager              | Under development |                             |
+| LoadManager              | Available         |                             |
 | MailBox                  | Not started       |                             |
 | Media                    | Not started       |                             |
 | MediaClient              | Not started       |                             |
@@ -126,15 +126,17 @@ or submit a [Pull Request](https://github.com/nufke/loxbuddy/pulls).
 | Battery status update        | Not started              |
 | Connection status            | Available                |
 | Dark / Light themes          | Available                |
+| Demo mode                    | Available                | 
 | Internationalization         | Available (NL, DE, US)   |
 | Kiosk / room mode (tablet)   | Not started              |
 | LoxBerry plugins             | Not started              |
+| Miniserver search/discovery  | Available                |
 | MQTT client                  | Available                |
 | Notifications (local)        | Available                |
 | Pin protected pages          | Not started              |
 | Push messages (internet)     | Not started              |
 | Screensaver / Lockscreen     | Available                |
-| Settings menu                | Under development        |
+| Settings menu                | Available                |
 | Sorting of controls          | Under development        |
 | Splashscreen                 | Not started              |
 | Statistics / history         | Not started              |

@@ -7,10 +7,10 @@
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 	import { _ } from 'svelte-i18n';
 	import { format } from 'date-fns';
-	import { innerHeight, innerWidth } from 'svelte/reactivity/window';
+	import { innerWidth } from 'svelte/reactivity/window';
 
 	let group = $state('1');
-	let resource = $state();
+	let resource = $state('');
 
 	let messageCenter = $derived(controlStore.messageCenterList[0]); // select first message center
 	let	messages = $derived(resource ? JSON.parse(resource) : {}) as SystemStatus;
@@ -25,9 +25,9 @@
 
 	let severity = ['', 'Info', 'Warning', 'Error'];
 
-	$effect( async () => {
+	$effect( () => {
 		if (messageCenter && messageCenter.uuidAction) {
-			resource = await controlStore.fetchUrl(messageCenter.uuidAction, `jdev/sps/io/${messageCenter?.uuidAction}/getEntries/2`);
+			controlStore.fetchUrl(messageCenter.uuidAction, `jdev/sps/io/${messageCenter?.uuidAction}/getEntries/2`).then( resp => resource = resp );
 		}
 	});
 
@@ -38,7 +38,7 @@
 	function getRoomName(entry: SystemStatusEntry) {
 		return entry && entry.roomUuid && controlStore.rooms[entry.roomUuid] ? controlStore.rooms[entry.roomUuid].name : '';
 	}
-	
+
 	function showEntry(entry: SystemStatusEntry) {
 		selectedEntry = entry;
 		openDialog = true;
@@ -53,62 +53,61 @@
 			//msControl(messageCenter.uuidAction, cmd);
 		}
 	}
-	
+
 	function getDate(epoch: number) {
 		if (!epoch) return;
-		const date = new Date(epoch) * 1000;
+		const date = new Date(epoch * 1000);
 		return format(date, "PPP p")
 	}
-	
+
 	function setTabsTop() {
-		return (innerWidth.current > 768) ? 0 : 60; // TODO better way to fix top for Tabs?
+		return (innerWidth.current > 768) ? 0 : 65; // TODO better way to fix top for Tabs?
 	}
 </script>
 
 <div class="container flex mx-auto max-w-[800px] w-screen">
 	<Tabs defaultValue={'notifications'} onValueChange={(e) => (group = e.value)} class="w-screen">
-		<Tabs.List class="pt-2 bg-surface-50-950 sticky" style="top: {setTabsTop()}px">
-			<Tabs.Trigger value="notifications" class="p-2 flex-1 h5 text-wrap">{$_("Notifications")}</Tabs.Trigger>
-			<Tabs.Trigger value="systemstatus" class="p-2 flex-1 h5 text-wrap">{$_("System status")}</Tabs.Trigger>
-			<Tabs.Trigger value="history" class="p-2 m-0 flex-1 h5 text-wrap">{$_("History")}</Tabs.Trigger>
-			<Tabs.Indicator/>
+		<Tabs.List class="bg-surface-50-950 sticky" style="top: {setTabsTop()}px">
+			<Tabs.Trigger value="notifications" class="flex-1 h5 text-wrap">{$_("Notifications")}</Tabs.Trigger>
+			<Tabs.Trigger value="systemstatus" class="flex-1 h5 text-wrap">{$_("System status")}</Tabs.Trigger>
+			<Tabs.Trigger value="history" class="m-0 flex-1 h5 text-wrap">{$_("History")}</Tabs.Trigger>
+			<Tabs.Indicator class=""/>
 		</Tabs.List>
-			<div class="overflow-y-auto h-full"> <!--style="height: {innerHeight.current-100}px"-->
-
-		<Tabs.Content value="notifications">
-				{#each activeNotifications as notification}
-					<div class="{notification.status == 2 ? 'pl-[13px]' : 'pl-2 border-l-5 dark:border-l-primary-500'} border-b dark:border-surface-900 border-surface-200 cursor-pointer pt-3 pb-3 pr-3"
-						onclick={()=>{didRead(notification.message)}}>
-						<p class="text-md dark:text-surface-300 text-surface-700">{getDate(notification.message.ts)}</p>
-						<p class="text-lg">{notification.message.title}</p>
-						<p class="text-md">{notification.message.message}</p>
+		<div class="overflow-y-auto h-full">
+			<Tabs.Content value="notifications">
+					{#each activeNotifications as notification}
+						<div class="{notification.status == 2 ? 'pl-[13px]' : 'pl-2 border-l-5 dark:border-l-primary-500'} border-b dark:border-surface-900 border-surface-200 cursor-pointer pt-3 pb-3 pr-3"
+							onclick={()=>{didRead(notification.message)}}>
+							<p class="text-md dark:text-surface-300 text-surface-700">{getDate(notification.message.ts)}</p>
+							<p class="text-lg">{notification.message.title}</p>
+							<p class="text-md">{notification.message.message}</p>
+						</div>
+					{/each}
+			</Tabs.Content>
+			<Tabs.Content value="systemstatus">
+					{#each activeMessages.toReversed() as entry}
+					<div class="{entry.severity == 3 && entry.confirmedAt == null ? 'pl-2 border-l-5 dark:border-l-red-500' : 
+											(entry.severity == 2 && entry.confirmedAt == null ? 'pl-2 border-l-5 dark:border-l-orange-500' : 'pl-[13px]') } border-b dark:border-surface-900 border-surface-200 cursor-pointer pt-3 pb-3 pr-3"
+												onclick={()=>{showEntry(entry)}}>
+						<p class="text-md { entry.severity == 3 ? 'text-red-500' : (entry.severity == 2 ? 'text-orange-500' : 'dark:text-surface-300 text-surface-700')}">
+							{$_(severity[entry.severity]).toUpperCase()}: <span class="dark:text-surface-300 text-surface-700"> {entry.timestamps.length ? getDate(Number(entry.timestamps[0])) : ''} {getRoomName(entry)}</span></p>
+						<p class="text-lg">{@html entry.title}</p>
+						<p class="text-md">{@html entry.affectedName}</p>
 					</div>
-				{/each}
-		</Tabs.Content>
-		<Tabs.Content value="systemstatus">
-				{#each activeMessages.toReversed() as entry}
-				<div class="{entry.severity == 3 && entry.confirmedAt == null ? 'pl-2 border-l-5 dark:border-l-red-500' : 
-										(entry.severity == 2 && entry.confirmedAt == null ? 'pl-2 border-l-5 dark:border-l-orange-500' : 'pl-[13px]') } border-b dark:border-surface-900 border-surface-200 cursor-pointer pt-3 pb-3 pr-3"
-											onclick={()=>{showEntry(entry)}}>
-					<p class="text-md { entry.severity == 3 ? 'text-red-500' : (entry.severity == 2 ? 'text-orange-500' : 'dark:text-surface-300 text-surface-700')}">
-						{$_(severity[entry.severity]).toUpperCase()}: <span class="dark:text-surface-300 text-surface-700"> {entry.timestamps.length ? getDate(Number(entry.timestamps[0])) : ''} {getRoomName(entry)}</span></p>
-					<p class="text-lg">{@html entry.title}</p>
-					<p class="text-md">{@html entry.affectedName}</p>
-				</div>
-				{/each}
-				{#if activeMessages.length==0}
-				<p class="text-lg flex items-center justify-center mt-10">No active System status messages</p>
-				{/if}
-		</Tabs.Content>
-		<Tabs.Content value="history">
-				{#each pastMessages.toReversed() as entry}
-				<div class="pl-[13px] border-b dark:border-surface-900 border-surface-200 cursor-pointer pt-3 pb-3 pr-3" onclick={()=>{showEntry(entry)}}>
-					<p class="text-md dark:text-surface-300 text-surface-700">{$_(severity[entry.severity]).toUpperCase()}: {entry.timestamps.length ? getDate(Number(entry?.timestamps[0])) : ''} {getRoomName(entry)}</p>
-					<p class="text-lg">{@html entry.title}</p>
-					<p class="text-md">{@html entry.affectedName}</p>
-				</div>
-				{/each}
-		</Tabs.Content>
+					{/each}
+					{#if activeMessages.length==0}
+					<p class="text-lg flex items-center justify-center mt-10">No active System status messages</p>
+					{/if}
+			</Tabs.Content>
+			<Tabs.Content value="history">
+					{#each pastMessages.toReversed() as entry}
+					<div class="pl-[13px] border-b dark:border-surface-900 border-surface-200 cursor-pointer pt-3 pb-3 pr-3" onclick={()=>{showEntry(entry)}}>
+						<p class="text-md dark:text-surface-300 text-surface-700">{$_(severity[entry.severity]).toUpperCase()}: {entry.timestamps.length ? getDate(Number(entry?.timestamps[0])) : ''} {getRoomName(entry)}</p>
+						<p class="text-lg">{@html entry.title}</p>
+						<p class="text-md">{@html entry.affectedName}</p>
+					</div>
+					{/each}
+			</Tabs.Content>
 		</div>
 	</Tabs>
 </div>

@@ -5,7 +5,7 @@
 	import LbJalousieIcon from '$lib/components/Jalousie/LbJalousieIcon.svelte';
 	import { XIcon } from '@lucide/svelte';
 	import { _ } from 'svelte-i18n';
-	import Info from '$lib/components/Common/LbInfo.svelte';
+	import LbInfo from '$lib/components/Common/LbInfo.svelte';
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 
 	let { controlView = $bindable() }: { controlView: ControlView } = $props();
@@ -27,7 +27,7 @@
 				<Dialog.Content class="card bg-surface-100-900 p-4 pt-3 space-y-4 shadow-sm rounded-lg border border-white/5 hover:border-white/10
 								md:max-w-9/10 md:max-h-9/10 overflow-auto w-[450px]">
 					<Dialog.Description>
-						<!--<Info control={controlView.control}/>-->
+						<LbInfo control={controlView.control}/>
 						<header class="grid grid-cols-[5%_90%_5%]">
 							<div class="flex justify-center items-center"></div><!-- placeholder for menu -->
 							<div>

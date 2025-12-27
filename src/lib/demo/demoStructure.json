@@ -24,7 +24,7 @@
 		"miniserverType": 2,
 		"deviceMonitor": "__deviceMonitor",
 		"currentUser": {
-			"name": "user",
+			"name": "demo",
 			"uuid": "__currentUser_uuid",
 			"isAdmin": false,
 			"changePassword": false,

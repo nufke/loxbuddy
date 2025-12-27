@@ -10,7 +10,7 @@
 	import { XIcon, ChevronUpIcon, ChevronDownIcon, BlindsIcon, SettingsIcon, OctagonMinusIcon } from '@lucide/svelte';
 	import { _ } from 'svelte-i18n';
 	import { fade } from 'svelte/transition';
-	import Info from '$lib/components/Common/LbInfo.svelte';
+	import LbInfo from '$lib/components/Common/LbInfo.svelte';
 	import { innerHeight } from 'svelte/reactivity/window';
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
@@ -168,7 +168,7 @@
 				<Dialog.Positioner class="fixed inset-0 z-10 flex justify-center items-center p-4">
 					<Dialog.Content class="card bg-surface-100-900 p-4 pt-3 shadow-sm rounded-lg border border-white/5 hover:border-white/10
 										md:max-w-9/10 md:max-h-9/10 w-[450px]">
-							<!--<Info control={controlView.control}/>-->
+							<LbInfo control={controlView.control}/>
 							<header class="grid grid-cols-[5%_90%_5%]">
 								<div class="flex justify-center items-center"></div><!-- placeholder for menu -->
 								<div>

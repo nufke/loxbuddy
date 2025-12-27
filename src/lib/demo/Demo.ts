@@ -1,18 +1,22 @@
 import { controlStore } from '$lib/stores/LbControlStore.svelte';
 import type { Control, AlarmClockEntries } from '$lib/types/models';
 import { utils } from '$lib/helpers/Utils';
-import structure from '$lib/test/demoStructure.json';
-import states from '$lib/test/demoStates.json';
-import userSettings from '$lib/test/userSettings.json';
-import notification from '$lib/test/notifications.json';
-import messageCenter from '$lib/test/messageCenter.json';
+import structure from '$lib/demo/demoStructure.json';
+import states from '$lib/demo/demoStates.json';
+import userSettings from '$lib/demo/userSettings.json';
+import notification from '$lib/demo/notifications.json';
+import messageCenter from '$lib/demo/messageCenter.json';
 import { format } from 'date-fns';
 
 type IntervalMap = {
 	[key: string]: NodeJS.Timeout;
 }
 
-export class Test {
+/** Helper class to demonstrate LoxBuddy capabilities.
+ *  This demo mimics a Smart Home and the controls. There is 
+ *  no Miniserver required to test the functionalities
+*/
+export class Demo {
 	private timedSwitchIntervalMap: IntervalMap = {};
 	private jalousieIntervalMap: IntervalMap = {};
 	private dimmerLastValue: {[key: string]: string} = {};
@@ -21,12 +25,17 @@ export class Test {
 	private daytimerOldValue: {[key: string]: string} = {};
 	private ircTimerIntervalMap: IntervalMap = {};
 	private smokeAlarmIntervalMap: IntervalMap = {};
+	private demoRunning = false;
 
 	constructor() {
 	}
 
 	start() {
+		if (this.demoRunning) return; // start demo Once
+
 		console.info('TEST MODE: Use demo structure');
+		this.demoRunning = true;
+
 		let i = 0;
 		let j = 0;
 		let k = false; // used for InfoOnlyDigital
@@ -44,7 +53,7 @@ export class Test {
 			controlStore.setInitialStates(states);
 			controlStore.userSettings = userSettings;
 			controlStore.updateNotificationMap(notification);
-		}, 2000);
+		}, 200);
 
 		// Meter
 		setInterval(() => {
@@ -607,14 +616,14 @@ export class Test {
 	}
 
 	/**
-	 * Dummy getFile in test mode
+	 * Dummy getFile in demo mode
 	 */
 	getFile(url: string) {
 		console.log('TEST: getFile not yet implemented');
 	}
 
 	/**
-	 * Dummy fetch in test mode
+	 * Dummy fetch in demo mode
 	 */
 	fetch(url: string) {
 		console.log('TEST fetch:', url);
@@ -623,6 +632,14 @@ export class Test {
 			case 'jdev/sps/io/__uuid__controls_intercom/securedDetails' : return this.createPromise(states.__uuid__controls_intercom_securedDetails);
 			default: return this.createPromise(JSON.stringify({text: 'default reponse'}));
 		}
+	}
+
+	/**
+	 * disconnect demo mode
+	 */
+	disconnect() {
+		controlStore.clearStructure();
+		this.demoRunning = false;
 	}
 
 	private createPromise(msg: any) {

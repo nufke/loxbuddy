@@ -6,7 +6,7 @@
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 	import { _ } from 'svelte-i18n';
 	import { XIcon, WrenchIcon, InfoIcon, ChevronUpIcon, ChevronDownIcon } from '@lucide/svelte';
-	import Info from '$lib/components/Common/LbInfo.svelte';
+	import LbInfo from '$lib/components/Common/LbInfo.svelte';
 	import { tick } from 'svelte';
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS}: { control: Control, controlOptions: ControlOptions } = $props();
@@ -122,7 +122,7 @@
 				<Dialog.Positioner class="fixed inset-0 z-10 flex justify-center items-center p-4">
 					<Dialog.Content class="card bg-surface-100-900 p-4 space-y-4 shadow-sm rounded-lg border border-white/5 hover:border-white/10
 										md:max-w-9/10 md:max-h-9/10 overflow-auto w-[380px]">
-						<!--<Info control={controlView.control}/>-->
+						<LbInfo control={controlView.control}/>
 						<header class="grid grid-cols-[5%_90%_5%]">
 							<div class="flex justify-center items-center"></div><!-- placeholder for menu -->
 							<div>

@@ -15,7 +15,7 @@ const config = {
 	},
 	 compilerOptions: {
     experimental: {
-      async: true
+      async: true // async remote functions available since Svelte 2.27
     },
 		warningFilter: (warning) => {
 				const ignore = [

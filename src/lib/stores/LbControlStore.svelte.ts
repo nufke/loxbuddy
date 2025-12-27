@@ -5,14 +5,15 @@ import type { Structure, Control, Category, Room, NotificationMap, NotificationL
 import { utils } from '$lib/helpers/Utils';
 import { lbControl } from '$lib/helpers/LbControl';
 import { loxiconsPath } from '$lib/helpers/paths';
+import { Demo } from '$lib/demo/Demo';
+import { LoxWsClient} from '$lib/communication/LoxWsClient';
 
 /**
  * ControlStore to maintain control states
  */
 class LbControlStore {
-	client: SvelteMap<string, any> = new SvelteMap();
 	controlState: SvelteMap<string, any> = new SvelteMap();
-	controlClient: SvelteMap<string, any> = new SvelteMap();
+	controlClient: SvelteMap<string, Demo | LoxWsClient > = new SvelteMap();
 	structure: Structure = $state(INITIAL_STRUCTURE);
 	controls: ControlsMap = $derived(this.structure.controls);
 	rooms: RoomsMap = $derived(this.structure.rooms);
@@ -34,7 +35,7 @@ class LbControlStore {
 
 	setControl(uuid: string, cmd: string) {
 		const client = this.controlClient.get(uuid);
-		client.control(uuid, cmd);
+		client?.control(uuid, cmd);
 	}
 
 	updateNotificationMap(notifications: NotificationMessage | NotificationList, statusOverride: number = 0 ) {
@@ -54,8 +55,10 @@ class LbControlStore {
 		return map;
 	}
 
-	initStructure(data: Structure, client: any) {
+	initStructure(data: Structure, client: Demo | LoxWsClient ) {
 		Object.assign(this.structure, data);
+		// store reference to client using device serial nr 
+		this.controlClient.set(this.structure.msInfo.serialNr, client);
 		// Mapping table to associate control UUIDs for each backend
 		Object.values(this.structure.controls).forEach( (control) => {
 			this.controlClient.set(control.uuidAction, client);
@@ -63,6 +66,10 @@ class LbControlStore {
 		// Add message center to mapping table
 		const messageCenter = Object.values(this.structure.messageCenter);
 		this.controlClient.set(messageCenter[0].uuidAction, client);
+	}
+
+	clearStructure() {
+		this.structure = INITIAL_STRUCTURE;
 	}
 
 	getState(uuid: string) {
@@ -98,14 +105,19 @@ class LbControlStore {
 
 	async getFile(uuid: string, url: string) {
 		const client = this.controlClient.get(uuid);
-		return await client.getFile(url);
+		return await client?.getFile(url);
 	}
 
 	async fetchUrl(uuid: string, url: string) {
 		const client = this.controlClient.get(uuid);
-		return await client.fetch(url);
+		return await client?.fetch(url);
 	}
 
+	/* disconnect client based on the registered Miniserver  serial number */
+	disconnectClient() {
+		const client = this.controlClient.get(this.structure.msInfo.serialNr);
+		client?.disconnect();
+	}
 }
 
 export const controlStore = new LbControlStore();

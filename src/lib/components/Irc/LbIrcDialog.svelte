@@ -13,7 +13,7 @@
 	import LbDateTimePickerDialog from '$lib/components/Common/LbDateTimePickerDialog.svelte';
 	import LbCalendarEntryDialog from '$lib/components/Common/LbCalendarEntryDialog.svelte';
 	import LbCalendarDialog from '$lib/components/Common/LbCalendarDialog.svelte';
-	import Info from '$lib/components/Common/LbInfo.svelte';
+	import LbInfo from '$lib/components/Common/LbInfo.svelte';
 	import { utils } from '$lib/helpers/Utils';
 	import { format } from 'date-fns';
 	import { innerHeight } from 'svelte/reactivity/window';
@@ -72,7 +72,7 @@
 	let timerEndsV1 = $state(new SvelteDate());
 	let timerEndsV2 = $state(new SvelteDate());
 	let selectedEntry = $state();
-	let overrideDate = $state({start: new SvelteDate(), end: new SvelteDate()});
+	let overrideDate = $state({start: new SvelteDate().valueOf(), end: new SvelteDate().valueOf()});
 
 	let viewport: any = $state(); // TODO make HTMLDivElement
 	let hasScroll = $state(true);
@@ -195,7 +195,7 @@
 				start: Date.now(),
 				end: Date.now() + overrideTimeSec*1000
 			}
-			override = true;
+			override = 1;
 			let cmd = isV1 ? 'starttimer/' : 'override/';
 			overrideTimeSec += (isV1 ? 0 : Math.round((Date.now() - utils.loxTimeRef)/1000)); // V2 starts to count from 1-1-2009
 			overrideTimeSec += (!isV1 && utils.isDST(date) ? -3600 : 0); // DST correction for V2
@@ -212,7 +212,7 @@
 		if (controlView.control) {
 			controlStore.setControl(controlView.control.uuidAction, isV1 ? 'stoptimer' : 'stopOverride');
 		}
-		override = false;
+		override = 0;
 	}
 
 	function updatePosition(e: any) { // TODO
@@ -256,7 +256,7 @@
 	function openCalendarView() {
 		calendarView.subControl = selectedSubControl;
 		calendarView.isCooling = isCooling;
-		calendarView.openDialog=true;
+		calendarView.openDialog = true;
 	}
 
 	function filteredEntries() {
@@ -295,7 +295,7 @@
 			<Dialog.Positioner class="fixed inset-0 z-10 flex justify-center items-center p-4" >
 				<Dialog.Content class="card bg-surface-100-900 p-4 pt-3 shadow-sm rounded-lg border border-white/5 hover:border-white/10
 									md:max-w-9/10 md:max-h-9/10 w-[450px]">
-					<!--<Info control={controlView.control}/>-->
+					<LbInfo control={controlView.control}/>
 					<header>
 						<div class="grid grid-cols-[5%_90%_5%]">
 							<div class="flex justify-center items-center"></div><!-- placeholder for menu -->
@@ -415,15 +415,15 @@
 							{/if}
 							<div class="relative w-full mt-6 mb-2">
 								<div class="grid h-full max-w-lg grid-cols-3 mx-auto">
-									<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==1 ? 'dark:text-primary-500 text-primary-700' : ''} " onclick={() => selectedTab=1}>
+									<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==1 ? 'dark:text-primary-500 text-primary-700' : ''} " onclick={() => {viewport = undefined; selectedTab=1}}>
 										<LbIcon class={selectedTab==1 ? 'dark:fill-primary-500 fill-primary-700' : 'fill-surface-50'} name={"/icons/svg/thermostat.svg"} width="24" height="24"/>
 										<span class="mt-1 text-xs">{$_("Control")}</span>
 									</button>
-									<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==2 ? 'dark:text-primary-500 text-primary-700' : ''} " onclick={() => selectedTab=2}>
+									<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==2 ? 'dark:text-primary-500 text-primary-700' : ''} " onclick={() => {viewport = undefined; selectedTab=2}}>
 										<ListIcon/>
 										<span class="mt-1 text-xs">{$_("Preset")}</span>
 									</button>
-									<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==3 ? 'dark:text-primary-500 text-primary-700' : ''} " onclick={() => selectedTab=3}>
+									<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==3 ? 'dark:text-primary-500 text-primary-700' : ''} " onclick={() => {viewport = undefined; selectedTab=3}}>
 										<CalendarClockIcon/>
 										<span class="mt-1 text-xs">{$_("Switching times")}</span>
 									</button>

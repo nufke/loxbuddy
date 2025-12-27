@@ -20,7 +20,7 @@
 	let draggingItem: any;
 	let animatingItems = new Set();
 
-	appStore.setNav({ label: 'ArrowLeftIcon', href: '/room', icon: ArrowLeftIcon, root: true }); // TODO change navigation concept
+	appStore.setNav({ label: 'ArrowLeftIcon', href: '/room', icon: ArrowLeftIcon });
 
 	let controlOptions: ControlOptions = $derived(DEFAULT_CONTROLOPTIONS);
 
