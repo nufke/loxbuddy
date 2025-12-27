@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { _ } from 'svelte-i18n';
 	import { appStore } from '$lib/stores/LbAppStore.svelte';
-	import { weatherStore } from '$lib/stores/WeatherStore.svelte';
+	import { weatherStore } from '$lib/stores/LbWeatherStore.svelte';
 	import LbIcon from '$lib/components/Common/LbIconByName.svelte';
 	import { XIcon } from '@lucide/svelte';
 	import type { WeatherCurrentConditions } from '$lib/types/weather';

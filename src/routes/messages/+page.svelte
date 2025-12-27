@@ -49,7 +49,7 @@
 			let actionOK = selectedEntry.actions.find( a => a.title = 'OK');
 			let cmd = 'action/' + actionOK.actionId + '/' + (actionOK.isSecured ? '1' : '0');
 			// TODO check command for action 
-			//console.log('confirm', cmd);
+			//console.debug('[routes/Messages] Confirm entry', cmd);
 			//msControl(messageCenter.uuidAction, cmd);
 		}
 	}

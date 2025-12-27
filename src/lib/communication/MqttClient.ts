@@ -1,7 +1,7 @@
 import mqtt from 'mqtt';
 import { appStore } from '$lib/stores/LbAppStore.svelte';
 import { controlStore } from '$lib/stores/LbControlStore.svelte';
-import { weatherStore } from '$lib/stores/WeatherStore.svelte';
+import { weatherStore } from '$lib/stores/LbWeatherStore.svelte';
 import { utils } from '$lib/helpers/Utils';
 
 /**
@@ -39,11 +39,11 @@ export class MqttClient {
 		this.topicPrefix = topicPrefix;
 
 		if (!username.length) {
-			console.error('Invalid username, cannot connect to MQTT server');
+			console.error('[MqttClient] Invalid username, cannot connect to MQTT server');
 		}
 
 		if (!passwd.length) {
-			console.error('Invalid password, cannot connect to MQTT server');
+			console.error('[MqttClient] Invalid password, cannot connect to MQTT server');
 		}
 
 		this.client = mqtt.connect({
@@ -67,13 +67,13 @@ export class MqttClient {
 
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		this.client.on('error', (error: any) => {
-			console.error('MQTT client error ', error);
+			console.error('[MqttClient] error ', error);
 			this.client.end();
 			this.isConnected = false; // throw error?
 		});
 
 		this.client.on('close', () => {
-			console.info('MQTT client disconnected');
+			console.info('[MqttClient] disconnected');
 			this.isConnected = false;
 			appStore.mqttStatus = 0; // diconnnect
 		});
@@ -83,7 +83,7 @@ export class MqttClient {
 	 * Callback when client is connected to the MQTT server
 	 */
 	onConnect() {
-		console.info('MQTT client connected\n');
+		console.info('[MqttClient] Connected\n');
 		this.isConnected = true;
 		appStore.mqttStatus = 1; // connected=green
 
@@ -95,9 +95,9 @@ export class MqttClient {
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		this.client.subscribe(registerTopics, function (error: any) {
 			if (error) {
-				console.error(error);
+				console.error('[MqttClient] subscribe error', error);
 			} else {
-				console.info(`MQTT client subscribed to topics '${registerTopics}'`);
+				console.info(`[MqttClient]  Client subscribed to topics '${registerTopics}'`);
 			}
 		});
 	}
@@ -109,7 +109,7 @@ export class MqttClient {
 	 */
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	private onMessage(topic: string, message: any) {
-		//console.info('MQTT: message received for topic ', topic);
+		//console.info('[MqttClient] Message received for topic ', topic);
 		const msg = message.toString();
 		this.monitorStructure(topic, msg);
 		this.monitorInitialStates(topic, msg);
@@ -128,7 +128,7 @@ export class MqttClient {
 		const serialNr = controlStore.structure.msInfo.serialNr;
 		const topic = this.topicPrefix + '/' + serialNr + '/' + uuid + '/cmd';
 		if (this.isConnected && serialNr) {
-			console.info('MQTT client publish:', topic, msg);
+			console.info('[MqttClient] published:', topic, msg);
 			this.client.publish(topic, msg, { retain, qos });
 		}
 	}
@@ -145,9 +145,9 @@ export class MqttClient {
 			controlStore.initStructure(JSON.parse(msg), this);
 			const serialNr = controlStore.structure.msInfo.serialNr;
 			if (serialNr == found[1]) {
-				console.info('Miniserver registered: ', serialNr);
+				console.info('[MqttClient] Miniserver registered: ', serialNr);
 			} else {
-				console.error('Miniserver serialNr mismatch between topic and structure: ', serialNr, found[1]);
+				console.error('[MqttClient] Miniserver serialNr mismatch between topic and structure: ', serialNr, found[1]);
 			}
  		}
 	}
@@ -177,7 +177,7 @@ export class MqttClient {
 		const found = topic.match(regex);
 		if (found && found[1] && found[2]) {
 			const obj = utils.isValidJSONObject(msg) ? JSON.parse(msg) : msg;
-			//console.log('setState: ', found[2], obj);
+			//console.debug('[MqttClient] setState: ', found[2], obj);
 			controlStore.setState(found[2], obj);
 		}
 	}
@@ -191,7 +191,6 @@ export class MqttClient {
 		const regex = new RegExp(this.weatherPrefix + '/(.+)');
 		const found = topic.match(regex);
 		if (found && found[1] && /current|daily|hourly/.test(found[1]) ) {
-			//console.log('setObservation: ', found[1], msg);
 			weatherStore.setObservation(found[1], msg);
 		}
 	}

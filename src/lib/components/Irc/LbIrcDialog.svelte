@@ -203,7 +203,7 @@
 			cmd += String(item.id) + '/' + String(overrideTimeSec);
 			controlStore.setControl(controlView.control.uuidAction, cmd);
 		} else {
-			console.error('IRC: timer period to low:', overrideTimeSec);
+			console.error('[LbIrcDialog]: timer period to low:', overrideTimeSec);
 			toaster.info({ title: 'Timer period invalid!'});
 		}
 	}

@@ -164,7 +164,7 @@ class Utils {
 	}
 	
 	extractEntries(s: string) {
-		//console.log('raw entries', s);
+		//console.debug('[Utils] raw entries', s);
 		if (!s || s.length == 0) return;
 		let _s: string = s;
 		_s = s.replaceAll('}\n{', '},\n{');											// fix array

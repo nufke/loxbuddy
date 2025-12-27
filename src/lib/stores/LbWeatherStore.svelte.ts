@@ -1,9 +1,9 @@
 import { SvelteMap } from 'svelte/reactivity';
-import type { WeatherCurrentConditions, WeatherDailyForecast, WeatherHourlyForecast } from '$lib/types/weather';
+import type { WeatherCurrentConditions, WeatherDailyForecast, WeatherHourlyForecast, WeatherCodes, SolarRadiationClass } from '$lib/types/weather';
 import * as SunCalc from 'suncalc';
 import { utils } from '$lib/helpers/Utils';
 
-const LoxWeatherCodes: any = {
+const LoxWeatherCodes: WeatherCodes = {
 	1: ['Clear', 'clear'],
 	2: ['Bright', 'clear'],
 	3: ['Bright', 'clear'],
@@ -41,15 +41,18 @@ const LoxWeatherCodes: any = {
 	35: ['Sleet', 'sleet']
 }
 
-const solarRadiationClass: any = {
+const solarRadiationClass: SolarRadiationClass = {
 	0: '0 - 20%',
 	1: '20 - 40%',
 	2: '40 - 60%',
 	3: '60 - 100%',
 }
-
-class WeatherStore {
-	observations = new SvelteMap();
+/**
+ * LbWeatherStore to store current weather conditions and waether forecast
+ * It fetches weather data in Lox-specific format from a given weatherUrl.
+ */
+class LbWeatherStore {
+	observations = new SvelteMap<string, string>();
 	current: WeatherCurrentConditions = $derived({});
 	daily: WeatherDailyForecast[] = $derived([]);
 	hourly: WeatherHourlyForecast[] = $derived([]);
@@ -73,14 +76,14 @@ class WeatherStore {
 		return this.observations.get(id);
 	}
 
-	setObservation(key: string, data: any) {
+	setObservation(key: string, data: string) {
 		const item = $state(data);
 		this.observations.set(key, item);
 	}
 
 	startWeatherForecast(url: string) {
 		if (!url.length) {
-			console.info('No weatherforecast since weatherUrl is empty');
+			console.info('[LbWeatherStore] No weatherforecast since weatherUrl is empty');
 			return;
 		}
 		this.fetchWeatherForecast(url); 
@@ -90,7 +93,7 @@ class WeatherStore {
 	}
 
 	fetchWeatherForecast(url: string) {
-		console.info('Fetch weather forecast');
+		console.info('[LbWeatherStore] Fetch weather forecast');
 		fetch(url)
 		.then(response => response.text())
 		.then(data => this.grabWeatherData(data));
@@ -143,7 +146,7 @@ class WeatherStore {
 			moonPhase: moon.phase,
 			moonPercent: Math.round((moon.fraction*100)*10)/10
 		}
-		//console.log('current', this.current);
+		//console.debug('[LbWeatherStore] current observation', this.current);
 	}
 
 	calcSolarRadiationClass(radiation: number) {
@@ -182,7 +185,7 @@ class WeatherStore {
 		}
 		this.hourly = temp;
 		this.days = dayCount;
-		//console.log('hourly', this.hourly, dayCount)
+		//console.debug('[LbWeatherStore] hourly forecast', this.hourly, dayCount)
 	}
 
 	processDaily() {
@@ -207,8 +210,8 @@ class WeatherStore {
 			}
 		}
 		this.daily = temp;
-		//console.log('daily', this.daily)
+		//console.debug('[LbWeatherStore] daily forecast', this.daily)
 	}
 }
 
-export const weatherStore = new WeatherStore();
+export const weatherStore = new LbWeatherStore();

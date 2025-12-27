@@ -13,7 +13,7 @@ export type WeatherCurrentConditions = {
 	lightingStrikeCount1h?: number;
 	lightingStrikeDistance?: number;
 	precipitationToday: number;
-	solarRadiation: number;
+	solarRadiation: string;
 	sunRise: string;										// hh:mm
 	sunSet: string;											// hh:mm
 	moonPhase: number;
@@ -56,3 +56,11 @@ export type WeatherUnits = {
 	unitBrightness: string;
 	unitDistance: string;
 };
+
+export type	WeatherCodes = {
+	[key: string]: string[];
+}
+
+export type SolarRadiationClass = {
+	[key: string]: string;
+}

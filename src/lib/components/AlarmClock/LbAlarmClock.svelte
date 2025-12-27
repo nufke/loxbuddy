@@ -89,7 +89,7 @@
 		let cmd = 'entryList/put/' + String(id) + '/' +
 			entry.name + extName + '/' + entry.alarmTime + '/' + 
 			(entry.isActive ? '1' : '0') + '/' + setting;
-		//console.log('cmd', cmd, id, entryListIds);
+		//console.debug('[LbAlarmClock] cmd', cmd, id, entryListIds);
 		controlStore.setControl(control.uuidAction, cmd);
 	}
 

@@ -77,7 +77,7 @@
 			case 'TextState': margin = 250; break;
 			case 'LoadManager': margin = 300; break;
 			
-			default: console.info(`No margin specified for ${control.type}, default margin of ${margin}px used`);
+			default: console.info(`[LbDialog] No margin specified for ${control.type}, default margin of ${margin}px used`);
 		}
 		return margin;
 	}

@@ -51,10 +51,12 @@
 			setInterval( async () => { 
 				if (imageIdx < lastBellEvents.length) {
 					const event = lastBellEvents[imageIdx++];
-					console.info('get intercom image', event);
+					console.info('[LbIntercomDialog] get intercom image', event);
 					const file = await controlStore.getFile(uuid, `camimage/${controlView.control.uuidAction}/${event}`);
-					const url = `data:image/jpeg;base64,${arrayBufferToBase64(file.data)}`;
-					bellImages.set(event, url);
+					if (file && file.data) {
+						const url = `data:image/jpeg;base64,${arrayBufferToBase64(file.data)}`;
+						bellImages.set(event, url);
+					}
 				}
 			}, 300);
 	 	}

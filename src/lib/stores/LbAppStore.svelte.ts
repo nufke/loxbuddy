@@ -79,7 +79,7 @@ class LbAppStore {
 		localStorage.setItem('locale', loc);
 		locale.set(loc); // set svelte-i18n
 		setDefaultOptions({locale: dateFnsLocale[loc]});
-		console.info('Locale set to', appStore.locale);
+		console.info('[LbAppStore] Locale set to', appStore.locale);
 	}
 
 	setNav(route: Route) {

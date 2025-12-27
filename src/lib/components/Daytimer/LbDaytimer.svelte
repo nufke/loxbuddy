@@ -100,7 +100,7 @@
 			let cmd = 'startOverride/' + String(overrideValue) + '/' + String(overrideTimeSec);
 			controlStore.setControl(control.uuidAction, cmd);
 		} else {
-			console.error('Daytimer override timeperiod to low:', overrideTimeSec);
+			console.error('[LbDaytimer] Daytimer override timeperiod to low:', overrideTimeSec);
 			toaster.info({ title: 'Timer period invalid!'});
 		}
 	}

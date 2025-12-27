@@ -9,7 +9,7 @@
 	import { mqttClient } from '$lib/communication/MqttClient';
 	import { appStore } from '$lib/stores/LbAppStore.svelte';
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
-	import { weatherStore } from '$lib/stores/WeatherStore.svelte';
+	import { weatherStore } from '$lib/stores/LbWeatherStore.svelte';
 	import { _ } from 'svelte-i18n';
 	import { page } from '$app/state';
 	import { utils } from '$lib/helpers/Utils';
@@ -306,11 +306,11 @@
 	open={mobileMenuDialog}
 	onInteractOutside={() => mobileMenuDialog = false}>
 	<Portal>
-		<Dialog.Backdrop class="fixed inset-0 z-50 bg-surface-50-950/50 transition transition-discrete
+		<Dialog.Backdrop class="fixed inset-0 z-50 bg-surface-50-950/50 transition transition-discrete duration-400
 				transition transition-discrete opacity-0 starting:data-[state=open]:opacity-0 data-[state=open]:opacity-100"/>
 		<Dialog.Positioner class="fixed inset-0 z-50 flex justify-start">
-			<Dialog.Content class="h-screen card bg-surface-100-900 w-sm p-4 space-y-4 shadow-xl transition transition-discrete opacity-0 
-					-translate-x-full starting:data-[state=open]:opacity-0 starting:data-[state=open]:-translate-x-full data-[state=open]:opacity-100 
+			<Dialog.Content class="h-screen card bg-surface-100-900 w-sm p-4 space-y-4 shadow-xl transition transition-discrete duration-400 ease-in-out
+					-translate-x-full starting:data-[state=open]:-translate-x-full 
 					data-[state=open]:translate-x-0 max-w-[200px]">
 				<header class="grid grid-cols-2 gap-2">
 					<div class="ml-1 flex justify-left items-center">

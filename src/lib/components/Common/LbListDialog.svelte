@@ -37,12 +37,12 @@
 	}
 
 	function getMargin(control: Control, tab: number) {
-		let margin: number = 200;
+		let margin: number = 180;
 		switch(control.type) {
 			case 'LightControllerV2': const lc = [300,200]; margin = lc[tab-1]; break;
 			case 'LightController': const lcv2 = [300,200]; margin = lcv2[tab-1]; break;
-			case 'Radio': margin = 250; break;
-			default: console.log(`no marin specified for ${control.type}, default 200 used`);
+			case 'Radio': margin = 180; break;
+			default: console.debug(`[LbListDialog] no marin specified for ${control.type}, default 200 used`);
 		}
 		return margin;
 	}

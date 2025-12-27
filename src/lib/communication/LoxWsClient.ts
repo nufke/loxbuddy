@@ -24,11 +24,11 @@ export class LoxWsClient {
 		this.username = username;
 
 		if (!appId.length) {
-			console.error('LoxWsClient: Invalid App ID, cannot connect to Miniserver');
+			console.error('[LoxWsClient] Invalid App ID, cannot connect to Miniserver');
 		}
 
 		if (!username.length) {
-			console.error('LoxWsClient: Invalid username, cannot connect to Miniserver');
+			console.error('[LoxWsClient] Invalid username, cannot connect to Miniserver');
 		}
 
 		this.client = new LoxClient(hostname, username, password, appId, { logLevel: logLevel });
@@ -44,19 +44,19 @@ export class LoxWsClient {
 	async connect(token?: string) {
 		try {
 			if (token) {
-				console.info('LoxWsClient: Connecting to Miniserver using existing token...');
+				console.info('[LoxWsClient] Connecting to Miniserver using existing token...');
 				await this.client.connect(token);
 			}	else {
-				console.info('LoxWsClient Connecting to Miniserver requesting new token...');
+				console.info('[LoxWsClient] Connecting to Miniserver requesting new token...');
 				await this.client.connect();
 				const newToken = this.client.auth.tokenHandler.token;
 				if (newToken) {
 					appStore.storeToken(newToken);
-					console.info('LoxWslient: Token received and stored:');
+					console.info('[LoxWsClient] Token received and stored:');
 				}
 			}
 		}	catch {
-			console.log('LoxWsClient: A error!');
+			console.error('[LoxWsClient] Unable to connect and authenticate!');
 			return;
 		}
 		this.getSettings();
@@ -65,7 +65,7 @@ export class LoxWsClient {
 	async getSettings() {
 		if (appStore.loxStatus) { // make sure we are connected
 			// get structure file
-			console.info('LoxWsClient: Get structure file...');
+			console.info('[LoxWsClient] Get structure file...');
 			const structure = await this.client.getStructureFile();
 			controlStore.initStructure(structure, this);
 			this.client.parseStructureFile();
@@ -74,15 +74,15 @@ export class LoxWsClient {
 			await this.client.enableUpdates();
 
 			// get UserSettings for sorting and favorites
-			console.info('LoxWsClient: Get user settings...');
+			console.info('[LoxWsClient] Get user settings...');
 			this.getUserSettings();
 
 			// get System status
-			console.info('LoxWsClient: Get system status...');
+			console.info('[LoxWsClient] Get system status...');
 			this.getSystemStatus();
 
 			// get icon list
-			console.info('LoxWsClient: Get icons...');
+			console.info('[LoxWsClient] Get icons...');
 			this.getIconList();
 		}
 	}
@@ -92,35 +92,35 @@ export class LoxWsClient {
 	 */
 	registerEvents() {
 		this.client.on('connected', () => {
-			console.info(`LoxWsClient: Connection to Miniserver established`);
+			console.info(`[LoxWsClient] Connection to Miniserver established`);
 		});
 
 		this.client.on('authenticated', () => {
-			console.info(`LoxWsClient: User ${this.username} authenticated`);
+			console.info(`[LoxWsClient] User ${this.username} authenticated`);
 			appStore.loxStatus = 1;
 			appStore.loginDialog.state = false; // close login dialog
 		});
 
 		this.client.on('disconnected', () => {
-			console.info('LoxWsClient: Disconnected from Miniserver');
+			console.info('[LoxWsClient] Disconnected from Miniserver');
 			appStore.loxStatus = 0;
 		});
 
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		this.client.on('error', (error: any) => {
-			console.error(`LoxWsClient: Error received: ${error.message}`, error);
+			console.error(`[LoxWsClient] Error received: ${error.message}`, error);
 		});
 
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		this.client.on('event_value', (event: any) => {
-			console.debug(`LoxWsClient: event_value received: ${event}`);
+			console.debug(`[LoxWsClient] event_value received: ${event}`);
 			controlStore.setState(event.detail.uuid.stringValue, event.detail.value);
 		});
 
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		this.client.on('event_text', (event: any) => {
 			const text = event.detail.text;
-			console.debug(`LoxWsClient: event_text received: ${text}`);
+			console.debug(`[LoxWsClient] event_text received: ${text}`);
 			const objOrText = utils.isValidJSONObject(text) ? JSON.parse(text) : text;
 			controlStore.setState(event.detail.uuid.stringValue, objOrText);
 		});
@@ -132,7 +132,7 @@ export class LoxWsClient {
 	 * @param value value of the control
 	 */
 	async control(uuid: string, value: string) {
-		console.info('LoxWsClient control:', uuid, value);
+		console.info('[LoxWsClient] Send control:', uuid, value);
 		await this.client.control(uuid, value);
 	}
 
@@ -168,7 +168,7 @@ export class LoxWsClient {
 		.then((data) => {
 			controlStore.userSettings = data;
 		})
-		.catch(e => console.error('fetch error: ', e))
+		.catch(e => console.error('[LoxWsClient] getUserSettings fetch error: ', e));
 	}
 
 	/**
@@ -184,9 +184,10 @@ export class LoxWsClient {
 		})
 		.then((response) => {
 			if (response.status != 200) {
-				throw new Error('LoxWsClient checkCredentials: Credentials failed');
+				throw new Error('[LoxWsClient] checkCredentials: Credentials failed');
 			};
-		});
+		})
+		.catch(e => console.error('[LoxWsClient] checkCredentials fetch error: ', e));
 	}
 
 	/**
@@ -201,7 +202,8 @@ export class LoxWsClient {
 		})
 		.then((data) => {
 			controlStore.systemStatus = JSON.parse(data.LL.value);
-		});
+		})
+		.catch(e => console.error('[LoxWsClient] getSystemStatus fetch error: ', e));
 	}
 
 	/**
@@ -212,7 +214,8 @@ export class LoxWsClient {
 		.then((response) => response.json())
 		.then((data) => {
 			controlStore.iconList = data;
-		});
+		})
+		.catch(e => console.error('[LoxWsClient] getIconList fetch error: ', e));
 	}
 
 	/**
@@ -223,7 +226,7 @@ export class LoxWsClient {
 		return fetch(`${this.hostUrl}/${url}?autht=${appStore.token}&user=${this.username}`)
 		.then((response) => response.json())
 		.then((data) => {
-			//console.log('data', data)
+			//console.debug('[LoxWsClient] fetch data', data)
 			return data?.LL?.value ? data.LL.value : data;
 		});
 	}

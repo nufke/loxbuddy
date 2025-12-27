@@ -109,8 +109,9 @@
 					<div class="flex justify-center items-center flex-col gap-3 w-full">
 						<div class="pt-3 flex justify-center items-center flex-col gap-3">
 							<div onclick={reconnect}>
-								<img src="/icons/svg/loxbuddy.svg" width="80" alt="about" />
+								<img src="/icons/svg/loxbuddy.svg" width="90" alt="about" />
 							</div>
+							<p class="flex justify-center items-center h6 dark:text-primary-500 text-primary-700">LOXBUDDY</p>
 							<p class="h5">Miniserver {$_("Login").toLowerCase()}</p>
 						</div>
 						<form class="p-3 space-y-4 w-full max-w-[400px]" onsubmit={validate}>
@@ -152,7 +153,7 @@
 								<button type="submit" class="w-full btn { hostname.length && username.length > 0 && password.length > 0 ? 'preset-filled-primary-500' : 'preset-outlined-surface-300-700'}">{$_("Connect")}</button>
 							</fieldset>
 						</form>
-						<button class="w-full p-3 dark:text-primary-500 text-primary-700" onclick={startDemo}>{$_("Demo mode")}</button>
+						<button class="m-3 h6 dark:text-primary-500 text-primary-700" onclick={startDemo}>{$_("Start Demo")}</button>
 					</div>
 				</Dialog.Description>
 			</Dialog.Content>

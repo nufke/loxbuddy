@@ -50,18 +50,25 @@ class LbControlStore {
 		}
 		const msgList = notifications as NotificationList;
 		if (msg && msgList.uids) {
-			msgList.uids.forEach( (uid) => console.log('uid:', this.controlState.get(uid))); // TODO check what to do with uids
+			msgList.uids.forEach( (uid) => console.debug('[LbControlStore] uid:', this.controlState.get(uid))); // TODO check what to do with uids
 		}
 		return map;
 	}
 
 	initStructure(data: Structure, client: Demo | LoxWsClient ) {
 		Object.assign(this.structure, data);
-		// store reference to client using device serial nr 
+		// Store reference to client using device serial nr 
 		this.controlClient.set(this.structure.msInfo.serialNr, client);
-		// Mapping table to associate control UUIDs for each backend
+		// Mapping table to associate control UUIDs for each backend client
 		Object.values(this.structure.controls).forEach( (control) => {
 			this.controlClient.set(control.uuidAction, client);
+			// also register backend client for each subcontrol
+			const subControls = control.subControls ? Object.values(control.subControls) : [];
+			if (subControls.length) {
+				subControls.forEach( (subControl) => {
+					this.controlClient.set(subControl.uuidAction, client);
+				});
+			}
 		});
 		// Add message center to mapping table
 		const messageCenter = Object.values(this.structure.messageCenter);
@@ -113,7 +120,7 @@ class LbControlStore {
 		return await client?.fetch(url);
 	}
 
-	/* disconnect client based on the registered Miniserver  serial number */
+	/* disconnect client based on the registered Miniserver serial number */
 	disconnectClient() {
 		const client = this.controlClient.get(this.structure.msInfo.serialNr);
 		client?.disconnect();

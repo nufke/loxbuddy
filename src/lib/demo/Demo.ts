@@ -33,7 +33,7 @@ export class Demo {
 	start() {
 		if (this.demoRunning) return; // start demo Once
 
-		console.info('TEST MODE: Use demo structure');
+		console.info('[DEMO] Use demo structure');
 		this.demoRunning = true;
 
 		let i = 0;
@@ -90,20 +90,20 @@ export class Demo {
 	}
 
 	control(uuid: string, msg: string) {
-		console.info('TEST control:', uuid, msg);
+		console.info('[DEMO] Control:', uuid, msg);
 		let parentControl;
 		let control: Control = controlStore.controls[uuid];
 		if (!control) { // if no control found, check if the uuid is a subcontrol
 			parentControl = controlStore.controlList.find( control => control.subControls && control.subControls[uuid])
 			if (parentControl) {
-				//console.log('parentControl', parentControl.uuidAction);
+				//console.debug('[DEMO] parentControl', parentControl.uuidAction);
 				control = parentControl.subControls[uuid];
 			}
 		}
 		if (control) {
 			this.action(control, msg, parentControl);
 		} else {
-			console.error('Control or subControl not found:', uuid);
+			console.error('[DEMO] Control or subControl not found:', uuid);
 		}
 	}
 
@@ -129,7 +129,7 @@ export class Demo {
 			case 'IRCDaytimer': this.daytimer(control, msg); break; /* reuse DayTimer */
 			case 'IRCV2Daytimer': this.daytimer(control, msg); break; /* reuse DayTimer */
 			case 'Pushbutton': break; /* no action */
-			default: console.error('No TEST for Control', control.name, 'of type', control.type);
+			default: console.error('[DEMO] Control', control.name, 'of type', control.type, 'not found.');
 		}
 	}
 
@@ -243,7 +243,7 @@ export class Demo {
 			case 'stop': clearInterval(this.gateIntervalMap[control.uuidAction]); break;
 			case 'close': this.moveGate(control, 0); break;
 			case 'partiallyOpen': this.moveGate(control, 0.5); break; // to 50%
-			default: console.error('Command', msg, 'not found for Control', control.uuidAction, control.type);
+			default: console.error('[DEMO] Command', msg, 'not found for Control', control.uuidAction, control.type);
 		}
 	}
 
@@ -275,7 +275,7 @@ export class Demo {
 			case 'UpOff': clearInterval(this.jalousieIntervalMap[control.uuidAction]); break;
 			case 'FullDown': this.startJalousie(control, 1); break;
 			case 'FullUp': this.startJalousie(control, -1); break;
-			default: console.error('Command', msg, 'not found for Control', control.uuidAction, control.type);
+			default: console.error('[DEMO] Command', msg, 'not found for Control', control.uuidAction, control.type);
 		}
 	}
 
@@ -304,7 +304,7 @@ export class Demo {
 			case 'on': clearInterval(this.timedSwitchIntervalMap[control.uuidAction]); val = -1; controlStore.setState(deactivationDelayId, String(val)); break;
 			case 'off': clearInterval(this.timedSwitchIntervalMap[control.uuidAction]); val = 0; controlStore.setState(deactivationDelayId, String(val)); break;
 			case 'pulse': this.startTimedSwitch(control); break;
-			default: console.error('Command', msg, 'not found for Control', control.uuidAction, control.type);
+			default: console.error('[DEMO] Command', msg, 'not found for Control', control.uuidAction, control.type);
 		}
 	}
 
@@ -350,7 +350,7 @@ export class Demo {
 			}
 			return;
 		}
-		console.error('Command', msg, 'not found for Control', control.uuidAction, control.type);
+		console.error('[DEMO] Command', msg, 'not found for Control', control.uuidAction, control.type);
 	}
 
 	alarmClock(control: Control, msg: string) {
@@ -395,7 +395,7 @@ export class Demo {
 			}
 			return;
 		}
-		console.error('Command', msg, 'not found for Control', control.uuidAction, control.type);
+		console.error('[DEMO] Command', msg, 'not found for Control', control.uuidAction, control.type);
 	}
 
 	smokeAlarm(control: Control, msg: string) {
@@ -441,7 +441,7 @@ export class Demo {
 		}
 		switch (msg) {
 			case 'stoptimer': clearInterval(this.ircTimerIntervalMap[control.uuidAction]); controlStore.setState(overrideId, '0'); controlStore.setState(valueId, '0'); break;
-			default: console.error('Command', msg, 'not found for Control', control.uuidAction, control.type);
+			default: console.error('[DEMO] Command', msg, 'not found for Control', control.uuidAction, control.type);
 		}
 	}
 
@@ -478,7 +478,7 @@ export class Demo {
 		}
 		switch (msg) {
 			case 'stopOverride': this.stopIRCV2Timer(control); break;
-			default: console.error('Command', msg, 'not found for Control', control.uuidAction, control.type);
+			default: console.error('[DEMO] Command', msg, 'not found for Control', control.uuidAction, control.type);
 		}
 	}
 
@@ -556,7 +556,7 @@ export class Demo {
 				break;
 			}
 			default: {
-				console.error('Command', msg, 'not found for Control', control.uuidAction, control.type);
+				console.error('[DEMO] Command', msg, 'not found for Control', control.uuidAction, control.type);
 			}
 		}
 	}
@@ -619,14 +619,14 @@ export class Demo {
 	 * Dummy getFile in demo mode
 	 */
 	getFile(url: string) {
-		console.log('TEST: getFile not yet implemented');
+		console.info('[DEMO] getFile not yet implemented');
 	}
 
 	/**
 	 * Dummy fetch in demo mode
 	 */
 	fetch(url: string) {
-		console.log('TEST fetch:', url);
+		console.info('[DEMO] fetch URL:', url);
 		switch (url) {
 			case 'jdev/sps/io/__uuid_messageCenter/getEntries/2' : return this.createPromise(JSON.stringify(messageCenter)); // original miniserver response is a string, not an object
 			case 'jdev/sps/io/__uuid__controls_intercom/securedDetails' : return this.createPromise(states.__uuid__controls_intercom_securedDetails);
