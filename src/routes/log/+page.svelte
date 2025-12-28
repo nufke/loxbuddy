@@ -1,10 +1,9 @@
 <script lang="ts">
   import { consoleArray } from '$lib/helpers/Logger';
 	import { appStore } from '$lib/stores/LbAppStore.svelte';
-	import { ArrowLeftIcon } from '@lucide/svelte';
 	import { format } from 'date-fns';
 
-  appStore.setNav({ label: 'ArrowLeft', href: '/', icon: ArrowLeftIcon });
+  appStore.nav = '/';
 </script>
 
 <div class="container p-3">

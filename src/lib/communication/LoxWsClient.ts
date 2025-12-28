@@ -9,6 +9,7 @@ import { utils } from '$lib/helpers/Utils';
 export class LoxWsClient {
 	private client: LoxClient;
 	private hostUrl: string = '';
+	private hostname: string = '';
 	private username: string = '';
 
 	/**
@@ -21,6 +22,7 @@ export class LoxWsClient {
 	 */
 	constructor(hostname: string, username: string, password: string, appId: string, logLevel: number) {
 		this.hostUrl = 'http://' + hostname; // TODO swich protocol http(s) depending on TLS
+		this.hostname = hostname;
 		this.username = username;
 
 		if (!appId.length) {
@@ -51,8 +53,8 @@ export class LoxWsClient {
 				await this.client.connect();
 				const newToken = this.client.auth.tokenHandler.token;
 				if (newToken) {
-					appStore.storeToken(newToken);
-					console.info('[LoxWsClient] Token received and stored:');
+					console.info('[LoxWsClient] Token received and stored');
+					appStore.storeCredentials({ hostname: this.hostname, username: this.username, token: newToken });
 				}
 			}
 		}	catch {
@@ -157,7 +159,7 @@ export class LoxWsClient {
 	 * Retrieve user settings (e.g. sorting/order of controls)
 	 */
 	getUserSettings() {
-		fetch(`${this.hostUrl}/jdev/sps/getusersettings?autht=${appStore.token}&user=${this.username}`)
+		fetch(`${this.hostUrl}/jdev/sps/getusersettings?autht=${appStore.credentials.token}&user=${this.username}`)
 		.then((response) => {
 			if (response.ok) {
 				return response.json();
@@ -172,29 +174,10 @@ export class LoxWsClient {
 	}
 
 	/**
-	 * Check credentials using HTTP webservice (no login)
-	 */
-	async checkCredentials(username: string, password: string) {
-		await fetch(`${this.hostUrl}/jdev/cfg/apiKey`, {
-			method: 'GET',
-			headers: {
-				'Content-Type': 'application/json',
-				'Authorization': 'Basic ' + btoa(username + ':' + password)
-			}
-		})
-		.then((response) => {
-			if (response.status != 200) {
-				throw new Error('[LoxWsClient] checkCredentials: Credentials failed');
-			};
-		})
-		.catch(e => console.error('[LoxWsClient] checkCredentials fetch error: ', e));
-	}
-
-	/**
 	 * Retrieve Miniserver system status
 	 */
 	getSystemStatus() {
-		fetch(`${this.hostUrl}/jdev/sps/io/${controlStore.messageCenterList[0].uuidAction}/getEntries/2?autht=${appStore.token}&user=${this.username}`)
+		fetch(`${this.hostUrl}/jdev/sps/io/${controlStore.messageCenterList[0].uuidAction}/getEntries/2?autht=${appStore.credentials.token}&user=${this.username}`)
 		.then((response) => {
 			if (response.ok) {
 				return response.json();
@@ -210,7 +193,7 @@ export class LoxWsClient {
 	 * Retrieve Miniserver icon list
 	 */
 	getIconList() {
-		fetch(`${this.hostUrl}/jdev/sps/geticonlist?autht=${appStore.token}&user=${this.username}`)
+		fetch(`${this.hostUrl}/jdev/sps/geticonlist?autht=${appStore.credentials.token}&user=${this.username}`)
 		.then((response) => response.json())
 		.then((data) => {
 			controlStore.iconList = data;
@@ -223,7 +206,7 @@ export class LoxWsClient {
 	 * @param url webservices endpoint (e.g., /jdev/sps/io/...)
 	*/
 	async fetch(url: string) {
-		return fetch(`${this.hostUrl}/${url}?autht=${appStore.token}&user=${this.username}`)
+		return fetch(`${this.hostUrl}/${url}?autht=${appStore.credentials.token}&user=${this.username}`)
 		.then((response) => response.json())
 		.then((data) => {
 			//console.debug('[LoxWsClient] fetch data', data)
@@ -232,15 +215,36 @@ export class LoxWsClient {
 	}
 }
 
+/**
+ * Establish connection with Miniserver if credentials are available
+ */
 export const startLoxWsClient = async () => {
-	const token = localStorage.getItem('token') || undefined;
 	const cred = utils.deserialize(localStorage.getItem('credentials'));
 	const appId = localStorage.getItem('appId') || undefined;
 
-	if (cred.hostname && cred.username && appId && token) {
+	if (cred.hostname && cred.username && cred.token && appId) {
 		const loxClient = new LoxWsClient(cred.hostname, cred.username, '', appId, 0);
-		await loxClient.connect(token);
+		await loxClient.connect(cred.token);
 	} else {
 		appStore.loginDialog.state = true; 
 	}
+}
+
+/**
+ * Check credentials using HTTP webservice (no login)
+ * NOTE: no catch implemented in this fetch, this should be handled in the caller
+ */
+export const checkCredentials = async (hostname: string, username: string, password: string) => {
+	await fetch(`${hostname}/jdev/cfg/apiKey`, {
+		method: 'GET',
+		headers: {
+			'Content-Type': 'application/json',
+			'Authorization': 'Basic ' + btoa(username + ':' + password)
+		}
+	})
+	.then((response) => {
+		if (response.status != 200) {
+			throw new Error('[checkCredentials]: Credentials failed');
+		};
+	});
 }

@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { _ } from 'svelte-i18n';
 	import { appStore } from '$lib/stores/LbAppStore.svelte';
-	import { ArrowLeftIcon, TriangleAlertIcon } from '@lucide/svelte';
+	import { TriangleAlertIcon } from '@lucide/svelte';
 
 	let version = __VERSION__;
-	appStore.setNav({ label: 'ArrowLeft', href: '/', icon: ArrowLeftIcon });
+	appStore.nav = '/';
 </script>
 
 <div class="container flex justify-center items-center h-full mx-auto max-w-[1280px] p-2">

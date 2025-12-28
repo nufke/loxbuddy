@@ -127,7 +127,7 @@
 	$effect( () => {
 		let found = routes.find ( item => item.href == path );
 		if (found && !found.menu) {
-			appStore.setNav({ label: 'Menu', href: '', icon: MenuIcon, menu: false });
+			appStore.nav = ''; // main menu
 		}
 	});
 
@@ -252,8 +252,8 @@
 	<Navigation layout="bar" class="fixed top-0 z-1 h-[65px] flex justify-center items-center shadow-md w-screen">
 		<Navigation.Menu class="grid grid-cols-3 gap-2">
 			<div class="flex flex-row justify-left items-center gap-2">
-				<button class="ml-2" onclick={() => {navigate(nav.href)}}>
-					<LbIcon name={nav.label}/>
+				<button class="ml-2" onclick={() => {navigate(nav)}}>
+					<LbIcon name={nav == '' ? 'MenuIcon' : 'ArrowLeftIcon'}/>
 				</button>
 				{#if showWeather}
 					<button class="-ml-1 flex flex-row justify-center items-center gap-1" onclick={openWeather}>

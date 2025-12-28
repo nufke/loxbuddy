@@ -1,6 +1,6 @@
-import type { Route, DialogView, Credentials } from '$lib/types/models';
+import type { DialogView, Credentials } from '$lib/types/models';
+import { NO_CREDENTIALS } from '$lib/types/models';
 import { utils } from '$lib/helpers/Utils';
-import { MenuIcon } from '@lucide/svelte';
 import { nl, enGB, de } from 'date-fns/locale'
 import { locale } from 'svelte-i18n';
 import { setDefaultOptions } from 'date-fns'
@@ -13,7 +13,7 @@ class LbAppStore {
 	appId: string = $state('');
 	isDemo: boolean = $state(false);
 	token: string | undefined = $state();
-	nav: Route = $state({ label: 'Menu', href: '', icon: MenuIcon, menu: false });
+	nav: string = $state(''); // default is main menu (hamburger symbol)
 	date: Date = $state(new Date());
 	mqttStatus: number = $state(0); // 0=disconnected (grey), 1=connected/ok/info (green), 2=warning/issue (yellow), 3=error (red)
 	loxStatus: number = $state(0);  // 0=disconnected (grey), 1=connected/ok/info (green), 2=warning/issue (yellow), 3=error (red)
@@ -21,7 +21,7 @@ class LbAppStore {
 	showWeather: boolean = $state(true);
 	startPage: string = $state('/');
 	locale: string = $state('en'); // default English
-	credentials: Credentials | undefined = $state();
+	credentials: Credentials = $state(NO_CREDENTIALS);
 	dnd = $state({isEnabled: false, duration: 300});
 
 	weatherDialog: DialogView = $state({
@@ -54,13 +54,7 @@ class LbAppStore {
 		this.isDemo = localStorage.getItem('demo') == '1';
 		this.showWeather = localStorage.getItem('showWeather') == '1';
 		this.locale = localStorage.getItem('locale') || 'en';
-		this.token = localStorage.getItem('token') || undefined;
 		this.credentials = utils.deserialize(localStorage.getItem('credentials'));
-	}
-
-	storeToken(token: string) {
-		this.token = token;
-		localStorage.setItem('token', token);
 	}
 
 	storeCredentials(credentials: Credentials) {
@@ -80,10 +74,6 @@ class LbAppStore {
 		locale.set(loc); // set svelte-i18n
 		setDefaultOptions({locale: dateFnsLocale[loc]});
 		console.info('[LbAppStore] Locale set to', appStore.locale);
-	}
-
-	setNav(route: Route) {
-		this.nav = route;
 	}
 
 	resetLockScreenDialogTimeout() {

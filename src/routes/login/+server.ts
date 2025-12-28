@@ -1,9 +1,10 @@
 import { json } from '@sveltejs/kit';
 import dgram from 'node:dgram'
+import type { DeviceInfoMap } from '$lib/types/models';
 
 const data = Buffer.alloc(2);
 const client = dgram.createSocket('udp4');
-let resp: any = {};
+let resp: DeviceInfoMap = {};
 
 client.on('connect', () => { console.log(`connected: ${client.remoteAddress().address}:${client.remoteAddress().port}`);});
 client.on('close', () => { console.log('closed');});

@@ -6,7 +6,7 @@
 	import { _ } from 'svelte-i18n';
 	import { appStore } from '$lib/stores/LbAppStore.svelte';
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
-	import { ArrowLeftIcon, XIcon } from '@lucide/svelte';
+	import { XIcon } from '@lucide/svelte';
 	import LbGeneralDialog from '$lib/components/Common/LbGeneralDialog.svelte';
 
 	let openThemeDialog = $state(false);
@@ -29,7 +29,7 @@
 
 	let lang = $derived(language[localeSettings]);
 
-	appStore.setNav({ label: 'ArrowLeftIcon', href: '/', icon: ArrowLeftIcon });
+	appStore.nav = '/';
 
 	let other = [
 		{ name: 'Home', uuid: '/'}

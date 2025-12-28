@@ -703,6 +703,13 @@ export const DEFAULT_USERSETTINGS: UserSettings = {
 export type Credentials = {
 	hostname: string;
 	username: string;
+	token: string;
+}
+
+export const NO_CREDENTIALS: Credentials = {
+	hostname: '',
+	username: '',
+	token: ''
 }
 
 export type Icon = {
@@ -713,4 +720,13 @@ export type Icon = {
 
 export type	DateFnsLocale = {
 	[key: string]: Locale;
+}
+
+export type DeviceInfo = {
+	snr: string;
+	name: string;
+	ipaddr: string;
+}
+export type DeviceInfoMap = {
+	[key: string]: DeviceInfo
 }

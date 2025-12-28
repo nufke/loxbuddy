@@ -7,7 +7,6 @@
 	import { lbControl } from '$lib/helpers/LbControl';
 	import { appStore } from '$lib/stores/LbAppStore.svelte';
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
-	import { ArrowLeftIcon } from '@lucide/svelte';
 	import { flip } from 'svelte/animate';
 	import { customdnd } from '$lib/helpers/custom-drag-n-drop';
 
@@ -20,7 +19,7 @@
 	let draggingItem: any;
 	let animatingItems = new Set();
 
-	appStore.setNav({ label: 'ArrowLeftIcon', href: '/category', icon: ArrowLeftIcon });
+	appStore.nav = '/category';
 
 	let controlOptions: ControlOptions = $derived(DEFAULT_CONTROLOPTIONS);
 
