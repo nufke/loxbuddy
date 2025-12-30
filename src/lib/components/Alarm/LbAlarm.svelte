@@ -65,7 +65,7 @@
 		control: control,
 		isFavorite: controlOptions.isFavorite,
 		iconName: controlStore.getIcon(control, controlOptions.isSubControl),
-		iconColor: armed ? 'dark:fill-primary-500 fill-primary-700' : 'fill-surface-950 dark:fill-surface-50',
+		iconColor: armed ? 'dark:text-primary-500 text-primary-700' : 'text-surface-950 dark:text-surface-50',
 		textName: control.name,
 		statusName: getStatus(),
 		statusColor: armed ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700',

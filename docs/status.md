@@ -1,8 +1,8 @@
 # Status
 
 This page lists the development status of the controls and subcontrols, and future requirements and features.
-For additional requests or ideas, you can raise an [Issue](https://github.com/nufke/loxbuddy/issues) 
-or submit a [Pull Request](https://github.com/nufke/loxbuddy/pulls).
+For additional requests or ideas, you can raise an [issue](https://github.com/nufke/loxbuddy/issues)
+or submit a [pull request](https://github.com/nufke/loxbuddy/pulls).
 
 ## Controls
 
@@ -116,7 +116,7 @@ or submit a [Pull Request](https://github.com/nufke/loxbuddy/pulls).
 | WindowMonitor            | Available         |                             |
 | Universal                | Not started       |                             |
 
-## Feature list under development
+## Feature list
 
 | Feature                      | Status                   |
 |------------------------------|--------------------------|
@@ -143,6 +143,7 @@ or submit a [Pull Request](https://github.com/nufke/loxbuddy/pulls).
 | Statusbar (time, temp, etc.) | Available                |
 | System messages              | Available                |
 | User calendar                | Not started              |
+| User-defined icons           | Under development        |
 | Voice control                | Not started              |
 | Weather forecast             | Available (Weather4Lox)  |
 | WebSocket comm to Miniserver | Available                |

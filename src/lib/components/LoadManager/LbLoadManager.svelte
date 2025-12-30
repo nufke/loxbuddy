@@ -25,11 +25,11 @@
 		return (n.toLocaleString(appStore.locale, { maximumFractionDigits: 1, minimumFractionDigits: 1 })) + ' kW ' + $_('Available').toLowerCase();
 	}
 
-	function setColor(powerRatio: number, text: boolean) {
-		if (powerRatio == 0.01) return text ? 'dark:text-surface-300 text-surface-700' : 'fill-surface-950 dark:fill-surface-50';
-		if (powerRatio < 0.7) return text ? 'dark:text-primary-500 text-primary-700' : 'dark:fill-primary-500 fill-primary-700';
-		if (powerRatio < 0.9) return text ? 'dark:text-warning-500 text-warning-700' : 'dark:fill-warning-500 fill-warning-700';
-		return text ? 'dark:text-error-500 text-error-700' : 'dark:fill-error-500 fill-error-700';
+	function setColor(powerRatio: number) {
+		if (powerRatio == 0.01) return 'dark:text-surface-300 text-surface-700';
+		if (powerRatio < 0.7) return 'dark:text-primary-500 text-primary-700';
+		if (powerRatio < 0.9) return 'dark:text-warning-500 text-warning-700';
+		return 'dark:text-error-500 text-error-700';
 	}
 
 	let dialog: DialogView = $state({
@@ -43,10 +43,10 @@
 		control: control,
 		isFavorite: controlOptions.isFavorite,
 		iconName: controlStore.getIcon(control, controlOptions.isSubControl),
-		iconColor: setColor(currentPower/maxPower, false),
+		iconColor: setColor(currentPower/maxPower),
 		textName: control.name,
 		statusName: getPowerLevel(availablePower),
-		statusColor: setColor(currentPower/maxPower, true),
+		statusColor: setColor(currentPower/maxPower),
 		dialog: {
 			...dialog,
 			details: {

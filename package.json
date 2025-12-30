@@ -14,6 +14,7 @@
 		"lint": "prettier --check ."
 	},
 	"devDependencies": {
+		"@iconify/svelte": "^5.1.0",
 		"@skeletonlabs/skeleton": "^4.3.2",
 		"@skeletonlabs/skeleton-svelte": "^4.3.2",
 		"@svelte-put/inline-svg": "^4.0.2",

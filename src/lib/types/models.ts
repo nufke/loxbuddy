@@ -513,7 +513,7 @@ export const DEFAULT_CONTROLVIEW: ControlView = {
 	showControl: true,
 	isFavorite: false,
 	iconName: '',
-	iconColor: 'dark:fill-surface-50 fill-surface-950',
+	iconColor: 'dark:text-surface-50 text-surface-950',
 	textName: '',
 	iconText: '',
 	statusName: '',

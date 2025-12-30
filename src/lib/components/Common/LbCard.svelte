@@ -1,6 +1,5 @@
 <script lang="ts">
 	import type { Room, Category } from '$lib/types/models';
-	import { loxiconsPath } from '$lib/helpers/paths';
 	import LbIcon from '$lib/components/Common/LbIconByName.svelte';
 	import { goto } from "$app/navigation";
 	import { GripVerticalIcon } from '@lucide/svelte';
@@ -8,7 +7,7 @@
 
 	let { key, item, isFavorite } : { key: string, item: Room | Category, isFavorite: boolean } = $props();
 
-	const color = 'dark:fill-surface-50 fill-surface-950'; // TODO text and image colour
+	const color = 'dark:text-surface-50 text-surface-950'; // TODO text and image colour
 </script>
 
 <div role="button" tabindex="0" class="card m-0 flex min-h-[70px] shadow-sm items-center justify-start rounded-lg border border-white/5
@@ -22,7 +21,7 @@
 		<div class="flex justify-center">
 			<div class="relative inline-flex items-center justify-center w-12 h-12 min-w-12 overflow-hidden 
 								rounded-full border border-white/10 dark:bg-surface-950 bg-surface-50">
-				<LbIcon class={color} name={loxiconsPath + item.image} width="24" height="24"/>
+				<LbIcon class={color} name={item.image} width="32" height="32"/>
 			</div>
 		</div>
 		<div class="mt-0 {isFavorite ? 'ml-1' : 'ml-3'} flex justify-center items-center">

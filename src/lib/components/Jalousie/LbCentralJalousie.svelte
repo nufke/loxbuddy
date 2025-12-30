@@ -148,7 +148,7 @@
 		control: control,
 		isFavorite: controlOptions.isFavorite,
 		iconName: controlStore.getIcon(control, controlOptions.isSubControl),
-		iconColor: screensClosed.length ? 'dark:fill-primary-500 fill-primary-700' : 'dark:fill-surface-300 fill-surface-700',
+		iconColor: screensClosed.length ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700',
 		textName: control.name,
 		statusName: getActiveScreens(),
 		statusColor: screensClosed.length ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700',
@@ -225,7 +225,7 @@
 																<div class="absolute -top-[0px] -left-[9px] inline-flex items-center justify-center w-[18px] h-[18px]
 																	{isAutoActive(control) ? 'dark:bg-primary-500 bg-primary-700' : 'dark:bg-surface-50 bg-surface-950'} rounded-full
 																	border border-1 dark:border-surface-950 border-surface-50">
-																	<LbIcon class='dark:text-surface-950 text-surface-50' name="/icons/svg/automatic-2.svg" size="10"/>
+																	<LbIcon class='dark:text-surface-950 text-surface-50' name="automatic-2.svg" size="10"/>
 																</div>
 															{/if}
 														</div>

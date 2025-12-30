@@ -4,7 +4,6 @@ import type { Structure, Control, Category, Room, NotificationMap, NotificationL
 							ControlsMap, CategoriesMap, RoomsMap, MessageCenter, NotificationMessage, Icon } from '$lib/types/models';
 import { utils } from '$lib/helpers/Utils';
 import { lbControl } from '$lib/helpers/LbControl';
-import { loxiconsPath } from '$lib/helpers/paths';
 import { Demo } from '$lib/demo/Demo';
 import { LoxWsClient} from '$lib/communication/LoxWsClient';
 
@@ -97,15 +96,15 @@ class LbControlStore {
 	}
 
 	getIcon(control: Control, isSubControl: boolean | undefined, textState: any = null) {
-		if (textState && textState.icon) return loxiconsPath + textState.icon; /* used for TextState icon */
-		if (control.defaultIcon) return loxiconsPath + control.defaultIcon;
+		if (textState && textState.icon) return textState.icon; /* used for TextState icon */
+		if (control.defaultIcon) return control.defaultIcon;
 		if (!isSubControl) { 
 			const icon = lbControl.getDefaultIcon(control.type);
 			if (icon.length ) {
 				return icon;
 			} 
 			const cat = this.categoryList.find((cat: Category) => cat.uuid == control.cat);
-			return cat ? loxiconsPath + cat.image : '';
+			return cat ? cat.image : '';
 		}
 		return ''; // no icon found / used (TODO: keep empty?)
 	}

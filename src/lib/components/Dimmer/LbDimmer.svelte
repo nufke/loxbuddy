@@ -70,7 +70,7 @@
 		control: control,
 		isFavorite: controlOptions.isFavorite,
 		iconName: controlStore.getIcon(control, controlOptions.isSubControl),
-		iconColor: position > 0 ? 'dark:fill-primary-500 fill-primary-700' : 'fill-surface-950 dark:fill-surface-50',
+		iconColor: position > 0 ? 'dark:text-primary-500 text-primary-700' : 'text-surface-950 dark:text-surface-50',
 		textName: control.name,
 		statusName: String(sliderBar.position) + ' %',
 		statusColor: position > 0 ? 'dark:text-primary-500 text-primary-700' : 'text-surface-700 dark:text-surface-300',

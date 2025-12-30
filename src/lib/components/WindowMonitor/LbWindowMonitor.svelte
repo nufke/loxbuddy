@@ -143,7 +143,7 @@
 		control: control,
 		isFavorite: controlOptions.isFavorite,
 		iconName: controlStore.getIcon(control, controlOptions.isSubControl),
-		iconColor: allClosed ? 'dark:fill-primary-500 fill-primary-700' : 'fill-orange-500',
+		iconColor: allClosed ? 'dark:text-primary-500 text-primary-700' : 'text-orange-500',
 		textName: control.name,
 		statusName: getStatus(),
 		statusColor: allClosed ? 'dark:text-primary-500 text-primary-700' : 'text-orange-500', 

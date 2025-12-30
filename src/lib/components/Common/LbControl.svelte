@@ -26,7 +26,7 @@
 	}
 
 	function getIconColorHex(hexColor: string | undefined) {
-		return (hexColor && hexColor[0] == '#') ? 'fill: ' + hexColor : '';
+		return (hexColor && hexColor[0] == '#') ? 'color: ' + hexColor : '';
 	}
 
 	function openDialog() {
@@ -63,7 +63,7 @@
 					{#if controlView.control.type =='Jalousie'}
 						<LbJalousieIcon control={controlView.control} width="28" height="28"/>
 					{:else}
-					<LbIcon class={controlView.iconColor} name={controlView.iconName} width="24" height="24"
+					<LbIcon class={controlView.iconColor} name={controlView.iconName} width="32" height="32"
 						style={getIconColorHex(controlView.iconColor)}/>
 					{/if}
 					{#if controlView.badgeIconName?.length}
@@ -123,7 +123,7 @@
 <div role="button" tabindex="0" onkeydown={()=>{}} aria-label="card" onclick={openDialog}
 			class="card m-0 flex items-center justify-start rounded-lg shadow-sm border border-white/5 relative
 						{ controlView.isSubControl ? 'bg-surface-200-800 min-h-[64px]' :
-						( controlOptions.isLink ? 'bg-surface-200-800 min-h-[76px]' : 'bg-surface-100-900 min-h-[76px]') }  px-2 py-2 hover:border-white/10">
+						( controlOptions.isLink ? 'bg-surface-200-800 h-[70px]' : 'bg-surface-100-900 h-[70px]') }  px-2 py-2 hover:border-white/10">
 	<div class="flex w-full justify-between">
 		{#if appStore.dnd.isEnabled}
 			<div class="absolute right-1 text-surface-500 top-[35%]">
@@ -136,7 +136,7 @@
 					{#if controlView.control.type =='Jalousie'}
 						<LbJalousieIcon control={controlView.control} width="28" height="28"/>
 					{:else}
-					<LbIcon class={controlView.iconColor} name={controlView.iconName} width="24" height="24"
+					<LbIcon class={controlView.iconColor} name={controlView.iconName} width="32" height="32"
 						style={getIconColorHex(controlView.iconColor)}/>
 					{/if}
 					{#if controlView.badgeIconName?.length}

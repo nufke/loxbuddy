@@ -24,15 +24,15 @@
 	$effect( () => {
 		switch (type) {
 			case 1:
-			case 4: buttons[0].iconName = '/icons/svg/arrow-left-to-line-close.svg';
-							buttons[1].iconName = '/icons/svg/arrow-right-to-line-open.svg';
+			case 4: buttons[0].iconName = 'arrow-left-to-line-close.svg';
+							buttons[1].iconName = 'arrow-right-to-line-open.svg';
 							break;
 			case 2:
-			case 5: buttons[0].iconName = '/icons/svg/arrow-right-to-line-close.svg';
-							buttons[1].iconName = '/icons/svg/arrow-left-to-line-open.svg';
+			case 5: buttons[0].iconName = 'arrow-right-to-line-close.svg';
+							buttons[1].iconName = 'arrow-left-to-line-open.svg';
 							break;
-			case 3: buttons[0].iconName = '/icons/svg/chevrons-right-left-close.svg';
-							buttons[1].iconName = '/icons/svg/chevrons-left-right-open.svg';
+			case 3: buttons[0].iconName = 'chevrons-right-left-close.svg';
+							buttons[1].iconName = 'chevrons-left-right-open.svg';
 							break;
 			default: buttons[0].iconName = 'ChevronDownIcon';
 							buttons[1].iconName = 'ChevronUpIcon';

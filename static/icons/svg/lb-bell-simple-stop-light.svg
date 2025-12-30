@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 24 24"
+   version="1.1"
+   id="svg1"
+   width="24"
+   height="24"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1" />
+  <rect
+     width="24"
+     height="24"
+     fill="none"
+     id="rect1"
+     x="0"
+     y="0"
+     style="stroke-width:1;stroke-dasharray:none" />
+  <line
+     x1="9"
+     y1="21"
+     x2="15"
+     y2="21"
+     fill="none"
+     stroke="currentColor"
+     stroke-linecap="round"
+     stroke-linejoin="round"
+     stroke-width="1.125"
+     id="line1"
+     style="stroke-width:1;stroke-dasharray:none" />
+  <path
+     d="m 18.75,9.75 c 0,3.358125 0.778125,6.05625 1.396875,7.125 C 20.434968,17.373983 20.076175,17.997971 19.5,18 H 4.5 C 3.9246565,17.996539 3.5673126,17.373265 3.855,16.875 4.4728125,15.80625 5.25,13.107188 5.25,9.75 5.25,6.0220754 8.2720777,3.0000029 12,3.0000029"
+     fill="none"
+     stroke="currentColor"
+     stroke-linecap="round"
+     stroke-linejoin="round"
+     stroke-width="1.125"
+     id="path1"
+     style="stroke-width:1;stroke-dasharray:none" />
+  <path
+     fill="none"
+     stroke="currentColor"
+     stroke-linecap="round"
+     stroke-width="2"
+     d="m 14.71609,3.0000029 2.762516,2.7625179 m 0,0 2.762519,2.7625177 M 17.478606,5.7625208 20.241125,3.0000029 M 17.478606,5.7625208 14.71609,8.5250386"
+     id="path1-2"
+     style="stroke-width:1;stroke-dasharray:none" />
+</svg>

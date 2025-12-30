@@ -166,7 +166,7 @@
 										</button>
 										{#if subControlsColorPicker.length}
 											<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==3 ? 'dark:text-primary-500 text-primary-700' : ''} " onclick={() => { viewport = undefined; selectedTab=3;}}>
-												<LbIcon name={"/icons/svg/streamline--color-palette.svg"} fill="white" width="24" height="24"/>
+												<LbIcon name={"streamline--color-palette.svg"} fill="white" width="24" height="24"/>
 												<span class="mt-1 text-xs">{$_("Colors")}</span>
 											</button>
 										{/if}

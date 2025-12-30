@@ -124,11 +124,11 @@
 					<div class="flex justify-center">
 						<div class="relative inline-flex h-18 w-18 items-center justify-center overflow-hidden rounded-full border border-white/5 dark:bg-surface-950">
 							{#if selectedEntry?.severity == 3}
-								<LbIcon class="text-red-500" name='/icons/svg/error.svg' width="36" height="36"/>
+								<LbIcon class="text-red-500" name='error.svg' width="36" height="36"/>
 							{:else if selectedEntry?.severity == 2}
-								<LbIcon class="text-orange-500" name='/icons/svg/warning.svg' width="36" height="36"/>
+								<LbIcon class="text-orange-500" name='warning.svg' width="36" height="36"/>
 							{:else}
-								<LbIcon class="text-cyan-500" name='/icons/svg/info.svg' width="36" height="36"/>
+								<LbIcon class="text-cyan-500" name='info.svg' width="36" height="36"/>
 							{/if}
 						</div>
 					</div>

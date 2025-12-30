@@ -31,11 +31,6 @@ npm install
 cp .env.example .env.local
 code .env.local
 
-# Grab the existing icon library `IconLibrary.zip` from the LoxConfig or 
-# Miniserver and unzip it in the static folder 
-cd static/loxicons
-unzip IconLibrary.zip
-
 # launch development server
 npm run dev
 

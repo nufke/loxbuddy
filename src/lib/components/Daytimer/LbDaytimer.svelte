@@ -136,7 +136,7 @@
 		control: control,
 		isFavorite: controlOptions.isFavorite,
 		iconName: controlStore.getIcon(control, controlOptions.isSubControl),
-		iconColor: (value > 0 ) ? 'dark:fill-primary-500 fill-primary-700' : 'fill-surface-950 dark:fill-surface-50',
+		iconColor: (value > 0 ) ? 'dark:text-primary-500 text-primary-700' : 'text-surface-950 dark:text-surface-50',
 		badgeIconName: (override > 0) ? 'Timer' : '',
 		badgeIconColor: (override > 0) ? 'bg-purple-500' : '',
 		textName: control.name,

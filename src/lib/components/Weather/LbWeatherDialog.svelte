@@ -32,7 +32,7 @@
 		let sunRise = utils.time2epoch(cur.time, cur.sunRise);
 		let sunSet = utils.time2epoch(cur.time, cur.sunSet);
 		let dayOrNight = (cur.time > sunRise) && (cur.time < sunSet) ? '-day.svg' : '-night.svg';
-		return '/meteocons/svg/' + cur.icon + dayOrNight;
+		return '../../meteocons/svg/' + cur.icon + dayOrNight;
 	}
 
 	function getDayIcon(day: WeatherDailyForecast) {
@@ -40,14 +40,14 @@
 		let sunSet = utils.time2epoch(day.time, day.sunSet);
 		let currentDay = utils.time2epoch(current.time, '00:00');
 		let dayOrNight = (((date.valueOf() > sunRise) && (date.valueOf() < sunSet)) || (day.time != currentDay)) ? '-day.svg' : '-night.svg';
-		return '/meteocons/svg/' + day.icon + dayOrNight;
+		return '../../meteocons/svg/' + day.icon + dayOrNight;
 	}
 
 	function getHourIcon(hour: WeatherHourlyForecast, day: WeatherDailyForecast) {
 		let sunRise = utils.time2epoch(hour.time, day.sunRise);
 		let sunSet = utils.time2epoch(hour.time, day.sunSet);
 		let dayOrNight = (hour.time > sunRise) && (hour.time < sunSet) ? '-day.svg' : '-night.svg';
-		return '/meteocons/svg/' + hour.icon + dayOrNight;
+		return '../../meteocons/svg/' + hour.icon + dayOrNight;
 	}
 
 	function getHourly(day: WeatherDailyForecast) {
@@ -95,11 +95,11 @@
 							</div>
 							<div class="flex flex-col gap-4 mt-8 m-auto">
 								<div class="flex gap-2">
-									<LbIcon name={"/icons/svg/humidity.svg"} width="32" height="32"/>
+									<LbIcon name={"humidity.svg"} width="32" height="32"/>
 									<p class="text-lg"><span class="font-medium">{current.relativeHumidity}%</span> {$_('Humidity')}</p>
 								</div>
 								<div class="flex gap-2">
-									<LbIcon name={"/icons/svg/circle-trend-up.svg"} width="32" height="27"/>
+									<LbIcon name={"circle-trend-up.svg"} width="32" height="27"/>
 									<p class="text-lg"><span class="font-medium">{current.stationPressure}</span> mbar</p>
 								</div>
 								<div class="flex gap-2">
@@ -109,15 +109,15 @@
 							</div>
 							<div class="flex flex-col gap-4 mt-8 m-auto">
 								<div class="flex gap-2">
-									<span style="rotate: {current.windDirection}deg;"><LbIcon name={"/icons/svg/wind-direction2.svg"} width="24" height="24"/></span>
+									<span style="rotate: {current.windDirection}deg;"><LbIcon name={"wind-direction2.svg"} width="24" height="24"/></span>
 									<p class="text-lg"><span class="font-medium">{current.windAverage}</span> km/h</p>
 								</div>
 								<div class="flex gap-2">
-									<LbIcon name={"/icons/svg/sun-solid.svg"} width="32" height="32"/>
+									<LbIcon name={"sun-solid.svg"} width="32" height="32"/>
 									<p class="text-lg"><span class="font-medium">{current.solarRadiation}</span></p>
 								</div>
 								<div class="flex gap-2">
-									<LbIcon name={"/icons/svg/rain-meter.svg"} fill="white" width="32" height="25"/>
+									<LbIcon name={"rain-meter.svg"} fill="white" width="32" height="25"/>
 									<p class="text-lg"><span class="font-medium">{current.precipitationToday}</span> mm</p>
 								</div>
 							</div>
@@ -133,7 +133,7 @@
 									<LbIcon name={getDayIcon(day)} width="70"/>
 								</div>
 								<div class="flex flex-row m-auto justify-center align-center">
-									<span class="align-middle m-auto"><LbIcon name={"/icons/svg/raindrop.svg"} width="16" height="16"/></span>
+									<span class="align-middle m-auto"><LbIcon name={"raindrop.svg"} width="16" height="16"/></span>
 									<p class="text-lg">{day.precipitationProbability}%</p>	
 								</div>
 								<div class="flex flex-row m-auto justify-center align-center">
@@ -174,11 +174,11 @@
 											<p class="text-lg">{hour.airTemperature}°</p>
 										</div>
 										<div class="flex m-auto mt-1">
-											<span class="align-middle m-auto"><LbIcon name={"/icons/svg/raindrop.svg"} width="16" height="16"/></span>
+											<span class="align-middle m-auto"><LbIcon name={"raindrop.svg"} width="16" height="16"/></span>
 											<p class="text-lg">{hour.precipitationProbability}%</p>
 										</div>
 										<div class="flex m-auto mb-2">
-											<span class="align-middle m-auto" style="rotate: {hour.windDirection}deg;"><LbIcon name={"/icons/svg/wind-direction2.svg"} width="18" height="18"/></span>
+											<span class="align-middle m-auto" style="rotate: {hour.windDirection}deg;"><LbIcon name={"wind-direction2.svg"} width="18" height="18"/></span>
 											<p class="text-lg">{hour.windAverage}</p>
 										</div>
 									</div>

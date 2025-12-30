@@ -31,7 +31,7 @@
 		isFavorite: controlOptions.isFavorite,
 		isSubControl: controlOptions.isSubControl,
 		iconName: controlStore.getIcon(control, controlOptions.isSubControl),
-		iconColor: buttonActive ? 'dark:fill-primary-500 fill-primary-700' : 'fill-surface-950 dark:fill-surface-50',
+		iconColor: buttonActive ? 'dark:text-primary-500 text-primary-700' : 'text-surface-950 dark:text-surface-50',
 		statusName: buttonActive ? $_('On') : $_('Off'),
 		statusColor: buttonActive ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700',
 		textName: control.name,

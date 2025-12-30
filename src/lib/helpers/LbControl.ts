@@ -30,15 +30,14 @@ import LbUpDownDigital from '$lib/components/UpDownDigital/LbUpDownDigital.svelt
 import LbValueSelector from '$lib/components/ValueSelector/LbValueSelector.svelte';
 import LbWebpage from '$lib/components/Webpage/LbWebpage.svelte';
 import LbWindowMonitor from '$lib/components/WindowMonitor/LbWindowMonitor.svelte';
-import { loxiconsPath } from '$lib/helpers/paths';
 
 class LbControl {
 	private controlList = [
-		{ type: 'Alarm', control: LbAlarm, defaultIcon: loxiconsPath + 'IconsFilled/shield-2.svg' },
-		{ type: 'AlarmClock', control: LbAlarmClock, defaultIcon: loxiconsPath + 'IconsFilled/alarm-clock.svg' },
+		{ type: 'Alarm', control: LbAlarm, defaultIcon: 'IconsFilled/shield-2.svg' },
+		{ type: 'AlarmClock', control: LbAlarmClock, defaultIcon: 'IconsFilled/alarm-clock.svg' },
 		{ type: 'CentralJalousie', control: LbCentralJalousie, defaultIcon: '' },
 		{ type: 'CentralLightController', control: LbCentralLight, defaultIcon: '' },
-		{ type: 'Daytimer', control: LbDaytimer, defaultIcon: '/icons/svg/calendar-clock.svg' },
+		{ type: 'Daytimer', control: LbDaytimer, defaultIcon: 'lucide:calendar-days' },
 		{ type: 'Dimmer', control: LbDimmer, defaultIcon: '' },
 		{ type: 'Fronius', control: LbFronius, defaultIcon: '' },
 		{ type: 'Gate', control: LbGate, defaultIcon: '' },
@@ -48,23 +47,23 @@ class LbControl {
 		{ type: 'Intercom', control: LbIntercom, defaultIcon: '' },
 		{ type: 'IRoomController', control: LbIRoomControllerV1, defaultIcon: '' },
 		{ type: 'IRoomControllerV2', control: LbIRoomControllerV2, defaultIcon: '' },
-		{ type: 'Jalousie', control: LbJalousie, defaultIcon: loxiconsPath + 'IconsFilled/blinds-half-closed.svg' },
+		{ type: 'Jalousie', control: LbJalousie, defaultIcon: 'IconsFilled/blinds-half-closed.svg' },
 		{ type: 'LightControllerV2', control: LbLightControllerV2, defaultIcon: '' },
 		{ type: 'LoadManager', control: LbLoadManager, defaultIcon: '' },
 		{ type: 'Meter', control: LbMeter, defaultIcon: '' },
 		{ type: 'Pushbutton', control: LbPushbutton, defaultIcon: '' },
 		{ type: 'Radio', control: LbRadio, defaultIcon: '' },
 		{ type: 'Slider', control: LbSlider, defaultIcon: '' },
-		{ type: 'SmokeAlarm', control: LbSmokeAlarm, defaultIcon: '/icons/svg/flame.svg' },
+		{ type: 'SmokeAlarm', control: LbSmokeAlarm, defaultIcon: 'IconsFilled/alarm-1.svg' },
 		{ type: 'Switch', control: LbSwitch, defaultIcon: '' },
 		{ type: 'TextState', control: LbTextState, defaultIcon: '' },
 		{ type: 'Tracker', control: LbTracker, defaultIcon: '' },
 		{ type: 'UpDownDigital', control: LbUpDownDigital, defaultIcon: '' },
 		{ type: 'ValueSelector', control: LbValueSelector, defaultIcon: '' },
-		{ type: 'Webpage', control: LbWebpage, defaultIcon: loxiconsPath + 'IconsFilled/globe-3.svg' },
-		{ type: 'WindowMonitor', control: LbWindowMonitor, defaultIcon: '/icons/svg/pull-door.svg' },
+		{ type: 'Webpage', control: LbWebpage, defaultIcon: 'IconsFilled/globe-3.svg' },
+		{ type: 'WindowMonitor', control: LbWindowMonitor, defaultIcon: 'IconsFilled/window-state-open-1.svg' },
 		{ type: 'TimedSwitch', control: LbTimedSwitch, defaultIcon: '' },
-		{ type: 'PresenceDetector', control: LbPresenceDetector, defaultIcon: loxiconsPath + 'IconsFilled/presence.svg' }
+		{ type: 'PresenceDetector', control: LbPresenceDetector, defaultIcon: 'IconsFilled/presence.svg' }
 	];
 
 	getControl(type: string) {

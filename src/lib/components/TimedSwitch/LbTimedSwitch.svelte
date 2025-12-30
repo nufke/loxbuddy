@@ -70,9 +70,9 @@
 
 	let controlButtons: SingleButtonView[] = $state([
 		{
-			iconName: '/loxicons/IconsFilled/timer-2.svg',
+			iconName: 'IconsFilled/timer-2.svg',
 			type: 'button',
-			iconColor: 'dark:fill-surface-50 fill-surface-950',
+			iconColor: 'dark:text-surface-50 text-surface-950',
 			click: () => {
 				controlStore.setControl(control.uuidAction, 'pulse');
 			}
@@ -89,7 +89,7 @@
 		control: control,
 		isFavorite: controlOptions.isFavorite,
 		iconName: controlStore.getIcon(control, controlOptions.isSubControl),
-		iconColor: (deactivationDelay == -1 || deactivationDelay > 0) ? 'dark:fill-primary-500 fill-primary-700' : 'fill-surface-950 dark:fill-surface-50',
+		iconColor: (deactivationDelay == -1 || deactivationDelay > 0) ? 'dark:text-primary-500 text-primary-700' : 'text-surface-950 dark:text-surface-50',
 		badgeIconName: (deactivationDelay > 0) ? 'Timer' : '',
 		badgeIconColor: (deactivationDelay > 0) ? 'dark:bg-primary-500 bg-primary-700' : '',
 		textName: control.name,

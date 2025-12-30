@@ -113,7 +113,7 @@
 		control: control,
 		isFavorite: controlOptions.isFavorite,
 		iconName: controlStore.getIcon(control, controlOptions.isSubControl),
-		iconColor: (actual > 0) ? 'dark:fill-primary-500 fill-primary-700' : ((actual == 0) ? 'dark:fill-surface-50 fill-surface-950' : 'dark:fill-tertiary-500 fill-tertiary-700'),
+		iconColor: (actual > 0) ? 'dark:text-primary-500 text-primary-700' : ((actual == 0) ? 'dark:text-surface-50 text-surface-950' : 'dark:text-tertiary-500 text-tertiary-700'),
 		textName: control.name,
 		statusName: format(actual, false).join(' '),
 		statusColor: (actual > 0) ? 'dark:text-primary-500 text-primary-700' : ((actual == 0) ? 'dark:text-surface-50 text-surface-950' : 'dark:text-tertiary-500 text-tertiary-700'),

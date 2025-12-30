@@ -16,7 +16,7 @@
 		let sunRise = utils.time2epoch(cur.time, cur.sunRise);
 		let sunSet = utils.time2epoch(cur.time, cur.sunSet);
 		let dayOrNight = (cur.time > sunRise) && (cur.time < sunSet) ? '-day.svg' : '-night.svg';
-		return '/meteocons/svg/' + cur.icon + dayOrNight;
+		return '../../meteocons/svg/' + cur.icon + dayOrNight;
 	}
 </script>
 
