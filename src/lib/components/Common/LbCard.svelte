@@ -11,7 +11,7 @@
 </script>
 
 <div role="button" tabindex="0" class="card m-0 flex min-h-[70px] shadow-sm items-center justify-start rounded-lg border border-white/5
-										bg-surface-100-900 px-2 py-2 hover:border-white/10 relative" onclick={() => goto(key + '/' + item.uuid)}>
+										bg-surface-100-900 px-2 py-1 hover:border-white/10 relative" onclick={() => goto(key + '/' + item.uuid)}>
 	{#if appStore.dnd.isEnabled}
 		<div class="absolute right-1 text-surface-500">
 			<GripVerticalIcon/>
@@ -19,7 +19,7 @@
 	{/if}
 	<div class="w-full flex {isFavorite ? 'flex-col mt-1' : 'flex-row'}">
 		<div class="flex justify-center">
-			<div class="relative inline-flex items-center justify-center w-12 h-12 min-w-12 overflow-hidden 
+			<div class="relative inline-flex items-center justify-center w-[54px] h-[54px] min-w-12 overflow-hidden 
 								rounded-full border border-white/10 dark:bg-surface-950 bg-surface-50">
 				<LbIcon class={color} name={item.image} width="32" height="32"/>
 			</div>

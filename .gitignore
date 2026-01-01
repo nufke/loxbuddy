@@ -26,3 +26,6 @@ vite.config.ts.timestamp-*
 
 # Visual Studio Code
 .vscode/
+
+# local icons
+static/loxicons/

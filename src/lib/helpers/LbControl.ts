@@ -37,7 +37,7 @@ class LbControl {
 		{ type: 'AlarmClock', control: LbAlarmClock, defaultIcon: 'IconsFilled/alarm-clock.svg' },
 		{ type: 'CentralJalousie', control: LbCentralJalousie, defaultIcon: '' },
 		{ type: 'CentralLightController', control: LbCentralLight, defaultIcon: '' },
-		{ type: 'Daytimer', control: LbDaytimer, defaultIcon: 'lucide:calendar-days' },
+		{ type: 'Daytimer', control: LbDaytimer, defaultIcon: 'lucide-thin:calendar-days' },
 		{ type: 'Dimmer', control: LbDimmer, defaultIcon: '' },
 		{ type: 'Fronius', control: LbFronius, defaultIcon: '' },
 		{ type: 'Gate', control: LbGate, defaultIcon: '' },

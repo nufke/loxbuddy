@@ -18,6 +18,6 @@
 		<a href="https://www.buymeacoffee.com/nufke" target="_blank"><img src="/icons/svg/bmc.svg" alt="Buy Me A Coffee"></a>
 		<span class="mt-10 text-orange-500 "><TriangleAlertIcon size="40"/></span>
 		<p class="mt-2 text-md max-w-[600px] text-orange-500 font-medium">{$_("Warning_message")}</p>
-		<p class="mt-4 text-xs dark:text-surface-300 text-surface-700">App ID: {appStore.appId}</p>
+		<p class="mt-4 text-xs dark:text-surface-300 text-surface-700"><a href="/icons">App ID: {appStore.appId}</a></p>
 	</div>
 </div>
