@@ -61,7 +61,7 @@
 		isFavorite: controlOptions.isFavorite,
 		iconName: '', // no icon, render temperature as text
 		iconText: tempActual,
-		iconColor: 'text-surface-950 dark:text-surface-50',
+		iconColor: 'fill-surface-950 dark:fill-surface-50',  // note: fill for svg text in IRC
 		textName: getTextName(),
 		statusName:  temperatureList && temperatureList[mode] ? $_(temperatureList[mode].name) : '',
 		statusColor: temperatureList && temperatureList[mode] && temperatureList[mode].id > 0 && temperatureList[mode].id != 4 ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700', // TODO other colors for temperatures

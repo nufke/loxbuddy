@@ -12,7 +12,7 @@
 	let position = $derived(Number(controlStore.getState(control.states.position)) * 100);
 	let type = Number(control.details.animation);
 
-	/* Gate types (based on animation detail )
+	/* Gate types (based on animation detail)
 		0 = Garage Door
 		1 = Single Gate opening to the left:		open |->	close |<-
 		2 = Single Gate opening to the right:		open <-|	close ->|
@@ -21,34 +21,33 @@
 		5 = Folding door opening to the right:	open <-|	close ->|
 	*/
 
-	$effect( () => {
-		switch (type) {
-			case 1:
-			case 4: buttons[0].iconName = 'lucide:arrow-left-to-line';
-							buttons[1].iconName = 'lucide:arrow-right-from-line';
-							break;
-			case 2:
-			case 5: buttons[0].iconName = 'lucide:arrow-right-to-line';
-							buttons[1].iconName = 'lucide:arrow-left-from-line';
-							break;
-			case 3: buttons[0].iconName = 'chevrons-right-left-close.svg';
-							buttons[1].iconName = 'chevrons-left-right-open.svg';
-							break;
-			default: buttons[0].iconName = 'lucide:chevron-down';
-							buttons[1].iconName = 'lucide:chevron-up';
-							break;
-		}
-	});
+	let buttonMapLeft = [
+		'lucide:chevron-down',
+		'lucide:arrow-left-to-line',
+		'lucide:arrow-right-to-line',
+		'chevrons-right-left-close.svg',
+		'lucide:arrow-left-to-line',
+		'lucide:arrow-right-to-line'
+	];
+
+	let buttonMapRight = [
+		'lucide:chevron-up',
+		'lucide:arrow-right-from-line',
+		'lucide:arrow-left-from-line',
+		'chevrons-left-right-open.svg',
+		'lucide:arrow-right-from-line',
+		'lucide:arrow-left-from-line'
+	]
 
 	let buttons: SingleButtonView[] = $state([
 		{
-			iconName: 'lucide:chevron-down',
+			iconName: buttonMapLeft[type],
 			type: 'button',
 			color: '',
 			click: () => controlStore.setControl(control.uuidAction, 'close')
 		},
 		{
-			iconName: 'lucide:chevron-up',
+			iconName: buttonMapRight[type],
 			type: 'button',
 			color: '',
 			click: () => controlStore.setControl(control.uuidAction, 'open')

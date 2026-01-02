@@ -18,9 +18,6 @@
 	const updateIconProps = async (name: string, iconSet: string) => {
 		const data = await loadIcon(`${iconSet}:${name}`);
 		const scale = data.height/32/0.75 * strokeWidth;
-		if (iconSet == 'streamline' && name == 'table-lamp-1') {
-			console.log('data', data);
-		} 
 		return data ? {
 			...data,
 			body: data.body.replaceAll(/stroke-width=\"[0-9\.]+\"/g, `stroke-width="${scale}"`)

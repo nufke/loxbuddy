@@ -13,7 +13,7 @@
 	"IconsFilled/alarm-clock.svg": "mynaui:alarm",
 	"IconsFilled/alarm-clock-settings.svg": "",
 	"IconsFilled/alarm-fire.svg": "",
-	"IconsFilled/alarm-ok.svg": "",
+	"IconsFilled/alarm-ok.svg": "loxbuddy:bell-check",
 	"IconsFilled/alarm-snooze.svg": "",
 	"IconsFilled/alarm-stop.svg": "",
 	"IconsFilled/alarm-time.svg": "",
