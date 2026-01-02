@@ -322,7 +322,7 @@
 												<LbIcon class="fill-surface-50 mr-2" name={"automatic.svg"} width="24" height="24"/>
 											{/if}
 											{#if isCooling}
-												<LbIcon class="fill-cyan-400 mr-2" name={"mode_cool.svg"} width="24" height="24"/>
+												<LbIcon class="fill-cyan-400 mr-2" name={"solar:snowflake-linear"} width="24" height="24"/>
 											{/if}
 											{#if isHeating}
 												<FlameIcon class="text-red-500 fill-red-500 mr-2"/>

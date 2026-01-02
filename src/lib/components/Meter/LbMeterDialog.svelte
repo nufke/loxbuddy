@@ -57,12 +57,12 @@
 															{controlView.dialog.details['actual'][0] > 0 ? 'border-2 border-primary-500' : 
 															(controlView.dialog.details['actual'][0] == 0 ? 'border-white/10' :
 															(controlView.control.details.type == 'bidirectional' ? 'border-2 border-tertiary-500' : 'border-white/10'))} dark:bg-surface-950 bg-surface-50">
-										<LbIcon class="dark:fill-surface-50 fill-surface-950" name={controlView.iconName} width="36" height="36"/>
+										<LbIcon class="dark:text-surface-50 text-surface-950" name={controlView.iconName} width="36" height="36"/>
 									</div>
 									{/if}
 									{#if controlView.control.details.type == 'storage'}
 									<div class="relative flex items-center justify-center dark:fill-surface-950 fill-surface-50">
-										<LbIcon class="absolute dark:fill-surface-50 fill-surface-950" name={controlView.iconName} width="36" height="36"/>
+										<LbIcon class="absolute dark:text-surface-50 text-surface-950" name={controlView.iconName} width="36" height="36"/>
 										<svg height="74" width="74" viewBox='0 0 74 74'>
 											<circle class="dark:stroke-tertiary-500 stroke-tertiary-700" r="36" cx="37" cy="37" stroke-width="2" />
 											<circle class="dark:stroke-primary-500 stroke-primary-700" r="36" cx="37" cy="37" transform="rotate({-90+(soc/100)},37,37)"

@@ -99,7 +99,7 @@
 									<p class="text-lg"><span class="font-medium">{current.relativeHumidity}%</span> {$_('Humidity')}</p>
 								</div>
 								<div class="flex gap-2">
-									<LbIcon name={"circle-trend-up.svg"} width="32" height="27"/>
+									<LbIcon name="tabler:circle-arrow-up-right" width="32" height="27"/> <!-- TODO make dynamic -->
 									<p class="text-lg"><span class="font-medium">{current.stationPressure}</span> mbar</p>
 								</div>
 								<div class="flex gap-2">
@@ -109,11 +109,11 @@
 							</div>
 							<div class="flex flex-col gap-4 mt-8 m-auto">
 								<div class="flex gap-2">
-									<span style="rotate: {current.windDirection}deg;"><LbIcon name={"wind-direction2.svg"} width="24" height="24"/></span>
+									<span style="rotate: {current.windDirection}deg;"><LbIcon name={"si:direction-line"} width="24" height="24"/></span>
 									<p class="text-lg"><span class="font-medium">{current.windAverage}</span> km/h</p>
 								</div>
 								<div class="flex gap-2">
-									<LbIcon name={"sun-solid.svg"} width="32" height="32"/>
+									<LbIcon name={"lucide:sun"} width="32" height="32"/>
 									<p class="text-lg"><span class="font-medium">{current.solarRadiation}</span></p>
 								</div>
 								<div class="flex gap-2">
@@ -178,7 +178,7 @@
 											<p class="text-lg">{hour.precipitationProbability}%</p>
 										</div>
 										<div class="flex m-auto mb-2">
-											<span class="align-middle m-auto" style="rotate: {hour.windDirection}deg;"><LbIcon name={"wind-direction2.svg"} width="18" height="18"/></span>
+											<span class="align-middle m-auto" style="rotate: {hour.windDirection}deg;"><LbIcon name={"si:direction-line"} width="18" height="18"/></span>
 											<p class="text-lg">{hour.windAverage}</p>
 										</div>
 									</div>

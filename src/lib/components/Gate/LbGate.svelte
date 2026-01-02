@@ -24,31 +24,31 @@
 	$effect( () => {
 		switch (type) {
 			case 1:
-			case 4: buttons[0].iconName = 'arrow-left-to-line-close.svg';
-							buttons[1].iconName = 'arrow-right-to-line-open.svg';
+			case 4: buttons[0].iconName = 'lucide:arrow-left-to-line';
+							buttons[1].iconName = 'lucide:arrow-right-from-line';
 							break;
 			case 2:
-			case 5: buttons[0].iconName = 'arrow-right-to-line-close.svg';
-							buttons[1].iconName = 'arrow-left-to-line-open.svg';
+			case 5: buttons[0].iconName = 'lucide:arrow-right-to-line';
+							buttons[1].iconName = 'lucide:arrow-left-from-line';
 							break;
 			case 3: buttons[0].iconName = 'chevrons-right-left-close.svg';
 							buttons[1].iconName = 'chevrons-left-right-open.svg';
 							break;
-			default: buttons[0].iconName = 'ChevronDownIcon';
-							buttons[1].iconName = 'ChevronUpIcon';
+			default: buttons[0].iconName = 'lucide:chevron-down';
+							buttons[1].iconName = 'lucide:chevron-up';
 							break;
 		}
 	});
 
 	let buttons: SingleButtonView[] = $state([
 		{
-			iconName: 'ChevronDownIcon',
+			iconName: 'lucide:chevron-down',
 			type: 'button',
 			color: '',
 			click: () => controlStore.setControl(control.uuidAction, 'close')
 		},
 		{
-			iconName: 'ChevronUpIcon',
+			iconName: 'lucide:chevron-up',
 			type: 'button',
 			color: '',
 			click: () => controlStore.setControl(control.uuidAction, 'open')
