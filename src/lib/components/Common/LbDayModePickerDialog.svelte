@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Dialog, Portal } from '@skeletonlabs/skeleton-svelte';
 	import { _ } from 'svelte-i18n';
-	import { XIcon } from '@lucide/svelte';
+	import LbIcon from '$lib/components/Common/LbIcon.svelte';
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 	import { innerHeight } from 'svelte/reactivity/window';
 	import { tick } from 'svelte';
@@ -58,7 +58,7 @@
 						</div>
 						<div class="flex justify-center items-center">
 							<button type="button" class="btn-icon hover:preset-tonal" onclick={close}>
-								<XIcon class="size-4"/>
+								<LbIcon name="x" height="16" width="16"/>
 							</button>
 						</div>
 					</header>

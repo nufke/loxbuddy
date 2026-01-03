@@ -2,8 +2,7 @@
 	import { Tabs } from '@skeletonlabs/skeleton-svelte';
 	import { Dialog, Portal } from '@skeletonlabs/skeleton-svelte';
 	import type { SystemStatus, SystemStatusEntry, NotificationMessage } from '$lib/types/models';
-	import LbIcon from '$lib/components/Common/LbIconByName.svelte';
-	import { XIcon } from '@lucide/svelte';
+	import LbIcon from '$lib/components/Common/LbIcon.svelte';
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 	import { _ } from 'svelte-i18n';
 	import { format } from 'date-fns';
@@ -124,17 +123,17 @@
 					<div class="flex justify-center">
 						<div class="relative inline-flex h-18 w-18 items-center justify-center overflow-hidden rounded-full border border-white/5 dark:bg-surface-950">
 							{#if selectedEntry?.severity == 3}
-								<LbIcon class="text-red-500" name='error.svg' width="36" height="36"/>
+								<LbIcon class="text-red-500" name="error" width="36" height="36"/>
 							{:else if selectedEntry?.severity == 2}
-								<LbIcon class="text-orange-500" name='warning.svg' width="36" height="36"/>
+								<LbIcon class="text-orange-500" name="warning" width="36" height="36"/>
 							{:else}
-								<LbIcon class="text-cyan-500" name='info.svg' width="36" height="36"/>
+								<LbIcon class="text-cyan-500" name="info" width="36" height="36"/>
 							{/if}
 						</div>
 					</div>
 					<div class="absolute right-0 top-0">
 						<button type="button" aria-label="close" class="btn-icon w-auto" onclick={() => { openDialog = false }}>
-							<XIcon class="size-4"/>
+							<LbIcon name="x" height="16" width="16"/>
 						</button>
 					</div>
 				</header>

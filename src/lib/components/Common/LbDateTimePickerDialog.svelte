@@ -5,7 +5,7 @@
 	import LbDatePicker from '$lib/components/Common/LbDatePicker.svelte';
 	import { _ } from 'svelte-i18n';
 	import { innerWidth } from 'svelte/reactivity/window';
-	import { XIcon } from '@lucide/svelte';
+	import LbIcon from '$lib/components/Common/LbIcon.svelte';
 
 	let { date, onValueChange, view = $bindable() } = $props();
 
@@ -39,7 +39,7 @@
 						</div>
 						<div class="flex justify-center items-center">
 							<button type="button" class="btn-icon hover:preset-tonal" onclick={close}>
-								<XIcon class="size-4"/>
+								<LbIcon name="x" height="16" width="16"/>
 							</button>
 						</div>
 					</header>

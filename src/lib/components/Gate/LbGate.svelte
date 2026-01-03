@@ -22,21 +22,21 @@
 	*/
 
 	let buttonMapLeft = [
-		'lucide:chevron-down',
-		'lucide:arrow-left-to-line',
-		'lucide:arrow-right-to-line',
-		'chevrons-right-left-close.svg',
-		'lucide:arrow-left-to-line',
-		'lucide:arrow-right-to-line'
+		'chevron-down',
+		'arrow-left-to-line',
+		'arrow-right-to-line',
+		'arrows-right-left-close',
+		'arrow-left-to-line',
+		'arrow-right-to-line'
 	];
 
 	let buttonMapRight = [
-		'lucide:chevron-up',
-		'lucide:arrow-right-from-line',
-		'lucide:arrow-left-from-line',
-		'chevrons-left-right-open.svg',
-		'lucide:arrow-right-from-line',
-		'lucide:arrow-left-from-line'
+		'chevron-up',
+		'arrow-right-from-line',
+		'arrow-left-from-line',
+		'arrows-left-right-open',
+		'arrow-right-from-line',
+		'arrow-left-from-line'
 	]
 
 	let buttons: SingleButtonView[] = $state([

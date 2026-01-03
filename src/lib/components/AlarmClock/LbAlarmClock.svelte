@@ -4,7 +4,7 @@
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import LbControl from '$lib/components/Common/LbControl.svelte';
 	import { Switch } from '@skeletonlabs/skeleton-svelte';
-	import { XIcon, Trash2Icon } from '@lucide/svelte';
+	import LbIcon from '$lib/components/Common/LbIcon.svelte';
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 	import { _ } from 'svelte-i18n';
 	import { format } from 'date-fns';
@@ -193,7 +193,7 @@
 							</div>
 							<div class="flex justify-center items-center">
 								<button type="button" class="btn-icon hover:preset-tonal" onclick={close}>
-									<XIcon class="size-4"/>
+									<LbIcon name="x" height="16" width="16"/>
 								</button>
 							</div>
 						</header>
@@ -224,7 +224,7 @@
 											<LbAlarmClockDayPickerDialog {entry} label={$_("Alarm")} onValueChange={(e:any)=>{updateSettings(i, e)}}/>
 											{#if i > 0}
 											<button type="button" class="dark:text-surface-300 text-surface-700" aria-label="delete" onclick={() => { deleteEntry(i);}}>
-												<Trash2Icon/>
+												<LbIcon name="trash-2"/>
 											</button>
 											{/if}
 										</div>

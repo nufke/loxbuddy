@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Dialog, Portal } from '@skeletonlabs/skeleton-svelte';
 	import { utils } from '$lib/helpers/Utils';
-	import { XIcon, Trash2Icon } from '@lucide/svelte';
+	import LbIcon from '$lib/components/Common/LbIcon.svelte';
 	import { Switch } from '@skeletonlabs/skeleton-svelte';
 	import LbDateTimePickerDialog from '$lib/components/Common/LbDateTimePickerDialog.svelte';
 	import LbDayModePickerDialog from '$lib/components/Common/LbDayModePickerDialog.svelte';
@@ -240,7 +240,7 @@
 					</div>
 					<div class="flex justify-center items-center">
 						<button type="button" class="btn-icon hover:preset-tonal" onclick={close}>
-							<XIcon class="size-4"/>
+							<LbIcon name="x" height="16" width="16"/>
 						</button>
 					</div>
 				</header>
@@ -312,7 +312,7 @@
 								<button class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
 												onclick={openDeleteView}>
 									<div class="w-[20px] items-center justify-center text-red-500 flex w-full">
-										<Trash2Icon/>
+										<LbIcon name="trash-2"/>
 									</div>
 								</button>
 								{/if}

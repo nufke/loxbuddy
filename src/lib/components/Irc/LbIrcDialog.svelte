@@ -5,11 +5,10 @@
 	import type { ControlView, ListItem, CalendarView, Entry, CalendarEntryView, CalendarListItem } from '$lib/types/models';
 	import { appStore } from '$lib/stores/LbAppStore.svelte';
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
-	import { XIcon, TimerIcon, LeafIcon, FlameIcon, ListIcon, CalendarClockIcon } from '@lucide/svelte';
 	import { _ } from 'svelte-i18n';
 	import LbTemperatureSlider from '$lib/components/Irc/LbTemperatureSlider.svelte';
 	import LbTimeGrid from '$lib/components/Common/LbTimeGrid.svelte';
-	import LbIcon from '$lib/components/Common/LbIconByName.svelte';
+	import LbIcon from '$lib/components/Common/LbIcon.svelte';
 	import LbDateTimePickerDialog from '$lib/components/Common/LbDateTimePickerDialog.svelte';
 	import LbCalendarEntryDialog from '$lib/components/Common/LbCalendarEntryDialog.svelte';
 	import LbCalendarDialog from '$lib/components/Common/LbCalendarDialog.svelte';
@@ -304,7 +303,7 @@
 							</div>
 							<div class="flex justify-center items-center">
 								<button type="button" class="btn-icon hover:preset-tonal" onclick={close}>
-									<XIcon class="size-4"/>
+									<LbIcon name="x" height="16" width="16"/>
 								</button>
 							</div>
 						</div>
@@ -319,19 +318,19 @@
 										</div>
 										<div class="relative flex items-center justify-end">
 											{#if isAutomatic}
-												<LbIcon class="fill-surface-50 mr-2" name={"automatic.svg"} width="24" height="24"/>
+												<LbIcon class="text-surface-50 mr-2" name="automatic-circle" width="24" height="24"/>
 											{/if}
 											{#if isCooling}
-												<LbIcon class="fill-cyan-400 mr-2" name={"solar:snowflake-linear"} width="24" height="24"/>
+												<LbIcon class="text-cyan-400 mr-2" name="cooling" width="24" height="24"/>
 											{/if}
 											{#if isHeating}
-												<FlameIcon class="text-red-500 fill-red-500 mr-2"/>
+												<LbIcon name="flame" class="text-red-500 fill-red-500 mr-2"/>
 											{/if}
 											{#if isEco}
-												<LeafIcon class="text-green-500 mr-2"/>
+												<LbIcon name="leaf" class="text-green-500 mr-2"/>
 											{/if}
 											{#if override > 0}
-												<TimerIcon class="text-purple-500 mr-2"/>
+												<LbIcon name="timer" class="text-purple-500 mr-2"/>
 											{/if}
 										</div>
 									</div>
@@ -420,11 +419,11 @@
 										<span class="mt-1 text-xs">{$_("Control")}</span>
 									</button>
 									<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==2 ? 'dark:text-primary-500 text-primary-700' : ''} " onclick={() => {viewport = undefined; selectedTab=2}}>
-										<ListIcon/>
+										<LbIcon name="list"/>
 										<span class="mt-1 text-xs">{$_("Preset")}</span>
 									</button>
 									<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==3 ? 'dark:text-primary-500 text-primary-700' : ''} " onclick={() => {viewport = undefined; selectedTab=3}}>
-										<CalendarClockIcon/>
+										<LbIcon name="calendar-clock"/>
 										<span class="mt-1 text-xs">{$_("Switching times")}</span>
 									</button>
 								</div>

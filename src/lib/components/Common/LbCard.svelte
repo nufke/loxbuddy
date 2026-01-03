@@ -1,8 +1,7 @@
 <script lang="ts">
 	import type { Room, Category } from '$lib/types/models';
-	import LbIcon from '$lib/components/Common/LbIconByName.svelte';
+	import LbIcon from '$lib/components/Common/LbIcon.svelte';
 	import { goto } from "$app/navigation";
-	import { GripVerticalIcon } from '@lucide/svelte';
 	import { appStore } from '$lib/stores/LbAppStore.svelte';
 
 	let { key, item, isFavorite } : { key: string, item: Room | Category, isFavorite: boolean } = $props();
@@ -14,7 +13,7 @@
 										bg-surface-100-900 px-2 py-1 hover:border-white/10 relative" onclick={() => goto(key + '/' + item.uuid)}>
 	{#if appStore.dnd.isEnabled}
 		<div class="absolute right-1 text-surface-500">
-			<GripVerticalIcon/>
+			<LbIcon name="grip-vertical"/>
 		</div>
 	{/if}
 	<div class="w-full flex {isFavorite ? 'flex-col mt-1' : 'flex-row'}">

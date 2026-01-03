@@ -1,9 +1,8 @@
 <script lang="ts">
 	import { Dialog, Portal } from '@skeletonlabs/skeleton-svelte';
 	import type { ControlView } from '$lib/types/models';
-	import LbIcon from '$lib/components/Common/LbIconByName.svelte';
+	import LbIcon from '$lib/components/Common/LbIcon.svelte';
 	import LbJalousieIcon from '$lib/components/Jalousie/LbJalousieIcon.svelte';
-	import { XIcon } from '@lucide/svelte';
 	import { _ } from 'svelte-i18n';
 	import LbInfo from '$lib/components/Common/LbInfo.svelte';
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
@@ -35,7 +34,7 @@
 							</div>
 							<div class="flex justify-center items-center">
 								<button type="button" class="btn-icon hover:preset-tonal" onclick={close}>
-									<XIcon class="size-4"/>
+									<LbIcon name="x" height="16" width="16"/>
 								</button>
 							</div>
 						</header>
@@ -46,7 +45,7 @@
 									{#if controlView.badgeIconName?.length}
 										<div class="absolute top-[9px] left-[10px] inline-flex items-center justify-center w-[18px] h-[18px] {controlView.badgeIconColor} rounded-full
 																border border-1 dark:border-surface-950 border-surface-50">
-											<LbIcon class='dark:text-surface-950 text-surface-50' name={controlView.badgeIconName} size="10"/>
+											<LbIcon class='dark:text-surface-950 text-surface-50' name={controlView.badgeIconName} height="10" width="10"/>
 										</div>
 									{/if}
 								</div>

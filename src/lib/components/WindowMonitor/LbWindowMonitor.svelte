@@ -5,7 +5,7 @@
 	import { appStore } from '$lib/stores/LbAppStore.svelte';
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 	import { Dialog, Portal } from '@skeletonlabs/skeleton-svelte';
-	import { XIcon, ChevronUpIcon, ChevronDownIcon } from '@lucide/svelte';
+	import LbIcon from '$lib/components/Common/LbIcon.svelte';
 	import { _ } from 'svelte-i18n';
 	import { fade } from 'svelte/transition';
 	import LbInfo from '$lib/components/Common/LbInfo.svelte';
@@ -170,7 +170,7 @@
 							</div>
 							<div class="flex justify-center items-center">
 								<button type="button" class="btn-icon hover:preset-tonal" onclick={close}>
-									<XIcon class="size-4"/>
+									<LbIcon name="x" height="16" width="16"/>
 								</button>
 							</div>
 						</header>
@@ -185,10 +185,10 @@
 								</p>
 								<div class="flex flex-col relative w-full">
 									{#if showScrollTop}
-										<div class="absolute z-10 left-[50%] lb-center top-[17px] text-surface-500" transition:fade={{ duration: 300 }}><ChevronUpIcon size="30"/></div>
+										<div class="absolute z-10 left-[50%] lb-center top-[17px] text-surface-500" transition:fade={{ duration: 300 }}><LbIcon name="chevron-up" height="30" width="30"/></div>
 									{/if}
 									{#if showScrollBottom}
-										<div class="absolute z-10 left-[50%] lb-center -bottom-[20px] text-surface-500" transition:fade={{ duration: 300 }}><ChevronDownIcon size="30"/></div>
+										<div class="absolute z-10 left-[50%] lb-center -bottom-[20px] text-surface-500" transition:fade={{ duration: 300 }}><LbIcon name="chevron-down" height="30" width="30"/></div>
 									{/if}
 									<div class="flex flex-col space-y-2 overflow-y-auto w-full mt-2" {style} bind:this={viewport} onscroll={() => parseScroll(windowHeight, viewport)}>
 										{#each windowStatesList as window, index}

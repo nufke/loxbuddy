@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Dialog, Portal } from '@skeletonlabs/skeleton-svelte';
 	import { utils } from '$lib/helpers/Utils';
-	import { PlusIcon, ArrowLeftIcon } from '@lucide/svelte';
+	import LbIcon from '$lib/components/Common/LbIcon.svelte';
 	import type { Entry, CalendarEntryView } from '$lib/types/models';
 	import LbCalendarEntryDialog from '$lib/components/Common/LbCalendarEntryDialog.svelte';
 	import { _ } from 'svelte-i18n';
@@ -147,13 +147,13 @@
 					<div class="grid grid-cols-2 text-center items-center m-auto h-[60px]">
 						<div class="flex flex-row text-center items-center gap-3">
 							<button class="btn-icon w-auto ml-4 mr-0 text-left" onclick={close}>
-								<ArrowLeftIcon/>
+								<LbIcon name="arrow-left"/>
 							</button>
 							<p class="text-lg">{$_("Calendar")} {getCoolingDayTimerInfo()}</p>
 						</div>
 						<div class="mr-3 flex flex-row gap-3 justify-end">
 							<button type="button" aria-label="close" class="btn-icon w-auto" onclick={addEntry}>
-								<PlusIcon />
+								<LbIcon name="plus"/>
 							</button>
 						</div>
 					</div>

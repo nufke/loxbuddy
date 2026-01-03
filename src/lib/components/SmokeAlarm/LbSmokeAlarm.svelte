@@ -5,7 +5,7 @@
 	import LbControl from '$lib/components/Common/LbControl.svelte';
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 	import { _ } from 'svelte-i18n';
-	import { XIcon, WrenchIcon, InfoIcon, ChevronUpIcon, ChevronDownIcon } from '@lucide/svelte';
+	import LbIcon from '$lib/components/Common/LbIcon.svelte';
 	import LbInfo from '$lib/components/Common/LbInfo.svelte';
 	import { tick } from 'svelte';
 
@@ -130,7 +130,7 @@
 							</div>
 							<div class="flex justify-center items-center">
 								<button type="button" class="btn-icon hover:preset-tonal" onclick={close}>
-									<XIcon class="size-4"/>
+									<LbIcon name="x" height="16" width="16"/>
 								</button>
 							</div>
 						</header>
@@ -148,15 +148,15 @@
 							</div>
 							<div class="w-[100px] m-auto justify-center text-center">
 								<div class="grid grid-cols-3">
-									<div class="-mb-1"><button class="btn-icon p-1 dark:bg-surface-950 bg-surface-50 rounded-lg border border-black hover:border-white/50" type="button" onclick={() => setTimer(1,0)}><ChevronUpIcon/></button></div>
+									<div class="-mb-1"><button class="btn-icon p-1 dark:bg-surface-950 bg-surface-50 rounded-lg border border-black hover:border-white/50" type="button" onclick={() => setTimer(1,0)}><LbIcon name="chevron-up"/></button></div>
 									<div class="-mb-1"></div>
-									<div class="-mb-1"><button class="btn-icon p-1 dark:bg-surface-950 bg-surface-50 rounded-lg border border-black hover:border-white/50" type="button" onclick={() => setTimer(0,1)}><ChevronUpIcon/></button></div>
+									<div class="-mb-1"><button class="btn-icon p-1 dark:bg-surface-950 bg-surface-50 rounded-lg border border-black hover:border-white/50" type="button" onclick={() => setTimer(0,1)}><LbIcon name="chevron-up"/></button></div>
 									<div>{hours}</div>
 									<div>:</div>
 									<div>{minutes}</div>
-									<div><button type="button" class="btn-icon p-1 dark:bg-surface-950 bg-surface-50 rounded-lg border border-black hover:border-white/50" onclick={() => setTimer(-1,0)}><ChevronDownIcon/></button></div>
+									<div><button type="button" class="btn-icon p-1 dark:bg-surface-950 bg-surface-50 rounded-lg border border-black hover:border-white/50" onclick={() => setTimer(-1,0)}><LbIcon name="chevron-down"/></button></div>
 									<div></div>
-									<div><button type="button" class="btn-icon p-1 dark:bg-surface-950 bg-surface-50 rounded-lg border border-black hover:border-white/50" onclick={() => setTimer(0,-1)}><ChevronDownIcon/></button></div>
+									<div><button type="button" class="btn-icon p-1 dark:bg-surface-950 bg-surface-50 rounded-lg border border-black hover:border-white/50" onclick={() => setTimer(0,-1)}><LbIcon name="chevron-down"/></button></div>
 								</div>
 							</div>
 							<div class="m-3">
@@ -172,12 +172,12 @@
 								<div class="grid h-full max-w-lg grid-cols-2 mx-auto">
 									<button type="button" class="inline-flex flex-col items-center justify-center px-5 group
 										{selectedTab==1 ? 'dark:text-primary-500 text-primary-700' : ''} " onclick={() => {selectedTab=1;}}>
-										<InfoIcon/>
+										<LbIcon name="info"/>
 										<span class="mt-1 text-xs">{$_("Status")}</span>
 									</button>
 									<button type="button" class="inline-flex flex-col items-center justify-center px-5 group
 										{selectedTab==2 ? 'dark:text-primary-500 text-primary-700' : ''} " onclick={() => {selectedTab=2;}}>
-										<WrenchIcon/>
+										<LbIcon name="wrench"/>
 										<span class="mt-1 text-xs">{$_("Service mode")}</span>
 									</button>
 								</div>

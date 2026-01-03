@@ -1,0 +1,26 @@
+<script lang="ts">
+	import { inlineSvg } from '@svelte-put/inline-svg';
+	import { iconStore } from '$lib/stores/LbIconStore.svelte';
+	import Icon from '@iconify/svelte';
+
+	let { name, ...others } = $props();
+
+	const iconpath = '/icons/svg/'; // TODO configure
+	let icon = $derived(iconStore.getIcon(name));
+</script>
+
+<span class="icon">
+	{#if icon.includes('.svg')}
+		<svg use:inlineSvg={iconpath + icon} {...others}></svg>
+	{:else if icon.includes(':')}
+		<Icon {icon} {...others} />
+	{:else}
+		<Icon icon="lb_hugeicons:border-none-02" {...others} />
+	{/if}
+</span>
+
+<style>
+	.icon {
+		font-size: 28px; /* default size */
+	}
+</style>

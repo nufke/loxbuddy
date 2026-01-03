@@ -3,8 +3,7 @@
 	import { appStore } from '$lib/stores/LbAppStore.svelte';
 	import { weatherStore } from '$lib/stores/LbWeatherStore.svelte';
 	import { slide, fade } from 'svelte/transition';
-	import LbIcon from '$lib/components/Common/LbIconByName.svelte';
-	import { SunriseIcon, SunsetIcon, XIcon } from '@lucide/svelte';
+	import LbIcon from '$lib/components/Common/LbIcon.svelte';
 	import type { WeatherCurrentConditions, WeatherDailyForecast, WeatherHourlyForecast } from '$lib/types/weather';
 	import { format } from 'date-fns';
 	import { utils } from '$lib/helpers/Utils';
@@ -72,7 +71,7 @@
 					</div>
 					<div class="absolute right-1 top-1">
 						<button type="button" aria-label="close" class="btn-icon text-left hover:preset-tonal" onclick={()=> {appStore.weatherDialog.state = false; resetSlider();}}>
-							<XIcon class="size-4"/>
+							<LbIcon name="x" height="16" width="16"/>
 						</button>
 					</div>
 				</header>
@@ -113,7 +112,7 @@
 									<p class="text-lg"><span class="font-medium">{current.windAverage}</span> km/h</p>
 								</div>
 								<div class="flex gap-2">
-									<LbIcon name={"lucide:sun"} width="32" height="32"/>
+									<LbIcon name="sun" width="32" height="32"/>
 									<p class="text-lg"><span class="font-medium">{current.solarRadiation}</span></p>
 								</div>
 								<div class="flex gap-2">
@@ -137,11 +136,11 @@
 									<p class="text-lg">{day.precipitationProbability}%</p>	
 								</div>
 								<div class="flex flex-row m-auto justify-center align-center">
-									<span class="align-middle m-auto"><LbIcon size="16" name="ArrowDown"/></span>
+									<span class="align-middle m-auto"><LbIcon height="16" width="16" name="arrow-down"/></span>
 									<p class="text-lg">{day.airTemperatureLow}°</p>
 								</div>
 								<div class="flex flex-row m-auto justify-center align-center">
-									<span class="align-middle m-auto"><LbIcon size="16" name="ArrowUp"/></span>
+									<span class="align-middle m-auto"><LbIcon height="16" width="16" name="arrow-up"/></span>
 									<p class="text-lg">{day.airTemperatureHigh}°</p>
 								</div>
 							</div>
@@ -152,11 +151,11 @@
 								{#if (day.sunRise && day.sunSet)}
 									<div class="grid grid-cols-2 hr p-1">
 										<div class="flex m-auto">
-											<span class="mr-2"><SunriseIcon size="22"/></span>
+											<span class="mr-2"><LbIcon name="sunrise" height="22" width="22"/></span>
 											<p class="text-lg">{day.sunRise}</p>
 										</div>
 										<div class="flex m-auto">
-											<span class="mr-2"><SunsetIcon size="22"/></span>
+											<span class="mr-2"><LbIcon name="sunset" height="22" width="22"/></span>
 											<p class="text-lg">{day.sunSet}</p>
 										</div>
 									</div>

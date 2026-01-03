@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Control, ControlView, ControlOptions } from '$lib/types/models';
-	import LbIcon from '$lib/components/Common/LbIconByName.svelte';
+	import LbIcon from '$lib/components/Common/LbIcon.svelte';
 	import LbSimpleSlider from '$lib/components/Common/LbSimpleSlider.svelte';
 	import LbStatusBar from '$lib/components/Common/LbStatusBar.svelte';
 	import { appStore } from '$lib/stores/LbAppStore.svelte';
@@ -9,7 +9,6 @@
 	import { DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import { Switch } from '@skeletonlabs/skeleton-svelte';
 	import { Dialog, Portal } from '@skeletonlabs/skeleton-svelte';
-	import { XIcon, ChevronUpIcon, ChevronDownIcon } from '@lucide/svelte';
 	import { Slider } from '@skeletonlabs/skeleton-svelte';
 	import { _ } from 'svelte-i18n';
 	import { fade } from 'svelte/transition';
@@ -114,7 +113,7 @@
 						</div>
 						<div class="flex justify-center items-center">
 							<button type="button" class="btn-icon hover:preset-tonal" onclick={close}>
-								<XIcon class="size-4"/>
+								<LbIcon name="x" height="16" width="16"/>
 							</button>
 						</div>
 					</header>
@@ -128,7 +127,7 @@
 									{#if controlView.badgeIconName?.length}
 										<div class="absolute top-[9px] left-[10px] inline-flex items-center justify-center w-[18px] h-[18px] {controlView.badgeIconColor} rounded-full
 																border border-1 dark:border-surface-950 border-surface-50">
-											<LbIcon class='dark:text-surface-950 text-surface-50' name={controlView.badgeIconName} size="10"/>
+											<LbIcon class='dark:text-surface-950 text-surface-50' name={controlView.badgeIconName} height="10" width="10"/>
 										</div>
 									{/if}
 								</div>
@@ -236,10 +235,10 @@
 								</div>
 								<div class="relative flex flex-col w-full">
 									{#if showScrollTop}
-										<div class="absolute z-10 left-[50%] lb-center top-[11px] text-surface-500" transition:fade={{ duration: 300 }}><ChevronUpIcon size="30"/></div>
+										<div class="absolute z-10 left-[50%] lb-center top-[11px] text-surface-500" transition:fade={{ duration: 300 }}><LbIcon name="chevron-up" height="30" width="30"/></div>
 									{/if}
 									{#if showScrollBottom}
-										<div class="absolute z-10 left-[50%] lb-center -bottom-[19px] text-surface-500" transition:fade={{ duration: 300 }}><ChevronDownIcon size="30"/></div>
+										<div class="absolute z-10 left-[50%] lb-center -bottom-[19px] text-surface-500" transition:fade={{ duration: 300 }}><LbIcon name="chevron-down"height="30" width="30"/></div>
 									{/if}
 									<div class="grid gap-2 overflow-y-auto" {style} bind:this={viewport}>
 										{#each controlView.dialog.details.loadManager.loads as load,i}
@@ -264,10 +263,10 @@
 							{#if linkedControls.length}
 							<div class="flex flex-col relative w-full mt-2">
 								{#if showScrollTop}
-									<div class="absolute z-10 left-[50%] lb-center top-[11px] text-surface-500" transition:fade={{ duration: 300 }}><ChevronUpIcon size="30"/></div>
+									<div class="absolute z-10 left-[50%] lb-center top-[11px] text-surface-500" transition:fade={{ duration: 300 }}><LbIcon name="chevron-up" height="30" width="30"/></div>
 								{/if}
 								{#if showScrollBottom}
-									<div class="absolute z-10 left-[50%] lb-center -bottom-[19px] text-surface-500" transition:fade={{ duration: 300 }}><ChevronDownIcon size="30"/></div>
+									<div class="absolute z-10 left-[50%] lb-center -bottom-[19px] text-surface-500" transition:fade={{ duration: 300 }}><LbIcon name="chevron-down" height="30" width="30"/></div>
 								{/if}
 								<div class="grid grid-cols-1 gap-2
 									{linkedControls.length > 1 ? 'lg:grid-cols-2' : ''}

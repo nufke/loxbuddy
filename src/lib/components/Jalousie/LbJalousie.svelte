@@ -27,13 +27,13 @@
 		
 	let buttons: SingleButtonView[] = $state([
 		{
-			iconName: 'ChevronDownIcon',
+			iconName: 'chevron-down',
 			type: 'button',
 			color: '',
 			click: () => controlStore.setControl(control.uuidAction, 'FullDown')
 		},
 		{
-			iconName: 'ChevronUpIcon',
+			iconName: 'chevron-up',
 			type: 'button',
 			color: '',
 			click: () => controlStore.setControl(control.uuidAction, 'FullUp')
@@ -45,7 +45,7 @@
 		state: controlOptions.showDialog,
 		buttons: [
 			{
-				iconName: 'ChevronDownIcon',
+				iconName: 'chevron-down',
 				type: 'button',
 				color: '',
 				click: () => {},  // do nothing
@@ -53,7 +53,7 @@
 				mouseup: () => { controlStore.setControl(control.uuidAction, 'DownOff')}
 			},
 			{
-				iconName: 'ChevronUpIcon',
+				iconName: 'chevron-up',
 				type: 'button',
 				color: '',
 				click: () => {}, // do nothing
@@ -61,7 +61,7 @@
 				mouseup: () => controlStore.setControl(control.uuidAction, 'UpOff')
 			},
 			{
-				iconName: 'ArrowDownToLine',
+				iconName: 'arrow-down-to-line',
 				type: 'button',
 				color: '',
 				click: () => controlStore.setControl(control.uuidAction, 'FullDown'),
@@ -69,7 +69,7 @@
 				mouseup: () => {} // do nothing
 			},
 			{
-				iconName: 'ArrowUpToLine',
+				iconName: 'arrow-up-to-line',
 				type: 'button',
 				color: '',
 				click: () => controlStore.setControl(control.uuidAction, 'FullUp'),
@@ -119,7 +119,7 @@
 		textName: control.name,
 		statusName: getPosition(),
 		statusColor: (position > 0) ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700',
-		badgeIconName: isAutomatic ? 'automatic-2.svg' : '',
+		badgeIconName: isAutomatic ? 'automatic' : '',
 		badgeIconColor: autoActive ? 'dark:bg-primary-500 bg-primary-700' : 'dark:bg-surface-50 bg-surface-950',
 		buttons: buttons,
 		dialog: { ...dialog,

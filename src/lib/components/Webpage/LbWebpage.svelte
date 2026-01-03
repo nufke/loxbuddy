@@ -16,7 +16,7 @@
 
 	let buttons: SingleButtonView[] = $state([
 		{
-			iconName: 'SquareArrowOutUpRightIcon',
+			iconName: 'square-arrow-out-up-right',
 			name: 'Open link',
 			type: 'button',
 			color: '',

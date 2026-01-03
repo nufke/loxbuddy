@@ -6,7 +6,7 @@
 	import { _ } from 'svelte-i18n';
 	import { appStore } from '$lib/stores/LbAppStore.svelte';
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
-	import { XIcon } from '@lucide/svelte';
+	import LbIcon from '$lib/components/Common/LbIcon.svelte';
 	import LbGeneralDialog from '$lib/components/Common/LbGeneralDialog.svelte';
 
 	let openThemeDialog = $state(false);
@@ -208,7 +208,7 @@
 					</div>
 					<div class="flex justify-center items-center">
 						<button type="button" class="btn-icon hover:preset-tonal" onclick={() => openThemeDialog=false}>
-							<XIcon class="size-4"/>
+							<LbIcon name="x" height="16" width="16"/>
 						</button>
 					</div>
 				</header>
@@ -492,7 +492,7 @@
 					</div>
 					<div class="flex justify-center items-center">
 						<button type="button" class="btn-icon hover:preset-tonal" onclick={() => openStartpageDialog=false}>
-							<XIcon class="size-4"/>
+							<LbIcon name="x" height="16" width="16"/>
 						</button>
 					</div>
 				</header>

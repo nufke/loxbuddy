@@ -15,7 +15,7 @@
 	let buttons: SingleButtonView[] = $state([
 		{
 			name: 'Push',
-			iconName: 'Circle',
+			iconName: 'circle',
 			type: 'button',
 			color: '',
 			click: () => {

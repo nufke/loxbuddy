@@ -3,8 +3,6 @@
 	import '../global.css';
 	import { Navigation, Dialog, Portal } from '@skeletonlabs/skeleton-svelte';
 	import { innerWidth } from 'svelte/reactivity/window';
-	import { HouseIcon, InfoIcon, FileTextIcon, Grid2x2Icon, MenuIcon, LayoutListIcon, ArrowLeftRightIcon, 
-						XIcon, SettingsIcon, CircleIcon, SquareIcon, Logs, LogIn, LogOut, type Icon as IconType } from '@lucide/svelte';
 	import type { Route } from '$lib/types/models';
 	import { mqttClient } from '$lib/communication/MqttClient';
 	import { appStore } from '$lib/stores/LbAppStore.svelte';
@@ -14,7 +12,7 @@
 	import { page } from '$app/state';
 	import { utils } from '$lib/helpers/Utils';
 	import type { WeatherCurrentConditions } from '$lib/types/weather';
-	import LbIcon from '$lib/components/Common/LbIconByName.svelte';
+	import LbIcon from '$lib/components/Common/LbIcon.svelte';
 	import LbWeatherDialog from '$lib/components/Weather/LbWeatherDialog.svelte';
 	import LbLoginDialog from '$lib/components/Login/LbLoginDialog.svelte';
 	import LbLockScreenDialog from '$lib/components/LockScreen/LbLockScreenDialog.svelte';
@@ -29,7 +27,7 @@
 	const logLevel = env && env.APP_LOGLEVEL ? Number(env.APP_LOGLEVEL) : 0;
 	const weatherUrl =  env && env.WEATHER_URL ? env.WEATHER_URL : '';
 
-	const anchorRail = 'btn aspect-square pl-6 w-full max-w-[74px] flex flex-col items-center gap-0.5 ';
+	const anchorRail = 'btn aspect-square pl-6 w-full max-w-[74px] flex flex-col items-center gap-0.5';
 	const anchorSidebar = 'btn justify-start px-2 w-full ';
 	const anchorBar = 'btn hover:preset-tonal flex-col items-center gap-1';
 	const demo = new Demo();
@@ -51,15 +49,15 @@
 	let { children } = $props();
 
 	let routes: Route[] = $state([
-		{ label: 'Login', href: '/login', icon: LogIn, menu: true },
-		{ label: 'Weather', href: '/weather', icon: FileTextIcon, menu: true },
-		{ label: 'Settings', href: '/settings', icon: SettingsIcon,  menu: true },
-		{ label: 'About', href: '/about', icon: InfoIcon, menu: true },
-		{ label: 'Log', href: '/log', icon: Logs, menu: true },
-		{ label: 'Home', href: '/', icon: HouseIcon, menu: false },
-		{ label: 'Rooms', href: '/room', icon: Grid2x2Icon, menu: false },
-		{ label: 'Categories', href: '/category', icon: LayoutListIcon,  menu: false },
-		{ label: 'Messages', href: '/messages', icon: FileTextIcon, menu: false },
+		{ label: 'Login', href: '/login', icon: 'log-in', menu: true },
+		{ label: 'Weather', href: '/weather', icon: 'file-text', menu: true },
+		{ label: 'Settings', href: '/settings', icon: 'settings',  menu: true },
+		{ label: 'About', href: '/about', icon: 'info', menu: true },
+		{ label: 'Log', href: '/log', icon: 'logs', menu: true },
+		{ label: 'Home', href: '/', icon: 'house', menu: false },
+		{ label: 'Rooms', href: '/room', icon: 'grid-2x2', menu: false },
+		{ label: 'Categories', href: '/category', icon: 'layout-list',  menu: false },
+		{ label: 'Messages', href: '/messages', icon: 'file-text', menu: false },
 	]);
 
 	let mobileMenuDialog = $state(false);
@@ -70,7 +68,6 @@
 	let date = $derived(appStore.date);
 	let mqttStatus = $derived(appStore.mqttStatus);
 	let loxStatus = $derived(appStore.loxStatus); // TODO use controlStore.msStatus?
-	let nav = $derived(appStore.nav);
 	let isDemo = $derived(appStore.isDemo);
 	let path = $derived(page.url.pathname);
 	let showWeather = $derived(appStore.showWeather && currentWeather.time > 0 && dailyForecast.length && hourlyForecast[0]);
@@ -125,7 +122,7 @@
 	}
 
 	$effect( () => {
-		let found = routes.find ( item => item.href == path );
+		let found = routes.find( item => item.href == path );
 		if (found && !found.menu) {
 			appStore.nav = ''; // main menu
 		}
@@ -133,13 +130,13 @@
 
 	$effect( () => {
 		if (loxStatus || isDemo) { // connected or demo
-			routes[0] = { label: 'Logout', href: '/logout', icon: LogOut, menu: true };
+			routes[0] = { label: 'Logout', href: '/logout', icon: 'log-out', menu: true };
 			if (isDemo) {
 				demo.start();
 			}
 			navigate((localStorage.getItem('startPage') || '/'));
 		} else { // not connected
-			routes[0] = { label: 'Login', href: '/login', icon: LogIn, menu: true };
+			routes[0] = { label: 'Login', href: '/login', icon: 'log-in', menu: true };
 			appStore.loginDialog.state = true; 
 		}
 	});
@@ -197,13 +194,12 @@
 			<Navigation.Menu>
 			{#if layoutRail}
 				{#each navigation as link (link)}
-					{@const Icon = link.icon}
 					<div onclick={() => { navigate(link.href)}} class={anchorRail}>
 						<div class="relative inline-block">
 							{#if link.label == "Messages" && activeNotifications.length}
 								<span class="badge-icon size-[2px] font-semibold preset-filled-primary-500 absolute -right-2 -top-2 z-10">{activeNotifications.length}</span>
 							{/if}
-							<Icon class={checkUrl(link.href) ? 'dark:text-primary-500 text-primary-700' : 'white'}/>
+							<LbIcon name={link.icon} class={checkUrl(link.href) ? 'dark:text-primary-500 text-primary-700' : 'white'}/>
 						</div>
 						<span class="text-[12px] + {checkUrl(link.href) ? 'dark:text-primary-500 text-primary-700' : 'white'}">{$_(link.label)}</span>
 					</div>
@@ -213,10 +209,9 @@
 					<Navigation.Label class="capitalize pl-2">Menu</Navigation.Label>
 					<Navigation.Menu>
 						{#each routes as link (link)}
-							{@const Icon = link.icon}
 							<div onclick={() => { toggleLayout(); navigate(link.href)}} class={anchorSidebar} 
 								aria-label={link.label}>
-								<Icon class="size-4 {checkUrl(link.href) ? 'dark:text-primary-500 text-primary-700' : 'white'}"/>
+								<LbIcon name={link.icon} height="16" width="16" class={checkUrl(link.href) ? 'dark:text-primary-500 text-primary-700' : 'white'}/>
 								<span class="{checkUrl(link.href) ? 'dark:text-primary-500 text-primary-700' : 'white'}">{$_(link.label)}</span>
 							</div>
 						{/each}
@@ -227,16 +222,16 @@
 		</Navigation.Content>
 		<Navigation.Footer>
 			<button type="button" class={layoutRail ? anchorRail : anchorSidebar} onclick={toggleLayout}>
-					<ArrowLeftRightIcon/>
+					<LbIcon name="arrow-left-right"/>
 			</button>
 			{#if appStore.showStatus && !layoutRail}
 				<div class="mt-3 ml-2 mb-1 flex flex-col justify-left gap-2 {layoutRail ? '' : '-mb-2'}">
 					<div class="flex flex-row items-center gap-2">
-						<CircleIcon class={getStatusColor(mqttStatus)} size="16"/>
+						<LbIcon name="circle" class={getStatusColor(mqttStatus)} height="16" width="16"/>
 						<span class="text-xs">MQTT</span>
 					</div>
 					<div class="flex flex-row items-center gap-2">
-						<SquareIcon class={getStatusColor(loxStatus)} size="16"/>
+						<LbIcon name="square" class={getStatusColor(loxStatus)} height="16" width="16"/>
 						<span class="text-xs">Miniserver</span>
 					</div>
 				</div>
@@ -251,9 +246,9 @@
 <div class="w-full h-screen grid grid-rows-[1fr_auto]">
 	<Navigation layout="bar" class="fixed top-0 z-1 h-[65px] flex justify-center items-center shadow-md w-screen">
 		<Navigation.Menu class="grid grid-cols-3 gap-2">
-			<div class="flex flex-row justify-left items-center gap-2">
-				<button class="ml-2" onclick={() => {navigate(nav)}}>
-					<LbIcon name={nav == '' ? 'MenuIcon' : 'ArrowLeftIcon'}/>
+			<div class="grid grid-cols-[20%_80%] justify-left items-center gap-1">
+				<button class="ml-2" onclick={() => {navigate(appStore.nav)}}>
+					<LbIcon name={appStore.nav == '' ? 'menu' : 'arrow-left'}/>
 				</button>
 				{#if showWeather}
 					<button class="-ml-1 flex flex-row justify-center items-center gap-1" onclick={openWeather}>
@@ -274,20 +269,19 @@
 			</div>
 		</Navigation.Menu>
 	</Navigation>
-	<div class="pt-[55px]">
+	<div class="pt-[55px] {navigation.find ( item => item.href == path ) ? 'pb-[68px]' : '' }">
 		{@render children()}
 	</div>
 	{#if navigation.find ( item => item.href == path )}
-		<Navigation layout="bar" class="sticky bottom-0 h-[68px] shadow-inner">
+		<Navigation layout="bar" class="fixed bottom-0 h-[68px] shadow-inner">
 			<Navigation.Menu class="grid grid-cols-4 gap-2">
 				{#each navigation as link (link)}
-					{@const Icon = link.icon}
 					<div onclick={() => {navigate(link.href)}}  class={anchorBar}>
 						<div class="relative inline-block">
 							{#if link.label == "Messages" && activeNotifications.length}
 								<span class="badge-icon size-[2px] font-semibold preset-filled-primary-500 absolute -right-2 -top-2 z-10">{activeNotifications.length}</span>
 							{/if}
-							<Icon class="size-5 {checkUrl(link.href) ? 'dark:text-primary-500 text-primary-700' : 'white'}" />
+							<LbIcon name={link.icon} height="20" width="20" class={checkUrl(link.href) ? 'dark:text-primary-500 text-primary-700' : 'white'} />
 						</div>
 						<span class="text-[12px] {checkUrl(link.href) ? 'dark:text-primary-500 text-primary-700' : 'white'}">{$_(link.label)}</span>
 					</div>
@@ -318,7 +312,7 @@
 					</div>
 					<div class="flex justify-end">
 						<button type="button" class="btn-icon hover:preset-tonal" onclick={() => mobileMenuDialog = false}>
-							<XIcon class="size-4"/>
+							<LbIcon name="x" height="16" width="16"/>
 						</button>
 					</div>
 				</header>
@@ -327,7 +321,7 @@
 						{@const Icon = link.icon}
 						<div onclick={() => { mobileMenuDialog = false; navigate(link.href)}} class={anchorSidebar} 
 							aria-label={link.label}>
-							<Icon class="size-4 {checkUrl(link.href) ? 'dark:text-primary-500 text-primary-700' : 'white'}"/>
+							<LbIcon name={link.icon} height="16" width="16" class={checkUrl(link.href) ? 'dark:text-primary-500 text-primary-700' : 'white'}/>
 							<span class="{checkUrl(link.href) ? 'dark:text-primary-500 text-primary-700' : 'white'}">{$_(link.label)}</span>
 						</div>
 					{/each}
@@ -336,11 +330,11 @@
 					<footer class="fixed left-0 bottom-0">
 						<div class="ml-4 mb-4 flex flex-col justify-left gap-2">
 							<div class="flex flex-row items-center gap-2">
-								<CircleIcon class={getStatusColor(mqttStatus)} size="16"/>
+								<LbIcon name="circle" class={getStatusColor(mqttStatus)} height="16" width="16"/>
 								<span class="text-xs">MQTT</span>
 							</div>
 							<div class="flex flex-row items-center gap-2">
-								<SquareIcon class={getStatusColor(loxStatus)} size="16"/>
+								<LbIcon name="square" class={getStatusColor(loxStatus)} height="16" width="16"/>
 								<span class="text-xs">Miniserver</span>
 							</div>
 						</div>

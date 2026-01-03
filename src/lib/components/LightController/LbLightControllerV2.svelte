@@ -41,7 +41,7 @@
 
 	let buttons: SingleButtonView[] = $state([
 		{
-			iconName: 'PlusIcon',
+			iconName: 'plus',
 			type: 'button',
 			color: '',
 			click: (e:any) => selectMood(e)

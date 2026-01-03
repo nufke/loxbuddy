@@ -1,4 +1,3 @@
-import { type Icon as IconType } from '@lucide/svelte';
 import { type Locale } from 'date-fns/locale';
 
 export type MQTTStatus = {
@@ -546,7 +545,7 @@ export type MoodList = {
 export type Route = {
 	label: string;
 	href: string;
-	icon: typeof IconType;
+	icon: string;
 	menu?: boolean;
 };
 
@@ -728,5 +727,5 @@ export type DeviceInfo = {
 	ipaddr: string;
 }
 export type DeviceInfoMap = {
-	[key: string]: DeviceInfo
+	[key: string]: DeviceInfo;
 }

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { _ } from 'svelte-i18n';
 	import { appStore } from '$lib/stores/LbAppStore.svelte';
-	import { TriangleAlertIcon } from '@lucide/svelte';
+	import LbIcon from '$lib/components/Common/LbIcon.svelte';
 
 	let version = __VERSION__;
 	appStore.nav = '/';
@@ -16,7 +16,7 @@
 		<a class="mt-2 text-md text-primary-500" href="https://github.com/nufke/loxbuddy" target="_blank">{$_("Visit")} GitHub</a>
 		<p class="mt-2 text-xs dark:text-surface-300 text-surface-700 mt-10 mb-5">Interested in supporting the development of this App?</p> 
 		<a href="https://www.buymeacoffee.com/nufke" target="_blank"><img src="/icons/svg/bmc.svg" alt="Buy Me A Coffee"></a>
-		<span class="mt-10 text-orange-500 "><TriangleAlertIcon size="40"/></span>
+		<span class="mt-10 text-orange-500 "><LbIcon name="triangle-alert" height="40" width="40"/></span>
 		<p class="mt-2 text-md max-w-[600px] text-orange-500 font-medium">{$_("Warning_message")}</p>
 		<p class="mt-4 text-xs dark:text-surface-300 text-surface-700"><a href="/icons">App ID: {appStore.appId}</a></p>
 	</div>

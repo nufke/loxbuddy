@@ -5,7 +5,7 @@
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 	import { Dialog, Portal } from '@skeletonlabs/skeleton-svelte';
-	import { XIcon, ChevronUpIcon, ChevronDownIcon } from '@lucide/svelte';
+	import LbIcon from '$lib/components/Common/LbIcon.svelte';
 	import { _ } from 'svelte-i18n';
 	import { fade } from 'svelte/transition';
 	import fmt from 'sprintf-js';
@@ -175,7 +175,7 @@
 								</div>
 								<div class="flex justify-center items-center">
 									<button type="button" class="btn-icon hover:preset-tonal" onclick={close}>
-										<XIcon class="size-4"/>
+										<LbIcon name="x" height="16" width="16"/>
 									</button>
 								</div>
 							</div>
@@ -193,10 +193,10 @@
 							<div class="relative flex flex-col items-center justify-center">
 								<div class="flex flex-col w-full">
 									{#if showScrollTop}
-										<div class="absolute z-10 left-[50%] lb-center top-[10px] text-surface-500" transition:fade={{ duration: 300 }}><ChevronUpIcon size="30"/></div>
+										<div class="absolute z-10 left-[50%] lb-center top-[10px] text-surface-500" transition:fade={{ duration: 300 }}><LbIcon name="chevron-up" height="30" width="30"/></div>
 									{/if}
 									{#if showScrollBottom}
-										<div class="absolute z-10 left-[50%] lb-center -bottom-[19px] text-surface-500" transition:fade={{ duration: 300 }}><ChevronDownIcon size="30"/></div>
+										<div class="absolute z-10 left-[50%] lb-center -bottom-[19px] text-surface-500" transition:fade={{ duration: 300 }}><LbIcon name="chevron-down" height="30" width="30"/></div>
 									{/if}
 									<div class="flex flex-col space-y-2 overflow-y-auto h-[50%]" {style} bind:this={viewport} onscroll={() => parseScroll(windowHeight, viewport)}>
 										{#each lightControls as control}

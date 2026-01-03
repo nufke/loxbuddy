@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { SvelteDate } from 'svelte/reactivity';
-	import { ChevronLeftIcon, ChevronRightIcon, Clock3Icon, Undo2Icon } from '@lucide/svelte';
+	import LbIcon from '$lib/components/Common/LbIcon.svelte';
 	import { format } from 'date-fns';
 	import { _ } from 'svelte-i18n';
 
@@ -111,11 +111,11 @@
 	<div class="card m-0 flex rounded-lg border border-white/5 hover:border-white/10
 							bg-surface-50-950 px-2 py-2 hover:border-white/10" style="width: {calenderHeight}px; height: {calenderHeight}px;">
 		<div class="grid grid-cols-7 gap-0">
-			<div class="btn-icon {cw} justify-start m-auto" onclick={() => setMonth(-1)}><ChevronLeftIcon size="26"/></div>
-			<div class="btn-icon {cw} justify-start m-auto dark:text-primary-500 text-primary-700" onclick={() => reset()}><Undo2Icon/></div>
+			<div class="btn-icon {cw} justify-start m-auto" onclick={() => setMonth(-1)}><LbIcon name="chevron-left"/></div>
+			<div class="btn-icon {cw} justify-start m-auto dark:text-primary-500 text-primary-700" onclick={() => reset()}><LbIcon name="undo-2"/></div>
 			<div class="btn col-span-3 {ts}">{month} {year}</div>
 			<div></div>
-			<div class="btn-icon {cw} justify-start start m-auto" onclick={() => setMonth(+1)}><ChevronRightIcon size="26"/></div>
+			<div class="btn-icon {cw} justify-start start m-auto" onclick={() => setMonth(+1)}><LbIcon name="chevron-right"/></div>
 			{#each days as day}
 				<div class="text-center {ts}">{day}</div>
 			{/each}

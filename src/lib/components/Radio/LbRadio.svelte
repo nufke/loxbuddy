@@ -50,13 +50,13 @@
 
 	let buttons: SingleButtonView[] = $state([
 		{
-			iconName: 'MinusIcon',
+			iconName: 'minus',
 			type: 'button',
 			color: '',
 			click: (e: any) => clickRadio(e, -1)
 		},
 		{
-			iconName: 'PlusIcon',
+			iconName: 'plus',
 			type: 'button',
 			color: '',
 			click: (e: any) => clickRadio(e, 1)

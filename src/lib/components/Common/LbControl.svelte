@@ -2,13 +2,12 @@
 	import { Switch } from '@skeletonlabs/skeleton-svelte';
 	import type { ControlView, Control, ControlOptions, Category, Room } from '$lib/types/models';
 	import { DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
-	import LbIcon from '$lib/components/Common/LbIconByName.svelte';
+	import LbIcon from '$lib/components/Common/LbIcon.svelte';
 	import LbJalousieIcon from '$lib/components/Jalousie/LbJalousieIcon.svelte';
 	import { appStore } from '$lib/stores/LbAppStore.svelte';
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 	import { _ } from 'svelte-i18n';
 	import { page } from '$app/state';
-	import { GripVerticalIcon } from '@lucide/svelte';
 
 	let { controlView = $bindable(), controlOptions = DEFAULT_CONTROLOPTIONS } : { controlView: ControlView, controlOptions: ControlOptions } = $props();
 	let isCategory = page.url.pathname.includes('/category');
@@ -54,12 +53,12 @@
 	<div class="flex w-full flex-col">
 		{#if appStore.dnd.isEnabled}
 			<div class="absolute right-1 text-surface-500 top-[40%]">
-				<GripVerticalIcon/>
+				<LbIcon name="grip-vertical"/>
 			</div>
 		{/if}
 		<div class="relative flex w-full justify-between">
 			{#if controlView.iconName.length}
-				<div class="relative mr-1 inline-flex items-center justify-center w-12 h-12 min-w-12 overflow-hidden rounded-full border border-white/10 dark:bg-surface-950 bg-surface-50">
+				<div class="relative mr-1 flex items-center justify-center w-12 h-12 min-w-12 overflow-hidden rounded-full border border-white/10 dark:bg-surface-950 bg-surface-50">
 					{#if controlView.control.type =='Jalousie'}
 						<LbJalousieIcon control={controlView.control} width="28" height="28"/>
 					{:else}
@@ -69,7 +68,7 @@
 					{#if controlView.badgeIconName?.length}
 						<div class="absolute top-[4px] left-[6px] inline-flex items-center justify-center w-[14px] h-[14px] {controlView.badgeIconColor} rounded-full
 												border border-1 dark:border-surface-950 border-surface-50">
-							<LbIcon class='dark:text-surface-950 text-surface-50' name={controlView.badgeIconName} size="8"/>
+							<LbIcon class='dark:text-surface-950 text-surface-50' name={controlView.badgeIconName} height="8" width="8"/>
 						</div>
 					{/if}
 				</div>
@@ -89,11 +88,9 @@
 							<div class="ml-2"></div>
 						{/if}
 						{#if button.type === 'button' && button.iconName}
-							<button type="button" class="btn-icon p-3 dark:bg-surface-950 bg-surface-50 rounded-lg border border-white/15 hover:border-white/50" 
+							<button type="button" class="btn-icon w-[18px] h-[18px] p-3 dark:bg-surface-950 bg-surface-50 rounded-lg border border-white/15 hover:border-white/50" 
 											onclick={(e) => { e.stopPropagation(); e.preventDefault(); button.click(e)}}>
-								<span style="font-size:26px ">
-									<LbIcon class={button.iconColor} name={button.iconName} />
-								</span>
+								<LbIcon class={button.iconColor} name={button.iconName}/>
 							</button>
 						{/if}
 						{#if button.type == 'switch'}
@@ -127,7 +124,7 @@
 	<div class="flex w-full justify-between">
 		{#if appStore.dnd.isEnabled}
 			<div class="absolute right-1 text-surface-500 top-[35%]">
-				<GripVerticalIcon/>
+				<LbIcon name="grip-vertical"/>
 			</div>
 		{/if}
 		<div class="relative flex items-center truncate">
@@ -142,7 +139,7 @@
 					{#if controlView.badgeIconName?.length}
 						<div class="absolute top-[4px] left-[6px] inline-flex items-center justify-center w-[14px] h-[14px] {controlView.badgeIconColor} rounded-full
 												 border border-1 dark:border-surface-950 border-surface-50">
-							<LbIcon class='dark:text-surface-950 text-surface-50' name={controlView.badgeIconName} size="8"/>
+							<LbIcon class='dark:text-surface-950 text-surface-50' name={controlView.badgeIconName} height="8" width="8"/>
 						</div>
 					{/if}
 				</div>
@@ -169,7 +166,7 @@
 						<div class="ml-2"></div>
 					{/if}
 					{#if button.type === 'button' && button.iconName}
-						<button type="button" class="btn-icon p-3 dark:bg-surface-950 bg-surface-50 rounded-lg border border-white/15 hover:border-white/50" 
+						<button type="button" class="btn-icon w-[18px] h-[18px] p-3 dark:bg-surface-950 bg-surface-50 rounded-lg border border-white/15 hover:border-white/50" 
 										onclick={(e) => { e.stopPropagation(); e.preventDefault(); button.click(e)}}>
 							<span style="font-size:26px">
 								<LbIcon class={button.iconColor} name={button.iconName} />

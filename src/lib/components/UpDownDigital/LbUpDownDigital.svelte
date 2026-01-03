@@ -9,13 +9,13 @@
 
 	let buttons: SingleButtonView[] = $state([
 		{
-			iconName: 'ChevronDownIcon',
+			iconName: 'chevron-down',
 			type: 'button',
 			color: '',
 			click: () => controlStore.setControl(control.uuidAction, 'PulseDown')
 		},
 		{
-			iconName: 'ChevronUpIcon',
+			iconName: 'chevron-up',
 			type: 'button',
 			color: '',
 			click: () => controlStore.setControl(control.uuidAction, 'PulseUp')

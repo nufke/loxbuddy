@@ -10,7 +10,7 @@
 	import LbCalendarDialog from '$lib/components/Common/LbCalendarDialog.svelte';
 	import { appStore } from '$lib/stores/LbAppStore.svelte';
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
-	import { XIcon, TimerIcon } from '@lucide/svelte';
+	import LbIcon from '$lib/components/Common/LbIcon.svelte';
 	import fmt from 'sprintf-js';
 	import { _ } from 'svelte-i18n';
 	import { format, isAfter, isBefore, setHours, setMinutes, setSeconds } from 'date-fns';
@@ -165,7 +165,7 @@
 							</div>
 							<div class="flex justify-center items-center">
 								<button type="button" class="btn-icon hover:preset-tonal" onclick={close}>
-									<XIcon class="size-4"/>
+									<LbIcon name="x" height="16" width="16"/>
 								</button>
 							</div>
 						</header>
@@ -176,7 +176,7 @@
 								</p>
 								{#if override > 0}
 									<div class="flex flex-row items-center justify-center">
-										<span class="dark:text-purple-400 text-purple-800"><TimerIcon size="16"/></span>
+										<span class="dark:text-purple-400 text-purple-800"><LbIcon name="timer" height="16" width="16"/></span>
 										<p class="ml-1 text-lg text-center dark:text-purple-400 text-purple-800">{$_("Timer is running")}</p>
 									</div>
 								{/if}

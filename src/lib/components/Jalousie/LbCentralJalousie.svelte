@@ -1,13 +1,12 @@
 <script lang="ts">
 	import LbControl from '$lib/components/Common/LbControl.svelte';
 	import LbJalousie from '$lib/components/Jalousie/LbJalousie.svelte';
-	import LbIcon from '$lib/components/Common/LbIconByName.svelte';
+	import LbIcon from '$lib/components/Common/LbIcon.svelte';
 	import LbJalousieIcon from '$lib/components/Jalousie/LbJalousieIcon.svelte';
 	import type { Control, ControlOptions, ControlView, DialogView, ScreenItem, SingleButtonView } from '$lib/types/models';
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 	import { Dialog, Portal } from '@skeletonlabs/skeleton-svelte';
-	import { XIcon, ChevronUpIcon, ChevronDownIcon, BlindsIcon, SettingsIcon, OctagonMinusIcon } from '@lucide/svelte';
 	import { _ } from 'svelte-i18n';
 	import { fade } from 'svelte/transition';
 	import LbInfo from '$lib/components/Common/LbInfo.svelte';
@@ -130,13 +129,13 @@
 
 	let buttons: SingleButtonView[] = $state([
 		{
-			iconName: 'ChevronDownIcon',
+			iconName: 'chevron-down',
 			type: 'button',
 			color: '',
 			click: () => controlStore.setControl(control.uuidAction, 'FullDown')
 		},
 		{
-			iconName: 'ChevronUpIcon',
+			iconName: 'chevron-up',
 			type: 'button',
 			color: '',
 			click: () => controlStore.setControl(control.uuidAction, 'FullUp')
@@ -176,7 +175,7 @@
 								</div>
 								<div class="flex justify-center items-center">
 									<button type="button" class="btn-icon hover:preset-tonal" onclick={close}>
-										<XIcon class="size-4"/>
+										<LbIcon name="x" height="16" width="16"/>
 									</button>
 								</div>
 							</header>
@@ -187,26 +186,26 @@
 								<div class="container grid grid-cols-5 gap-2 mb-2">
 									<button type="button" class="btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50 shadow-sm text-surface-950-50
 																				rounded-lg border border-white/10 hover:border-white/50" onclick={() => screenAction("FullDown")}>
-																				<span class="w-[32px] flex justify-center items-center"><ChevronDownIcon/></span></button> <!-- to span to avoid scaling of icons -->
+																				<span class="w-[32px] flex justify-center items-center"><LbIcon name="chevron-down"/></span></button> <!-- to span to avoid scaling of icons -->
 									<button type="button" class="btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50 shadow-sm text-surface-950-50
 																				rounded-lg border border-white/10 hover:border-white/50" onclick={() => screenAction("FullUp")}>
-																				<span class="w-[32px] flex justify-center items-center"><ChevronUpIcon/></span></button>
+																				<span class="w-[32px] flex justify-center items-center"><LbIcon name="chevron-up"/></span></button>
 									<button type="button" class="btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50 shadow-sm text-surface-950-50
 																				rounded-lg border border-white/10 hover:border-white/50" onclick={() => screenAction("shade")}>
-																				<span class="w-[32px] flex justify-center items-center"><BlindsIcon/></span></button>
+																				<span class="w-[32px] flex justify-center items-center"><LbIcon name="blinds"/></span></button>
 									<button type="button" class="btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50 shadow-sm text-surface-950-50
 																				rounded-lg border border-white/10 hover:border-white/50" onclick={() => screenAction("stop")}>
-																				<span class="w-[32px] flex justify-center items-center"><OctagonMinusIcon/></span></button>
+																				<span class="w-[32px] flex justify-center items-center"><LbIcon name="octagon-minus"/></span></button>
 									<button type="button" class="btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50 shadow-sm {screenSelected ? 'text-surface-800-200' : 'text-surface-200-800'}
 																				rounded-lg border border-white/10 hover:border-white/50" onclick={() => selectScreenOptions()}>
-																				<span class="w-[32px] flex justify-center items-center"><SettingsIcon/></span></button>
+																				<span class="w-[32px] flex justify-center items-center"><LbIcon name="settings"/></span></button>
 								</div>
 								<div class="relative flex flex-col w-full">
 									{#if showScrollTop}
-										<div class="absolute z-10 left-[50%] lb-center top-[10px] text-surface-500" transition:fade={{ duration: 300 }}><ChevronUpIcon size="30"/></div>
+										<div class="absolute z-10 left-[50%] lb-center top-[10px] text-surface-500" transition:fade={{ duration: 300 }}><LbIcon name="chevron-up" height="30" width="30"/></div>
 									{/if}
 									{#if showScrollBottom}
-										<div class="absolute z-10 left-[50%] lb-center -bottom-[19px] text-surface-500" transition:fade={{ duration: 300 }}><ChevronDownIcon size="30"/></div>
+										<div class="absolute z-10 left-[50%] lb-center -bottom-[19px] text-surface-500" transition:fade={{ duration: 300 }}><LbIcon name="chevron-down" height="30" width="30"/></div>
 									{/if}
 									<div class="flex flex-col overflow-y-auto space-y-2" {style} bind:this={viewport} onscroll={() => parseScroll(windowHeight, viewport)}>
 										{#each screenControls as control}
@@ -225,7 +224,7 @@
 																<div class="absolute -top-[0px] -left-[9px] inline-flex items-center justify-center w-[18px] h-[18px]
 																	{isAutoActive(control) ? 'dark:bg-primary-500 bg-primary-700' : 'dark:bg-surface-50 bg-surface-950'} rounded-full
 																	border border-1 dark:border-surface-950 border-surface-50">
-																	<LbIcon class='dark:text-surface-950 text-surface-50' name="automatic-2.svg" size="10"/>
+																	<LbIcon class='dark:text-surface-950 text-surface-50' name="automatic" height="10" width="10"/>
 																</div>
 															{/if}
 														</div>

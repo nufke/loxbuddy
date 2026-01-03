@@ -1,12 +1,11 @@
 <script lang="ts">
-	import LbIcon from '$lib/components/Common/LbIconByName.svelte';
+	import LbIcon from '$lib/components/Common/LbIcon.svelte';
 	import { Dialog, Portal  } from '@skeletonlabs/skeleton-svelte';
 	import type { Control, ControlView, ListItem } from '$lib/types/models';
 	import { fade } from 'svelte/transition';
 	import LbSwitch from '$lib/components/Switch/LbSwitch.svelte';
 	import LbLightDimmer from '$lib/components/LightController/LbLightDimmer.svelte';
 	import LbColorPickerV2 from '$lib/components/LightController/LbColorpickerV2.svelte';
-	import { XIcon, LightbulbIcon, SlidersHorizontalIcon, ChevronUpIcon, ChevronDownIcon } from '@lucide/svelte';
 	import { _ } from 'svelte-i18n';
 	import LbInfo from '$lib/components/Common/LbInfo.svelte';
 	import { innerHeight } from 'svelte/reactivity/window';
@@ -80,7 +79,7 @@
 						<Dialog.Title class="h5 flex justify-center items-center">{controlView.textName}</Dialog.Title>
 						<div class="flex justify-center items-center">
 							<button type="button" class="btn-icon hover:preset-tonal" onclick={close}>
-								<XIcon class="size-4"/>
+								<LbIcon name="x" height="16" width="16"/>
 							</button>
 						</div>
 					</header>
@@ -97,10 +96,10 @@
 								</div>
 								<div class="flex flex-col relative w-full mt-2">
 									{#if showScrollTop}
-										<div class="absolute z-10 left-[50%] lb-center top-[10px] text-surface-500" transition:fade={{ duration: 300 }}><ChevronUpIcon size="30"/></div>
+										<div class="absolute z-10 left-[50%] lb-center top-[10px] text-surface-500" transition:fade={{ duration: 300 }}><LbIcon name="chevron-up" height="30" width="30"/></div>
 									{/if}
 									{#if showScrollBottom}
-										<div class="absolute z-10 left-[50%] lb-center -bottom-[19px] text-surface-500" transition:fade={{ duration: 300 }}><ChevronDownIcon size="30"/></div>
+										<div class="absolute z-10 left-[50%] lb-center -bottom-[19px] text-surface-500" transition:fade={{ duration: 300 }}><LbIcon name="chevron-down" height="30" width="30"/></div>
 									{/if}
 									<div class="flex flex-col overflow-y-auto w-full" {style} bind:this={viewport} onscroll={() => parseScroll(windowHeight, viewport)}>
 										{#if controlView.list}
@@ -120,10 +119,10 @@
 							{#if selectedTab==2} <!-- control -->
 								<div class="flex flex-col relative w-full">
 									{#if showScrollTop}
-										<div class="absolute z-10 left-[50%] lb-center top-[10px] text-surface-500" transition:fade={{ duration: 300 }}><ChevronUpIcon size="30"/></div>
+										<div class="absolute z-10 left-[50%] lb-center top-[10px] text-surface-500" transition:fade={{ duration: 300 }}><LbIcon name="chevron-up" height="30" width="30"/></div>
 									{/if}
 									{#if showScrollBottom}
-										<div class="absolute z-10 left-[50%] lb-center -bottom-[19px] text-surface-500" transition:fade={{ duration: 300 }}><ChevronDownIcon size="30"/></div>
+										<div class="absolute z-10 left-[50%] lb-center -bottom-[19px] text-surface-500" transition:fade={{ duration: 300 }}><LbIcon name="chevron-down" height="30" width="30"/></div>
 									{/if}
 									<div class="overflow-y-auto" {style} bind:this={viewport} onscroll={() => parseScroll(windowHeight, viewport)}>
 										{#each subControls as subControl,index}
@@ -157,16 +156,16 @@
 								<div class="relative w-full mt-6 mb-2">
 									<div class="grid max-w-lg {subControlsColorPicker.length ? 'grid-cols-3' : 'grid-cols-2'}">
 										<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==1 ? 'dark:text-primary-500 text-primary-700' : ''} " onclick={() => { viewport = undefined; selectedTab=1;} }>
-											<LightbulbIcon/>
+											<LbIcon name="lightbulb"/>
 											<span class="mt-1 text-xs">{$_("Scenes")}</span>
 										</button>
 										<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==2 ? 'dark:text-primary-500 text-primary-700' : ''} " onclick={() => { viewport = undefined; selectedTab=2;} }>
-											<SlidersHorizontalIcon/>
+											<LbIcon name="sliders-horizontal"/>
 											<span class="mt-1 text-xs">{$_("Controls")}</span>
 										</button>
 										{#if subControlsColorPicker.length}
 											<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==3 ? 'dark:text-primary-500 text-primary-700' : ''} " onclick={() => { viewport = undefined; selectedTab=3;}}>
-												<LbIcon name="streamline:color-palette" fill="white" width="24" height="24"/>
+												<LbIcon name="color-palette" fill="white" width="24" height="24"/>
 												<span class="mt-1 text-xs">{$_("Colors")}</span>
 											</button>
 										{/if}

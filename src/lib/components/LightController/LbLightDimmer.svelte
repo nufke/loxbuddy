@@ -5,7 +5,7 @@
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 	import { _ } from 'svelte-i18n';
 	import LbSimpleSlider from '$lib/components/Common/LbSimpleSlider.svelte'
-	import { ChevronRightIcon } from '@lucide/svelte';
+	import LbIcon from '$lib/components/Common/LbIcon.svelte';
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
@@ -74,7 +74,7 @@
 			<div class="flex">
 				<p class="text-lg">{controlView.textName}</p>
 				{#if controlOptions.action}
-					<p class="mt-1"><ChevronRightIcon size="20"/></p>
+					<p class="mt-1"><LbIcon name="chevron-right" height="30" width="30"/></p>
 				{/if}
 			</div>
 			<p class="text-md">{controlView.statusName}</p>

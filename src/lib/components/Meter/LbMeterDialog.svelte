@@ -1,9 +1,8 @@
 <script lang="ts">
 	import type { ControlView } from '$lib/types/models';
-	import LbIcon from '$lib/components/Common/LbIconByName.svelte';
+	import LbIcon from '$lib/components/Common/LbIcon.svelte';
 	import { appStore } from '$lib/stores/LbAppStore.svelte';
 	import { Dialog, Portal } from '@skeletonlabs/skeleton-svelte';
-	import { XIcon } from '@lucide/svelte';
 	import { _ } from 'svelte-i18n';
 	import LbInfo from '$lib/components/Common/LbInfo.svelte';
 	import { format, getWeek } from 'date-fns';
@@ -44,7 +43,7 @@
 						</div>
 						<div class="flex justify-center items-center">
 							<button type="button" class="btn-icon hover:preset-tonal" onclick={close}>
-								<XIcon class="size-4"/>
+								<LbIcon name="x" height="16" width="16"/>
 							</button>
 						</div>
 					</header>

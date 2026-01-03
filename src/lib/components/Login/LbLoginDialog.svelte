@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Dialog, Portal  } from '@skeletonlabs/skeleton-svelte';
 	import { appStore } from '$lib/stores/LbAppStore.svelte';
-	import { EyeIcon, EyeOffIcon, SearchIcon, XIcon } from '@lucide/svelte';
+	import LbIcon from '$lib/components/Common/LbIcon.svelte';
 	import { _ } from 'svelte-i18n';
 	import { LoxWsClient, startLoxWsClient, checkCredentials} from '$lib/communication/LoxWsClient';
 	import type { DeviceInfoMap, DeviceInfo } from '$lib/types/models';
@@ -147,7 +147,7 @@
 									<div class="input-group grid-cols-[1fr_auto]">
 										<input class="ig-input" type="text" bind:value={hostname} placeholder={$_("IP address")} />
 										<div class="ig-btn preset-tonal" onclick={doSearch}>
-											<SearchIcon size={16} />
+											<LbIcon name="search" height="16" width="16"/>
 										</div>
 									</div>
 								</label>
@@ -165,9 +165,9 @@
 										<input class="input" type={hidePassword ? "password" : "text"} bind:value={password} placeholder={$_("Password")} autocomplete="current-password"/>
 										<div class="ig-btn preset-tonal" onclick={() => {hidePassword = !hidePassword}}>
 											{#if hidePassword}
-												<EyeIcon size={16} />
+												<LbIcon name="eye" height="16" width="16"/>
 											{:else}
-												<EyeOffIcon size={16} />
+												<LbIcon name="eye-off" height="16" width="16"/>
 											{/if}
 										</div>
 									</div>
@@ -199,7 +199,7 @@
 						<Dialog.Title class="h5 flex justify-center items-center">{$_(popupView.title)}</Dialog.Title>
 						<div class="flex justify-center items-center">
 							<button type="button" class="btn-icon hover:preset-tonal" onclick={()=>{openPopup=false}}>
-								<XIcon class="size-4"/>
+								<LbIcon name="x" height="16" width="16"/>
 							</button>
 						</div>
 					</header>
@@ -239,7 +239,9 @@
 						{#if popupView.button == "search"}
 							<button class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
 											onclick={doSearch}>
-								<span class="flex justify-center items-center truncate text-lg"><SearchIcon size={18} />&nbsp;{$_("Search")}</span>
+								<span class="flex justify-center items-center truncate text-lg">
+									<LbIcon name="search" height="18" width="18"/>&nbsp;{$_("Search")}
+								</span>
 							</button>
 						{/if}
 						{#if popupView.button == "ok"}

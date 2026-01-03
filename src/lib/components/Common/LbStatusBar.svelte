@@ -2,7 +2,6 @@
 	import { _ } from 'svelte-i18n';
   import { Progress } from '@skeletonlabs/skeleton-svelte';
 	import { appStore } from '$lib/stores/LbAppStore.svelte';
-	import { BellIcon } from '@lucide/svelte';
 
 	let { maxPower, currentPower, mode } = $props();
 

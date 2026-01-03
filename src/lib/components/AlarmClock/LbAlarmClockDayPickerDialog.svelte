@@ -3,7 +3,7 @@
 	import { _ } from 'svelte-i18n';
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 	import { tick } from 'svelte';
-	import { XIcon } from '@lucide/svelte';
+	import LbIcon from '$lib/components/Common/LbIcon.svelte';
 
 	let { entry, onValueChange, label } = $props();
 
@@ -72,7 +72,7 @@
 					</div>
 					<div class="flex justify-center items-center">
 						<button type="button" class="btn-icon hover:preset-tonal" onclick={close}>
-							<XIcon class="size-4"/>
+							<LbIcon name="x" height="16" width="16"/>
 						</button>
 					</div>
 				</header>

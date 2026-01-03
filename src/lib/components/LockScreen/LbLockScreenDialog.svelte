@@ -2,8 +2,7 @@
 	import { _ } from 'svelte-i18n';
 	import { appStore } from '$lib/stores/LbAppStore.svelte';
 	import { weatherStore } from '$lib/stores/LbWeatherStore.svelte';
-	import LbIcon from '$lib/components/Common/LbIconByName.svelte';
-	import { XIcon } from '@lucide/svelte';
+	import LbIcon from '$lib/components/Common/LbIcon.svelte';
 	import type { WeatherCurrentConditions } from '$lib/types/weather';
 	import { format } from 'date-fns';
 	import { utils } from '$lib/helpers/Utils';
@@ -31,12 +30,12 @@
 					<header class="flex justify-between items-center">
 						<Dialog.Title class="text-lg font-bold"></Dialog.Title>
 						<button type="button" class="btn-icon text-left hover:preset-tonal" onclick={() => appStore.resetLockScreenDialogTimeout()}>
-							<XIcon class="size-4"/>
+							<LbIcon name="x" height="16" width="16"/>
 						</button>
 					</header>
 					<Dialog.Description class="flex justify-center items-center h-screen">
 						<div class="flex flex-col">
-						{#if currentWeather && currentWeather.airTemperature}
+						{#if currentWeather && currentWeather.airTemperature != undefined}
 							<div class="flex justify-left items-center">
 								<LbIcon name={getCurrentIcon(currentWeather)} width="80" height="80"/>	
 								<span class="text-4xl truncate">{currentWeather.airTemperature}°</span>

@@ -35,13 +35,13 @@
 
 	let plusMinusButtons: SingleButtonView[] = $state([
 		{
-			iconName: 'MinusIcon',
+			iconName: 'minus',
 			type: 'button',
 			color: '',
 			click: (e: any) => {updatePosition(e, -1)}
 		},
 		{
-			iconName: 'PlusIcon',
+			iconName: 'plus',
 			type: 'button',
 			color: '',
 			click: (e: any) => {updatePosition(e, 1)}

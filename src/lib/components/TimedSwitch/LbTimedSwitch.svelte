@@ -70,7 +70,7 @@
 
 	let controlButtons: SingleButtonView[] = $state([
 		{
-			iconName: 'IconsFilled/timer-2.svg',
+			iconName: 'timer-2',
 			type: 'button',
 			iconColor: 'dark:text-surface-50 text-surface-950',
 			click: () => {

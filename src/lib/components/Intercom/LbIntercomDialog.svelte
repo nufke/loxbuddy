@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Dialog, Portal } from '@skeletonlabs/skeleton-svelte';
 	import { type ControlView, type SecuredDetails, type SecuredDetailsValue } from '$lib/types/models';
-	import { XIcon, VideoIcon, CameraIcon, HistoryIcon } from '@lucide/svelte';
+	import LbIcon from '$lib/components/Common/LbIcon.svelte';
 	import { _ } from 'svelte-i18n';
 	import LbInfo from '$lib/components/Common/LbInfo.svelte';
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
@@ -98,7 +98,7 @@
 							</div>
 							<div class="flex justify-center items-center">
 								<button type="button" class="btn-icon hover:preset-tonal" onclick={close}>
-									<XIcon class="size-4"/>
+									<LbIcon name="x" height="16" width="16"/>
 								</button>
 							</div>
 						</div>
@@ -140,17 +140,17 @@
 								<div class="grid h-full max-w-lg lg:max-w-xl grid-cols-3 mx-auto">
 										<button type="button" class="inline-flex flex-col items-center justify-center px-5
 													group {selectedTab==1 ? 'dark:text-primary-500 text-primary-700' : ''} " onclick={() => selectedTab=1}>
-											<VideoIcon/>
+											<LbIcon name="video"/>
 											<span class="mt-1 text-xs">{$_("Video")}</span>
 										</button>
 										<button type="button" class="inline-flex flex-col items-center justify-center px-5
 														group {selectedTab==2 ? 'dark:text-primary-500 text-primary-700' : ''} " onclick={() => selectedTab=2}>
-											<CameraIcon/>
+											<LbIcon name="camera"/>
 											<span class="mt-1 text-xs">{$_("Image")}</span>
 										</button>
 										<button type="button" class="inline-flex flex-col items-center justify-center px-5
 														group {selectedTab==3 ? 'dark:text-primary-500 text-primary-700' : ''} " onclick={() => selectedTab=3}>
-											<HistoryIcon/>
+											<LbIcon name="history"/>
 											<span class="mt-1 text-xs">{$_("History")}</span>
 										</button>
 								</div>
