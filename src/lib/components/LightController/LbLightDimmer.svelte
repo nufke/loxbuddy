@@ -74,7 +74,7 @@
 			<div class="flex">
 				<p class="text-lg">{controlView.textName}</p>
 				{#if controlOptions.action}
-					<p class="mt-1"><LbIcon name="chevron-right" height="30" width="30"/></p>
+					<p class="mt-1"><LbIcon name="chevron-right" height="20" width="20"/></p>
 				{/if}
 			</div>
 			<p class="text-md">{controlView.statusName}</p>

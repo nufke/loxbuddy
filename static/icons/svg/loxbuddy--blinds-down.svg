@@ -1,0 +1,34 @@
+<svg
+   height="24"
+   width="24"
+   viewBox="0 0 24 24"
+   xmlns="http://www.w3.org/2000/svg">
+  <path
+     fill="none"
+     stroke="currentColor"
+     d="M 6.3333331,5.3333334 H 17.666667"
+     stroke-width="1.5"
+     id="path2" />
+  <path
+     fill="none"
+     stroke="currentColor"
+     d="M 6.3333331,8.0000001 H 17.666667"
+     stroke-width="1.5"
+     id="path3" />
+  <path
+     id="path9"
+     fill="none"
+     stroke="currentColor"
+     stroke-linecap="round"
+     stroke-linejoin="round"
+     stroke-width="1.5"
+     d="m 19,2.6666668 c 0.36819,0 0.666667,0.2984768 0.666667,0.6666666 m 0,17.3333336 c 0,0.36819 -0.298477,0.666666 -0.666667,0.666666 m -14.0000002,0 c -0.3681898,0 -0.6666666,-0.298476 -0.6666666,-0.666666 m 0,-17.3333336 c 0,-0.3681898 0.2984768,-0.6666666 0.6666666,-0.6666666 M 4.3333331,3.3333334 V 20.666667 m 0.6666667,0.666666 H 19 m 0.666667,-0.666666 V 3.3333334 M 19,2.6666668 H 4.9999997" />
+  <path
+     id="path4-9"
+     fill="none"
+     stroke="currentColor"
+     stroke-linecap="round"
+     stroke-linejoin="round"
+     stroke-width="1.5"
+     d="M 9.9182161,15.732343 12,17.695167 m 0,-6.066914 v 6.066914 M 14.081784,15.732343 12,17.695167" />
+</svg>

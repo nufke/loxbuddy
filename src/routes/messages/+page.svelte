@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Tabs } from '@skeletonlabs/skeleton-svelte';
 	import { Dialog, Portal } from '@skeletonlabs/skeleton-svelte';
-	import type { SystemStatus, SystemStatusEntry, NotificationMessage } from '$lib/types/models';
+	import type { Room, SystemStatus, SystemStatusEntry, NotificationMessage } from '$lib/types/models';
 	import LbIcon from '$lib/components/Common/LbIcon.svelte';
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 	import { _ } from 'svelte-i18n';
@@ -35,7 +35,11 @@
 	}
 
 	function getRoomName(entry: SystemStatusEntry) {
-		return entry && entry.roomUuid && controlStore.rooms[entry.roomUuid] ? controlStore.rooms[entry.roomUuid].name : '';
+		let room: Room | undefined;
+		if (entry && entry.roomUuid) {
+			room = controlStore.rooms.get(entry.roomUuid);
+		}
+		return room ? room.name : '';
 	}
 
 	function showEntry(entry: SystemStatusEntry) {

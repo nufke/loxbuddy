@@ -124,8 +124,9 @@
 	function addEntry() {
 		if (entryIds.length > 15) return; // limit to 16 entries
 		let day = format(new Date(), 'eeee').toLowerCase();
-		let opModes = controlStore.structure.operatingModes;
-		let idx = Object.keys(opModes).find( (key) => opModes[key].toLowerCase() == day);
+		let opModes = controlStore.operatingModes;
+		let opModesKeys = Array.from(opModes.keys());
+		let idx = opModesKeys.find( (key) => opModes.get(key)?.toLowerCase() == day);
 		let entry: AlarmClockEntry = {
 			name: $_('Alarm clock'),
 			alarmTime: utils.hours2sec(format(new Date(), 'p')),

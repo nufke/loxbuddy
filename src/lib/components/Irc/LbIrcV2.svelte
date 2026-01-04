@@ -46,10 +46,11 @@
 	}
 
 	function getTextName() {
-		let findName = $_('IRoomControllerV2').split(',').includes(control.name);
-		return (findName && controlStore.rooms) ? controlStore.rooms[control.room].name : control.name;
+		const origNameFound = $_('IRoomControllerV2').includes(control.name);
+		const room = controlStore.rooms.get(control.room);
+		return (origNameFound && room) ? room.name : control.name;
 	}
-	
+
 	let dialog: DialogView = $state({
 		action: (state: boolean) => {dialog.state = state},
 		state: false

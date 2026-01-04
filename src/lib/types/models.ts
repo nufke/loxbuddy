@@ -1,4 +1,5 @@
 import { type Locale } from 'date-fns/locale';
+import { SvelteMap } from 'svelte/reactivity';
 
 export type MQTTStatus = {
 	enabled: boolean;
@@ -22,18 +23,18 @@ export type Structure = {
 	msInfo: MsInfo;
 	partnerInfo: PartnerInfo;
 	globalStates: GlobalStates;
-	operatingModes: OperatingModesMap;
-	rooms: RoomsMap;
-	cats: CategoriesMap;
-	modes: ModesMap;
-	controls: ControlsMap;
+	operatingModes: SvelteMap<string, string>;
+	rooms: SvelteMap<string, Room>;
+	cats: SvelteMap<string, Category>
+	modes: SvelteMap<string, Mode>
+	controls: SvelteMap<string, Control>
 	weatherServer: WeatherServer;
-	times: TimesMap;
-	caller: CallerMap;
-	mailer: MailerMap;
-	autopilot: AutopilotMap;
-	messageCenter: MessageCenterMap;
-	mediaServer: MediaServerMap;
+	times:  SvelteMap<string, Time>;
+	caller: SvelteMap<string, Caller>;
+	mailer: SvelteMap<string, Mailer>
+	autopilot: SvelteMap<string, Autopilot>;
+	messageCenter: SvelteMap<string, MessageCenter>;
+	mediaServer: SvelteMap<string, MediaServer>;
 	structureDate: string;
 }
 
@@ -45,50 +46,6 @@ export type PartnerInfo = {
 		eMailAddress: string;
 		website: string;
 	}
-}
-
-export type ControlsMap = {
-	[key: string]: Control;
-}
-
-export type CategoriesMap = {
-	[key: string]: Category;
-}
-
-export type OperatingModesMap = {
-	[key: string]: string;
-}
-
-export type RoomsMap = {
-	[key: string]: Room;
-}
-
-export type ModesMap = {
-	[key: string]: Mode;
-}
-
-export type TimesMap = {
-	[key: string]: Time;
-}
-
-export type CallerMap = {
-	[key: string]: Caller;
-}
-
-export type MailerMap = {
-	[key: string]: Mailer;
-}
-
-export type AutopilotMap = {
-	[key: string]: Autopilot;
-}
-
-export type MessageCenterMap = {
-	[key: string]: MessageCenter;
-}
-
-export type MediaServerMap = {
-	[key: string]: MediaServer;
 }
 
 export type GlobalStates = {
@@ -204,11 +161,11 @@ export const INITIAL_STRUCTURE: Structure = {
 			website: '',
 		}
 	},
-	operatingModes: {},
-	rooms: {},
-	cats: {},
-	modes: {},
-	controls: {},
+	operatingModes: new SvelteMap(),
+	rooms: new SvelteMap(),
+	cats: new SvelteMap(),
+	modes: new SvelteMap(),
+	controls: new SvelteMap(),
 	weatherServer: {
 		states: {
 			actual: '',
@@ -224,12 +181,12 @@ export const INITIAL_STRUCTURE: Structure = {
 		weatherTypeTexts: {},
 		weatherFieldTypes: {}
 	},
-	times: {},
-	caller: {},
-	mailer: {},
-	autopilot: {},
-	messageCenter: {},
-	mediaServer: {},
+	times: new SvelteMap(),
+	caller: new SvelteMap(),
+	mailer: new SvelteMap(),
+	autopilot: new SvelteMap(),
+	messageCenter: new SvelteMap(),
+	mediaServer: new SvelteMap(),
 	structureDate: ''
 }
 

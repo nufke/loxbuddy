@@ -126,7 +126,7 @@ or submit a [pull request](https://github.com/nufke/loxbuddy/pulls).
 | Battery status update        | Not started              |
 | Connection status            | Available                |
 | Dark / Light themes          | Available                |
-| Demo mode                    | Available                | 
+| Demo /test mode              | Available                | 
 | Internationalization         | Available (NL, DE, US)   |
 | Kiosk / room mode (tablet)   | Not started              |
 | LoxBerry plugins             | Not started              |
@@ -143,7 +143,7 @@ or submit a [pull request](https://github.com/nufke/loxbuddy/pulls).
 | Statusbar (time, temp, etc.) | Available                |
 | System messages              | Available                |
 | User calendar                | Not started              |
-| User-defined icons           | Under development        |
+| User-defined icons           | Available                |
 | Voice control                | Not started              |
 | Weather forecast             | Available (Weather4Lox)  |
 | WebSocket comm to Miniserver | Available                |

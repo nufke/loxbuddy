@@ -149,7 +149,8 @@
 	}
 
 	// connect to MQTT server
-	//mqttClient.connect(env.MQTT_HOSTNAME, env.MQTT_PORT, env.MQTT_USERNAME, env.MQTT_PASSWORD, env.MQTT_TOPIC);
+	// TODO add configuration
+	mqttClient.connect(env.MQTT_HOSTNAME, env.MQTT_PORT, env.MQTT_USERNAME, env.MQTT_PASSWORD, env.MQTT_TOPIC);
 
 	Logger(logLevel, true);
 	enableDragDropTouch(document, document, options);

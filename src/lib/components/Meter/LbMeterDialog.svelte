@@ -61,12 +61,12 @@
 									{/if}
 									{#if controlView.control.details.type == 'storage'}
 									<div class="relative flex items-center justify-center dark:fill-surface-950 fill-surface-50">
-										<LbIcon class="absolute dark:text-surface-50 text-surface-950" name={controlView.iconName} width="36" height="36"/>
-										<svg height="74" width="74" viewBox='0 0 74 74'>
+										<svg xmlns="http://www.w3.org/2000/svg" height="74" width="74" viewBox="0 0 74 74">
 											<circle class="dark:stroke-tertiary-500 stroke-tertiary-700" r="36" cx="37" cy="37" stroke-width="2" />
 											<circle class="dark:stroke-primary-500 stroke-primary-700" r="36" cx="37" cy="37" transform="rotate({-90+(soc/100)},37,37)"
 														stroke-dasharray="calc({2*3.1415*36*soc/100}) calc({2*3.1415*36*(100-soc)/100})" stroke-width="2" fill="none"/>
 										</svg>
+										<LbIcon class="dark:text-surface-50 text-surface-950 -ml-[55px]" name={controlView.iconName} width="36" height="36"/>
 									</div>
 									{/if}
 									<div class="relative w-full mt-2 flex flex-col justify-center items-center">

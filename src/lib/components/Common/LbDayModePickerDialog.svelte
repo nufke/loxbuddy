@@ -14,11 +14,12 @@
 
 	function reorderEntries(modes: any, hideEntries: boolean = true) {
 		let items: any[] = [];
-		let opModes = controlStore.structure.operatingModes;
-		Object.keys(opModes).forEach( key => { 
+		let opModes = controlStore.operatingModes;
+		let opModesKeys = Array.from(opModes.keys());
+		opModesKeys.forEach( key => { 
 			items.push({
 				mode: key,
-				name: opModes[key],
+				name: opModes.get(key),
 				show: modes[key] ? true : !hideEntries
 			});
 		});

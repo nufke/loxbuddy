@@ -65,7 +65,7 @@ export class Demo {
 
 		// Meter (battery)
 		setInterval(() => {
-			controlStore.setState('__uuid_controls_battery_states_storage', soc[j]);
+			controlStore.setState('__uuid__controls_battery_states_storage', soc[j]);
 			if (j==5) { j = 0; } else { j++; }
 		}, 1000);
 
@@ -92,7 +92,7 @@ export class Demo {
 	control(uuid: string, msg: string) {
 		console.info('[DEMO] Control:', uuid, msg);
 		let parentControl;
-		let control: Control = controlStore.controls[uuid];
+		let control: Control | undefined = controlStore.controls.get(uuid);
 		if (!control) { // if no control found, check if the uuid is a subcontrol
 			parentControl = controlStore.controlList.find( control => control.subControls && control.subControls[uuid])
 			if (parentControl) {
@@ -600,7 +600,7 @@ export class Demo {
 
 	setDayTimerModes(control: Control, modeList: string[]) {
 		const modeListId = control.states.modeList;
-		const opModes = controlStore.structure.operatingModes;
+		const opModes = controlStore.operatingModes;
 		const list = modeList.map( i => Number(i));
 		const modes = list.filter((item, index) => list.indexOf(item) === index).sort();
 		let modeListStr = "";
@@ -609,7 +609,7 @@ export class Demo {
 			if (i>0) {
 				modeListStr += ',';
 			}
-			modeListStr += String(i) + ':mode=' + String(mode) + ';name=\\\"' + opModes[String(mode)] + '\\\"';
+			modeListStr += String(i) + ':mode=' + String(mode) + ';name=\\\"' + opModes.get(String(mode)) + '\\\"';
 			i++;
 		});
 		controlStore.setState(modeListId, modeListStr);

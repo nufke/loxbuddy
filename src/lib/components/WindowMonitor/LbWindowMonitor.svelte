@@ -1,6 +1,6 @@
 <script lang="ts">
 	import LbControl from '$lib/components/Common/LbControl.svelte';
-	import type { Control, ControlOptions, ControlView, DialogView, WindowListItem, MoodList } from '$lib/types/models';
+	import type { Control, ControlOptions, ControlView, DialogView, WindowListItem, MoodList, Room } from '$lib/types/models';
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import { appStore } from '$lib/stores/LbAppStore.svelte';
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
@@ -87,11 +87,11 @@
 	}
 
 	function getRoomName(i: number) {
-		if (windowList[i] && windowList[i].room && controlStore.rooms[windowList[i].room]) {
-			return controlStore.rooms[windowList[i].room].name;
-		} else {
-			return '';
-		} 
+		let room: Room | undefined;
+		if (windowList[i] && windowList[i].room) {
+			room = controlStore.rooms.get(windowList[i].room);
+		}
+		return room ? room.name : '';
 	}
 
 	function getStatus() {

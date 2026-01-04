@@ -94,12 +94,16 @@
 		dialog: dialog
 	});
 
-	function getControlName(control: Control) {
-		return $_('LightControllerV2').split(',').includes(control.name) ? controlStore.rooms[control.room].name : control.name;
+		function getControlName(control: Control) {
+		const origNameFound = $_('LightControllerV2').includes(control.name);
+		const room = controlStore.rooms.get(control.room);
+		return (origNameFound && room) ? room.name : control.name;
 	}
 
 	function getRoomName(control: Control) {
-		return $_('LightControllerV2').split(',').includes(control.name) ? '' : controlStore.rooms[control.room].name;
+		const origNameFound = $_('LightControllerV2').includes(control.name);
+		const room = controlStore.rooms.get(control.room);
+		return (origNameFound || !room) ? '' : room.name;
 	}
 
 	function getStatusName(control: Control) {

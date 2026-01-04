@@ -15,7 +15,7 @@
 	{:else if icon.includes(':')}
 		<Icon {icon} {...others} />
 	{:else}
-		<Icon icon="lb_hugeicons:border-none-02" {...others} />
+		<Icon icon="light_hugeicons:border-none-02" {...others} />
 	{/if}
 </span>
 

@@ -8,7 +8,7 @@
 	let textarea: any;
 	let text = $derived('');
 	
-	let control: Control = controlStore.controls[data.uuid];
+	let control: Control | undefined = controlStore.controls.get(data.uuid);
 	let states: [string,string][] = control && control.states ? Object.entries(control.states) : [];
 	let subControls = control && control.subControls ? Object.values(control.subControls) : [];
 
@@ -37,7 +37,7 @@
 
 	function doCopy() {
 		textarea.select();
-		document.execCommand('copy');
+		document.execCommand('copy'); // TODO deprecated
 	}
 </script>
 

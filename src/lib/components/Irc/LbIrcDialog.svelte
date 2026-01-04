@@ -36,7 +36,7 @@
 	let isV1 = controlView.control.type !== 'IRoomControllerV2'; 
 
 	let dayOfTheWeek = $derived(format(appStore.date, 'eeee'));
-	let opModes = $derived(controlStore.structure.operatingModes);
+	let opModes = $derived(controlStore.operatingModes);
 	let temperatureList = $derived(controlView.list ? controlView.list.filter( item => item.visible == true) : []); // hide items not marked as visible 
 	let selectedItem = $derived(temperatureList.find( (item: ListItem) => $_(item.name) === controlView.statusName ));
 	let selectedTab = $state(1);
@@ -130,7 +130,8 @@
 	});
 
 	function getOperatingMode(s: string) {
-		let obj = Object.entries(opModes).find ( e => e[1] == s );
+		const entries = Array.from(opModes.entries());
+		let obj = entries.find ( e => e[1] == s );
 		return obj ? obj[0] : '';
 	}
 
@@ -266,10 +267,11 @@
 				entry.needActivate == item.needActivate &&
 				entry.value == item.value);
 			if (itemFound) { // entry exists, only add dayMode
-				itemFound.name.push(', '+ opModes[entry.mode]);
+				itemFound.name.push(', '+ opModes.get(entry.mode));
 			} else { // new entry
+				const name = opModes.get(entry.mode);
 				list.push({ 
-					name: [opModes[entry.mode]],
+					name: name ? [name] : [],
 					to: entry.to,
 					from: entry.from,
 					needActivate: entry.needActivate,

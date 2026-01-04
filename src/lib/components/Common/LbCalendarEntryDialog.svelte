@@ -14,7 +14,7 @@
 	let { view = $bindable(), entries, selectedEntry, dayModes, temperatureList = [] } = $props();
 
 	let isAnalog = Boolean(view.control.details.analog);
-	let opModes = $derived(controlStore.structure.operatingModes);
+	let opModes = $derived(controlStore.operatingModes);
 	let isStartTime = $state(false);
 	let dateTime = $state();
 	let updatedEntries = $derived(entries.entry) as Entry[];
@@ -33,7 +33,7 @@
 	let timeValid = $derived(utils.hours2min(startTime) < utils.hours2min(endTime));
 
 	function getDayModes() {
-		return Array.from(modes, (x) => opModes[x]).join(', ');
+		return Array.from(modes, (x) => opModes.get(x)).join(', ');
 	}
 
 	function getTemperature() {

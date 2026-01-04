@@ -97,7 +97,7 @@ export class MqttClient {
 			if (error) {
 				console.error('[MqttClient] subscribe error', error);
 			} else {
-				console.info(`[MqttClient]  Client subscribed to topics '${registerTopics}'`);
+				console.info(`[MqttClient] Client subscribed to topics '${registerTopics}'`);
 			}
 		});
 	}
@@ -125,7 +125,7 @@ export class MqttClient {
 	 */
 	publishTopic(uuid: string, msg: string, retain: boolean = false) {
 		const qos = 1; // TODO add to configuration?
-		const serialNr = controlStore.structure.msInfo.serialNr;
+		const serialNr = controlStore.msInfo.serialNr;
 		const topic = this.topicPrefix + '/' + serialNr + '/' + uuid + '/cmd';
 		if (this.isConnected && serialNr) {
 			console.info('[MqttClient] published:', topic, msg);
@@ -142,10 +142,10 @@ export class MqttClient {
 		const regex = new RegExp(this.topicPrefix + '/(.*)/structure');
 		const found = topic.match(regex);
 		if (found && found[1]) {
-			controlStore.initStructure(JSON.parse(msg), this);
-			const serialNr = controlStore.structure.msInfo.serialNr;
+			const serialNr = controlStore.msInfo.serialNr;
 			if (serialNr == found[1]) {
-				console.info('[MqttClient] Miniserver registered: ', serialNr);
+				console.info('[MqttClient] Miniserver structure received for serialNr: ', serialNr);
+				controlStore.initStructure(JSON.parse(msg), this);
 			} else {
 				console.error('[MqttClient] Miniserver serialNr mismatch between topic and structure: ', serialNr, found[1]);
 			}
@@ -194,6 +194,40 @@ export class MqttClient {
 			weatherStore.setObservation(found[1], msg);
 		}
 	}
+
+	/**
+	 * Send control state over MQTT
+	 * @param uuid universally unique ID of the control
+	 * @param value value of the control
+	 */
+	async control(uuid: string, value: string) {
+		console.info('[MqttClient] Send / publish control:', uuid, value);
+		this.client.publish(uuid, value);
+	}
+
+	/**
+	 * Disconnect MQTT client
+	 */
+	async disconnect() {
+		// TODO
+	}
+
+	/**
+	 * Dummy placeholder 
+	 * @param filename filename
+	 */
+	async getFile(filename: string) {
+		// TODO
+	}
+
+	/**
+	 * Dummy placeholder to fetch information
+	 * @param url endpoint?
+	*/
+	async fetch(url: string) {
+		// TODO
+	}
+
 }
 
 export const mqttClient = new MqttClient();

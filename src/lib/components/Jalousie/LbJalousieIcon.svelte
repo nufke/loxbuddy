@@ -12,9 +12,9 @@
 </script>
 
 <div class="flex justify-center items-center">
-	<svg height="32" width="32" viewBox="0 0 32 32" transform="scale({height/32},{width/32}) translate({Math.abs(32-width)} 0)">
+	<svg xmlns="http://www.w3.org/2000/svg" height="32" width="32" viewBox="0 0 32 32" transform="scale({height/32},{width/32}) translate({Math.abs(32-width)} 0)">
 		<path class={(screenPosition*100 > 1) ? 'dark:stroke-primary-500 stroke-primary-700' : 'dark:stroke-surface-50 stroke-surface-950'} 
-			d="M 1 1 L 1 29 L 24 29 L 24 1 L 0 1 " fill="none" stroke-width="2"/>
+			d="M 1 1 L 1 29 L 24 29 L 24 1 L 1 1 " fill="none" stroke-width="2"/>
 		{#each level as i}
 		<path class={(screenPosition*100 > 1) ? 'dark:stroke-primary-500 stroke-primary-700' : 'dark:stroke-surface-50 stroke-surface-950'}
 			d="M 4 {5+i*4} L 21 {5+i*4}" fill="none" stroke-width={strokeWidth}/>

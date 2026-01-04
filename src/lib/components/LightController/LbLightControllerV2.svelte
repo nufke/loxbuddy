@@ -26,8 +26,9 @@
 	}
 
 	function getTextName() {
-		let findName = $_('LightControllerV2').split(',').includes(control.name);
-		return (findName && controlStore.rooms) ? controlStore.rooms[control.room].name : control.name;
+		const origNameFound = $_('LightControllerV2').includes(control.name);
+		const room = controlStore.rooms.get(control.room);
+		return (origNameFound && room) ? room.name : control.name;
 	}
 
 	function getStatus() {

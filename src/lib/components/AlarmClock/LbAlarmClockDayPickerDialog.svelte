@@ -14,11 +14,17 @@
 		nightLight: entry.nightLight
 	});
 
-	let opModes = $derived(controlStore.structure.operatingModes);
+	let opModes = $derived(controlStore.operatingModes);
+	let opModesKeys = $derived(Array.from(opModes.keys()));
 	let openDialog = $state(false);
 	let daysFull = $_('DaysFull').toLowerCase().split('|');
-	let weekDayNrs = $derived(Object.keys(opModes).filter( (key) => daysFull.includes(opModes[key].toLowerCase())));
+	let weekDayNrs = $derived(opModesKeys.filter( (key) => daysFull.includes(getMode(key))));
 	let filteredWeekDayNrs = $derived(weekDayNrs.filter( (key) => entry.modes.includes(Number(key))));
+
+	function getMode(mode: string) {
+		const name = opModes.get(mode);
+		return name ? name.toLowerCase() : '';
+	}
 
 	function setValue(i: number) {
 		if (setEntry.modes.includes(i)) {
@@ -46,7 +52,7 @@
 			{#if filteredWeekDayNrs.length} 
 				{#each filteredWeekDayNrs as i}
 					<div class="text-sm {entry.isActive ? 'dark:text-surface-50 text-surface-950' : 'dark:text-surface-700 text-surface-300'}">
-						{opModes[i].slice(0,2).toLowerCase()}
+						{opModes.get(i)?.slice(0,2).toLowerCase()}
 					</div>
 				{/each}
 			{:else}
@@ -94,7 +100,7 @@
 								{#each weekDayNrs as i}
 								<label class="flex items-center space-x-2">
 									<input class="checkbox" type="checkbox" checked={setEntry.modes.includes(Number(i))} onclick={() => {setValue(Number(i))}}/>
-									<p>{opModes[i]}</p>
+									<p>{opModes.get(i)}</p>
 								</label>
 								{/each}
 							</form>
