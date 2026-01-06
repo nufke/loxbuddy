@@ -1,0 +1,30 @@
+<svg
+   width="24"
+   height="24"
+   viewBox="0 0 24 24"
+   xmlns="http://www.w3.org/2000/svg">
+  <path
+     id="path1"
+     fill="none"
+     stroke="currentColor"
+     stroke-width="1.5"
+     stroke-linecap="round"
+     stroke-linejoin="round"
+     d="M 21.56019,13.930007 12,6.8287854 M 2.4398102,13.930007 12,6.8287854"/>
+  <path
+     id="rect4"
+     fill="none"
+     stroke="currentColor"
+     stroke-width="1.5"
+     d="m 17.490799,8.8790215 h 0.251766 v 0.746703 l -0.251766,-0.188361 z"
+/>
+  <rect
+     fill="none"
+     stroke="currentColor"
+     stroke-width="1.5"
+     id="rect1"
+     width="11.985129"
+     height="5.2012458"
+     x="6.0074353"
+     y="11.969969" />
+</svg>
