@@ -1,0 +1,26 @@
+<svg
+   height="24"
+   viewBox="0 0 24 24"
+   width="24"
+   xmlns="http://www.w3.org/2000/svg">
+  <circle
+     fill="none"
+     stroke="currentColor"
+     stroke-linecap="round"
+     stroke-linejoin="round"
+     stroke-width="1.5"
+     id="path2"
+     cx="12"
+     cy="12"
+     r="9.2307682" />
+  <text
+     xml:space="preserve"
+     x="6.844534"
+     y="15.214636"
+     id="text3"><tspan
+       id="tspan3"
+	   fill="currentColor"
+       style="font-style:normal;font-weight:bold;font-size:9.4px;font-family:Arial;stroke-width:0"
+       x="6.844534"
+       y="15.214636">20</tspan></text>
+</svg>

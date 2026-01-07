@@ -4,6 +4,7 @@
 	import LbIcon from '$lib/components/Common/LbIcon.svelte';
 	import LbJalousieIcon from '$lib/components/Jalousie/LbJalousieIcon.svelte';
 	import { _ } from 'svelte-i18n';
+	import { fadeInOut } from '$lib/helpers/styles';
 	import LbInfo from '$lib/components/Common/LbInfo.svelte';
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 
@@ -21,10 +22,10 @@
 		open={controlView.dialog.state}
 		onInteractOutside={close}>
 		<Portal>
-			<Dialog.Backdrop class="fixed inset-0 z-10 bg-surface-50-950/75 backdrop-blur-sm"/>
+			<Dialog.Backdrop class="fixed inset-0 z-10 bg-surface-50-950/75 backdrop-blur-sm {fadeInOut}"/>
 			<Dialog.Positioner class="fixed inset-0 z-10 flex justify-center items-center p-4">
 				<Dialog.Content class="card bg-surface-100-900 p-4 pt-3 space-y-4 shadow-sm rounded-lg border border-white/5 hover:border-white/10
-								md:max-w-9/10 md:max-h-9/10 overflow-auto w-[450px]">
+								md:max-w-9/10 md:max-h-9/10 overflow-auto w-[450px] {fadeInOut}">
 					<Dialog.Description>
 						<LbInfo control={controlView.control}/>
 						<header class="grid grid-cols-[5%_90%_5%]">

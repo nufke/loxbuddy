@@ -4,6 +4,7 @@
 	import { Dialog, Portal } from '@skeletonlabs/skeleton-svelte';
 	import type { Room, Category, GeneralView } from '$lib/types/models';
 	import { _ } from 'svelte-i18n';
+	import { fadeInOut } from '$lib/helpers/styles';
 	import { appStore } from '$lib/stores/LbAppStore.svelte';
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 	import LbIcon from '$lib/components/Common/LbIcon.svelte';
@@ -197,10 +198,10 @@
 	open={openThemeDialog}
 	onInteractOutside={() => openThemeDialog=false}>
 	<Portal>
-		<Dialog.Backdrop class="fixed inset-0 z-10 bg-surface-50-950/75 backdrop-blur-sm"/>
+		<Dialog.Backdrop class="fixed inset-0 z-10 bg-surface-50-950/75 backdrop-blur-sm {fadeInOut}"/>
 		<Dialog.Positioner class="fixed inset-0 z-10 flex justify-center items-center p-4">
 			<Dialog.Content class="card bg-surface-100-900 p-4 pt-3 shadow-sm rounded-lg border border-white/5 hover:border-white/10
-								md:max-w-9/10 md:max-h-9/10 w-full max-w-[450px]">
+								md:max-w-9/10 md:max-h-9/10 w-full max-w-[450px] {fadeInOut}">
 				<header class="grid grid-cols-[5%_90%_5%]">
 					<div></div>
 					<div>
@@ -481,10 +482,10 @@
 	open={openStartpageDialog}
 	onInteractOutside={() => openStartpageDialog=false}>
 	<Portal>
-		<Dialog.Backdrop class="fixed inset-0 z-10 bg-surface-50-950/75 backdrop-blur-sm"/>
+		<Dialog.Backdrop class="fixed inset-0 z-10 bg-surface-50-950/75 backdrop-blur-sm {fadeInOut}"/>
 		<Dialog.Positioner class="fixed inset-0 z-10 flex justify-center items-center p-4">
 			<Dialog.Content class="card bg-surface-100-900 p-4 pt-3 shadow-sm rounded-lg border border-white/5 hover:border-white/10
-								md:max-w-9/10 md:max-h-9/1 w-full w-[450px]">
+								md:max-w-9/10 md:max-h-9/1 w-full w-[450px] {fadeInOut}">
 				<header class="grid grid-cols-[5%_90%_5%]">
 					<div></div>
 					<div>

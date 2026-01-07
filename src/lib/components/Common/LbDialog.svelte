@@ -3,6 +3,7 @@
 	import LbIcon from '$lib/components/Common/LbIcon.svelte';
 	import LbSimpleSlider from '$lib/components/Common/LbSimpleSlider.svelte';
 	import LbStatusBar from '$lib/components/Common/LbStatusBar.svelte';
+	import { fadeInOut } from '$lib/helpers/styles';
 	import { appStore } from '$lib/stores/LbAppStore.svelte';
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 	import { lbControl } from '$lib/helpers/LbControl';
@@ -102,10 +103,10 @@
 		open={controlView.dialog.state}
 		onInteractOutside={close}>
 		<Portal>
-			<Dialog.Backdrop class="fixed inset-0 z-10 bg-surface-50-950/75 backdrop-blur-sm"/>
+			<Dialog.Backdrop class="fixed inset-0 z-10 bg-surface-50-950/75 backdrop-blur-sm {fadeInOut}"/>
 			<Dialog.Positioner class="fixed inset-0 z-10 flex justify-center items-center p-4">
 				<Dialog.Content class="card bg-surface-100-900 p-4 pt-3 shadow-sm rounded-lg border border-white/5 hover:border-white/10
-									md:max-w-9/10 md:max-h-9/10 w-[450px]">
+									md:max-w-9/10 md:max-h-9/10 w-[450px] {fadeInOut}">
 					<header class="grid grid-cols-[5%_90%_5%]">
 						<div class="flex justify-center items-center"></div><!-- placeholder for menu -->
 						<div>

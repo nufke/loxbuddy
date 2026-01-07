@@ -6,6 +6,7 @@
 	import { LoxWsClient, startLoxWsClient, checkCredentials} from '$lib/communication/LoxWsClient';
 	import type { DeviceInfoMap, DeviceInfo } from '$lib/types/models';
 	import { goto } from "$app/navigation";
+	import { fadeInOut } from '$lib/helpers/styles';
 
 	let openPopup = $state(false);
 	let hostname = $state('');
@@ -126,10 +127,10 @@
 <Dialog
 	open={appStore.loginDialog.state}>
 	<Portal>
-		<Dialog.Backdrop class="fixed top-0 left-0 right-0 bottom-0 z-100 dark:bg-surface-950 bg-surface-50" />
+		<Dialog.Backdrop class="fixed top-0 left-0 right-0 bottom-0 z-100 dark:bg-surface-950 bg-surface-50 {fadeInOut}"/>
 		<Dialog.Positioner class="fixed top-0 left-0 w-full h-full z-100">
 			<Dialog.Content class="card p-2 space-y-4 shadow-xl h-full">
-				<Dialog.Description class="flex justify-center items-center h-screen p-3">
+				<Dialog.Description class="flex justify-center items-center h-screen p-3 {fadeInOut}">
 					<div class="flex justify-center items-center flex-col gap-3 w-full">
 						<div class="pt-3 flex justify-center items-center flex-col gap-3">
 							<div onclick={reconnect}>
@@ -189,10 +190,10 @@
 	open={openPopup}
 	onInteractOutside={()=>{openPopup=false}}>
 	<Portal>
-		<Dialog.Backdrop class="fixed inset-0 z-150 bg-surface-50-950/75 backdrop-blur-sm"/>
+		<Dialog.Backdrop class="fixed inset-0 z-150 bg-surface-50-950/75 backdrop-blur-sm {fadeInOut}"/>
 		<Dialog.Positioner class="fixed inset-0 z-150 flex justify-center items-center p-4">
 			<Dialog.Content class="card bg-surface-100-900 p-4 pt-3 shadow-sm rounded-lg border border-white/5 hover:border-white/10
-								md:max-w-9/10 md:max-h-9/10 w-[350px]">
+								md:max-w-9/10 md:max-h-9/10 w-[350px] {fadeInOut}">
 				{#if popupView.title.length}
 					<header class="grid grid-cols-[5%_90%_5%]">
 						<div class="flex justify-center items-center"></div><!-- placeholder for menu -->

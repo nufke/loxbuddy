@@ -5,6 +5,7 @@
 	import LbIcon from '$lib/components/Common/LbIcon.svelte';
 	import type { WeatherCurrentConditions } from '$lib/types/weather';
 	import { format } from 'date-fns';
+	import { fadeInOut } from '$lib/helpers/styles';
 	import { utils } from '$lib/helpers/Utils';
 	import { Dialog, Portal } from '@skeletonlabs/skeleton-svelte';
 
@@ -24,9 +25,9 @@
 		open={appStore.lockScreenDialog.state}
 		onInteractOutside={() => {appStore.resetLockScreenDialogTimeout()}}>
 		<Portal>
-			<Dialog.Backdrop class="fixed top-0 left-0 right-0 bottom-0 z-2000 dark:bg-surface-950 bg-surface-50" />
+			<Dialog.Backdrop class="fixed top-0 left-0 right-0 bottom-0 z-2000 dark:bg-surface-950 bg-surface-50 {fadeInOut}"/>
 			<Dialog.Positioner class="fixed top-0 left-0 w-full h-full z-2001">
-				<Dialog.Content class="card p-4 space-y-4 shadow-xl">
+				<Dialog.Content class="card p-4 space-y-4 shadow-xl {fadeInOut}">
 					<header class="flex justify-between items-center">
 						<Dialog.Title class="text-lg font-bold"></Dialog.Title>
 						<button type="button" class="btn-icon text-left hover:preset-tonal" onclick={() => appStore.resetLockScreenDialogTimeout()}>

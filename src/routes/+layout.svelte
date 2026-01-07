@@ -18,6 +18,7 @@
 	import LbLockScreenDialog from '$lib/components/LockScreen/LbLockScreenDialog.svelte';
 	import { startLoxWsClient} from '$lib/communication/LoxWsClient';
 	import { format } from 'date-fns';
+	import { fade } from 'svelte/transition';
 	import { goto } from '$app/navigation';
 	import { Logger } from '$lib/helpers/Logger';
 	import { enableDragDropTouch } from '$lib/helpers/drag-drop-touch';
@@ -274,6 +275,7 @@
 		{@render children()}
 	</div>
 	{#if navigation.find ( item => item.href == path )}
+	<div transition:fade={{ duration: 100 }}>
 		<Navigation layout="bar" class="fixed bottom-0 h-[68px] shadow-inner">
 			<Navigation.Menu class="grid grid-cols-4 gap-2">
 				{#each navigation as link (link)}
@@ -289,6 +291,7 @@
 				{/each}
 			</Navigation.Menu>
 		</Navigation>
+		</div>
 	{/if}
 </div>
 {/if}

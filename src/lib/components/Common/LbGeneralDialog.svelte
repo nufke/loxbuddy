@@ -2,6 +2,7 @@
 	import { Dialog, Portal } from '@skeletonlabs/skeleton-svelte';
 	import { _ } from 'svelte-i18n';
 	import type { Button } from '$lib/types/models';
+	import { fadeInOut } from '$lib/helpers/styles';
 
 	let { view = $bindable() } = $props();
 
@@ -20,10 +21,10 @@
 		open={view.openDialog}
 		onInteractOutside={close}>
 		<Portal>
-			<Dialog.Backdrop class="fixed inset-0 z-40 bg-surface-50-950/75 backdrop-blur-sm"/>
+			<Dialog.Backdrop class="fixed inset-0 z-40 bg-surface-50-950/75 backdrop-blur-sm {fadeInOut}"/>
 			<Dialog.Positioner class="fixed inset-0 z-40 flex justify-center items-center p-4">
 				<Dialog.Content class="card bg-surface-100-900 p-4 pt-3 shadow-sm rounded-lg border border-white/5 hover:border-white/10
-									md:max-w-9/10 md:max-h-9/10 w-[450px]">
+									md:max-w-9/10 md:max-h-9/10 w-[450px] {fadeInOut}">
 					{#if view.label}
 						<header>
 							<Dialog.Title class="h5 flex justify-center items-center">{view.label}</Dialog.Title>

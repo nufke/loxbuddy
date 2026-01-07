@@ -5,6 +5,7 @@
 	import LbIcon from '$lib/components/Common/LbIcon.svelte';
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 	import { _ } from 'svelte-i18n';
+	import { fadeInOut } from '$lib/helpers/styles';
 	import { format } from 'date-fns';
 	import { innerWidth } from 'svelte/reactivity/window';
 
@@ -119,10 +120,10 @@
 	open={openDialog}
 	onInteractOutside={() => openDialog=false}>
 	<Portal>
-		<Dialog.Backdrop class="fixed inset-0 z-10 bg-surface-50-950/75 backdrop-blur-sm"/>
+		<Dialog.Backdrop class="fixed inset-0 z-10 bg-surface-50-950/75 backdrop-blur-sm {fadeInOut}"/>
 		<Dialog.Positioner class="fixed inset-0 z-10 flex justify-center items-center p-4">
 			<Dialog.Content class="card bg-surface-100-900 p-4 pt-3 shadow-sm rounded-lg border border-white/5 hover:border-white/10
-								md:max-w-9/10 md:max-h-9/10 w-[450px]">
+								md:max-w-9/10 md:max-h-9/10 w-[450px] {fadeInOut}">
 				<header class="relative">
 					<div class="flex justify-center">
 						<div class="relative inline-flex h-18 w-18 items-center justify-center overflow-hidden rounded-full border border-white/5 dark:bg-surface-950">

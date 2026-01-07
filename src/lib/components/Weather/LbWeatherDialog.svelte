@@ -6,6 +6,7 @@
 	import LbIcon from '$lib/components/Common/LbIcon.svelte';
 	import type { WeatherCurrentConditions, WeatherDailyForecast, WeatherHourlyForecast } from '$lib/types/weather';
 	import { format } from 'date-fns';
+	import { fadeInOut } from '$lib/helpers/styles';
 	import { utils } from '$lib/helpers/Utils';
 	import { Dialog, Portal } from '@skeletonlabs/skeleton-svelte';
 	import LbMoon from '$lib/components/Weather/LbMoon.svelte';
@@ -62,9 +63,9 @@
 <Dialog
 	open={appStore.weatherDialog.state}>
 	<Portal>
-		<Dialog.Backdrop class="fixed top-0 left-0 right-0 bottom-0 z-100 dark:bg-surface-950 bg-surface-50" />
+		<Dialog.Backdrop class="fixed top-0 left-0 right-0 bottom-0 z-100 dark:bg-surface-950 bg-surface-50 {fadeInOut}"/>
 		<Dialog.Positioner class="fixed top-0 left-0 w-full h-full z-100">
-			<Dialog.Content class="card p-2 space-y-4 shadow-xl h-full overflow-y-auto">
+			<Dialog.Content class="card p-2 space-y-4 shadow-xl h-full overflow-y-auto {fadeInOut}">
 				<header class="sticky top-0 h-[40px] dark:bg-surface-950/50 bg-surface-50/50 z-1">
 					<div>
 						<Dialog.Title class="h5 flex justify-center items-center">{current.location}</Dialog.Title>
@@ -94,7 +95,7 @@
 							</div>
 							<div class="flex flex-col gap-4 mt-8 m-auto">
 								<div class="flex gap-2">
-									<LbIcon name={"humidity.svg"} width="32" height="32"/>
+									<LbIcon name="humidity" width="32" height="32"/>
 									<p class="text-lg"><span class="font-medium">{current.relativeHumidity}%</span> {$_('Humidity')}</p>
 								</div>
 								<div class="flex gap-2">
@@ -116,7 +117,7 @@
 									<p class="text-lg"><span class="font-medium">{current.solarRadiation}</span></p>
 								</div>
 								<div class="flex gap-2">
-									<LbIcon name={"rain-meter.svg"} fill="white" width="32" height="25"/>
+									<LbIcon name="rain-meter" width="32" height="25"/>
 									<p class="text-lg"><span class="font-medium">{current.precipitationToday}</span> mm</p>
 								</div>
 							</div>
@@ -132,7 +133,7 @@
 									<LbIcon name={getDayIcon(day)} width="70"/>
 								</div>
 								<div class="flex flex-row m-auto justify-center align-center">
-									<span class="align-middle m-auto"><LbIcon name={"raindrop.svg"} width="16" height="16"/></span>
+									<span class="align-middle m-auto"><LbIcon name="raindrop" width="16" height="16"/></span>
 									<p class="text-lg">{day.precipitationProbability}%</p>	
 								</div>
 								<div class="flex flex-row m-auto justify-center align-center">
@@ -173,7 +174,7 @@
 											<p class="text-lg">{hour.airTemperature}°</p>
 										</div>
 										<div class="flex m-auto mt-1">
-											<span class="align-middle m-auto"><LbIcon name={"raindrop.svg"} width="16" height="16"/></span>
+											<span class="align-middle m-auto"><LbIcon name="raindrop" width="16" height="16"/></span>
 											<p class="text-lg">{hour.precipitationProbability}%</p>
 										</div>
 										<div class="flex m-auto mb-2">

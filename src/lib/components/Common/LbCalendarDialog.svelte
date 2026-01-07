@@ -2,6 +2,7 @@
 	import { Dialog, Portal } from '@skeletonlabs/skeleton-svelte';
 	import { utils } from '$lib/helpers/Utils';
 	import LbIcon from '$lib/components/Common/LbIcon.svelte';
+	import { fadeInOut } from '$lib/helpers/styles';
 	import type { Entry, CalendarEntryView } from '$lib/types/models';
 	import LbCalendarEntryDialog from '$lib/components/Common/LbCalendarEntryDialog.svelte';
 	import { _ } from 'svelte-i18n';
@@ -140,9 +141,9 @@
 	open={view.openDialog}
 	onInteractOutside={close}>
 	<Portal>
-		<Dialog.Backdrop class="fixed z-20 top-0 left-0 right-0 bottom-0 dark:bg-surface-950 bg-surface-50" />
+		<Dialog.Backdrop class="fixed z-20 top-0 left-0 right-0 bottom-0 dark:bg-surface-950 bg-surface-50 {fadeInOut}" />
 		<Dialog.Positioner class="fixed z-20 top-0 left-0 w-full h-full">
-			<Dialog.Content class="card p-2 space-y-4 shadow-xl overflow-auto h-full"> <!-- container mx-auto max-w-full w-full overflow-auto h-full-->
+			<Dialog.Content class="card p-2 space-y-4 shadow-xl overflow-auto h-full {fadeInOut}"> <!-- container mx-auto max-w-full w-full overflow-auto h-full-->
 				<header class="fixed w-full top-0 left-0 preset-filled-surface-100-900 z-1 shadow-md">
 					<div class="grid grid-cols-2 text-center items-center m-auto h-[60px]">
 						<div class="flex flex-row text-center items-center gap-3">

@@ -2,6 +2,7 @@
 	import { Dialog, Portal } from '@skeletonlabs/skeleton-svelte';
 	import { Toast, createToaster } from '@skeletonlabs/skeleton-svelte';
 	import { SvelteDate } from 'svelte/reactivity';
+	import { fadeInOut } from '$lib/helpers/styles';
 	import type { ControlView, ListItem, CalendarView, Entry, CalendarEntryView, CalendarListItem } from '$lib/types/models';
 	import { appStore } from '$lib/stores/LbAppStore.svelte';
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
@@ -292,10 +293,10 @@
 		open={controlView.dialog.state}
 		onInteractOutside={close}>
 		<Portal>
-			<Dialog.Backdrop class="fixed inset-0 z-10 bg-surface-50-950/75 backdrop-blur-sm"/>
+			<Dialog.Backdrop class="fixed inset-0 z-10 bg-surface-50-950/75 backdrop-blur-sm {fadeInOut}"/>
 			<Dialog.Positioner class="fixed inset-0 z-10 flex justify-center items-center p-4" >
 				<Dialog.Content class="card bg-surface-100-900 p-4 pt-3 shadow-sm rounded-lg border border-white/5 hover:border-white/10
-									md:max-w-9/10 md:max-h-9/10 w-[450px]">
+									md:max-w-9/10 md:max-h-9/10 w-[450px] {fadeInOut}">
 					<LbInfo control={controlView.control}/>
 					<header>
 						<div class="grid grid-cols-[5%_90%_5%]">
@@ -417,7 +418,7 @@
 							<div class="relative w-full mt-6 mb-2">
 								<div class="grid h-full max-w-lg grid-cols-3 mx-auto">
 									<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==1 ? 'dark:text-primary-500 text-primary-700' : ''} " onclick={() => {viewport = undefined; selectedTab=1}}>
-										<LbIcon class={selectedTab==1 ? 'dark:fill-primary-500 fill-primary-700' : 'fill-surface-50'} name={"thermostat.svg"} width="24" height="24"/>
+										<LbIcon class={selectedTab==1 ? 'dark:fill-primary-500 fill-primary-700' : 'fill-surface-50'} name="thermostat" width="24" height="24"/>
 										<span class="mt-1 text-xs">{$_("Control")}</span>
 									</button>
 									<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==2 ? 'dark:text-primary-500 text-primary-700' : ''} " onclick={() => {viewport = undefined; selectedTab=2}}>

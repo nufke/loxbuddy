@@ -57,6 +57,7 @@ Special thanks and credits to:
 
  * [Svelte team](https://svelte.dev/)
  * [Skeleton team](https://www.skeleton.dev/)
+ * [Iconify team](https://iconify.design/)
  * [iro.js](https://github.com/jaames/iro.js) of James Daniel
  * [Svelty Picker](https://github.com/mskocik/svelty-picker) of Martin Skočík
  * [Meteocons](https://github.com/basmilius/weather-icons) of Bas Milius
