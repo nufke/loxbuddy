@@ -25,17 +25,12 @@ export class Demo {
 	private daytimerOldValue: {[key: string]: string} = {};
 	private ircTimerIntervalMap: IntervalMap = {};
 	private smokeAlarmIntervalMap: IntervalMap = {};
-	private demoRunning = false;
 
 	constructor() {
 	}
 
 	start() {
-		if (this.demoRunning) return; // start demo Once
-
 		console.info('[DEMO] Use demo structure');
-		this.demoRunning = true;
-
 		let i = 0;
 		let j = 0;
 		let k = false; // used for InfoOnlyDigital
@@ -639,7 +634,6 @@ export class Demo {
 	 */
 	disconnect() {
 		controlStore.clearStructure();
-		this.demoRunning = false;
 	}
 
 	private createPromise(msg: any) {
@@ -656,3 +650,5 @@ export class Demo {
 		return found ? [found[1], found[2], found[3]] : []
 	}
 }
+
+export const demo = new Demo();

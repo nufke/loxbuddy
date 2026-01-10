@@ -1,0 +1,38 @@
+<svg
+   width="24"
+   height="24"
+   viewBox="0 0 24 24"
+   xmlns="http://www.w3.org/2000/svg">
+  <path
+     fill="none"
+     stroke="currentColor"
+     stroke-linecap="round"
+     stroke-linejoin="round"
+     stroke-width="1.5"
+     d="m 16.215613 15.285409 v 1.860958"
+     id="path1" />
+  <circle
+     fill="none"
+     stroke="currentColor"
+     stroke-linecap="round"
+     stroke-linejoin="bevel"
+     stroke-width="0.741888"
+     id="path2"
+     cx="16.282526"
+     cy="19.017611"
+     r="0.37905622" />
+  <path
+     fill="none"
+     stroke="currentColor"
+     stroke-width="1.5"
+     d="M 12.360305 20.861524 H 3.267987 V 11.256309 L 12 3.3974982 l 8.732013 7.8588108 0 8.027774"
+     id="path3" />
+  <path
+     id="path4"
+     fill="none"
+     stroke="currentColor"
+     stroke-linecap="round"
+     stroke-linejoin="round"
+     stroke-width="1.5"
+     d="m 10.721545 20.861524 5.494069 -9.516004 5.494066 9.516004 z" />
+</svg>

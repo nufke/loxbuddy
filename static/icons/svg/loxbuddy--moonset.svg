@@ -1,0 +1,28 @@
+<svg
+   width="24"
+   height="24"
+   viewBox="0 0 24 24"
+   xmlns="http://www.w3.org/2000/svg">
+  <g
+     fill="none"
+     stroke="currentColor"
+     stroke-linecap="round"
+     stroke-width="1.5"
+     id="g2">
+    <path
+       d="M 16.75 18 A 8.3 8.3 0 0 0 18 15.322 c -2.3 0.303 -4.653 -0.844 -5.884 -3.108 A 6.63 6.63 0 0 1 12.522 5.25 7.23 7.23 0 0 0 6.823 6.088 C 3.167 8.328 1.915 13.291 4.025 17.172 Q 4.262 17.607 4.541 18"
+       id="path5" />
+    <path
+       d="M 19.5 3 V 9"
+       id="path4" />
+    <path
+       d="M 22 5.5 C 21.509 4.994 20.2 3 19.5 3"
+       id="path3" />
+    <path
+       d="M 17 5.5 C 17.491 4.994 18.8 3 19.5 3"
+       id="path1" />
+    <path
+       d="M2 21h20"
+       id="path2" />
+  </g>
+</svg>

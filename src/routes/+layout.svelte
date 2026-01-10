@@ -22,7 +22,7 @@
 	import { goto } from '$app/navigation';
 	import { Logger } from '$lib/helpers/Logger';
 	import { enableDragDropTouch } from '$lib/helpers/drag-drop-touch';
-	import { Demo } from '$lib/demo/Demo';
+	import { demo } from '$lib/demo/Demo';
 
 	const env = page.data.env;
 	const logLevel = env && env.APP_LOGLEVEL ? Number(env.APP_LOGLEVEL) : 0;
@@ -31,7 +31,6 @@
 	const anchorRail = 'btn aspect-square pl-6 w-full max-w-[74px] flex flex-col items-center gap-0.5';
 	const anchorSidebar = 'btn justify-start px-2 w-full ';
 	const anchorBar = 'btn hover:preset-tonal flex-col items-center gap-1';
-	const demo = new Demo();
 
 	const options = {
 		allowDragScroll: true,
@@ -113,7 +112,7 @@
 			case '' : mobileMenuDialog = true; break;
 			case '/weather' : openWeather(); break;
 			case '/login' : appStore.loginDialog.state = true; break;
-			case '/logout' : if (demo) { appStore.setDemo(0); } controlStore.disconnectClient(); break;
+			case '/logout' : if (isDemo) { appStore.setDemo(0); } appStore.loginDialog.state = true; controlStore.disconnectClient(); break;
 			default: goto(s);
 		}
 	}
@@ -132,9 +131,6 @@
 	$effect( () => {
 		if (loxStatus || isDemo) { // connected or demo
 			routes[0] = { label: 'Logout', href: '/logout', icon: 'log-out', menu: true };
-			if (isDemo) {
-				demo.start();
-			}
 			navigate((localStorage.getItem('startPage') || '/'));
 		} else { // not connected
 			routes[0] = { label: 'Login', href: '/login', icon: 'log-in', menu: true };
@@ -149,9 +145,11 @@
 		startLoxWsClient();
 	}
 
-	// connect to MQTT server
 	// TODO add configuration
-	mqttClient.connect(env.MQTT_HOSTNAME, env.MQTT_PORT, env.MQTT_USERNAME, env.MQTT_PASSWORD, env.MQTT_TOPIC);
+	// connect to MQTT server (if environment settings are available)
+	if (env && env.MQTT_HOSTNAME && env.MQTT_PORT && env.MQTT_USERNAME && env.MQTT_PASSWORD && env.MQTT_TOPIC) {
+		mqttClient.connect(env.MQTT_HOSTNAME, env.MQTT_PORT, env.MQTT_USERNAME, env.MQTT_PASSWORD, env.MQTT_TOPIC);
+	}
 
 	Logger(logLevel, true);
 	enableDragDropTouch(document, document, options);

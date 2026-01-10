@@ -3,10 +3,11 @@
 	import { appStore } from '$lib/stores/LbAppStore.svelte';
 	import LbIcon from '$lib/components/Common/LbIcon.svelte';
 	import { _ } from 'svelte-i18n';
-	import { LoxWsClient, startLoxWsClient, checkCredentials} from '$lib/communication/LoxWsClient';
+	import { LoxWsClient, startLoxWsClient, checkCredentials, checkTokenValidity } from '$lib/communication/LoxWsClient';
 	import type { DeviceInfoMap, DeviceInfo } from '$lib/types/models';
 	import { goto } from "$app/navigation";
 	import { fadeInOut } from '$lib/helpers/styles';
+	import { demo } from '$lib/demo/Demo';
 
 	let openPopup = $state(false);
 	let hostname = $state('');
@@ -31,6 +32,7 @@
 	})
 
 	async function startDemo() {
+		demo.start();
 		appStore.setDemo(1);
 		appStore.loginDialog.state = false;
 		goto('/');
@@ -46,27 +48,53 @@
 		}
 	}
 
+	// check if 
+	function checkUrl(hostname: string) {
+		const regex = new RegExp('^http://');
+		const found = hostname.match(regex);
+		if (found) {
+			return hostname;
+		} else {
+			return 'http://' + hostname;
+		}
+	}
+
 	async function validate() {
 		showConnectDialog('Connecting to Miniserver...');
 		appStore.setDemo(0); // clear demo mode
 		if (hostname.length && username.length && password.length) {
+			const url = checkUrl(hostname);
 			// 1. Check if MiniServer is reachable via hostname
 			try {
-				await fetch('http://' + hostname + '/jdev/cfg/apiKey');
+				await fetch(url + '/jdev/cfg/apiKey');
 			} catch (error) {
 				showMessageDialog('Miniserver not found!');
 				return;
 			}
-			// 2. Check username/password combination via http call (no login)
+			// 2. Check username/password combination via http call (no login yet)
 			try {
-				await checkCredentials(hostname, username, password);
+				await checkCredentials(url, username, password);
 			} catch (error) {
 				showMessageDialog('Login credentials invalid!');
 				return;
 			}
-			// 3. connect with Miniserver using hostname, username and token if available
-			const loxClient = new LoxWsClient(hostname, username, password, appStore.appId, 0);
-			await loxClient.connect(appStore.credentials.token);
+			// 3. Establish WebSocket connection (no login yet)
+			let loxClient;
+			try {
+				loxClient = new LoxWsClient(hostname, username, password, appStore.appId, 0);
+			} catch (error) {
+				showMessageDialog('Unable to connect to Miniserver');
+				return;
+			}
+			// 4. Check if we have a valid token, and if so, use it to connect
+			if (appStore.credentials && appStore.credentials.token) {
+				const tokenValid = await checkTokenValidity(hostname, username, appStore.credentials.token);
+				if (tokenValid) {
+					await loxClient.connect(appStore.credentials.token);
+				}
+			} else {
+				await loxClient.connect(); // we store the token when connected
+			}
 			// 4. Close popup and login dialog, navigate to home page
 			goto('/');
 			openPopup = false;
@@ -127,10 +155,10 @@
 <Dialog
 	open={appStore.loginDialog.state}>
 	<Portal>
-		<Dialog.Backdrop class="fixed top-0 left-0 right-0 bottom-0 z-100 dark:bg-surface-950 bg-surface-50 {fadeInOut}"/>
+		<Dialog.Backdrop class="fixed top-0 left-0 right-0 bottom-0 z-100 dark:bg-surface-950 bg-surface-50"/>
 		<Dialog.Positioner class="fixed top-0 left-0 w-full h-full z-100">
 			<Dialog.Content class="card p-2 space-y-4 shadow-xl h-full">
-				<Dialog.Description class="flex justify-center items-center h-screen p-3 {fadeInOut}">
+				<Dialog.Description class="flex justify-center items-center h-screen p-3">
 					<div class="flex justify-center items-center flex-col gap-3 w-full">
 						<div class="pt-3 flex justify-center items-center flex-col gap-3">
 							<div onclick={reconnect}>

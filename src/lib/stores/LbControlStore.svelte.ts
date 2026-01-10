@@ -84,6 +84,10 @@ class LbControlStore {
 			const v = $state(val);
 			this.operatingModes.set(mode, v);
 		});
+		Object.entries(data.messageCenter).forEach( ([uuid, message]) => {
+			const mc = $state(message);
+			this.messageCenter.set(uuid, mc);
+		});
 		// Mapping table to associate control UUIDs for each backend client
 		Object.values(data.controls).forEach( (control) => {
 			this.controlClient.set(control.uuidAction, client);
@@ -101,7 +105,13 @@ class LbControlStore {
 	}
 
 	clearStructure() {
-		// TODO
+		this.msInfo = DEFAULT_MSINFO;
+		this.globalStates = DEFAULT_GLOBALSTATES;
+		this.operatingModes.clear();
+		this.controls.clear();
+		this.rooms.clear();
+		this.categories.clear();
+		this.messageCenter.clear();
 	}
 
 	getState(uuid: string) {
@@ -148,7 +158,8 @@ class LbControlStore {
 
 	/* disconnect client based on the registered Miniserver serial number */
 	disconnectClient() {
-		const client = this.controlClient.get(this.msInfo.serialNr);
+		this.clearStructure();
+		const client = this.controlClient.get(this.msInfo.serialNr); // TODO disconnect active client
 		client?.disconnect();
 	}
 }

@@ -11,6 +11,7 @@
 
 	let currentWeather = $derived(weatherStore.current);
 	let date = $derived(appStore.date);
+	let showWeather = $derived(appStore.showWeather);
 
 	function getCurrentIcon(cur: WeatherCurrentConditions) {
 		let sunRise = utils.time2epoch(cur.time, cur.sunRise);
@@ -36,7 +37,7 @@
 					</header>
 					<Dialog.Description class="flex justify-center items-center h-screen">
 						<div class="flex flex-col">
-						{#if currentWeather && currentWeather.airTemperature != undefined}
+						{#if showWeather && currentWeather && currentWeather.airTemperature != undefined}
 							<div class="flex justify-left items-center">
 								<LbIcon name={getCurrentIcon(currentWeather)} width="80" height="80"/>	
 								<span class="text-4xl truncate">{currentWeather.airTemperature}°</span>
