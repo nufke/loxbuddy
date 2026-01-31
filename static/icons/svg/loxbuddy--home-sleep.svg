@@ -6,10 +6,10 @@
   <path
      fill="none"
      stroke="currentColor"
+	 stroke-linecap="round"
      stroke-width="1.5"
-     d="M 15.524164 20.334572 H 3.2679869 V 10.729357 L 12 2.8705464 20.732013 10.729357 v 5.652306"
-     id="path1"
-/>
+     d="M 15.137547 20.334572 H 3.2679869 V 10.729357 L 12 2.8705464 20.732013 10.729357 v 4.551934"
+     id="path1" />
   <path
      stroke="currentColor"
      stroke-linecap="round"

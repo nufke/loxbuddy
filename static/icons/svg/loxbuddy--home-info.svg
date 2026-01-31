@@ -23,8 +23,8 @@
      fill="none"
      stroke="currentColor"
      stroke-width="0.741888"
-	 stroke-linecap="round"
-	 stroke-linejoin="bevel"
+     stroke-linecap="round"
+     stroke-linejoin="bevel"
      id="path4"
      cx="-17.613382"
      cy="-15.712883"
@@ -34,6 +34,7 @@
      fill="none"
      stroke="currentColor"
      stroke-width="1.5"
-     d="M 14.977405 20.861524 H 3.267987 V 11.256309 L 12 3.3974982 l 8.732013 7.8588108 0 3.507328"
+	 stroke-linecap="round"
+     d="m 11.468111 20.861524 -8.200124 0 V 11.256309 L 12 3.3974982 20.732013 11.256309"
      id="path3" />
 </svg>

@@ -15,8 +15,8 @@
      id="path2"
      fill="none"
      stroke="currentColor"
-	 stroke-linejoin="miter"
-	 stroke-linecap="square"
+     stroke-linejoin="miter"
+     stroke-linecap="square"
      stroke-width="1.5"
      d="m 15.545411 19.634096 4.180552 -4.180552" />
   <path
@@ -24,6 +24,6 @@
      fill="none"
      stroke="currentColor"
      stroke-width="1.5"
-     d="M 14.977405 20.861524 H 3.267987 V 11.256309 L 12 3.3974978 20.732013 11.256309 v 3.507328"
- />
+	 stroke-linecap="round"
+     d="m 11.468111 20.861524 -8.200124 0 V 11.256309 L 12 3.3974978 20.732013 11.256309" />
 </svg>

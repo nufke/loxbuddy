@@ -24,8 +24,9 @@
   <path
      fill="none"
      stroke="currentColor"
+	 stroke-linecap="round"
      stroke-width="1.5"
-     d="M 12.360305 20.861524 H 3.267987 V 11.256309 L 12 3.3974982 l 8.732013 7.8588108 0 8.027774"
+     d="m 7.8695987 20.861524 -4.6016117 0 V 11.256309 L 12 3.3974982 l 8.732013 7.8588108 0 2.317737"
      id="path3" />
   <path
      id="path4"

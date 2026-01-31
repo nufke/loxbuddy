@@ -26,13 +26,12 @@
      stroke-linecap="round"
      stroke-linejoin="round"
      d="m 16.206592 17.397387 1.259165 1.274035"
-     id="path3"
-/>
+     id="path3" />
   <path
      id="path4"
      fill="none"
      stroke="currentColor"
      stroke-width="1.5"
-     d="M 14.977405 20.861524 H 3.267987 V 11.256309 L 12 3.3974978 20.732013 11.256309 v 3.507328"
- />
+	 stroke-linecap="round"
+     d="m 11.527591 20.861524 -8.259604 0 V 11.256309 L 12 3.3974978 20.732013 11.256309" />
 </svg>
