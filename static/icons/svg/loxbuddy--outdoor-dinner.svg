@@ -1,0 +1,40 @@
+<svg
+   width="24"
+   height="24"
+   viewBox="0 0 24 24"
+   xmlns="http://www.w3.org/2000/svg">
+  <circle
+     cx="7.5147028"
+     cy="7.4749231"
+     r="1.8285714"
+     id="circle1"
+     fill="none"
+     stroke="currentColor"
+     stroke-linecap="round"
+     stroke-linejoin="round"
+     stroke-width="1.5" />
+  <path
+     id="path2"
+     fill="none"
+     stroke="currentColor"
+     stroke-linecap="round"
+     stroke-linejoin="round"
+     stroke-width="1.5"
+     d="m 7.5143842 3.3081584 h 0.00521 M 11.68115 7.4749226 h 0.0052 M 7.5143842 11.641687 h 0.00521 M 3.34762 7.4749226 h 0.00521 m 7.107979 -2.9464228 h 0.0052 m -0.0052 5.8928462 h 0.0052 m -5.8980545 0 h 0.00521 m -0.00521 -5.8928462 h 0.00521" />
+  <path
+     id="path3"
+     fill="none"
+     stroke="currentColor"
+     stroke-linecap="round"
+     stroke-linejoin="round"
+     stroke-width="1.5"
+     d="m 20.091677 9.347337 v 4.147584 c 0 0.885901 -0.619773 1.599099 -1.389625 1.599099 h -1.129073 c -0.769852 0 -1.389625 -0.713198 -1.389625 -1.599099 V 9.347337 Z" />
+  <path
+     id="path4"
+     fill="none"
+     stroke="currentColor"
+     stroke-linecap="round"
+     stroke-linejoin="round"
+     stroke-width="1.5"
+     d="m 5.1164053 16.773151 c 0 0 7.0872697 0 7.0872697 0 m 0 0 c 0 0 -0.5 3.410268 -0.5 3.410268 M 5.1164053 16.773151 c 0 0 0.5 3.410268 0.5 3.410268 M 18.137516 15.09402 c 0 0 0 5.211097 0 5.211097 m -15.5532151 0 c 0 0 18.8313981 0 18.8313981 0" />
+</svg>

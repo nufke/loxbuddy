@@ -1,0 +1,32 @@
+<svg
+   width="24"
+   height="24"
+   viewBox="0 0 24 24"
+   xmlns="http://www.w3.org/2000/svg">
+  <circle
+     fill="none"
+     stroke="currentColor"
+     stroke-linecap="round"
+     stroke-linejoin="round"
+     stroke-width="1.5"
+     id="path1"
+     cx="12"
+     cy="5.6761026"
+     r="1.4283442" />
+  <path
+     id="path2"
+     fill="none"
+     stroke="currentColor"
+     stroke-linecap="round"
+     stroke-linejoin="round"
+     stroke-width="1.5"
+     d="M 3.2003192 19.752242 H 20.799681 M 12.574879 6.983649 c 0 0 5.483201 8.512395 8.224802 12.768593 M 11.425121 6.983649 c 0 0 -5.4832012 8.512395 -8.2248018 12.768593" />
+  <path
+     id="path3"
+     fill="none"
+     stroke="currentColor"
+     stroke-linecap="round"
+     stroke-linejoin="round"
+     stroke-width="1.5"
+     d="m 7.9212857 12.992357 c 4.2927983 2.253295 8.5855973 4.50659 12.8783953 6.759885 M 5.6431474 16.386897 c 2.118951 1.121782 4.2379023 2.243564 6.3568536 3.365345 M 10.029374 9.1504757 15.701806 11.838047" />
+</svg>

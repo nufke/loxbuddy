@@ -1,0 +1,32 @@
+<svg
+   width="24"
+   height="24"
+   viewBox="0 0 24 24"
+   xmlns="http://www.w3.org/2000/svg">
+  <circle
+     cx="7.0514941"
+     cy="7.0117145"
+     r="1.8285714"
+     id="circle1"
+     fill="none"
+     stroke="currentColor"
+     stroke-linecap="round"
+     stroke-linejoin="round"
+     stroke-width="1.5" />
+  <path
+     id="path2"
+	 fill="none"
+     stroke="currentColor"
+     stroke-linecap="round"
+     stroke-linejoin="round"
+     stroke-width="1.5"
+     d="m 7.0511755 2.8449497 h 0.00521 m 4.1615555 4.1667642 h 0.0052 M 7.0511755 11.178478 h 0.00521 M 2.8844113 7.0117139 h 0.00521 M 9.9976002 4.0652911 h 0.0052 m -0.0052 5.8928463 h 0.0052 m -5.8980544 0 h 0.00521 m -0.00521 -5.8928463 h 0.00521" />
+  <path
+     id="path3"
+	 fill="none"
+     stroke="currentColor"
+     stroke-linecap="round"
+     stroke-linejoin="round"
+     stroke-width="1.5"
+     d="M 21.5 6.2595601 14 19.25956 m 5 -8.5 2.5 4.5 m -19.0000002 4 H 19.5 m -16.0000002 -3 H 11.5 m 6.5 -9.4999999 -1.5 2.5 M 4.9999998 19.25956 v 2 M 17 19.25956 v 2" />
+</svg>

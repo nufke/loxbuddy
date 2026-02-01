@@ -1,0 +1,28 @@
+<svg
+   width="24"
+   height="24"
+   viewBox="0 0 24 24"
+   version="1.1"
+   xmlns="http://www.w3.org/2000/svg">
+  <path
+     fill="none"
+     stroke="currentColor"
+     stroke-linecap="round"
+     stroke-linejoin="round"
+     stroke-width="1.5"
+     d="M 6.3963489,16.852035 H 17.603651 M 16.286284,13.795498 H 7.7137164 c -0.8894523,0 -1.3520083,-1.0596 -0.7468139,-1.711661 L 11.253186,7.4684661 a 1.0188457,1.0188457 0 0 1 1.493628,0 l 4.286284,4.6153709 c 0.605193,0.652061 0.142639,1.711661 -0.746814,1.711661"
+     id="path1" />
+  <rect
+     fill="none"
+     stroke="currentColor"
+     stroke-linecap="round"
+     stroke-linejoin="round"
+     stroke-width="1.5"
+     id="rect1"
+     width="17.37936"
+     height="17.37936"
+     x="3.3103199"
+     y="3.3103199"
+     rx="0.48243421"
+     ry="0.69272339" />
+</svg>

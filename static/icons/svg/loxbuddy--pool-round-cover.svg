@@ -1,0 +1,22 @@
+<svg
+   width="24"
+   height="24"
+   viewBox="0 0 24 24"
+   xmlns="http://www.w3.org/2000/svg">
+  <path
+     id="path1"
+     fill="none"
+     stroke="currentColor"
+     stroke-linecap="round"
+     stroke-linejoin="round"
+     stroke-width="1.5"
+     d="m 21 12 a 9 9 0 0 1 -9 9 9 9 0 0 1 -9 -9 9 9 0 0 1 9 -9 9 9 0 0 1 9 9 z" />
+  <path
+     id="path2"
+     fill="none"
+     stroke="currentColor"
+     stroke-linecap="round"
+     stroke-linejoin="miter"
+     stroke-width="1.5"
+     d="m 6 5.4288389 c 0 4.36231 0 8.7246201 0 13.0869301 M 18 5.4288389 c 0 4.36231 0 8.7246201 0 13.0869301 M 9 3.5494493 C 9 9.1673216 9 14.785194 9 20.403066 M 15 3.51069 c 0 5.6178723 0 11.235745 0 16.853617 M 12 3 v 18"/>
+</svg>
