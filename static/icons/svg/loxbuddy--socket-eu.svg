@@ -3,28 +3,12 @@
    height="24"
    viewBox="0 0 24 24"
    xmlns="http://www.w3.org/2000/svg">
-  <g
+  <path
+     id="path1"
      fill="none"
-     id="g3">
-    <circle
-       cx="9.5018587"
-       cy="12"
-       r="1"
-       fill="currentColor"
-       id="circle2" />
-    <circle
-       cx="14.498141"
-       cy="12"
-       r="1"
-       fill="currentColor"
-       id="circle3" />
-    <path
-       id="rect3"
-       fill="none"
-       stroke="currentColor"
-       stroke-width="1.5"
-       stroke-linecap="round"
-       stroke-linejoin="round"
-       d="M 3.2065353 3.2065344 H 20.793465 V 20.793466 H 3.2065353 Z M 12 18 v -1.5 m 0 -9 V 6 m 6 6 a 6 6 0 0 1 -6 6 6 6 0 0 1 -6 -6 6 6 0 0 1 6 -6 6 6 0 0 1 6 6 z" />
-  </g>
+     stroke="currentColor"
+     stroke-linecap="round"
+     stroke-linejoin="round"
+     stroke-width="1.5"
+     d="m 14.498141 11.99565 v 0.0087 m -4.9962818 -0.0087 v 0.0087 M 12 18 v -1.5 m 0 -9 V 6 M 4.2108192 3.2108192 H 19.789181 c 0.554 0 1 0.446 1 1 V 19.789181 c 0 0.554 -0.446 1 -1 1 H 4.2108192 c -0.554 0 -1 -0.446 -1 -1 V 4.2108192 c 0 -0.554 0.446 -1 1 -1 z M 18 12 c 0 3.313708 -2.686292 6 -6 6 -3.3137085 0 -6 -2.686292 -6 -6 0 -3.3137085 2.6862915 -6 6 -6 3.313708 0 6 2.6862915 6 6 z" />
 </svg>
