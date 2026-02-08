@@ -7,24 +7,8 @@
      id="path1"
      fill="none"
      stroke="currentColor"
+     stroke-width="1.5"
      stroke-linecap="round"
      stroke-linejoin="round"
-     stroke-width="1.5"
-     d="m 21 12 a 9 9 0 0 1 -9 9 9 9 0 0 1 -9 -9 9 9 0 0 1 9 -9 9 9 0 0 1 9 9 z" />
-  <path
-     id="path2"
-     fill="none"
-     stroke="currentColor"
-     stroke-linecap="round"
-     stroke-linejoin="miter"
-     stroke-width="1.5"
-     d="M 6 5.4288389 V 18.515769 M 9 3.5494493 V 20.403066" />
-  <path
-     id="path3"
-     fill="none"
-     stroke="currentColor"
-     stroke-linecap="round"
-     stroke-linejoin="round"
-     stroke-width="1.5"
-     d="m 18.101966 12 -1.932449 1.932449 M 18.101966 12 16.169517 10.067551 M 18.101966 12 h -6.108667" />
+     d="m 18.610448 11.999999 -2.093482 2.093483 m 2.093482 -2.093483 -2.093482 -2.0934821 m 2.093482 2.0934821 H 11.992741 M 5.5000139 4.8812574 V 19.058734 M 8.7500068 2.8452565 V 21.103302 M 21.749979 11.999999 a 9.7499785 9.7499785 0 0 1 -9.74998 9.74998 9.7499785 9.7499785 0 0 1 -9.7499779 -9.74998 9.7499785 9.7499785 0 0 1 9.7499779 -9.749978 9.7499785 9.7499785 0 0 1 9.74998 9.749978 z" />
 </svg>

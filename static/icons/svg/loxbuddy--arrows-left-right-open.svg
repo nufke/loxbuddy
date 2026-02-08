@@ -4,12 +4,12 @@
    viewBox="0 0 24 24"
    xmlns="http://www.w3.org/2000/svg">
   <path
-     id="path1-5"
+     id="path1"
      fill="none"
      stroke="currentColor"
      stroke-width="2"
      stroke-linecap="round"
      stroke-linejoin="round"
-     d="M 12,16.97339 V 7 m 3,0 5,5 -5,5 M 9,7 4,12 9,17"
+     d="M 12 16.97339 V 7 m 3 0 5 5 -5 5 M 9 7 4 12 9 17"
    />
 </svg>
