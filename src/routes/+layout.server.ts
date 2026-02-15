@@ -4,5 +4,5 @@ export async function load() {
 	const data = {
 		env: env
 	}
-	return data; // TODO workaround to expose private env, not secure !!!!!
+	return data; // WARNING  to not expose private envs !!
 }

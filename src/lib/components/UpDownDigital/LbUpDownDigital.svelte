@@ -24,6 +24,7 @@
 
 	let dialog: DialogView = $state({
 		action: (state: boolean) => {dialog.state = state},
+		class: 'grid-cols-2',
 		state: false
 	});
 

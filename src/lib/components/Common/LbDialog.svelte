@@ -141,7 +141,7 @@
 							</div>
 							{#if controlView.buttons.length && !controlView.slider && !controlView.dialog.buttons}
 							<div class="w-full grid grid-cols-1 {controlView.dialog.class} gap-2 overflow-y-auto" {style} bind:this={viewport} >
-								{#each controlView.buttons as button, index}
+								{#each controlView.buttons as button}
 									{#if button.type === 'button' && button.click}
 										<button type="button" class="w-full btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50" 
 												onclick={(e) => {e.stopPropagation(); e.preventDefault(); button.click();}}>

@@ -11,7 +11,15 @@
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"format": "prettier --write .",
-		"lint": "prettier --check ."
+		"lint": "prettier --check .",
+		"pm2:start": "vite build && pm2 start ecosystem.custom.config.cjs",
+		"pm2:restart": "vite build && pm2 restart ecosystem.custom.config.cjs",
+		"pm2:stop": "pm2 stop ecosystem.custom.config.cjs",
+		"pm2:delete": "pm2 delete ecosystem.custom.config.cjs",
+		"pm2:kill": "pm2 kill",
+		"pm2:list": "pm2 list",
+		"pm2:logs": "pm2 logs",
+		"pm2:status": "pm2 status"
 	},
 	"devDependencies": {
 		"@iconify/svelte": "^5.1.0",

@@ -6,6 +6,7 @@
 	let mode = $state(localStorage.getItem('mode') || 'dark');
 	let viewport: any;
 	let startMouseMove = $state(false);
+	let startTouch = $state(false);
 	let windowHeight = $derived(innerHeight.current || 0);
  
 	function handleMouseUp(e: any) {
@@ -23,6 +24,34 @@
 		}
 	}
 
+	function handleTouchEnd(e: any) {
+		onValueChange({value: value});
+		startTouch = false;
+	}
+
+	function handleTouchStart(e: any) {
+		startTouch = true;
+	}
+
+	function handleTouchMove(e: any) {
+		const newValue = calculateTouchPosition(e);
+		if (startTouch && newValue != value) {
+			value = newValue;
+			onValueChange({value: value});
+		}
+	}
+
+	function calculateTouchPosition(e: any) {
+		const rect = viewport.getBoundingClientRect();
+		let pos: number;
+		if (orientation == 'vertical') {
+			pos = Math.min(1, Math.max(0, (rect.y + rect.height - e.touches[0].clientY) / rect.height));
+		} else { // horizontal orientation
+			pos = 1 - Math.min(1, Math.max(0, (rect.x + rect.width - e.touches[0].clientX) / rect.width));
+		}
+		return Math.round((min + pos * max)/step) * step;
+	}
+
 	$effect( () => {
 		if (locked) {
 			viewport.disabled = true;
@@ -37,11 +66,11 @@
 </script>
 
 <div class="ml-1 mr-1 mb-1 { (orientation == 'vertical' && windowHeight > 630) ? 'rotate-270 m-3 ml-3 mb-8':''}">
-	<input bind:this={viewport} type="range" id="vol" name="vol" min={min} max={max} step={step} bind:value={value} 
+	<input bind:this={viewport} type="range" id="vol" name="vol" min={min} max={max} step={step} bind:value 
 		onmouseup={handleMouseUp} onmousedown={handleMouseDown} onmousemove={handleMouseMove}
-		ontouchstart={handleMouseDown} ontouchmove={handleMouseMove} ontouchend={handleMouseUp}
-					class=" {classes} { (classes == 'dimmer' && windowHeight < 630 ) ? 'h-[60px] w-[250px]' : 'h-[150px] w-[200px] '}"
-					style=" {style} { classes == 'dimmer' ? dimmerBackground() : ''}" />
+		ontouchstart={handleTouchStart} ontouchmove={handleTouchMove} ontouchend={handleTouchEnd}
+		class=" {classes} { (classes == 'dimmer' && windowHeight < 630 ) ? 'h-[60px] w-[250px]' : 'h-[150px] w-[200px] '}"
+		style=" {style} { classes == 'dimmer' ? dimmerBackground() : ''}" />
 </div>
 
 <style>

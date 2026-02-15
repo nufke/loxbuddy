@@ -4,14 +4,12 @@
 	import Icon from '@iconify/svelte';
 
 	let { name, ...others } = $props();
-
-	const iconpath = '/icons/svg/'; // TODO configure
 	let icon = $derived(iconStore.getIcon(name));
 </script>
 
 <span class="icon">
-	{#if icon.includes('.svg')}
-		<svg use:inlineSvg={iconpath + icon} {...others}></svg>
+	{#if icon.includes('.svg') && !icon.includes('IconsFilled')}
+		<svg use:inlineSvg={icon} {...others}></svg>
 	{:else if icon.includes(':')}
 		<Icon {icon} {...others} />
 	{:else}

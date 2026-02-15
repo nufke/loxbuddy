@@ -1472,7 +1472,7 @@
 			"room": "__uuid__rooms_bedroom",
 			"cat": "__uuid__cats_heating",
 			"defaultRating": 2,
-			"isFavorite": false,
+			"isFavorite": true,
 			"isSecured": false,
 			"restrictions": 0,
 			"details": {
@@ -1643,6 +1643,43 @@
 				"lastBellTimestamp": "__uuid__controls_intercom_states_lastBellTimestamp"
 			},
 			"subControls": {}
+		},
+		"__uuid__controls_fan": {
+			"name": "Fan control",
+			"type": "UpDownDigital",
+			"uuidAction": "__uuid__controls_fan",
+			"room": "__uuid__rooms_bedroom",
+			"cat": "__uuid__cats_heating",
+			"defaultRating": 0,
+			"isFavorite": true,
+			"isSecured": false,
+			"defaultIcon": null,
+			"restrictions": 0,
+			"details": {
+					"jLockable": false,
+					"type": 71
+			}
+		},
+		"__uuid__controls_textstate": {
+			"name": "Alarm status",
+			"type": "TextState",
+			"uuidAction": "__uuid__controls_textstate",
+			"room": "__uuid__rooms_central",
+			"cat": "__uuid__cats_alarm",
+			"defaultRating": 1,
+			"isFavorite": true,
+			"isSecured": false,
+			"defaultIcon": "IconsFilled/afval.svg",
+			"restrictions": 0,
+			"details": {
+					"jLockable": false,
+					"format": "%s"
+			},
+			"states": {
+					"textAndIcon": "__uuid__controls_textstate",
+					"iconAndColor": "__uuid__controls_textstate_states_iconAndColor"
+
+			}
 		}
 	},
 	"weatherServer": {},

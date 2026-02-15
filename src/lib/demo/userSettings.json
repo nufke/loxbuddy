@@ -529,6 +529,55 @@
             "category/__uuid__rooms_bedroom": {
                 "position": 0
             }
+        },
+        "__uuid__controls_smoke_alarm": {
+            "room": {
+                "position": 0
+            },
+            "room/__uuid__cats_alarm": {
+                "position": 0
+            },
+            "category/__uuid__rooms_central": {
+                "position": 0
+            }
+        },
+        "__uuid__controls_intercom": {
+            "room": {
+                "position": 0
+            },
+            "room/__uuid__cats_alarm": {
+                "position": 0
+            },
+            "category/__uuid__rooms_central": {
+                "position": 0
+            }
+        },
+        "__uuid__controls_fan": {
+            "room": {
+                "position": 0
+            },
+            "room/__uuid__cats_heating": {
+                "position": 0
+            },
+            "category/__uuid__rooms_bedroom": {
+                "position": 0
+            }
+        },
+        "__uuid__controls_textstate": {
+            "room": {
+                "isFav": true,
+                "position": 0
+            },
+            "category": {
+                "isFav": true,
+                "position": 0
+            },
+            "room/__uuid__cats_alarm": {
+                "position": 0
+            },
+            "category/__uuid__rooms_central": {
+                "position": 0
+            }
         }
     },
     "ts": 530735020

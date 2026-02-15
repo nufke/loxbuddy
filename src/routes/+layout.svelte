@@ -246,14 +246,14 @@
 <div class="w-full h-screen grid grid-rows-[1fr_auto]">
 	<Navigation layout="bar" class="fixed top-0 z-1 h-[65px] flex justify-center items-center shadow-md w-screen">
 		<Navigation.Menu class="grid grid-cols-3 gap-2">
-			<div class="grid grid-cols-[20%_80%] justify-left items-center gap-1">
-				<button class="ml-2" onclick={() => {navigate(appStore.nav)}}>
+			<div class="ml-2 grid grid-cols-[25%_75%] justify-left items-center gap-1">
+				<button class="" onclick={() => {navigate(appStore.nav)}}>
 					<LbIcon name={appStore.nav == '' ? 'menu' : 'arrow-left'}/>
 				</button>
 				{#if showWeather}
-					<button class="-ml-1 flex flex-row justify-center items-center gap-1" onclick={openWeather}>
+					<button class="flex flex-row items-center gap-1" onclick={openWeather}>
 						<LbIcon name={getCurrentIcon(currentWeather)} width="48" height="48"/>	
-						<span class="-ml-1 text-[22px] truncate">{currentWeather.airTemperature}°</span>
+						<span class="text-[22px] truncate">{currentWeather.airTemperature}°</span>
 					</button>
 				{/if}
 			</div>
@@ -273,7 +273,7 @@
 		{@render children()}
 	</div>
 	{#if navigation.find ( item => item.href == path )}
-	<div transition:fade={{ duration: 100 }}>
+	<div>
 		<Navigation layout="bar" class="fixed bottom-0 h-[68px] shadow-inner">
 			<Navigation.Menu class="grid grid-cols-4 gap-2">
 				{#each navigation as link (link)}
@@ -282,7 +282,7 @@
 							{#if link.label == "Messages" && activeNotifications.length}
 								<span class="badge-icon size-[2px] font-semibold preset-filled-primary-500 absolute -right-2 -top-2 z-10">{activeNotifications.length}</span>
 							{/if}
-							<LbIcon name={link.icon} height="20" width="20" class={checkUrl(link.href) ? 'dark:text-primary-500 text-primary-700' : 'white'} />
+							<LbIcon name={link.icon} height="24" width="24" class={checkUrl(link.href) ? 'dark:text-primary-500 text-primary-700' : 'white'} />
 						</div>
 						<span class="text-[12px] {checkUrl(link.href) ? 'dark:text-primary-500 text-primary-700' : 'white'}">{$_(link.label)}</span>
 					</div>
@@ -323,7 +323,7 @@
 						{@const Icon = link.icon}
 						<div onclick={() => { mobileMenuDialog = false; navigate(link.href)}} class={anchorSidebar} 
 							aria-label={link.label}>
-							<LbIcon name={link.icon} height="16" width="16" class={checkUrl(link.href) ? 'dark:text-primary-500 text-primary-700' : 'white'}/>
+							<LbIcon name={link.icon} height="20" width="20" class={checkUrl(link.href) ? 'dark:text-primary-500 text-primary-700' : 'white'}/>
 							<span class="{checkUrl(link.href) ? 'dark:text-primary-500 text-primary-700' : 'white'}">{$_(link.label)}</span>
 						</div>
 					{/each}

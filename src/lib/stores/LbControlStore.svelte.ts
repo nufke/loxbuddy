@@ -132,15 +132,15 @@ class LbControlStore {
 	}
 
 	getIcon(control: Control, isSubControl: boolean | undefined, textState: any = null) {
-		if (textState && textState.icon) return textState.icon; /* used for TextState icon */
+		if (textState && textState.icon && textState.icon.length) return textState.icon; /* used for TextState icon */
 		if (control.defaultIcon) return control.defaultIcon;
 		if (!isSubControl) { 
 			const icon = lbControl.getDefaultIcon(control.type);
-			if (icon.length ) {
+			if (icon.length) {
 				return icon;
 			} 
 			const cat = this.categoryList.find((cat: Category) => cat.uuid == control.cat);
-			return cat ? cat.image : '';
+			return (cat && cat.image && cat.image.length) ? cat.image : 'unknown';
 		}
 		console.error('[LbControlStore] No icon found for ', control.name);
 		return ''; // no icon found / used (TODO: keep empty?)

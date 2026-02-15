@@ -33,14 +33,45 @@ code .env.local
 
 # launch development server
 npm run dev
-
-# launch the browser 
-firefox http://localhost:5173/
 ```
 
-## Deployment to a webserver
+You can access LoxBuddy by navigating to <http://localhost:5173> in a web browser.
 
-To deploy LoxBuddy to a webserver (e.g. running on LoxBerry), follow the steps described in this [README](./infra/README.md)
+## Deployment using Docker (recommended)
+
+To deploy LoxBuddy in a Docker container, make sure you have [Docker Desktop](https://www.docker.com/) installed on your system, and execute the following commands:
+
+```bash
+docker build -t loxbuddy .
+docker run -p 3000:3000 loxbuddy
+```
+
+You can now access LoxBuddy by navigating to <http://localhost:3000> in a web browser.
+
+Note that the environment variables from the `env.local` are not picked up by the Docker container. You can pass environment variables to the container with the `-e` (alias `--env`) flag.
+
+## Deployment using the Node.js process manager (pm2)
+
+Mke sure you have `pm2` installed globally on your system:
+
+```bash
+npm install pm2 -g      # global installation only required once
+```
+
+You can now start, restart, stop, etc. the LoxBuddy App using one of the following `pm2` commands:
+
+```bash
+npm run pm2:start       # Build and start LoxBuddy App
+npm run pm2:restart     # Rebuild and restart LoxBuddy App
+nom run pm2:stop        # stop LoxBuddy App, but keep associated pm2 process
+npm run pm2:delete      # stop LoxBuddy App and delete associated pm2 process
+npm run pm2:kill        # stop LoxBuddy App, kill all running pm2 processes
+npm run pm2:list        # list all pm2 processes
+npm run pm2:logs        # show logs for all pm2 processes
+npm run pm2:status      # show status of all pm2 processes
+```
+
+You can now access LoxBuddy by navigating to <http://localhost:4004> in a web browser.
 
 ## Supported controls and features
 

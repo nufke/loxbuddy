@@ -3,6 +3,7 @@
 	import { appStore } from '$lib/stores/LbAppStore.svelte';
 	import LbIcon from '$lib/components/Common/LbIcon.svelte';
 	import { _ } from 'svelte-i18n';
+	import { env } from '$env/dynamic/public';
 	import { LoxWsClient, startLoxWsClient, checkCredentials, checkTokenValidity } from '$lib/communication/LoxWsClient';
 	import type { DeviceInfoMap, DeviceInfo } from '$lib/types/models';
 	import { goto } from "$app/navigation";
@@ -175,9 +176,11 @@
 									</div>
 									<div class="input-group grid-cols-[1fr_auto]">
 										<input class="ig-input" type="text" bind:value={hostname} placeholder={$_("IP address")} />
+										{#if env.PUBLIC_ALLOW_SEARCH}
 										<div class="ig-btn preset-tonal" onclick={doSearch}>
 											<LbIcon name="search" height="16" width="16"/>
 										</div>
+										{/if}
 									</div>
 								</label>
 								<label class="label">
