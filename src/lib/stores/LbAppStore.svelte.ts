@@ -15,6 +15,8 @@ class LbAppStore {
 	token: string | undefined = $state();
 	nav: string = $state(''); // default is main menu (hamburger symbol)
 	date: Date = $state(new Date());
+	mode: string = $state('dark');
+	theme: string = $state('LoxBuddy');
 	mqttStatus: number = $state(0); // 0=disconnected (grey), 1=connected/ok/info (green), 2=warning/issue (yellow), 3=error (red)
 	loxStatus: number = $state(0);  // 0=disconnected (grey), 1=connected/ok/info (green), 2=warning/issue (yellow), 3=error (red)
 	showStatus: boolean = $state(true);
@@ -51,6 +53,8 @@ class LbAppStore {
 		localStorage.setItem('appId', this.appId);
 
 		this.showStatus = localStorage.getItem('showStatus') == '1';
+		this.mode = localStorage.getItem('mode') || 'dark';
+		this.theme = localStorage.getItem('theme') || 'LoxBuddy';
 		this.isDemo = localStorage.getItem('demo') == '1';
 		this.showWeather = localStorage.getItem('showWeather') == '1';
 		this.locale = localStorage.getItem('locale') || 'en';

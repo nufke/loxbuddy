@@ -143,8 +143,7 @@ class LbWeatherStore {
 			solarRadiation: this.calcSolarRadiationClass(Number(current[18])),
 			sunRise: station[8],
 			sunSet: station[9],
-			moonPhase: moon.phase,
-			moonPercent: Math.round((moon.fraction*100)*10)/10
+			moonIllumination: moon.fraction
 		}
 		//console.debug('[LbWeatherStore] current observation', this.current);
 	}
@@ -204,7 +203,8 @@ class LbWeatherStore {
 					airTemperatureLow: Math.min(...hours.map( h => h.airTemperature)),  
 					precipitationProbability: Math.max(...hours.map( h => h.precipitationProbability)),
 					sunRise: sunTime ? utils.epoch2TimeStr(sunTime.sunrise.valueOf()/1000) : '',
-					sunSet: sunTime ? utils.epoch2TimeStr(sunTime.sunset.valueOf()/1000) : ''
+					sunSet: sunTime ? utils.epoch2TimeStr(sunTime.sunset.valueOf()/1000) : '',
+					moonIllumination: SunCalc.getMoonIllumination(new Date(hours[0].date)).fraction
 				};
 				if (item.time) temp.push(item);
 			}

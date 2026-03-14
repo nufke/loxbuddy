@@ -103,8 +103,6 @@
 									<p class="text-lg"><span class="font-medium">{current.stationPressure}</span> mbar</p>
 								</div>
 								<div class="flex gap-2">
-									<LbMoon phase={current.moonPhase}/>
-									<p class="text-lg">{$_("Moonphase")}</p> <!--({current.moonPercent}%)-->
 								</div>
 							</div>
 							<div class="flex flex-col gap-4 mt-8 m-auto">
@@ -150,14 +148,18 @@
 						<div class="m-auto max-w-[768px] bg-surface-100-900" transition:slide={{ duration: 400 }} >
 							<div transition:fade={{ duration: 200 }}>
 								{#if (day.sunRise && day.sunSet)}
-									<div class="grid grid-cols-2 hr p-1">
+									<div class="grid grid-cols-3 hr p-1">
 										<div class="flex m-auto">
-											<span class="mr-2"><LbIcon name="sunrise" height="22" width="22"/></span>
+											<span class="mr-2 m-auto"><LbIcon name="sunrise" height="22" width="22"/></span>
 											<p class="text-lg">{day.sunRise}</p>
 										</div>
 										<div class="flex m-auto">
-											<span class="mr-2"><LbIcon name="sunset" height="22" width="22"/></span>
+											<span class="mr-2 m-auto"><LbIcon name="sunset" height="22" width="22"/></span>
 											<p class="text-lg">{day.sunSet}</p>
+										</div>
+										<div class="flex m-auto">
+											<span class="mr-2 m-auto"><LbMoon phase={day.moonIllumination}/></span>
+											<p class="text-lg">{(day.moonIllumination < 0.01) ? "new" : ((day.moonIllumination > 0.99) ? "full" : (day.moonIllumination*100).toFixed(0)+"%")}</p>
 										</div>
 									</div>
 								{/if}

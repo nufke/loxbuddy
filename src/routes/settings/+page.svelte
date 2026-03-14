@@ -79,6 +79,7 @@
 	const onDarkModeChange = (event: { checked: boolean }) => {
 		mode = event.checked ? 'dark' : 'light';
 		document.documentElement.setAttribute('data-mode', mode);
+		appStore.mode = mode;
 		localStorage.setItem('mode', mode);
 	};
 
@@ -86,6 +87,7 @@
 		theme = s || 'LoxBuddy';
 		document.documentElement.setAttribute('data-theme', theme.toLowerCase());
 		localStorage.setItem('theme', theme);
+		appStore.theme = theme;
 		openThemeDialog = false;
 	};
 

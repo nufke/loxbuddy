@@ -16,8 +16,7 @@ export type WeatherCurrentConditions = {
 	solarRadiation: string;
 	sunRise: string;										// hh:mm
 	sunSet: string;											// hh:mm
-	moonPhase: number;
-	moonPercent: number;
+	moonIllumination: number;
 };
 
 export type WeatherDailyForecast = {
@@ -27,8 +26,9 @@ export type WeatherDailyForecast = {
 	airTemperatureHigh: number;
 	airTemperatureLow: number;
 	precipitationProbability: number;	// percent
-	sunRise?: string;									// hh:mm
-	sunSet?: string;									// hh:mm
+	sunRise: string;									// hh:mm
+	sunSet: string;									// hh:mm
+	moonIllumination: number;
 };
 
 export type WeatherHourlyForecast = {

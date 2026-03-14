@@ -59,6 +59,20 @@ class Utils {
 		};
 	}
 
+	rgb2rgb(hexColor: string, scale: number) {
+		const regex = new RegExp('#(.{2})(.{2})(.{2})');
+		const found = hexColor.match(regex);
+		let r,g,b;
+		if (found && found.length ) {
+			r = (parseInt(found[1], 16) * scale).toString(16);
+			g = (parseInt(found[2], 16) * scale).toString(16);
+			b = (parseInt(found[3], 16) * scale).toString(16);
+		}
+		const rgb = `#${r}${g}${b}`;
+		console.log('rgb', found, rgb);
+		return rgb;
+	}
+
 	isValidJSONObject(str: string) {
 		let obj;
 		try {
