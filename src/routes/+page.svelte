@@ -7,7 +7,6 @@
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 	import { Tabs } from '@skeletonlabs/skeleton-svelte';
 	import { flip } from 'svelte/animate';
-	import { customdnd } from '$lib/helpers/custom-drag-n-drop';
 
 	let fav = 'favorites';
 	let draggingItem: any;
@@ -63,7 +62,7 @@
 			<div class="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 lg:flex-wrap">
 				{#each favoriteControls as control (control)}
 					{@const Component = lbControl.getControl(control.type)}
-					<div animate:flip={{ duration: appStore.dnd.duration }} use:customdnd
+					<div animate:flip={{ duration: appStore.dnd.duration }}
 						draggable={appStore.dnd.isEnabled}
 						ondragstart={() => {draggingItem = control}}
 						ondragend={() => {draggingItem = undefined}}
@@ -78,7 +77,7 @@
 			<div class="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 lg:flex-wrap">
 				{#each centralControls as control (control)}
 					{@const Component = lbControl.getControl(control.type)}
-					<div animate:flip={{ duration: appStore.dnd.duration }} use:customdnd
+					<div animate:flip={{ duration: appStore.dnd.duration }}
 						draggable={appStore.dnd.isEnabled}
 						ondragstart={() => {draggingItem = control}}
 						ondragend={() => {draggingItem = undefined}}

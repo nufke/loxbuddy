@@ -30,6 +30,7 @@ function pointFrom(e, page = false) {
     y: page ? touch.pageY : touch.clientY
   };
 }
+
 function copyProps(dst, src, props) {
   for (let i = 0; i < props.length; i++) {
     let p = props[i];
@@ -168,11 +169,11 @@ var DragDTO = class {
 };
 
 // ts/drag-drop-touch.ts
-var { round } = Math;
 var DefaultConfiguration = {
   allowDragScroll: true,
   contextMenuDelayMS: 900,
-  dragImageOpacity: 0.5,
+  dragImageOpacity: 1,
+  targetImageOpacity: 0.2,
   dragScrollPercentage: 10,
   dragScrollSpeed: 10,
   dragThresholdPixels: 5,
@@ -230,6 +231,10 @@ var DragDropTouch = class {
     this._img = null;
     this._imgCustom = null;
     this._imgOffset = { x: 0, y: 0 };
+    this._top = null;
+    this._bottom = null;
+    this._left = null;
+    this._right = null;
     this.listen();
   }
   /**
@@ -279,6 +284,10 @@ var DragDropTouch = class {
       this._reset();
       let src = this._closestDraggable(e.target);
       if (src) {
+        this._top = src.parentElement.getBoundingClientRect().top;
+        this._right = src.parentElement.getBoundingClientRect().right;
+        this._left = src.parentElement.getBoundingClientRect().left;
+        this._bottom = src.parentElement.getBoundingClientRect().bottom;
         if (e.target && !this._dispatchEvent(e, `mousemove`, e.target) && !this._dispatchEvent(e, `mousedown`, e.target)) {
           this._dragSource = src;
           this._ptDown = pointFrom(e);
@@ -373,6 +382,7 @@ var DragDropTouch = class {
           this._dispatchEvent(this._lastTouch, `drop`, this._lastTarget);
         }
         this._dispatchEvent(this._lastTouch, `dragend`, this._dragSource);
+        this._dragSource.style.opacity = 1;
         this._reset();
       }
     }
@@ -480,7 +490,8 @@ var DragDropTouch = class {
     if (this._img) {
       this._destroyImage();
     }
-    let src = this._imgCustom || this._dragSource;
+    let src = this._imgCustom || this._dragSource
+    this._dragSource.style.opacity = `${this.configuration.targetImageOpacity}`;
     this._img = src.cloneNode(true);
     copyStyle(src, this._img);
     this._img.style.top = this._img.style.left = `-9999px`;
@@ -510,11 +521,13 @@ var DragDropTouch = class {
     requestAnimationFrame(() => {
       if (this._img) {
         let pt = pointFrom(e, true), s = this._img.style;
+        const left = Math.min(pt.x - this._imgOffset.x, this._right - this._img.getBoundingClientRect().width);
+        const top = Math.min(pt.y - this._imgOffset.y, this._bottom - this._img.getBoundingClientRect().height);
         s.position = `absolute`;
         s.pointerEvents = `none`;
         s.zIndex = `999999`;
-        s.left = `${round(pt.x - this._imgOffset.x)}px`;
-        s.top = `${round(pt.y - this._imgOffset.y)}px`;
+        s.left = `${Math.max(this._left, left)}px`;
+        s.top = `${Math.max(this._top, top)}px`;
       }
     });
   }

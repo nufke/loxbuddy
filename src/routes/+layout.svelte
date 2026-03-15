@@ -35,7 +35,8 @@
 	const options = {
 		allowDragScroll: true,
 		contextMenuDelayMS: 900,
-		dragImageOpacity: 1, // was 0.5
+		dragImageOpacity: 1,
+		targetImageOpacity: 0.2,
 		dragScrollPercentage: 10,
 		dragScrollSpeed: 10,
 		dragThresholdPixels: 5,

@@ -5,7 +5,6 @@
 	import { appStore } from '$lib/stores/LbAppStore.svelte';
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 	import { flip } from 'svelte/animate';
-	import { customdnd } from '$lib/helpers/custom-drag-n-drop';
 
 	const key = 'room';
 	const fav = 'favorites';
@@ -56,7 +55,7 @@
 	{#if favorites.length}
 		<div class="mt-2 mb-2 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 lg:flex-wrap">
 			{#each favorites as item (item)}
-			<div animate:flip={{ duration: appStore.dnd.duration }} use:customdnd
+			<div animate:flip={{ duration: appStore.dnd.duration }}
 				draggable={appStore.dnd.isEnabled}
 				class=""
 				ondragstart={() => {draggingItem = item; dragGroup = fav}}
@@ -71,7 +70,7 @@
 	<p class="pl-2 h6">{$_('All')}</p>
 	<div class="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3 lg:flex-wrap">
 		{#each items as item (item)}
-			<div animate:flip={{ duration: appStore.dnd.duration  }} use:customdnd
+			<div animate:flip={{ duration: appStore.dnd.duration  }}
 				draggable={appStore.dnd.isEnabled}
 				ondragstart={() => {draggingItem = item; dragGroup = key}}
 				ondragend={() => {draggingItem = undefined; dragGroup = ''}}
