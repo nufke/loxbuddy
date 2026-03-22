@@ -71,7 +71,7 @@ npm run pm2:logs        # show logs for all pm2 processes
 npm run pm2:status      # show status of all pm2 processes
 ```
 
-You can now access LoxBuddy by navigating to <http://localhost:4004> in a web browser.
+After (re)starting, you can access the LoxBuddy App by navigating to <http://localhost:4004> in a web browser.
 
 ## Supported controls and features
 
