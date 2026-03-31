@@ -175,7 +175,7 @@
 										<span class="label-text">{$_("Miniserver")}</span>
 									</div>
 									<div class="input-group grid-cols-[1fr_auto]">
-										<input class="ig-input" type="text" bind:value={hostname} placeholder={$_("IP address")} />
+										<input class="ig-input" type="text" bind:value={hostname} placeholder={$_("IP address:port")} />
 										{#if env.PUBLIC_ALLOW_SEARCH}
 										<div class="ig-btn preset-tonal" onclick={doSearch}>
 											<LbIcon name="search" height="16" width="16"/>
