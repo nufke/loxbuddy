@@ -49,32 +49,20 @@
 		}
 	}
 
-	// check if 
-	function checkUrl(hostname: string) {
-		const regex = new RegExp('^http://');
-		const found = hostname.match(regex);
-		if (found) {
-			return hostname;
-		} else {
-			return 'http://' + hostname;
-		}
-	}
-
 	async function validate() {
 		showConnectDialog('Connecting to Miniserver...');
 		appStore.setDemo(0); // clear demo mode
 		if (hostname.length && username.length && password.length) {
-			const url = checkUrl(hostname);
 			// 1. Check if MiniServer is reachable via hostname
 			try {
-				await fetch(url + '/jdev/cfg/apiKey');
+				await fetch(hostname + '/jdev/cfg/apiKey');
 			} catch (error) {
 				showMessageDialog('Miniserver not found!');
 				return;
 			}
 			// 2. Check username/password combination via http call (no login yet)
 			try {
-				await checkCredentials(url, username, password);
+				await checkCredentials(hostname, username, password);
 			} catch (error) {
 				showMessageDialog('Login credentials invalid!');
 				return;

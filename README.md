@@ -8,11 +8,21 @@ LoxBuddy establishes a WebSocket connection to your Miniserver to control and mo
 
 **WARNING: The LoxBuddy App is in early developement, thus unstable and incomplete, and may impact the stability of your Smart Home. Use it at your own risk.**
 
+## Main features
+
+* Fast, responsive, and consistent user interface
+* Layout optimized for smart phone and tablet usage
+* Lock screen with time and weather info
+* 20+ themes / color palettes
+* Light / Dark mode
+* Independent and custom icons
+* Weather forecast (LoxBerry Weather4Lox)
+
 ## Screenshots
 
 <div class="flex flex-row gap-3">
-  <img src="https://github.com/nufke/loxbuddy/blob/main/docs/screenshot_mobile_home.png" height=800 alt="Screenshot Mobile Home">
-  <img src="https://github.com/nufke/loxbuddy/blob/main/docs/screenshot_mobile_heating.png" height=800 alt="Screenshot Mobile Heating">
+  <img src="https://github.com/nufke/loxbuddy/blob/main/docs/screenshot_mobile_home.png" height=800 width=400 alt="Screenshot Mobile Home">
+  <img src="https://github.com/nufke/loxbuddy/blob/main/docs/screenshot_mobile_heating.png" height=800 width=400 alt="Screenshot Mobile Heating">
 </div>
 
 [More screenshots and themes](https://github.com/nufke/loxbuddy/wiki/Screenshots)

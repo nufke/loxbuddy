@@ -8,8 +8,7 @@ import { utils } from '$lib/helpers/Utils';
  */
 export class LoxWsClient {
 	private client: LoxClient;
-	private hostUrl: string = '';
-	private hostname: string = '';
+	private hostname: string = ''; // should include http or https
 	private username: string = '';
 
 	/**
@@ -21,7 +20,6 @@ export class LoxWsClient {
 	 * @param logLevel logger level
 	 */
 	constructor(hostname: string, username: string, password: string, appId: string, logLevel: number) {
-		this.hostUrl = 'http://' + hostname; // TODO swich protocol http(s) depending on TLS
 		this.hostname = hostname;
 		this.username = username;
 
@@ -159,7 +157,7 @@ export class LoxWsClient {
 	 * Retrieve user settings (e.g. sorting/order of controls)
 	 */
 	getUserSettings() {
-		fetch(`${this.hostUrl}/jdev/sps/getusersettings?autht=${appStore.credentials.token}&user=${this.username}`)
+		fetch(`${this.hostname}/jdev/sps/getusersettings?autht=${appStore.credentials.token}&user=${this.username}`)
 		.then((response) => {
 			if (response.ok) {
 				return response.json();
@@ -177,7 +175,7 @@ export class LoxWsClient {
 	 * Retrieve Miniserver system status
 	 */
 	getSystemStatus() {
-		fetch(`${this.hostUrl}/jdev/sps/io/${controlStore.messageCenterList[0].uuidAction}/getEntries/2?autht=${appStore.credentials.token}&user=${this.username}`)
+		fetch(`${this.hostname}/jdev/sps/io/${controlStore.messageCenterList[0].uuidAction}/getEntries/2?autht=${appStore.credentials.token}&user=${this.username}`)
 		.then((response) => {
 			if (response.ok) {
 				return response.json();
@@ -193,7 +191,7 @@ export class LoxWsClient {
 	 * Retrieve Miniserver icon list
 	 */
 	getIconList() {
-		fetch(`${this.hostUrl}/jdev/sps/geticonlist?autht=${appStore.credentials.token}&user=${this.username}`)
+		fetch(`${this.hostname}/jdev/sps/geticonlist?autht=${appStore.credentials.token}&user=${this.username}`)
 		.then((response) => response.json())
 		.then((data) => {
 			controlStore.iconList = data;
@@ -206,7 +204,7 @@ export class LoxWsClient {
 	 * @param url webservices endpoint (e.g., /jdev/sps/io/...)
 	*/
 	async fetch(url: string) {
-		return fetch(`${this.hostUrl}/${url}?autht=${appStore.credentials.token}&user=${this.username}`)
+		return fetch(`${this.hostname}/${url}?autht=${appStore.credentials.token}&user=${this.username}`)
 		.then((response) => response.json())
 		.then((data) => {
 			//console.debug('[LoxWsClient] fetch data', data)
