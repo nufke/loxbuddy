@@ -12,11 +12,11 @@
 
 ## Tablet
 
-<img src="https://github.com/nufke/loxbuddy/blob/main/docs/screenshot_tablet_home.png" height=800 width=400 alt="Screenshot Tablet Home">
+<img src="https://github.com/nufke/loxbuddy/blob/main/docs/screenshot_tablet_home.png" height=800 width=1000 alt="Screenshot Tablet Home">
 
-<img src="https://github.com/nufke/loxbuddy/blob/main/docs/screenshot_tablet_energy.png" height=800 width=400 alt="Screenshot Tablet Energy">
+<img src="https://github.com/nufke/loxbuddy/blob/main/docs/screenshot_tablet_energy.png" height=800 width=1000 alt="Screenshot Tablet Energy">
 
-<img src="https://github.com/nufke/loxbuddy/blob/main/docs/screenshot_tablet_ircv2.png" height=800 width=400 alt="Screenshot Tablet IRCv2">
+<img src="https://github.com/nufke/loxbuddy/blob/main/docs/screenshot_tablet_ircv2.png" height=800 width=1000 alt="Screenshot Tablet IRCv2">
 
 ## Theme examples
 
