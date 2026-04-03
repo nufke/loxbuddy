@@ -1669,7 +1669,7 @@
 			"defaultRating": 1,
 			"isFavorite": true,
 			"isSecured": false,
-			"defaultIcon": "IconsFilled/afval.svg",
+			"defaultIcon": "IconsFilled/alarm-1.svg",
 			"restrictions": 0,
 			"details": {
 					"jLockable": false,

@@ -144,10 +144,10 @@
 		control: control,
 		isFavorite: controlOptions.isFavorite,
 		iconName: controlStore.getIcon(control, controlOptions.isSubControl),
-		iconColor: allClosed ? 'dark:text-primary-500 text-primary-700' : 'text-orange-500',
+		iconColor: allClosed ? 'text-surface-950 dark:text-surface-50' : 'dark:text-primary-500 text-primary-700',
 		textName: control.name,
 		statusName: getStatus(),
-		statusColor: allClosed ? 'dark:text-primary-500 text-primary-700' : 'text-orange-500', 
+		statusColor: allClosed ? 'text-surface-950 dark:text-surface-50' : 'dark:text-primary-500 text-primary-700', 
 		dialog: dialog
 	});
 </script>
@@ -180,7 +180,7 @@
 								<p class="flex relative text-lg text-center mt-2 mb-2">
 									{#each summary as state, i}
 										{@const isLast = i === summary.length - 1}
-											<span class={ state.color ? 'text-orange-500' : 'dark:text-primary-500 text-primary-700'}>{state.name}</span>{#if !isLast }
+											<span class={ state.color ? 'dark:text-primary-500 text-primary-700' : 'text-surface-950 dark:text-surface-50'}>{state.name}</span>{#if !isLast }
 												<span>,&nbsp;</span>{/if}
 									{/each}
 								</p>
@@ -204,7 +204,7 @@
 														<p class="text-lg">
 															{#each getState(window.state) as state, i}
 																{@const isLast = i === getState(window.state).length - 1}
-																<span class={ state.color ? 'text-orange-500' : ( window.state ? 'dark:text-primary-500 text-primary-700' :
+																<span class={ state.color ? 'dark:text-primary-500 text-primary-700' : ( window.state ? 'text-surface-950 dark:text-surface-50' :
 																'dark:text-surface-300 text-surface-700')}>{state.name}</span>{#if !isLast }
 																	<span>,&nbsp;</span>{/if}
 															{/each}

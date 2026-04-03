@@ -21,6 +21,7 @@
 		control: control,
 		isFavorite: controlOptions.isFavorite,
 		iconName: controlStore.getIcon(control, controlOptions.isSubControl),
+		iconColor: active ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700',
 		textName: control.name,
 		badgeIconName: locked ? 'Lock' : '',
 		badgeIconColor: locked ? 'bg-red-500' : '',
