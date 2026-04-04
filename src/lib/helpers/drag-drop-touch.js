@@ -2,6 +2,7 @@
 //
 // Copyright (c) 2016-2024 Bernardo Castilho
 // Copyright (c) 2024 Pomax
+// Copyright (c) 2026 Martin Barnasconi
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -284,10 +285,11 @@ var DragDropTouch = class {
       this._reset();
       let src = this._closestDraggable(e.target);
       if (src) {
-        this._top = src.parentElement.getBoundingClientRect().top;
+        const scrollY = window.scrollY; // correct with scroll position
+        this._top = src.parentElement.getBoundingClientRect().top + scrollY;
         this._right = src.parentElement.getBoundingClientRect().right;
         this._left = src.parentElement.getBoundingClientRect().left;
-        this._bottom = src.parentElement.getBoundingClientRect().bottom;
+        this._bottom = src.parentElement.getBoundingClientRect().bottom + scrollY;
         if (e.target && !this._dispatchEvent(e, `mousemove`, e.target) && !this._dispatchEvent(e, `mousedown`, e.target)) {
           this._dragSource = src;
           this._ptDown = pointFrom(e);

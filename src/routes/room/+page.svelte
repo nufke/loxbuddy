@@ -28,11 +28,19 @@
 	);
 
 	function isFavorite(obj: any, room: Room, key: string) {
-		return obj[room.uuid] ? obj[room.uuid][key] ? obj[room.uuid][key].isFav : false : false;
+		if (obj) {
+			return obj[room.uuid] ? obj[room.uuid][key] ? obj[room.uuid][key].isFav : false : false;
+		} else {
+			return room.isFavorite;
+		}
 	}
 
 	function getPosition(obj: any, room: Room, key: string) {
-		return obj[room.uuid] ? obj[room.uuid][key] ? obj[room.uuid][key].position : 999 : 999;
+		if (obj) {
+			return obj[room.uuid] ? obj[room.uuid][key] ? obj[room.uuid][key].position : 999 : 999;
+		} else {
+			return 999 - room.defaultRating;
+		}
 	}
 
 	function swapItems(list: Room[], item: Room, group: string) {

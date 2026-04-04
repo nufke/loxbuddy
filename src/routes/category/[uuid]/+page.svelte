@@ -45,12 +45,19 @@
 	);
 
 	function isFavorite(obj: any, control: Control, key: string) {
-		return obj[control.uuidAction] ? obj[control.uuidAction][key] ? obj[control.uuidAction][key].isFav : false : false;
+		if (obj) {
+			return obj[control.uuidAction] ? obj[control.uuidAction][key] ? obj[control.uuidAction][key].isFav : false : false;
+		} else {
+			control.isFavorite;
+		}
 	}
 
 	function getPosition(obj: any, control: Control, key: string) {
-		let pos = obj[control.uuidAction] ? obj[control.uuidAction][key] ? obj[control.uuidAction][key].position : 999 : 999;
-		return pos;
+		if (obj) {
+			return obj[control.uuidAction] ? obj[control.uuidAction][key] ? obj[control.uuidAction][key].position : 999 : 999;
+		} else {
+			return 999 - control.defaultRating;
+		}
 	}
 
 	function swapItems(list: Control[], item: Control, group: string) {

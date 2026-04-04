@@ -27,11 +27,19 @@
 	);
 
 	function isFavorite(obj: any, cat: Category, key: string) {
-		return obj[cat.uuid] ? obj[cat.uuid][key] ? obj[cat.uuid][key].isFav : false : false;
+		if (obj) {
+			return obj[cat.uuid] ? obj[cat.uuid][key] ? obj[cat.uuid][key].isFav : false : false;
+		} else {
+			return cat.isFavorite;
+		}
 	}
 
 	function getPosition(obj: any, cat: Category, key: string) {
-		return obj[cat.uuid] ? obj[cat.uuid][key] ? obj[cat.uuid][key].position : 999 : 999;
+		if (obj) {
+			return obj[cat.uuid] ? obj[cat.uuid][key] ? obj[cat.uuid][key].position : 999 : 999;
+		} else {
+			return 999 - cat.defaultRating;
+		}
 	}
 
 	function swapItems(list: Category[], item: Category, group: string) {

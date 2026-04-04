@@ -28,7 +28,7 @@
 		<Portal>
 			<Dialog.Backdrop class="fixed top-0 left-0 right-0 bottom-0 z-2000 dark:bg-surface-950 bg-surface-50 {fadeInOut}"/>
 			<Dialog.Positioner class="fixed top-0 left-0 w-full h-full z-2001">
-				<Dialog.Content class="card p-4 space-y-4 shadow-xl {fadeInOut}">
+				<Dialog.Content class="card p-2 space-y-4 shadow-xl {fadeInOut}">
 					<header class="flex justify-between items-center">
 						<Dialog.Title class="text-lg font-bold"></Dialog.Title>
 						<button type="button" class="btn-icon text-left hover:preset-tonal" onclick={() => appStore.resetLockScreenDialogTimeout()}>
@@ -45,7 +45,7 @@
 						{/if}
 						<div class="">
 							<p class="mt-2 pl-3 text-7xl font-bold">{format(date, "p")}</p>
-							<p class="mt-2 pl-3 text-4xl">{format(date, "eeee PPP")}</p>
+							<p class="mt-2 pl-3 text-4xl">{format(date, "eeee d LLLL")}</p>
 						</div>
 					</div>
 					</Dialog.Description>

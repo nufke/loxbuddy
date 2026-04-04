@@ -68,7 +68,6 @@ export class LoxWsClient {
 			console.info('[LoxWsClient] Get structure file...');
 			const structure = await this.client.getStructureFile();
 			controlStore.initStructure(structure, this);
-			console.info('structure', structure);
 			this.client.parseStructureFile();
 
 			// initiates streaming of all events
