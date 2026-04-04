@@ -56,6 +56,7 @@
 		{ label: 'About', href: '/about', icon: 'info', menu: true },
 		{ label: 'Log', href: '/log', icon: 'logs', menu: true },
 		{ label: 'Home', href: '/', icon: 'house', menu: false },
+		{ label: 'Favorites', href: '/favs', icon: 'favorite', menu: false },
 		{ label: 'Rooms', href: '/room', icon: 'grid-2x2', menu: false },
 		{ label: 'Categories', href: '/category', icon: 'layout-list',  menu: false },
 		{ label: 'Messages', href: '/messages', icon: 'file-text', menu: false },
@@ -275,8 +276,8 @@
 	</div>
 	{#if navigation.find ( item => item.href == path )}
 	<div>
-		<Navigation layout="bar" class="fixed bottom-0 h-[68px] shadow-inner">
-			<Navigation.Menu class="grid grid-cols-4 gap-2">
+		<Navigation layout="bar" class="fixed bottom-0 h-[68px] overflow-hidden">
+			<Navigation.Menu class="grid grid-cols-5 gap-2">
 				{#each navigation as link (link)}
 					<div onclick={() => {navigate(link.href)}}  class={anchorBar}>
 						<div class="relative inline-block">

@@ -657,14 +657,14 @@ export const DEFAULT_USERSETTINGS: UserSettings = {
 }
 
 export type Credentials = {
-	hostname: string;
-	username: string;
+	hostName: string;
+	userName: string;
 	token: string;
 }
 
 export const NO_CREDENTIALS: Credentials = {
-	hostname: '',
-	username: '',
+	hostName: '',
+	userName: '',
 	token: ''
 }
 

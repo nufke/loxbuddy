@@ -6,7 +6,6 @@
 	import { appStore } from '$lib/stores/LbAppStore.svelte';
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 	import { flip } from 'svelte/animate';
-	import { goto } from '$app/navigation';
 
 	let fav = 'favorites';
 	let dragGroup = $state('');
@@ -14,15 +13,21 @@
 	let animatingItems = new Set();
 
 	let userSettings = $derived(controlStore.userSettings);
-	let centralRooms = $derived(controlStore.roomList.filter( (room) => room.name.includes($_('General')) || room.name.includes($_('Central'))));
-	let centralRoomsUuids = $derived(centralRooms.map( room => room.uuid));
 	let controlOptions: ControlOptions = $derived(DEFAULT_CONTROLOPTIONS);
 
-	let centralControls = $derived(
-		controlStore.controlList.filter((control) => centralRoomsUuids.includes(control.room) && control.defaultRating > 0)
+	let favoriteControls = $derived(
+		controlStore.controlList.filter((control) => isFavorite(userSettings.userDefaultStructure, control, fav))
 		.sort((a, b) => a.name.localeCompare(b.name, appStore.locale))
 		.sort((a, b) => getPosition(userSettings.userDefaultStructure, a, fav) - getPosition(userSettings.userDefaultStructure, b, fav))
 	);
+
+	function isFavorite(obj: any, control: Control, key: string) {
+		if (obj) { 
+			return obj[control.uuidAction] ? obj[control.uuidAction][key] ? obj[control.uuidAction][key].isFav : false : false;
+		} else {
+			return control.isFavorite;
+		}
+	}
 
 	function getPosition(obj: any, control: Control, key: string) {
 		if (obj) { 
@@ -48,22 +53,18 @@
 </script>
 
 <div class="container mx-auto max-w-[800px] lg:max-w-[1280px] p-3">
-  <div class="space-y-2">
-    {#each centralRooms as centralRoom}
-      <button class="pl-2 h5" onclick={() => {goto('/room/'+centralRoom.uuid)}}>{centralRoom.name}</button>
-      <div class="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 lg:flex-wrap">
-        {#each centralControls.filter( control => control.room == centralRoom.uuid) as control (control)}
-          {@const Component = lbControl.getControl(control.type)}
-          <div animate:flip={{ duration: appStore.dnd.duration }}
-            draggable={appStore.dnd.isEnabled}
-            ondragstart={() => {draggingItem = control; dragGroup = centralRoom.name}}
-            ondragend={() => {draggingItem = undefined; dragGroup = ''}}
-            ondragenter={() => { centralControls = swapItems(centralControls, control, centralRoom.name)}}
-            ondragover={(event) => {event.preventDefault(); if (event && event.dataTransfer) event.dataTransfer.dropEffect = 'move';}}>
-            <Component {control} controlOptions={{...controlOptions, isFavorite: true}}/>
-          </div>
-        {/each}
-    </div>
-    {/each}
-  </div>
+	<p class="pl-2 pb-2 h5">{$_('Favorites')}</p>
+	<div class="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 lg:flex-wrap">
+		{#each favoriteControls as control (control)}
+			{@const Component = lbControl.getControl(control.type)}
+			<div animate:flip={{ duration: appStore.dnd.duration }}
+				draggable={appStore.dnd.isEnabled}
+				ondragstart={() => {draggingItem = control}}
+				ondragend={() => {draggingItem = undefined}}
+				ondragenter={() => { favoriteControls = swapItems(favoriteControls, control, control.name)}}
+				ondragover={(event) => {event.preventDefault(); if (event && event.dataTransfer) event.dataTransfer.dropEffect = 'move';}}>
+					<Component {control} controlOptions={{...controlOptions, isFavorite: true}}/>
+			</div>
+		{/each}
+	</div>
 </div>

@@ -32,7 +32,7 @@
 		switch (level) {
 			case 0: 
 				statusName = 'Everything OK'; 
-				statusColor = 'text-green-500 fill-green-500';
+				statusColor = 'dark:text-primary-500 text-primary-700';
 				break;
 			case 1: 
 				statusName = 'Pre-alarm active'; 

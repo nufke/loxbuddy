@@ -1,6 +1,9 @@
 {
   "__uuid__controls_switch_states_active": "1",
 
+  "__uuid__controls_status": "All OK",
+  "__uuid__controls_alarm_status": "All OK",
+
   "__uuid__controls_pv_meter_states_jLocked": "",
   "__uuid__controls_pv_meter_states_actual": "0.046656",
   "__uuid__controls_pv_meter_states_total": "15395.896460099048",

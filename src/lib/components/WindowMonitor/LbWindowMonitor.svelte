@@ -42,7 +42,7 @@
 	// TODO check what the summary is
 	function getSummary(open: number, tilted: number, unlocked: number) {
 		let summary: any = [];
-		if (open) { summary.push({ name: String(open) + ' ' + $_('Opened'), color: true}) }
+		if (open) { summary.push({ name: String(open) + ' ' + $_('Open'), color: true}) }
 		//if (numClosed) { summary.push({ name: String(numClosed) + ' ' + $_('Closed'), color: false}) }
 		if (tilted) { summary.push({ name: String(tilted) + ' ' + $_('Tilted'), color: true}) }
 		//if (numOffline) { summary.push({ name: String(numClosed) + ' ' + $_('Offline'), color: false}) }
@@ -108,7 +108,7 @@
 		if (state == 0) { stateList.push({ name: $_('Offline'), color: false}) }
 		if (state & 1) { stateList.push({ name: $_('Closed'), color: false}) }
 		if (state & 2) { stateList.push({ name: $_('Tilted'), color: true}) }
-		if (state & 4) { stateList.push({ name: $_('Opened'), color: true}) }
+		if (state & 4) { stateList.push({ name: $_('Open'), color: true}) }
 		if (state & 8) { stateList.push({ name: $_('Locked'), color: false}) }
 		if (state & 16) { stateList.push({ name: $_('Unlocked'), color: true}) }
 		return stateList

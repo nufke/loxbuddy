@@ -11,8 +11,8 @@
 	import { demo } from '$lib/demo/Demo';
 
 	let openPopup = $state(false);
-	let hostname = $state('');
-	let username = $state('');
+	let hostName = $state('');
+	let userName = $state('');
 	let password = $state('');
 	let hidePassword = $state(true);
 
@@ -52,17 +52,18 @@
 	async function validate() {
 		showConnectDialog('Connecting to Miniserver...');
 		appStore.setDemo(0); // clear demo mode
-		if (hostname.length && username.length && password.length) {
+		hostName = hostName.replace(/\/$/, '');
+		if (hostName.length && userName.length && password.length) {
 			// 1. Check if MiniServer is reachable via hostname
 			try {
-				await fetch(hostname + '/jdev/cfg/apiKey');
+				await fetch(hostName + '/jdev/cfg/apiKey');
 			} catch (error) {
 				showMessageDialog('Miniserver not found!');
 				return;
 			}
 			// 2. Check username/password combination via http call (no login yet)
 			try {
-				await checkCredentials(hostname, username, password);
+				await checkCredentials(hostName, userName, password);
 			} catch (error) {
 				showMessageDialog('Login credentials invalid!');
 				return;
@@ -70,14 +71,14 @@
 			// 3. Establish WebSocket connection (no login yet)
 			let loxClient;
 			try {
-				loxClient = new LoxWsClient(hostname, username, password, appStore.appId, 0);
+				loxClient = new LoxWsClient(hostName, userName, password, appStore.appId, 0);
 			} catch (error) {
 				showMessageDialog('Unable to connect to Miniserver');
 				return;
 			}
-			// 4. Check if we have a valid token, and if so, use it to connect
-			if (appStore.credentials && appStore.credentials.token) {
-				const tokenValid = await checkTokenValidity(hostname, username, appStore.credentials.token);
+			// 4. Check if we use the same credentials and have a valid token, and if so, use it to connect
+			if (appStore.credentials && appStore.credentials.hostName == hostName && appStore.credentials.userName == userName && appStore.credentials.token) {
+				const tokenValid = await checkTokenValidity(hostName, userName, appStore.credentials.token);
 				if (tokenValid) {
 					await loxClient.connect(appStore.credentials.token);
 				}
@@ -102,7 +103,7 @@
 	}
 
 	function select(item: any) {
-		hostname = item.ipaddr;
+		hostName = item.ipaddr;
 		openPopup = false;
 	}
 
@@ -163,7 +164,7 @@
 										<span class="label-text">{$_("Miniserver")}</span>
 									</div>
 									<div class="input-group grid-cols-[1fr_auto]">
-										<input class="ig-input" type="text" bind:value={hostname} placeholder={$_("IP address:port")} />
+										<input class="ig-input" type="text" bind:value={hostName} placeholder={$_("IP address:port")} />
 										{#if env.PUBLIC_ALLOW_SEARCH}
 										<div class="ig-btn preset-tonal" onclick={doSearch}>
 											<LbIcon name="search" height="16" width="16"/>
@@ -175,7 +176,7 @@
 									<div class="flex flex-row gap-3">
 										<span class="label-text">{$_("Username")}</span>
 									</div>
-									<input class="input" type="text" bind:value={username} placeholder={$_("Username")} autocomplete="username"/>
+									<input class="input" type="text" bind:value={userName} placeholder={$_("Username")} autocomplete="username"/>
 								</label>
 								<label class="label">
 									<div class="flex flex-row gap-3">
@@ -194,7 +195,7 @@
 								</label>
 							</fieldset>
 							<fieldset class="pt-3 flex justify-center">
-								<button type="submit" class="w-full btn { hostname.length && username.length > 0 && password.length > 0 ? 'preset-filled-primary-500' : 'preset-outlined-surface-300-700'}">{$_("Connect")}</button>
+								<button type="submit" class="w-full btn { hostName.length && userName.length > 0 && password.length > 0 ? 'preset-filled-primary-500' : 'preset-outlined-surface-300-700'}">{$_("Connect")}</button>
 							</fieldset>
 						</form>
 						<button class="m-3 h6 dark:text-primary-500 text-primary-700" onclick={startDemo}>{$_("Start Demo")}</button>

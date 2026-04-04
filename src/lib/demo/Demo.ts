@@ -46,9 +46,12 @@ export class Demo {
 
 		setTimeout( () => {
 			controlStore.setInitialStates(states);
-			controlStore.userSettings = userSettings;
 			controlStore.updateNotificationMap(notification);
 		}, 200);
+
+		setTimeout( () => {
+			controlStore.userSettings = userSettings;
+		}, 1000);
 
 		// Meter
 		setInterval(() => {

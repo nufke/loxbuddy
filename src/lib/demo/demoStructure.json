@@ -105,6 +105,15 @@
 			"type": 4,
 			"color": "#69C350"
 		},
+		"__uuid__rooms_central_energy": {
+			"uuid": "__uuid__rooms_central_energy",
+			"name": "Central energy",
+			"image": "IconsFilled/central.svg",
+			"defaultRating": 0,
+			"isFavorite": false,
+			"type": 4,
+			"color": "#69C350"
+		},
 		"__uuid__rooms_outside": {
 			"uuid": "__uuid__rooms_outside",
 			"name": "Outside",
@@ -261,7 +270,7 @@
 			"name": "PV meter",
 			"type": "Meter",
 			"uuidAction": "__uuid__controls_pv_meter",
-			"room": "__uuid__rooms_central",
+			"room": "__uuid__rooms_central_energy",
 			"cat": "__uuid__cats_pv",
 			"defaultRating": 2,
 			"isFavorite": true,
@@ -318,9 +327,9 @@
 			"name": "Battery",
 			"type": "Meter",
 			"uuidAction": "__uuid__controls_battery",
-			"room": "__uuid__rooms_central",
+			"room": "__uuid__rooms_central_energy",
 			"cat": "__uuid__cats_energy",
-			"defaultRating": 0,
+			"defaultRating": 1,
 			"isFavorite": false,
 			"isSecured": false,
 			"defaultIcon": "IconsFilled/battery-full.svg",
@@ -412,7 +421,7 @@
 			"name": "Net",
 			"type": "Meter",
 			"uuidAction": "__uuid__controls_net",
-			"room": "__uuid__rooms_central",
+			"room": "__uuid__rooms_central_energy",
 			"cat": "__uuid__cats_energy",
 			"defaultRating": 1,
 			"isFavorite": false,
@@ -693,7 +702,7 @@
 			"name": "Battery level",
 			"type": "ValueSelector",
 			"uuidAction": "__uuid__controls_battery_level",
-			"room": "__uuid__rooms_central",
+			"room": "__uuid__rooms_central_energy",
 			"cat": "__uuid__cats_energy",
 			"defaultRating": 0,
 			"isFavorite": false,
@@ -852,7 +861,7 @@
 			"name": "Electricity Phase 1",
 			"type": "InfoOnlyAnalog",
 			"uuidAction": "__uuid__controls_phase_1",
-			"room": "__uuid__rooms_central",
+			"room": "__uuid__rooms_central_energy",
 			"cat": "__uuid__cats_energy",
 			"defaultRating": 0,
 			"isFavorite": false,
@@ -1660,10 +1669,10 @@
 					"type": 71
 			}
 		},
-		"__uuid__controls_textstate": {
+		"__uuid__controls_alarm_status": {
 			"name": "Alarm status",
 			"type": "TextState",
-			"uuidAction": "__uuid__controls_textstate",
+			"uuidAction": "__uuid__controls_alarm_status",
 			"room": "__uuid__rooms_central",
 			"cat": "__uuid__cats_alarm",
 			"defaultRating": 1,
@@ -1676,8 +1685,8 @@
 					"format": "%s"
 			},
 			"states": {
-					"textAndIcon": "__uuid__controls_textstate",
-					"iconAndColor": "__uuid__controls_textstate_states_iconAndColor"
+					"textAndIcon": "__uuid__controls_alarm_status",
+					"iconAndColor": "__uuid__controls_alarm_status_states_iconAndColor"
 
 			}
 		}
