@@ -504,6 +504,7 @@ export type Route = {
 	href: string;
 	icon: string;
 	menu?: boolean;
+	visible?: boolean;
 };
 
 export type ColorType = { 

@@ -125,6 +125,9 @@
 		showWeather = event.checked ? '1' : '0';
 		localStorage.setItem('showWeather', showWeather);
 		appStore.showWeather = event.checked;
+		if (showWeather=='1') {
+			weatherStore.startWeatherForecast();
+		}
 	};
 	
 	const onSorting = (event: { checked: boolean }) => {

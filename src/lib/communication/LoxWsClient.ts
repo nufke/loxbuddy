@@ -2,6 +2,7 @@ import LoxClient from 'svelte-lox-client';
 import { controlStore } from '$lib/stores/LbControlStore.svelte';
 import { appStore } from '$lib/stores/LbAppStore.svelte';
 import { utils } from '$lib/helpers/Utils';
+import { demo } from '$lib/demo/Demo';
 
 /**
  * Class to connect to Miniserver using WebSocket
@@ -84,6 +85,9 @@ export class LoxWsClient {
 			// get icon list
 			console.info('[LoxWsClient] Get icons...');
 			this.getIconList();
+			
+			// update locale based on structure language
+			appStore.setLocale(controlStore.msInfo.languageCode.toLowerCase().slice(0, 2));
 		}
 	}
 
@@ -215,10 +219,17 @@ export class LoxWsClient {
 
 /**
  * Establish connection with Miniserver if credentials are available
+ * If Demo was runnig before, reload Demo
  */
 export const startLoxWsClient = async () => {
 	const cred = utils.deserialize(localStorage.getItem('credentials'));
 	const appId = localStorage.getItem('appId') || undefined;
+
+	if (appStore.isDemo) {
+		demo.start();
+		appStore.setLocale('en'); // switch to en locale for demo
+		return;
+	}
 
 	if (cred && cred.hostname && cred.username && cred.token && appId) {
 		const loxClient = new LoxWsClient(cred.hostname, cred.username, '', appId, 0);

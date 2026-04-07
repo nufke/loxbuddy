@@ -21,7 +21,6 @@
 	import { goto } from '$app/navigation';
 	import { Logger } from '$lib/helpers/Logger';
 	import { enableDragDropTouch } from '$lib/helpers/drag-drop-touch';
-	import { demo } from '$lib/demo/Demo';
 
 	const env = page.data.env;
 	const logLevel = env && env.APP_LOGLEVEL ? Number(env.APP_LOGLEVEL) : 0;
@@ -47,16 +46,16 @@
 	let { children } = $props();
 
 	let routes: Route[] = $state([
-		{ label: 'Login', href: '/login', icon: 'log-in', menu: true },
-		{ label: 'Weather', href: '/weather', icon: 'file-text', menu: true },
-		{ label: 'Settings', href: '/settings', icon: 'settings',  menu: true },
-		{ label: 'About', href: '/about', icon: 'info', menu: true },
-		{ label: 'Log', href: '/log', icon: 'logs', menu: true },
-		{ label: 'Home', href: '/', icon: 'house', menu: false },
-		{ label: 'Favorites', href: '/favs', icon: 'favorite', menu: false },
-		{ label: 'Rooms', href: '/room', icon: 'grid-2x2', menu: false },
-		{ label: 'Categories', href: '/category', icon: 'layout-list',  menu: false },
-		{ label: 'Messages', href: '/messages', icon: 'file-text', menu: false },
+		{ label: 'Login', href: '/login', icon: 'log-in', menu: true, visible: true },
+		{ label: 'Weather', href: '/weather', icon: 'cloud-sun', menu: true, visible: false },
+		{ label: 'Settings', href: '/settings', icon: 'settings',  menu: true, visible: true },
+		{ label: 'About', href: '/about', icon: 'info', menu: true, visible: true },
+		{ label: 'Log', href: '/log', icon: 'logs', menu: true, visible: true },
+		{ label: 'Home', href: '/', icon: 'house', menu: false, visible: true },
+		{ label: 'Favorites', href: '/favs', icon: 'favorite', menu: false, visible: true },
+		{ label: 'Rooms', href: '/room', icon: 'grid-2x2', menu: false, visible: true },
+		{ label: 'Categories', href: '/category', icon: 'layout-list',  menu: false, visible: true },
+		{ label: 'Messages', href: '/messages', icon: 'file-text', menu: false, visible: true },
 	]);
 
 	let mobileMenuDialog = $state(false);
@@ -128,21 +127,20 @@
 	});
 
 	$effect( () => {
+		routes[1] = { label: 'Weather', href: '/weather', icon: 'cloud-sun', menu: true, visible: Boolean(showWeather) };
+	});
+
+	$effect( () => {
 		if (loxStatus || isDemo) { // connected or demo
-			routes[0] = { label: 'Logout', href: '/logout', icon: 'log-out', menu: true };
+			routes[0] = { label: 'Logout', href: '/logout', icon: 'log-out', menu: true, visible: true };
 			navigate((localStorage.getItem('startPage') || '/'));
 		} else { // not connected
-			routes[0] = { label: 'Login', href: '/login', icon: 'log-in', menu: true };
+			routes[0] = { label: 'Login', href: '/login', icon: 'log-in', menu: true, visible: true };
 			appStore.loginDialog.state = true; 
 		}
 	});
 
-	// try to connect once (or start demo)
-	if (isDemo) {
-		demo.start();
-	} else {
-		startLoxWsClient();
-	}
+	startLoxWsClient();
 
 	// TODO add configuration
 	// connect to MQTT server (if environment settings are available)
@@ -318,7 +316,7 @@
 					</div>
 				</header>
 				<div class="flex flex-col">
-					{#each routes.filter((m) => m.menu) as link (link)}
+					{#each routes.filter((m) => m.menu && m.visible) as link (link)}
 						{@const Icon = link.icon}
 						<div onclick={() => { mobileMenuDialog = false; navigate(link.href)}} class={anchorSidebar} 
 							aria-label={link.label}>
