@@ -63,21 +63,17 @@
 		const date = new Date(epoch * 1000);
 		return format(date, "PPP p")
 	}
-
-	function setTabsTop() {
-		return (innerWidth.current > 768) ? 0 : 65; // TODO better way to fix top for Tabs?
-	}
 </script>
 
-<div class="container flex mx-auto max-w-[800px] w-screen">
+<div class="container flex mx-auto max-w-[800px] w-screen overflow-hidden">
 	<Tabs defaultValue={'notifications'} onValueChange={(e) => (group = e.value)} class="w-screen">
-		<Tabs.List class="bg-surface-50-950 sticky" style="top: {setTabsTop()}px">
+		<Tabs.List class="pt-2 bg-surface-50-950 fixed">
 			<Tabs.Trigger value="notifications" class="flex-1 h5 text-wrap">{$_("Notifications")}</Tabs.Trigger>
 			<Tabs.Trigger value="systemstatus" class="flex-1 h5 text-wrap">{$_("System status")}</Tabs.Trigger>
 			<Tabs.Trigger value="history" class="m-0 flex-1 h5 text-wrap">{$_("History")}</Tabs.Trigger>
 			<Tabs.Indicator class=""/>
 		</Tabs.List>
-		<div class="overflow-y-auto h-full">
+		<div class="pt-[90px] overflow-y-auto h-full">
 			<Tabs.Content value="notifications">
 					{#each activeNotifications as notification}
 						<div class="{notification.status == 2 ? 'pl-[13px]' : 'pl-2 border-l-5 dark:border-l-primary-500'} border-b dark:border-surface-900 border-surface-200 cursor-pointer pt-3 pb-3 pr-3"

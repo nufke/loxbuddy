@@ -7,6 +7,7 @@
 	import { fadeInOut } from '$lib/helpers/styles';
 	import { appStore } from '$lib/stores/LbAppStore.svelte';
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
+	import { weatherStore } from '$lib/stores/LbWeatherStore.svelte';
 	import LbIcon from '$lib/components/Common/LbIcon.svelte';
 	import LbGeneralDialog from '$lib/components/Common/LbGeneralDialog.svelte';
 
@@ -14,6 +15,7 @@
 	let openStartpageDialog = $state(false);
 	let showStatus = $state(localStorage.getItem('showStatus') || '0');
 	let showWeather = $state(localStorage.getItem('showWeather') || '0');
+	let weatherUrl = $state(localStorage.getItem('weatherUrl') || '');
 	let theme = $state(localStorage.getItem('theme') || 'LoxBuddy');
 	let mode = $state(localStorage.getItem('mode') || 'dark');
 	let startPage = $state(localStorage.getItem('startPage') || '/');
@@ -129,6 +131,13 @@
 		sorting = event.checked;
 		appStore.dnd.isEnabled = event.checked;
 	}
+	
+	function setWeatherUrl(url: string) {
+		weatherUrl = url;
+		localStorage.setItem('weatherUrl', url);
+		weatherStore.weatherUrl = weatherUrl;
+		weatherStore.startWeatherForecast();
+	}
 </script>
 
 <div class="container pt-3 flex flex-col max-w-[640px] w-screen mx-auto">
@@ -168,6 +177,10 @@
 			</Switch>
 		</div>
 	</button>
+	<div class="flex w-full justify-between border-b dark:border-surface-900 border-surface-200 p-3 pr-5 pl-5 text-left text-lg">
+		<p class="w-[200px] {showWeather == '0' ? 'opacity-50' : ''}">{$_("Weather URL")}</p>
+		<input class="ig-input text-right" type="text" bind:value={() => weatherUrl,	(v) => setWeatherUrl(v)} placeholder="http://weather.url" disabled={showWeather=='0'} />
+	</div>
 	<button aria-current="true" type="button" class="w-full border-b dark:border-surface-900 border-surface-200 p-3 pr-5 pl-5 text-left text-lg">
 		<div class="flex w-full justify-between">
 			<p>{$_("Sorting")}</p>

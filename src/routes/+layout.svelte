@@ -18,7 +18,6 @@
 	import LbLockScreenDialog from '$lib/components/LockScreen/LbLockScreenDialog.svelte';
 	import { startLoxWsClient} from '$lib/communication/LoxWsClient';
 	import { format } from 'date-fns';
-	import { fade } from 'svelte/transition';
 	import { goto } from '$app/navigation';
 	import { Logger } from '$lib/helpers/Logger';
 	import { enableDragDropTouch } from '$lib/helpers/drag-drop-touch';
@@ -26,8 +25,6 @@
 
 	const env = page.data.env;
 	const logLevel = env && env.APP_LOGLEVEL ? Number(env.APP_LOGLEVEL) : 0;
-	const weatherUrl =  env && env.WEATHER_URL ? env.WEATHER_URL : '';
-
 	const anchorRail = 'btn aspect-square pl-6 w-full max-w-[74px] flex flex-col items-center gap-0.5';
 	const anchorSidebar = 'btn justify-start px-2 w-full ';
 	const anchorBar = 'btn hover:preset-tonal flex-col items-center gap-1';
@@ -155,7 +152,7 @@
 
 	Logger(logLevel, true);
 	enableDragDropTouch(document, document, options);
-	weatherStore.startWeatherForecast(weatherUrl);
+	weatherStore.startWeatherForecast();
 </script>
 
 <svelte:head>

@@ -52,12 +52,14 @@ const solarRadiationClass: SolarRadiationClass = {
  * It fetches weather data in Lox-specific format from a given weatherUrl.
  */
 class LbWeatherStore {
+	weatherUrl = $state(''); // e.g. http://loxberry.local:6066/forecast/
 	observations = new SvelteMap<string, string>();
 	current: WeatherCurrentConditions = $derived({});
 	daily: WeatherDailyForecast[] = $derived([]);
 	hourly: WeatherHourlyForecast[] = $derived([]);
 	days = $state(0);
-
+	intervalTimer: NodeJS.Timeout;
+	
 	id: string = '';
 	name: string = '';
 	longitude: string = '';
@@ -70,6 +72,14 @@ class LbWeatherStore {
 	sunset: string = '';
 
 	constructor() {
+		this.weatherUrl = localStorage.getItem('weatherUrl') || '';
+	}
+
+	clearAll() {
+		this.observations.clear();
+		this.current = {};
+		this.daily  = [];
+		this.hourly = [];
 	}
 
 	getObservation(id: string) {
@@ -81,19 +91,21 @@ class LbWeatherStore {
 		this.observations.set(key, item);
 	}
 
-	startWeatherForecast(url: string) {
-		if (!url.length) {
+	startWeatherForecast() {
+		clearInterval(this.intervalTimer);
+		this.clearAll();
+		if (!this.weatherUrl.length) {
 			console.info('[LbWeatherStore] No weatherforecast since weatherUrl is empty');
 			return;
 		}
-		this.fetchWeatherForecast(url); 
-		setInterval( () => {
-			this.fetchWeatherForecast(url);
+		this.fetchWeatherForecast(this.weatherUrl); 
+		this.intervalTimer = setInterval( () => {
+			this.fetchWeatherForecast(this.weatherUrl);
 		}, 1000 * 60 * 5); // fetch weather forecast every 5 minutes
 	}
 
 	fetchWeatherForecast(url: string) {
-		console.info('[LbWeatherStore] Fetch weather forecast');
+		console.info(`[LbWeatherStore] Fetch weather forecast from ${url}`);
 		fetch(url)
 		.then(response => response.text())
 		.then(data => this.grabWeatherData(data));

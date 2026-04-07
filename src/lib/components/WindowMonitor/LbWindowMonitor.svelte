@@ -177,7 +177,7 @@
 						</header>
 						<Dialog.Description>
 							<div class="flex flex-col items-center justify-center">
-								<p class="flex relative text-lg text-center mt-2 mb-2">
+								<p class="flex relative text-lg text-center mt-2 mb-2 lowercase">
 									{#each summary as state, i}
 										{@const isLast = i === summary.length - 1}
 											<span class={ state.color ? 'dark:text-primary-500 text-primary-700' : 'text-surface-950 dark:text-surface-50'}>{state.name}</span>{#if !isLast }

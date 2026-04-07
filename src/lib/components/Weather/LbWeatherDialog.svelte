@@ -124,7 +124,7 @@
 						<div class="mt-2 m-auto max-w-[768px] bg-surface-100-900" onclick={() => openSlider(i)}>
 							<div class="grid grid-cols-8 p-2 h-[85px]">
 								<div class="col-span-3 pl-2 pr-0 my-auto">
-									<p class="text-left text-lg font-medium truncate">{format(new Date(day.time), "eeee d")}</p>
+									<p class="text-left text-lg font-medium truncate">{i ? format(new Date(day.time), "eeee d") : $_("Today")}</p>
 									<p class="text-left text-md truncate">{$_(day.conditions)}</p>
 								</div>
 								<div class="col-span-2 align-middle m-auto">
