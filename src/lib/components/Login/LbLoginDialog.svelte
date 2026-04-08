@@ -53,25 +53,26 @@
 	}
 
 	async function validate() {
-		showConnectDialog('Connecting to Miniserver...');
-		appStore.setDemo(0); // clear demo mode
 		const hostUrl = hostName.match(/^http/) ? hostName.replace(/\/$/, '') : 'http://' + hostName.replace(/\/$/, '');
-		if (hostUrl.length && userName.length && password.length) {
-			// 1. Check if MiniServer is reachable via hostname
+		if (hostName.length && userName.length && password.length) {
+			// 1. Check if all fields are filled
+			showConnectDialog('Connecting to Miniserver...');
+			appStore.setDemo(0); // clear demo mode
+			// 2. Check if MiniServer is reachable via hostname
 			try {
 				await fetch(hostUrl + '/jdev/cfg/apiKey');
 			} catch (error) {
 				showMessageDialog('Miniserver not found!');
 				return;
 			}
-			// 2. Check username/password combination via http call (no login yet)
+			// 3. Check username/password combination via http call (no login yet)
 			try {
 				await checkCredentials(hostUrl, userName, password);
 			} catch (error) {
 				showMessageDialog('Login credentials invalid!');
 				return;
 			}
-			// 3. Establish WebSocket connection (no login yet)
+			// 4. Establish WebSocket connection (no login yet)
 			let loxClient;
 			try {
 				loxClient = new LoxWsClient(hostUrl, userName, password, appStore.appId, 0);
@@ -79,7 +80,7 @@
 				showMessageDialog('Unable to connect to Miniserver');
 				return;
 			}
-			// 4. Check if we use the same credentials and have a valid token, and if so, use it to connect
+			// 5. Check if we use the same credentials and have a valid token, and if so, use it to connect
 			if (appStore.credentials && appStore.credentials.hostName == hostUrl && appStore.credentials.userName == userName && appStore.credentials.token) {
 				const tokenValid = await checkTokenValidity(hostUrl, userName, appStore.credentials.token);
 				if (tokenValid) {
@@ -88,7 +89,7 @@
 			} else {
 				await loxClient.connect(); // we store the token when connected
 			}
-			// 4. Close popup and login dialog, navigate to home page
+			// 6. Close popup and login dialog, navigate to home page
 			goto('/');
 			openPopup = false;
 			appStore.loginDialog.state = false;
