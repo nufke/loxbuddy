@@ -136,7 +136,6 @@
 			navigate((localStorage.getItem('startPage') || '/'));
 		} else { // not connected
 			routes[0] = { label: 'Login', href: '/login', icon: 'log-in', menu: true, visible: true };
-			appStore.loginDialog.state = true; 
 		}
 	});
 

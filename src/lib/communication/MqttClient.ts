@@ -9,9 +9,9 @@ import { utils } from '$lib/helpers/Utils';
  */
 export class MqttClient {
 	private client!: mqtt.MqttClient;
-	private hostname: string = '';
+	private hostName: string = '';
 	private port: number = 0;
-	private username: string = '';
+	private userName: string = '';
 	private passwd: string = '';
 	private isConnected: boolean = false;
 	private topicPrefix: string = 'loxone'; 				// TODO configure prefix in GUI
@@ -26,19 +26,19 @@ export class MqttClient {
 
 	/**
 	 * Establish connection to MQTT server
-	 * @param hostname IP address of MQTT server and port
-	 * @param hostname port of MQTT server
-	 * @param username Name of the user
+	 * @param hostName IP address of MQTT server and port
+	 * @param port port of MQTT server
+	 * @param userName Name of the user
 	 * @param passwd Password of the user
 	 */
-	async connect(hostname: string, port: string, username: string, passwd: string, topicPrefix: string) {
-		this.hostname = hostname;
+	async connect(hostName: string, port: string, userName: string, passwd: string, topicPrefix: string) {
+		this.hostName = hostName;
 		this.port = Number(port) || 1883;
-		this.username = username;
+		this.userName = userName;
 		this.passwd = passwd;
 		this.topicPrefix = topicPrefix;
 
-		if (!username.length) {
+		if (!userName.length) {
 			console.error('[MqttClient] Invalid username, cannot connect to MQTT server');
 		}
 
@@ -47,11 +47,11 @@ export class MqttClient {
 		}
 
 		this.client = mqtt.connect({
-			hostname: hostname,
-			port: Number(port),
+			hostname: this.hostName,
+			port: Number(this.port),
 			connectTimeout: 5000,
-			username: username,
-			password: passwd
+			username: this.userName,
+			password: this.passwd
 		});
 
 		this.registerEvents();

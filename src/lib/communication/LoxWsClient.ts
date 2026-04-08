@@ -231,8 +231,8 @@ export const startLoxWsClient = async () => {
 		return;
 	}
 
-	if (cred && cred.hostname && cred.username && cred.token && appId) {
-		const loxClient = new LoxWsClient(cred.hostname, cred.username, '', appId, 0);
+	if (cred && cred.hostName && cred.userName && cred.token && appId) {
+		const loxClient = new LoxWsClient(cred.hostName, cred.userName, '', appId, 0);
 		await loxClient.connect(cred.token);
 	} else {
 		appStore.loginDialog.state = true; 
@@ -243,12 +243,12 @@ export const startLoxWsClient = async () => {
  * Check credentials using HTTP webservice (no login)
  * NOTE: no catch implemented in this fetch, this should be handled in the caller
  */
-export const checkCredentials = async (url: string, username: string, password: string) => {
+export const checkCredentials = async (url: string, userName: string, password: string) => {
 	await fetch(`${url}/jdev/sps/getusersettings`, {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
-			'Authorization': 'Basic ' + btoa(username + ':' + password)
+			'Authorization': 'Basic ' + btoa(userName + ':' + password)
 		}
 	})
 	.then((response) => {
@@ -261,8 +261,8 @@ export const checkCredentials = async (url: string, username: string, password: 
 /**
  * Check validity of token. Returns true is token is valid
  */
-export const checkTokenValidity = async (url: string, username: string, token: string) => {
-	return fetch(`${url}/jdev/sps/getusersettings?autht=${token}&user=${username}`)
+export const checkTokenValidity = async (url: string, userName: string, token: string) => {
+	return fetch(`${url}/jdev/sps/getusersettings?autht=${token}&user=${userName}`)
 	.then((response) => {
 		if (response.status == 200) {
 			return true;

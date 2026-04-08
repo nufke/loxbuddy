@@ -125,8 +125,8 @@ or submit a [pull request](https://github.com/nufke/loxbuddy/pulls).
 | Alarm sync w mobile alarm    | Not started              |
 | Battery status update        | Not started              |
 | Connection status            | Available                |
-| Dark / Light themes          | Available                |
-| Demo /test mode              | Available                | 
+| Dark / Light mode            | Available                |
+| Demo mode                    | Available                | 
 | Internationalization         | Available (NL, DE, US)   |
 | Kiosk / room mode (tablet)   | Not started              |
 | LoxBerry plugins             | Not started              |
@@ -136,17 +136,19 @@ or submit a [pull request](https://github.com/nufke/loxbuddy/pulls).
 | Pin protected pages          | Not started              |
 | Push messages (internet)     | Not started              |
 | Screensaver / Lockscreen     | Available                |
+| Secured controls             | Not started              |
+| Secured communication (wss)  | Available                |
 | Settings menu                | Available                |
 | Sorting of controls          | Under development        |
 | Splashscreen                 | Not started              |
 | Statistics / history         | Not started              |
 | Statusbar (time, temp, etc.) | Available                |
 | System messages              | Available                |
+| Theme / color presets        | Available                |
 | User calendar                | Not started              |
 | User-defined icons           | Available                |
 | Voice control                | Not started              |
 | Weather forecast             | Available (Weather4Lox)  |
-| WebSocket comm to Miniserver | Available                |
 
 ## Other ideas
 
