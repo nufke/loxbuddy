@@ -35,8 +35,10 @@
 	async function startDemo() {
 		demo.start();
 		appStore.setDemo(1);
+		appStore.setLocale('en');
 		appStore.loginDialog.state = false;
 		goto('/');
+		clearFormFields();
 	}
 
 	async function reconnect() {
@@ -46,24 +48,25 @@
 			await startLoxWsClient();
 			openPopup = false;
 			goto('/');
+			clearFormFields();
 		}
 	}
 
 	async function validate() {
 		showConnectDialog('Connecting to Miniserver...');
 		appStore.setDemo(0); // clear demo mode
-		hostName = hostName.replace(/\/$/, '');
-		if (hostName.length && userName.length && password.length) {
+		const hostUrl = hostName.match(/^http/) ? hostName.replace(/\/$/, '') : 'http://' + hostName.replace(/\/$/, '');
+		if (hostUrl.length && userName.length && password.length) {
 			// 1. Check if MiniServer is reachable via hostname
 			try {
-				await fetch(hostName + '/jdev/cfg/apiKey');
+				await fetch(hostUrl + '/jdev/cfg/apiKey');
 			} catch (error) {
 				showMessageDialog('Miniserver not found!');
 				return;
 			}
 			// 2. Check username/password combination via http call (no login yet)
 			try {
-				await checkCredentials(hostName, userName, password);
+				await checkCredentials(hostUrl, userName, password);
 			} catch (error) {
 				showMessageDialog('Login credentials invalid!');
 				return;
@@ -71,14 +74,14 @@
 			// 3. Establish WebSocket connection (no login yet)
 			let loxClient;
 			try {
-				loxClient = new LoxWsClient(hostName, userName, password, appStore.appId, 0);
+				loxClient = new LoxWsClient(hostUrl, userName, password, appStore.appId, 0);
 			} catch (error) {
 				showMessageDialog('Unable to connect to Miniserver');
 				return;
 			}
 			// 4. Check if we use the same credentials and have a valid token, and if so, use it to connect
-			if (appStore.credentials && appStore.credentials.hostName == hostName && appStore.credentials.userName == userName && appStore.credentials.token) {
-				const tokenValid = await checkTokenValidity(hostName, userName, appStore.credentials.token);
+			if (appStore.credentials && appStore.credentials.hostName == hostUrl && appStore.credentials.userName == userName && appStore.credentials.token) {
+				const tokenValid = await checkTokenValidity(hostUrl, userName, appStore.credentials.token);
 				if (tokenValid) {
 					await loxClient.connect(appStore.credentials.token);
 				}
@@ -89,6 +92,7 @@
 			goto('/');
 			openPopup = false;
 			appStore.loginDialog.state = false;
+			clearFormFields();
 		}
 	}
 
@@ -139,6 +143,13 @@
 			showSpinner: true
 		};
 		openPopup = true;
+	}
+	
+	function clearFormFields() {
+		hostName = '';
+		userName = '';
+		password = '';
+		hidePassword = true;
 	}
 </script>
 
