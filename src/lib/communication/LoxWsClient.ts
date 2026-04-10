@@ -71,6 +71,9 @@ export class LoxWsClient {
 			controlStore.initStructure(structure, this);
 			this.client.parseStructureFile();
 
+			// add msName to credentials
+			appStore.storeCredentials({...appStore.credentials, msName: structure.msInfo.msName});
+
 			// initiates streaming of all events
 			await this.client.enableUpdates();
 

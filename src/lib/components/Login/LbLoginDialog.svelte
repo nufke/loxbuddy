@@ -43,12 +43,11 @@
 
 	async function reconnect() {
 		if (appStore.credentials) {
-			showConnectDialog('Connecting to Miniserver...');
-			appStore.setDemo(0); // clear demo mode
-			await startLoxWsClient();
-			openPopup = false;
-			goto('/');
 			clearFormFields();
+			appStore.loginDialog.state = false;
+			appStore.setDemo(0); // disable demo mode
+			goto('/');
+			await startLoxWsClient();
 		}
 	}
 

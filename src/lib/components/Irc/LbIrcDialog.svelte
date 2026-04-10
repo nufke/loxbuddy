@@ -427,7 +427,7 @@
 									</button>
 									<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {selectedTab==3 ? 'dark:text-primary-500 text-primary-700' : ''} " onclick={() => {viewport = undefined; selectedTab=3}}>
 										<LbIcon name="calendar-clock"/>
-										<span class="mt-1 text-xs">{$_("Switching times")}</span>
+										<span class="mt-1 text-xs">{$_("Schedule")}</span>
 									</button>
 								</div>
 							</div>

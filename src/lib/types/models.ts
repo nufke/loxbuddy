@@ -661,6 +661,7 @@ export type Credentials = {
 	hostName: string;
 	userName: string;
 	token: string;
+	msName?: string;
 }
 
 export const NO_CREDENTIALS: Credentials = {

@@ -56,32 +56,34 @@
 				<LbIcon name="grip-vertical"/>
 			</div>
 		{/if}
-		<div class="relative flex w-full justify-between">
-			{#if controlView.iconName.length}
-				<div class="relative mr-1 flex items-center justify-center w-12 h-12 min-w-12 overflow-hidden rounded-full border border-white/10 dark:bg-surface-950 bg-surface-50">
-					{#if controlView.control.type =='Jalousie'}
-						<LbJalousieIcon control={controlView.control} width="28" height="28"/>
-					{:else}
-					<LbIcon class={controlView.iconColor} name={controlView.iconName} width="32" height="32"
-						style={getIconColorHex(controlView.iconColor)}/>
-					{/if}
-					{#if controlView.badgeIconName?.length}
-						<div class="absolute top-[4px] left-[6px] inline-flex items-center justify-center w-[14px] h-[14px] {controlView.badgeIconColor} rounded-full
-												border border-1 dark:border-surface-950 border-surface-50">
-							<LbIcon class='dark:text-surface-950 text-surface-50' name={controlView.badgeIconName} height="8" width="8"/>
-						</div>
-					{/if}
-				</div>
-			{/if}
-			{#if controlView.iconText?.length} 
-				<div class="relative mr-1 inline-flex items-center justify-center w-12 h-12 min-w-12 overflow-hidden rounded-full border border-white/10 dark:bg-surface-950 bg-surface-50">
-					<svg width="32" height="32">
-						<text class={controlView.iconColor} text-anchor="middle" x="16" y="22" font-size="18">{getT().num}<tspan font-size="14">{getT().frac}</tspan>
-						</text>
-					</svg>
-				</div>
-			{/if}
-			<div class="flex flex-row items-top justify-center">
+		<div class="flex w-full justify-between">
+			<div class="relative flex items-center truncate">
+				{#if controlView.iconName.length}
+					<div class="relative mr-1 flex items-center justify-center w-12 h-12 min-w-12 overflow-hidden rounded-full border border-white/10 dark:bg-surface-950 bg-surface-50">
+						{#if controlView.control.type =='Jalousie'}
+							<LbJalousieIcon control={controlView.control} width="28" height="28"/>
+						{:else}
+						<LbIcon class={controlView.iconColor} name={controlView.iconName} width="32" height="32"
+							style={getIconColorHex(controlView.iconColor)}/>
+						{/if}
+						{#if controlView.badgeIconName?.length}
+							<div class="absolute top-[4px] left-[6px] inline-flex items-center justify-center w-[14px] h-[14px] {controlView.badgeIconColor} rounded-full
+													border border-1 dark:border-surface-950 border-surface-50">
+								<LbIcon class='dark:text-surface-950 text-surface-50' name={controlView.badgeIconName} height="8" width="8"/>
+							</div>
+						{/if}
+					</div>
+				{/if}
+				{#if controlView.iconText?.length} 
+					<div class="relative mr-1 inline-flex items-center justify-center w-12 h-12 min-w-12 overflow-hidden rounded-full border border-white/10 dark:bg-surface-950 bg-surface-50">
+						<svg width="32" height="32">
+							<text class={controlView.iconColor} text-anchor="middle" x="16" y="22" font-size="18">{getT().num}<tspan font-size="14">{getT().frac}</tspan>
+							</text>
+						</svg>
+					</div>
+				{/if}
+			</div>
+			<div class="flex flex-row items-top justify-right">
 				{#if controlView.buttons.length}
 					{#each controlView.buttons as button, index}
 						{#if index > 0}
