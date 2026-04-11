@@ -196,12 +196,12 @@
 											<div class="w-full flex h-[60px] items-center justify-start rounded-lg border border-white/15 hover:border-white/50
 																		dark:bg-surface-950 bg-surface-50 px-2 py-2">
 												<div class="flex items-center truncate w-full">
-													<div class="mt-0 ml-2 mr-2 flex flex-row w-full justify-between truncate items-center">
-														<div class="flex flex-col">
-															<p class="text-left leading-6 truncate text-lg {getStatusColor(index)}">{window.name}</p>
+													<div class="mt-0 ml-2 mr-2 grid grid-cols-2 w-fit w-full justify-between truncate items-center">
+														<div>
+															<p class="text-left truncate leading-6 text-base {getStatusColor(index)}">{window.name}</p>
 															<p class="text-left truncate bg-transparent text-xs dark:text-surface-300 text-surface-700">{window.roomName}</p>
 														</div>
-														<p class="text-lg">
+														<p class="text-right text-base trucate">
 															{#each getState(window.state) as state, i}
 																{@const isLast = i === getState(window.state).length - 1}
 																<span class={ state.color ? 'dark:text-primary-500 text-primary-700' : ( window.state ? 'text-surface-950 dark:text-surface-50' :

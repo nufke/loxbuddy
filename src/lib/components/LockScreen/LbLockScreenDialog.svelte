@@ -39,7 +39,7 @@
 						<div class="flex flex-col">
 						{#if showWeather && currentWeather && currentWeather.airTemperature != undefined}
 							<div class="flex justify-left items-center">
-								<LbIcon name={getCurrentIcon(currentWeather)} width="80" height="80"/>	
+								<LbIcon name={getCurrentIcon(currentWeather)} width="80" height="80"/>
 								<span class="text-4xl truncate">{currentWeather.airTemperature}°</span>
 							</div>
 						{/if}

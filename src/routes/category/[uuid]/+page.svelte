@@ -21,11 +21,11 @@
 	appStore.nav = '/category';
 
 	let controlOptions: ControlOptions = $derived(DEFAULT_CONTROLOPTIONS);
-
+	let userDefinedOrder = $derived(appStore.userDefinedOrder);
 	let filteredControls: Control[] = $derived(
 		controlStore.controlList.filter((control) => (control.cat === data.uuid) && ((control.restrictions & 1) != 1))
 		.sort((a, b) => a.name.localeCompare(b.name, appStore.locale))
-		.sort((a, b) => getPosition(userSettings.userDefaultStructure, a, key + '/' + a.room) - getPosition(userSettings.userDefaultStructure, b, key + '/' + b.room))
+		.sort((a, b) => getPosition(userSettings.userDefaultStructure, b, key + '/' + b.room) - getPosition(userSettings.userDefaultStructure, a, key + '/' + a.room))
 	);
 
 	let labels: Room[] = $derived(
@@ -41,22 +41,22 @@
 	let favorites: Control[] = $derived(
 		filteredControls.filter((control) => isFavorite(userSettings.userDefaultStructure, control, room))
 		.sort((a, b) => a.name.localeCompare(b.name, appStore.locale))
-		.sort((a, b) => getPosition(userSettings.userDefaultStructure, a, room) - getPosition(userSettings.userDefaultStructure, b, room))
+		.sort((a, b) => getPosition(userSettings.userDefaultStructure, b, room) - getPosition(userSettings.userDefaultStructure, a, room))
 	);
 
 	function isFavorite(obj: any, control: Control, key: string) {
-		if (obj) {
-			return obj[control.uuidAction] ? obj[control.uuidAction][key] ? obj[control.uuidAction][key].isFav : false : false;
+		if (obj && obj[control.uuidAction] && userDefinedOrder) {
+			return obj.userDefaultStructure[control.uuidAction][key] ? obj[control.uuidAction][key].isFav : false;
 		} else {
 			control.isFavorite;
 		}
 	}
 
 	function getPosition(obj: any, control: Control, key: string) {
-		if (obj) {
-			return obj[control.uuidAction] ? obj[control.uuidAction][key] ? obj[control.uuidAction][key].position : 999 : 999;
+		if (obj && obj[control.uuidAction] && userDefinedOrder) {
+			return obj[control.uuidAction][key] ? obj[control.uuidAction][key].position : 0;
 		} else {
-			return 999 - control.defaultRating;
+			return control.defaultRating;
 		}
 	}
 

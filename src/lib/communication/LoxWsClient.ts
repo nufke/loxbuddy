@@ -63,6 +63,9 @@ export class LoxWsClient {
 		this.getSettings();
 	}
 
+	/**
+	 * Retrieve Miniserver settings, such as structure, user settings, system status, etc.
+	 */
 	async getSettings() {
 		if (appStore.loxStatus) { // make sure we are connected
 			// get structure file

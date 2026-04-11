@@ -22,6 +22,7 @@ class LbAppStore {
 	showStatus: boolean = $state(true);
 	showWeather: boolean = $state(true);
 	startPage: string = $state('/');
+	userDefinedOrder: boolean = $state(false);
 	locale: string = $state('en'); // default English
 	credentials: Credentials = $state(NO_CREDENTIALS);
 	dnd = $state({isEnabled: false, duration: 300});
@@ -59,6 +60,7 @@ class LbAppStore {
 		this.showWeather = localStorage.getItem('showWeather') == '1';
 		this.locale = localStorage.getItem('locale') || 'en';
 		this.credentials = utils.deserialize(localStorage.getItem('credentials'));
+		this.userDefinedOrder = localStorage.getItem('userDefinedOrder') == '1';
 	}
 
 	storeCredentials(credentials: Credentials) {

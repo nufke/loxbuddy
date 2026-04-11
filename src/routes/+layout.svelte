@@ -247,8 +247,10 @@
 					<LbIcon name={appStore.nav == '' ? 'menu' : 'arrow-left'}/>
 				</button>
 				{#if showWeather}
-					<button class="flex flex-row items-center gap-1" onclick={openWeather}>
-						<LbIcon name={getCurrentIcon(currentWeather)} width="48" height="48"/>	
+					<button class="flex flex-row items-center justify-center gap-1" onclick={openWeather}>
+						{#if (innerWidth.current !== undefined && innerWidth.current > 400) || appStore.lockScreenDialog.state == true}
+							<LbIcon name={getCurrentIcon(currentWeather)} width="48" height="48"/>	
+						{/if}
 						<span class="text-[22px] truncate">{currentWeather.airTemperature}°</span>
 					</button>
 				{/if}
@@ -270,7 +272,7 @@
 	</div>
 	{#if navigation.find ( item => item.href == path )}
 	<div>
-		<Navigation layout="bar" class="fixed bottom-0 h-[68px] overflow-hidden">
+		<Navigation layout="bar" class="fixed bottom-0 h-[68px] overflow-hidden flex justify-center ">
 			<Navigation.Menu class="grid grid-cols-5 gap-2">
 				{#each navigation as link (link)}
 					<div onclick={() => {navigate(link.href)}}  class={anchorBar}>
@@ -280,7 +282,9 @@
 							{/if}
 							<LbIcon name={link.icon} height="24" width="24" class={checkUrl(link.href) ? 'dark:text-primary-500 text-primary-700' : 'white'} />
 						</div>
-						<span class="text-[12px] {checkUrl(link.href) ? 'dark:text-primary-500 text-primary-700' : 'white'}">{$_(link.label)}</span>
+						{#if innerWidth.current !== undefined && innerWidth.current > 300 }
+							<span class="text-[12px] {checkUrl(link.href) ? 'dark:text-primary-500 text-primary-700' : 'white'}">{$_(link.label)}</span>
+						{/if}
 					</div>
 				{/each}
 			</Navigation.Menu>

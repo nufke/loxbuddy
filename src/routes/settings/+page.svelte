@@ -19,6 +19,7 @@
 	let theme = $state(localStorage.getItem('theme') || 'LoxBuddy');
 	let mode = $state(localStorage.getItem('mode') || 'dark');
 	let startPage = $state(localStorage.getItem('startPage') || '/');
+	let userDefinedOrder = $state(localStorage.getItem('userDefinedOrder') || '0');
  	let group = $state('room');
 	let localeSettings = $derived(appStore.locale);
 	let sorting = $derived(appStore.dnd.isEnabled);
@@ -129,12 +130,18 @@
 			weatherStore.startWeatherForecast();
 		}
 	};
-	
+
 	const onSorting = (event: { checked: boolean }) => {
 		sorting = event.checked;
 		appStore.dnd.isEnabled = event.checked;
 	}
-	
+
+	const onUserDefinedOrdering = (event: { checked: boolean }) => {
+		userDefinedOrder = event.checked ? '1' : '0';
+		localStorage.setItem('userDefinedOrder', userDefinedOrder);
+		appStore.userDefinedOrder = event.checked;
+	}
+
 	function setWeatherUrl(url: string) {
 		weatherUrl = url;
 		localStorage.setItem('weatherUrl', url);
@@ -184,6 +191,17 @@
 		<p class="w-[200px] {showWeather == '0' ? 'opacity-50' : ''}">{$_("Weather URL")}</p>
 		<input class="ig-input text-right" type="text" bind:value={() => weatherUrl,	(v) => setWeatherUrl(v)} placeholder="http://weather.url" disabled={showWeather=='0'} />
 	</div>
+	<button aria-current="true" type="button" class="w-full border-b dark:border-surface-900 border-surface-200 p-3 pr-5 pl-5 text-left text-lg">
+		<div class="flex w-full justify-between">
+			<p>{$_("User-defined ordering")}</p>
+			<Switch checked={userDefinedOrder == "1"} onCheckedChange={onUserDefinedOrdering}>
+				<Switch.Control class="w-12 h-8 mr-1 data-[state=checked]:preset-filled-primary-500">
+					<Switch.Thumb />
+				</Switch.Control>
+				<Switch.HiddenInput />
+			</Switch>
+		</div>
+	</button>
 	<button aria-current="true" type="button" class="w-full border-b dark:border-surface-900 border-surface-200 p-3 pr-5 pl-5 text-left text-lg">
 		<div class="flex w-full justify-between">
 			<p>{$_("Sorting")}</p>

@@ -21,17 +21,17 @@
 	appStore.nav = '/room';
 
 	let controlOptions: ControlOptions = $derived(DEFAULT_CONTROLOPTIONS);
-
+	let userDefinedOrder = $derived(appStore.userDefinedOrder);
 	let filteredControls: Control[] = $derived(
 		controlStore.controlList.filter((control) => (control.room === data.uuid) && ((control.restrictions & 1) != 1))
 		.sort((a, b) => a.name.localeCompare(b.name, appStore.locale))
-		.sort((a, b) => getPosition(userSettings.userDefaultStructure, a, key + '/' + a.cat) - getPosition(userSettings.userDefaultStructure, b, key + '/' + b.cat))
+		.sort((a, b) => getPosition(userSettings.userDefaultStructure, b, key + '/' + b.cat) - getPosition(userSettings.userDefaultStructure, a, key + '/' + a.cat))
 	);
 
 	let favorites: Control[] = $derived(
 		filteredControls.filter((control) => isFavorite(userSettings.userDefaultStructure, control, key))
 		.sort((a, b) => a.name.localeCompare(b.name, appStore.locale))
-		.sort((a, b) => getPosition(userSettings.userDefaultStructure, a, key) - getPosition(userSettings.userDefaultStructure, b, key))
+		.sort((a, b) => getPosition(userSettings.userDefaultStructure, b, key) - getPosition(userSettings.userDefaultStructure, a, key))
 	);
 
 	let labels: Category[] = $derived(
@@ -45,18 +45,18 @@
 	);
 
 	function isFavorite(obj: any, control: Control, key: string) {
-		if (obj) {
-			return obj[control.uuidAction] ? obj[control.uuidAction][key] ? obj[control.uuidAction][key].isFav : false : false;
+		if (obj && obj[control.uuidAction] && userDefinedOrder) {
+			return obj[control.uuidAction][key] ? obj[control.uuidAction][key].isFav : false;
 		} else {
 			return control.isFavorite;
 		}
 	}
 
 	function getPosition(obj: any, control: Control, key: string) {
-		if (obj) {
-			return obj[control.uuidAction] ? obj[control.uuidAction][key] ? obj[control.uuidAction][key].position : 999 : 999;
+		if (obj && obj[control.uuidAction] && userDefinedOrder) {
+			return obj[control.uuidAction][key] ? obj[control.uuidAction][key].position : 0;
 		} else {
-			return 999 - control.defaultRating;
+			return control.defaultRating;
 		}
 	}
 

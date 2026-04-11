@@ -14,26 +14,26 @@
 
 	let userSettings = $derived(controlStore.userSettings);
 	let controlOptions: ControlOptions = $derived(DEFAULT_CONTROLOPTIONS);
-
+	let userDefinedOrder = $derived(appStore.userDefinedOrder);
 	let favoriteControls = $derived(
 		controlStore.controlList.filter((control) => isFavorite(userSettings.userDefaultStructure, control, fav))
 		.sort((a, b) => a.name.localeCompare(b.name, appStore.locale))
-		.sort((a, b) => getPosition(userSettings.userDefaultStructure, a, fav) - getPosition(userSettings.userDefaultStructure, b, fav))
+		.sort((a, b) => getPosition(userSettings.userDefaultStructure, b, fav) - getPosition(userSettings.userDefaultStructure, a, fav))
 	);
 
 	function isFavorite(obj: any, control: Control, key: string) {
-		if (obj) { 
-			return obj[control.uuidAction] ? obj[control.uuidAction][key] ? obj[control.uuidAction][key].isFav : false : false;
+		if (obj && obj[control.uuidAction] && userDefinedOrder) { 
+			return obj[control.uuidAction][key] ? obj[control.uuidAction][key].isFav : false;
 		} else {
 			return control.isFavorite;
 		}
 	}
 
 	function getPosition(obj: any, control: Control, key: string) {
-		if (obj) { 
-			return obj && obj[control.uuidAction] ? obj[control.uuidAction][key] ? obj[control.uuidAction][key].position : 999 : 999;
+		if (obj && obj[control.uuidAction] && userDefinedOrder) { 
+			return obj[control.uuidAction][key] ? obj[control.uuidAction][key].position : 0;
 		} else {
-			return 999 - control.defaultRating;
+			return control.defaultRating;
 		}
 	}
 

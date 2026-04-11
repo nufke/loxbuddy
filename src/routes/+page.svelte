@@ -10,29 +10,39 @@
 	import { goto } from '$app/navigation';
 	import { fadeInOut } from '$lib/helpers/styles';
 
-	let fav = 'favorites';
+	let key = 'room';
 	let dragGroup = $state('');
 	let draggingItem: any;
 	let animatingItems = new Set();
 
 	let userSettings = $derived(controlStore.userSettings);
+	let userDefinedOrder = $derived(appStore.userDefinedOrder);
 	let centralRooms = $derived(controlStore.roomList.filter( (room) => room.name.includes($_('General')) || room.name.includes($_('Central'))));
 	let centralRoomsUuids = $derived(centralRooms.map( room => room.uuid));
 	let controlOptions: ControlOptions = $derived(DEFAULT_CONTROLOPTIONS);
 
 	let centralControls = $derived(
-		controlStore.controlList.filter((control) => centralRoomsUuids.includes(control.room) && control.defaultRating > 0)
+		controlStore.controlList.filter((control) => centralRoomsUuids.includes(control.room))
+		.filter((item) => isFavorite(userSettings.userDefaultStructure, item, key))
 		.sort((a, b) => a.name.localeCompare(b.name, appStore.locale))
-		.sort((a, b) => getPosition(userSettings.userDefaultStructure, a, fav) - getPosition(userSettings.userDefaultStructure, b, fav))
+		.sort((a, b) => getPosition(userSettings.userDefaultStructure, b, key) - getPosition(userSettings.userDefaultStructure, a, key))
 	);
 
 	let openPopup = $derived(centralControls.length == 0 && appStore.loginDialog.state == false);
 
-	function getPosition(obj: any, control: Control, key: string) {
-		if (obj) { 
-			return obj && obj[control.uuidAction] ? obj[control.uuidAction][key] ? obj[control.uuidAction][key].position : 999 : 999;
+	function isFavorite(obj: any, control: Control, key: string) {
+		if (obj && obj[control.uuidAction] && userDefinedOrder) { 
+			return obj[control.uuidAction][key] ? obj[control.uuidAction][key].isFav : false;
 		} else {
-			return 999 - control.defaultRating;
+			return control.isFavorite;
+		}
+	}
+
+	function getPosition(obj: any, control: Control, key: string) {
+		if (obj && obj[control.uuidAction] && userDefinedOrder) { 
+			return obj[control.uuidAction][key] ? obj[control.uuidAction][key].position : 0;
+		} else {
+			return control.defaultRating;
 		}
 	}
 
@@ -49,7 +59,7 @@
 		newList[itemB] = draggingItem;
 		return [...newList]; // update list (triggers effect)
 	}
-	
+
 	function cancelConnect() {
 		openPopup = false;
 		appStore.loginDialog.state = true; // goto login 

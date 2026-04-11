@@ -218,12 +218,12 @@
 												{isSelected(control) ? 'dark:bg-surface-800 bg-surface-200' : 'dark:bg-surface-950 bg-surface-50'} px-2 py-2"
 												onclick={() => selectScreen(control)}>
 												<div class="relative flex truncate w-full">
-													<div class="mt-0 ml-2 mr-2 flex flex-row w-full justify-between truncate items-center h-[60px]">
-														<div class="flex flex-col">
-															<p class="leading-6 truncate text-lg {getStatusColor(control)}">{getControlName(control)}</p>
+													<div class="p-2 grid grid-cols-2 w-fit w-full justify-between items-center h-[60px]">
+														<div class="justify-self-start truncate">
+															<p class="leading-6 truncate text-base {getStatusColor(control)}">{getControlName(control)}</p>
 															<p class="truncate text-left text-xs dark:text-surface-300 text-surface-700">{getRoomName(control)}</p>
 														</div>
-														<div class="relative inline-flex h-12 p-0">
+														<div class="relative inline-flex h-12 p-0 justify-self-end">
 															<LbJalousieIcon {control} width="32" height="32"/>
 															{#if control.details.isAutomatic }
 																<div class="absolute -top-[0px] -left-[9px] inline-flex items-center justify-center w-[18px] h-[18px]

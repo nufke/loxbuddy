@@ -13,32 +13,33 @@
 	let animatingItems = new Set();
 
 	let userSettings = $derived(controlStore.userSettings);
+	let userDefinedOrder = $derived(appStore.userDefinedOrder);
 	let items: Category[] = $derived(
 		controlStore.categoryList.filter((item) => controlStore.controlList.map((control) => control.cat)
 		.indexOf(item.uuid) > -1)
 		.sort((a, b) => a.name.localeCompare(b.name, appStore.locale))
-		.sort((a, b) => getPosition(userSettings.userDefaultStructure, a, key) - getPosition(userSettings.userDefaultStructure, b, key))
+		.sort((a, b) => getPosition(userSettings.userDefaultStructure, b, key) - getPosition(userSettings.userDefaultStructure, a, key))
 	);
 
 	let favorites: Category[] = $derived(
 		items.filter((item) => isFavorite(userSettings.userDefaultStructure, item, fav))
 		.sort((a, b) => a.name.localeCompare(b.name, appStore.locale))
-		.sort((a, b) => getPosition(userSettings.userDefaultStructure, a, fav) - getPosition(userSettings.userDefaultStructure, b, fav))
+		.sort((a, b) => getPosition(userSettings.userDefaultStructure, b, fav) - getPosition(userSettings.userDefaultStructure, a, fav))
 	);
 
 	function isFavorite(obj: any, cat: Category, key: string) {
-		if (obj) {
-			return obj[cat.uuid] ? obj[cat.uuid][key] ? obj[cat.uuid][key].isFav : false : false;
+		if (obj && obj[cat.uuid] && userDefinedOrder) {
+			return obj[cat.uuid][key] ? obj[cat.uuid][key].isFav : false;
 		} else {
 			return cat.isFavorite;
 		}
 	}
 
 	function getPosition(obj: any, cat: Category, key: string) {
-		if (obj) {
-			return obj[cat.uuid] ? obj[cat.uuid][key] ? obj[cat.uuid][key].position : 999 : 999;
+		if (obj && obj[cat.uuid] && userDefinedOrder) {
+			return obj[cat.uuid][key] ? obj[cat.uuid][key].position : 0;
 		} else {
-			return 999 - cat.defaultRating;
+			return cat.defaultRating;
 		}
 	}
 

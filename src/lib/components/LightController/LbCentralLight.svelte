@@ -208,15 +208,13 @@
 											<button class="w-full flex h-[60px] items-center justify-start rounded-lg border border-white/15 hover:border-white/50
 														{isSelected(control) ? 'dark:bg-surface-800 bg-surface-200' : 'dark:bg-surface-950 bg-surface-50'} px-2 py-2"
 														onclick={() => selectLight(control)}>
-												<div class="flex items-center truncate w-full">
-													<div class="mt-0 ml-2 mr-2 flex flex-row w-full justify-between truncate items-center h-[60px]">
-														<div class="flex flex-col">
-															<p class="leading-6 truncate text-lg {getStatusColor(control)}">{getControlName(control)}</p>
-															<p class="truncate bg-transparent text-left text-xs dark:text-surface-300 text-surface-700">{getRoomName(control)}</p>
+													<div class="p-2 grid grid-cols-2 w-fit w-full items-center h-[60px]">
+														<div class="text-left">
+															<p class="truncate leading-6 text-base {getStatusColor(control)}">{getControlName(control)}</p>
+															<p class="truncate bg-transparent text-xs dark:text-surface-300 text-surface-700">{getRoomName(control)}</p>
 														</div>
-														<p class="text-lg {getStatusColor(control)}">{getStatusName(control)}</p>
+														<p class="truncate text-right text-base {getStatusColor(control)}">{getStatusName(control)}</p>
 													</div>
-												</div>
 											</button>
 										{/each}
 									</div>

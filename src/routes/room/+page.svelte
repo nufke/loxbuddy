@@ -13,33 +13,33 @@
 	let animatingItems = new Set();
 
 	let userSettings = $derived(controlStore.userSettings);
-
+	let userDefinedOrder = $derived(appStore.userDefinedOrder);
 	let items: Room[] = $derived(
 		controlStore.roomList.filter((item) => controlStore.controlList.map((control) => control.room)
 		.indexOf(item.uuid) > -1)
 		.sort((a, b) => a.name.localeCompare(b.name, appStore.locale))
-		.sort((a, b) => getPosition(userSettings.userDefaultStructure, a, key) - getPosition(userSettings.userDefaultStructure, b, key))
+		.sort((a, b) => getPosition(userSettings.userDefaultStructure, b, key) - getPosition(userSettings.userDefaultStructure, a, key))
 	);
 
 	let favorites: Room[] = $derived(
 		items.filter((item) => isFavorite(userSettings.userDefaultStructure, item, fav))
 		.sort((a, b) => a.name.localeCompare(b.name, appStore.locale))
-		.sort((a, b) => getPosition(userSettings.userDefaultStructure, a, fav) - getPosition(userSettings.userDefaultStructure, b, fav))
+		.sort((a, b) => getPosition(userSettings.userDefaultStructure, b, fav) - getPosition(userSettings.userDefaultStructure, a, fav))
 	);
 
 	function isFavorite(obj: any, room: Room, key: string) {
-		if (obj) {
-			return obj[room.uuid] ? obj[room.uuid][key] ? obj[room.uuid][key].isFav : false : false;
+		if (obj && obj[room.uuid] && userDefinedOrder) { 
+			return obj[room.uuid][key] ? obj[room.uuid][key].isFav : false;
 		} else {
 			return room.isFavorite;
 		}
 	}
 
 	function getPosition(obj: any, room: Room, key: string) {
-		if (obj) {
-			return obj[room.uuid] ? obj[room.uuid][key] ? obj[room.uuid][key].position : 999 : 999;
+		if (obj && obj[room.uuid] && userDefinedOrder) {
+			return obj[room.uuid][key] ? obj[room.uuid][key].position : 0;
 		} else {
-			return 999 - room.defaultRating;
+			return room.defaultRating;
 		}
 	}
 
