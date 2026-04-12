@@ -2,7 +2,7 @@
 
 # LoxBuddy 
 
-LoxBuddy is a modern and fast (Web)App to control your [Loxone](https://www.loxone.com/) and [LoxBerry](https://wiki.loxberry.de/start) based Smart Home. The user interface is optimized for mobile and tablet usage.
+[LoxBuddy](https://loxbuddy.nl) is a modern and fast (Web)App to control your [Loxone](https://www.loxone.com/) and [LoxBerry](https://wiki.loxberry.de/start) based Smart Home. The user interface is optimized for mobile and tablet usage.
 
 LoxBuddy establishes a WebSocket connection to your Miniserver to control and monitor the state of the available controls. In addition, LoxBuddy can interface with LoxBerry using MQTT.
 
@@ -12,7 +12,7 @@ LoxBuddy establishes a WebSocket connection to your Miniserver to control and mo
 
 * Fast, responsive, and consistent user interface
 * Layout optimized for smart phone and tablet usage
-* Mobile installation as Progressive Web App (PWA)
+* Direct installation as Progressive Web App (PWA)
 * Lock screen with time and weather info
 * 20+ themes / color palettes
 * Light / Dark mode

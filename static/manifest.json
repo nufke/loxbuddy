@@ -3,10 +3,10 @@
   "description": "LoxBuddy",
   "short_name": "LoxBuddy",
   "display": "standalone",
-  "start_url": "./",
-  "scope": "./",
+  "start_url": "/",
+  "scope": "/",
   "background_color": "#000000",
-  "theme_color": "#1976d2",
+  "theme_color": "#45e14b",
   "icons": [
     {
       "src": "icons/loxbuddy_32.png",

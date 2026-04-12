@@ -156,6 +156,7 @@
 </script>
 
 <svelte:head>
+  <title>LoxBuddy</title>
 	<script>
 		mode = localStorage.getItem('mode') || 'dark';
 		document.documentElement.setAttribute('data-mode', mode);
@@ -263,7 +264,7 @@
 					<span class="text-[20px] dark:text-primary-500 text-primary-700 font-medium">LOXBUDDY</span>
 				</a>
 			</div>
-			<div class="mr-2 pb-1 flex flex-row gap-3 justify-end items-center">
+			<div class="mr-2 flex flex-row gap-3 justify-end items-center">
 				<div onclick={(e)=>{e.stopPropagation(); appStore.lockScreenDialog.state=true;}}>
 					<p class="text-right text-2xl font-medium">{format(date, "p")}</p>
 				</div>

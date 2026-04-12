@@ -59,9 +59,9 @@
 			{@const Component = lbControl.getControl(control.type)}
 			<div animate:flip={{ duration: appStore.dnd.duration }}
 				draggable={appStore.dnd.isEnabled}
-				ondragstart={() => {draggingItem = control}}
-				ondragend={() => {draggingItem = undefined}}
-				ondragenter={() => { favoriteControls = swapItems(favoriteControls, control, control.name)}}
+				ondragstart={() => {draggingItem = control; dragGroup = fav}}
+				ondragend={() => {draggingItem = undefined; dragGroup = ''}}
+				ondragenter={() => { favoriteControls = swapItems(favoriteControls, control, fav)}}
 				ondragover={(event) => {event.preventDefault(); if (event && event.dataTransfer) event.dataTransfer.dropEffect = 'move';}}>
 					<Component {control} controlOptions={{...controlOptions, isFavorite: true}}/>
 			</div>
