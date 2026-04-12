@@ -12,11 +12,12 @@ LoxBuddy establishes a WebSocket connection to your Miniserver to control and mo
 
 * Fast, responsive, and consistent user interface
 * Layout optimized for smart phone and tablet usage
+* Mobile installation as Progressive Web App (PWA)
 * Lock screen with time and weather info
 * 20+ themes / color palettes
 * Light / Dark mode
 * Independent and custom icons
-* Weather forecast (LoxBerry Weather4Lox)
+* Weather forecast (using LoxBerry Weather4Lox)
 
 ## Screenshots
 
@@ -26,6 +27,10 @@ LoxBuddy establishes a WebSocket connection to your Miniserver to control and mo
 </div>
 
 [More screenshots and themes](https://github.com/nufke/loxbuddy/wiki/Screenshots)
+
+## LIVE Demo
+
+Interested to see the LoxBuddy App in action? Visit [loxbuddy.nl](https://loxbuddy.nl) and click <b><span style="color:#45e14b">Start Demo</span></b> on the Login page.
 
 ## Development environment
 

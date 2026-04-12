@@ -1,0 +1,42 @@
+{
+  "name": "LoxBuddy",
+  "description": "LoxBuddy",
+  "short_name": "LoxBuddy",
+  "display": "standalone",
+  "start_url": "./",
+  "scope": "./",
+  "background_color": "#000000",
+  "theme_color": "#1976d2",
+  "icons": [
+    {
+      "src": "icons/loxbuddy_32.png",
+      "sizes": "32x32",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icons/loxbuddy_64.png",
+      "sizes": "64x64",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icons/loxbuddy_128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icons/loxbuddy_256.png",
+      "sizes": "256x256",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icons/loxbuddy_512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    }
+  ]
+}

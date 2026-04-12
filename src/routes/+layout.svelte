@@ -45,6 +45,8 @@
 
 	let { children } = $props();
 
+	let menuIcon: string = $state('menu');
+
 	let routes: Route[] = $state([
 		{ label: 'Login', href: '/login', icon: 'log-in', menu: true, visible: true },
 		{ label: 'Weather', href: '/weather', icon: 'cloud-sun', menu: true, visible: false },
@@ -107,10 +109,9 @@
 
 	function navigate(s: string) {
 		switch (s) {
-			case '' : mobileMenuDialog = true; break;
-			case '/weather' : openWeather(); break;
-			case '/login' : appStore.loginDialog.state = true; break;
-			case '/logout' : if (isDemo) { appStore.setDemo(0); } appStore.loginDialog.state = true; controlStore.disconnectClient(); break;
+			case '/weather': openWeather(); break;
+			case '/login': appStore.loginDialog.state = true; break;
+			case '/logout': if (isDemo) { appStore.setDemo(0); } appStore.loginDialog.state = true; controlStore.disconnectClient(); break;
 			default: goto(s);
 		}
 	}
@@ -121,8 +122,10 @@
 
 	$effect( () => {
 		let found = routes.find( item => item.href == path );
-		if (found && !found.menu) {
-			appStore.nav = ''; // main menu
+		if (found) {
+			menuIcon = 'menu';
+		} else {
+			menuIcon = 'arrow-left';
 		}
 	});
 
@@ -243,8 +246,8 @@
 	<Navigation layout="bar" class="fixed top-0 z-1 h-[65px] flex justify-center items-center shadow-md w-screen">
 		<Navigation.Menu class="grid grid-cols-3 gap-2">
 			<div class="ml-2 grid grid-cols-[25%_75%] justify-left items-center gap-1">
-				<button class="" onclick={() => {navigate(appStore.nav)}}>
-					<LbIcon name={appStore.nav == '' ? 'menu' : 'arrow-left'}/>
+				<button class="" onclick={() => {menuIcon == 'menu' ? mobileMenuDialog = true : navigate(appStore.nav)}}>
+					<LbIcon name={menuIcon}/>
 				</button>
 				{#if showWeather}
 					<button class="flex flex-row items-center justify-center gap-1" onclick={openWeather}>

@@ -53,7 +53,7 @@ export class LoxWsClient {
 				const newToken = this.client.auth.tokenHandler.token;
 				if (newToken) {
 					console.info('[LoxWsClient] Token received and stored');
-					appStore.storeCredentials({ hostName: this.hostName, userName: this.userName, token: newToken });
+					appStore.storeCredentials({ hostName: this.hostName, userName: this.userName, token: newToken, msName: '' });
 				}
 			}
 		}	catch {

@@ -46,7 +46,7 @@
 
 	function isFavorite(obj: any, control: Control, key: string) {
 		if (obj && obj[control.uuidAction] && userDefinedOrder) {
-			return obj.userDefaultStructure[control.uuidAction][key] ? obj[control.uuidAction][key].isFav : false;
+			return obj[control.uuidAction][key] ? obj[control.uuidAction][key].isFav : false;
 		} else {
 			control.isFavorite;
 		}

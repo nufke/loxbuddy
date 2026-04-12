@@ -661,13 +661,14 @@ export type Credentials = {
 	hostName: string;
 	userName: string;
 	token: string;
-	msName?: string;
+	msName: string;
 }
 
 export const NO_CREDENTIALS: Credentials = {
 	hostName: '',
 	userName: '',
-	token: ''
+	token: '',
+	msName: ''
 }
 
 export type Icon = {

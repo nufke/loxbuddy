@@ -107,7 +107,9 @@
 					</div>
 					<div class="w-full p-3 flex flex-col justify-center items-center">
 						<span>{$_("Connecting to Miniserver")}</span>
-						<span>{appStore.credentials.msName}</span>
+						{#if appStore.credentials && appStore.credentials.msName.length}
+							<span>{appStore.credentials.msName}</span>
+						{/if}
 					</div>
 				</Dialog.Description>
 				<div class="flex justify-center pt-4">
