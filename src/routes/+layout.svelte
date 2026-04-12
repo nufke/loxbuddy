@@ -122,7 +122,7 @@
 
 	$effect( () => {
 		let found = routes.find( item => item.href == path );
-		if (found) {
+		if (found && !found.menu) {
 			menuIcon = 'menu';
 		} else {
 			menuIcon = 'arrow-left';
