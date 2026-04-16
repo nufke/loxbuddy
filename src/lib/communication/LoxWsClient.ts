@@ -67,34 +67,42 @@ export class LoxWsClient {
 	 * Retrieve Miniserver settings, such as structure, user settings, system status, etc.
 	 */
 	async getSettings() {
-		if (appStore.loxStatus) { // make sure we are connected
-			// get structure file
-			console.info('[LoxWsClient] Get structure file...');
-			const structure = await this.client.getStructureFile();
-			controlStore.initStructure(structure, this);
-			this.client.parseStructureFile();
+		if (!appStore.loxStatus) return; // make sure we are connected
 
+		// get structure file
+		console.info('[LoxWsClient] Get structure file...');
+		
+		try {
+			const structure = await this.client.getStructureFile();
 			// add msName to credentials
 			appStore.storeCredentials({...appStore.credentials, msName: structure.msInfo.msName});
-
-			// initiates streaming of all events
-			await this.client.enableUpdates();
-
-			// get UserSettings for sorting and favorites
-			console.info('[LoxWsClient] Get user settings...');
-			this.getUserSettings();
-
-			// get System status
-			console.info('[LoxWsClient] Get system status...');
-			this.getSystemStatus();
-
-			// get icon list
-			console.info('[LoxWsClient] Get icons...');
-			this.getIconList();
-			
-			// update locale based on structure language
-			appStore.setLocale(controlStore.msInfo.languageCode.toLowerCase().slice(0, 2));
+			// store structure as app state
+			controlStore.initStructure(structure, this);
+			// we need to parse the structure in the client, 
+			// otherwise the control messages are not understood by LoxClient
+			this.client.parseStructureFile();
+		}	catch {
+			console.error('[LoxWsClient] Unable to get and parse structure file');
+			return;
 		}
+
+		// initiates streaming of all events
+		await this.client.enableUpdates();
+
+		// get UserSettings for sorting and favorites
+		console.info('[LoxWsClient] Get user settings...');
+		this.getUserSettings();
+
+		// get System status
+		console.info('[LoxWsClient] Get system status...');
+		this.getSystemStatus();
+
+		// get icon list
+		console.info('[LoxWsClient] Get icons...');
+		this.getIconList();
+		
+		// update locale based on structure language
+		appStore.setLocale(controlStore.msInfo.languageCode.toLowerCase().slice(0, 2));
 	}
 
 	/**

@@ -1,3 +1,6 @@
+// service-worker.js
+// see https://svelte.dev/docs/kit/service-workers
+
 import { build, files, version } from '$service-worker';
 
 // Create a unique cache name for this deployment
@@ -5,7 +8,7 @@ const CACHE = `cache-${version}`;
 
 const ASSETS = [
 	...build, // the app itself
-	...files // everything in `static`
+	...files  // everything in `static`
 ];
 
 self.addEventListener('install', (event) => {
@@ -15,9 +18,11 @@ self.addEventListener('install', (event) => {
 		await cache.addAll(ASSETS);
 	}
 
-	console.log('installing service worker for version', version);
-	console.log('caching assets', ASSETS);
-	console.log('caching build', build);
+	console.log('[service-worker] service-worker version', version);
+	console.log('[service-worker] Cache version', CACHE);
+	console.log('[service-worker] Caching assets and build...');
+	//console.log('caching assets', ASSETS);
+	//console.log('caching build', build);
 
 	event.waitUntil(addFilesToCache());
 });
@@ -58,7 +63,7 @@ self.addEventListener('fetch', (event) => {
 			// if we're offline, fetch can return a value that is not a Response
 			// instead of throwing - and we can't pass this non-Response to respondWith
 			if (!(response instanceof Response)) {
-				throw new Error('invalid response from fetch');
+				throw new Error('[service-worker] Invalid response from fetch');
 			}
 
 			if (response.status === 200) {
@@ -70,7 +75,7 @@ self.addEventListener('fetch', (event) => {
 			const response = await cache.match(event.request);
 
 			if (response) {
-				console.log(`Returning from Cache`, event.request.url);
+				console.log(`[service-worker] Returning from Cache`, event.request.url);
 				return response;
 			}
 

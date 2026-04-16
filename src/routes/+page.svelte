@@ -34,7 +34,7 @@
 		if (obj && obj[control.uuidAction] && userDefinedOrder) { 
 			return obj[control.uuidAction][key] ? obj[control.uuidAction][key].isFav : false;
 		} else {
-			return control.isFavorite;
+			return control.defaultRating > 0;
 		}
 	}
 
@@ -68,22 +68,24 @@
 
 <div class="container mx-auto max-w-[800px] lg:max-w-[1280px] p-3">
   <div class="space-y-2">
-    {#each centralRooms as centralRoom}
-      <button class="pl-2 h5" onclick={() => {goto('/room/'+centralRoom.uuid)}}>{centralRoom.name}</button>
-      <div class="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 lg:flex-wrap">
-        {#each centralControls.filter( control => control.room == centralRoom.uuid) as control (control)}
-          {@const Component = lbControl.getControl(control.type)}
-          <div animate:flip={{ duration: appStore.dnd.duration }}
-            draggable={appStore.dnd.isEnabled}
-            ondragstart={() => {draggingItem = control; dragGroup = centralRoom.name}}
-            ondragend={() => {draggingItem = undefined; dragGroup = ''}}
-            ondragenter={() => { centralControls = swapItems(centralControls, control, centralRoom.name)}}
-            ondragover={(event) => {event.preventDefault(); if (event && event.dataTransfer) event.dataTransfer.dropEffect = 'move';}}>
-            <Component {control} controlOptions={{...controlOptions, isFavorite: true}}/>
-          </div>
-        {/each}
-    </div>
-    {/each}
+		{#if centralRooms.length}
+			{#each centralRooms as centralRoom}
+				<button class="pl-2 h5" onclick={() => {goto('/room/'+centralRoom.uuid)}}>{centralRoom.name}</button>
+				<div class="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 lg:flex-wrap">
+					{#each centralControls.filter( control => control.room == centralRoom.uuid) as control (control)}
+						{@const Component = lbControl.getControl(control.type)}
+						<div animate:flip={{ duration: appStore.dnd.duration }}
+							draggable={appStore.dnd.isEnabled}
+							ondragstart={() => {draggingItem = control; dragGroup = centralRoom.name}}
+							ondragend={() => {draggingItem = undefined; dragGroup = ''}}
+							ondragenter={() => { centralControls = swapItems(centralControls, control, centralRoom.name)}}
+							ondragover={(event) => {event.preventDefault(); if (event && event.dataTransfer) event.dataTransfer.dropEffect = 'move';}}>
+							<Component {control} controlOptions={{...controlOptions, isFavorite: true}}/>
+						</div>
+					{/each}
+			</div>
+			{/each}
+		{/if}
   </div>
 </div>
 

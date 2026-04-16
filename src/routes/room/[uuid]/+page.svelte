@@ -48,7 +48,7 @@
 		if (obj && obj[control.uuidAction] && userDefinedOrder) {
 			return obj[control.uuidAction][key] ? obj[control.uuidAction][key].isFav : false;
 		} else {
-			return control.isFavorite;
+			return control.defaultRating > 0;
 		}
 	}
 
