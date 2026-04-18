@@ -14,9 +14,6 @@ const config = {
 		adapter: adapter({ out: 'build' })
 	},
 	 compilerOptions: {
-    experimental: {
-      async: true // async remote functions available since Svelte 2.27
-    },
 		warningFilter: (warning) => {
 				const ignore = [
 					'a11y_no_static_element_interactions',

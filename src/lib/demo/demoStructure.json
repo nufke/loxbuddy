@@ -1158,7 +1158,7 @@
 		"__uuid__controls_webpage": {
 			"name": "Webpage",
 			"type": "Webpage",
-			"uuidAction": "__uuid__controls_webpage_2",
+			"uuidAction": "__uuid__controls_webpage",
 			"room": "__uuid__rooms_central",
 			"cat": "__uuid__cats_lighting",
 			"defaultRating": 0,
@@ -1169,6 +1169,24 @@
 				"jLockable": false,
 				"url": "https://github.com/nufke/loxbuddy",
 				"urlHd": "https://github.com/nufke/loxbuddy",
+				"image": "",
+				"iconColor": "#000000"
+			}
+		},
+		"__uuid__controls_webpage_map": {
+			"name": "Location on map",
+			"type": "Webpage",
+			"uuidAction": "__uuid__controls_webpage_map",
+			"room": "__uuid__rooms_central",
+			"cat": "__uuid__cats_safety",
+			"defaultRating": 0,
+			"isFavorite": false,
+			"isSecured": false,
+			"restrictions": 0,
+			"details": {
+				"jLockable": false,
+				"url": "http://www.openstreetmap.org/#map=19/52.373104/4.898829",
+				"urlHd": "https://www.openstreetmap.org/#map=19/52.373104/4.898829",
 				"image": "",
 				"iconColor": "#000000"
 			}
