@@ -252,7 +252,7 @@
 				</button>
 				{#if showWeather}
 					<button class="flex flex-row items-center justify-center gap-1" onclick={openWeather}>
-						{#if (innerWidth.current !== undefined && innerWidth.current > 400) || appStore.lockScreenDialog.state == true}
+						{#if (innerWidth.current !== undefined && innerWidth.current > 395) || appStore.lockScreenDialog.state == true}
 							<LbIcon name={getCurrentIcon(currentWeather)} width="48" height="48"/>	
 						{/if}
 						<span class="text-[22px] truncate">{currentWeather.airTemperature}°</span>
