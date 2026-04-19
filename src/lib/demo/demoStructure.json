@@ -1175,7 +1175,7 @@
 		},
 		"__uuid__controls_location_on_map": {
 			"name": "Location on map",
-			"type": "TextState",
+			"type": "InfoOnlyText",
 			"uuidAction": "__uuid__controls_location_on_map",
 			"room": "__uuid__rooms_central",
 			"cat": "__uuid__cats_safety",
@@ -1189,9 +1189,7 @@
 					"format": "%s"
 			},
 			"states": {
-					"textAndIcon": "__uuid__controls_location_on_map",
-					"iconAndColor": "__uuid__controls_location_on_map_iconAndColor"
-
+					"text": "__uuid__controls_location_on_map"
 			}
 		},
 		"__uuid__controls_alarmclock": {

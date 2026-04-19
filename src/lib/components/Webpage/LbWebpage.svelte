@@ -15,7 +15,6 @@
 		window.open(url || urlHd, "_blank")
 	}
 
-
 	let buttons: SingleButtonView[] = $state([
 		{
 			iconName: 'square-arrow-out-up-right',
