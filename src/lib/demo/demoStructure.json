@@ -1173,22 +1173,25 @@
 				"iconColor": "#000000"
 			}
 		},
-		"__uuid__controls_webpage_map": {
+		"__uuid__controls_location_on_map": {
 			"name": "Location on map",
-			"type": "Webpage",
-			"uuidAction": "__uuid__controls_webpage_map",
+			"type": "TextState",
+			"uuidAction": "__uuid__controls_location_on_map",
 			"room": "__uuid__rooms_central",
 			"cat": "__uuid__cats_safety",
 			"defaultRating": 0,
 			"isFavorite": false,
 			"isSecured": false,
+			"defaultIcon": "IconsFilled/location-pin.svg",
 			"restrictions": 0,
 			"details": {
-				"jLockable": false,
-				"url": "http://www.openstreetmap.org/#map=19/52.373104/4.898829",
-				"urlHd": "https://www.openstreetmap.org/#map=19/52.373104/4.898829",
-				"image": "",
-				"iconColor": "#000000"
+					"jLockable": false,
+					"format": "%s"
+			},
+			"states": {
+					"textAndIcon": "__uuid__controls_location_on_map",
+					"iconAndColor": "__uuid__controls_location_on_map_iconAndColor"
+
 			}
 		},
 		"__uuid__controls_alarmclock": {

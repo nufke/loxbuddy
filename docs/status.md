@@ -72,7 +72,7 @@ or submit a [pull request](https://github.com/nufke/loxbuddy/pulls).
 | LightV2                  | Not started       |                                       |
 | LoadManager              | Available         |                                       |
 | MailBox                  | Not started       |                                       |
-| Map\*                    | Available         | LoxBuddy only (using Webpage control) |
+| Map\*                    | Available         | uses TextState control                |
 | Media                    | Not started       |                                       |
 | MediaClient              | Not started       |                                       |
 | Meter                    | Under development | No statistics yet                     |
