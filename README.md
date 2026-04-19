@@ -21,6 +21,8 @@ LoxBuddy establishes a WebSocket connection to your Miniserver to control and mo
 * Independent icons
 * Weather forecast (using LoxBerry Weather4Lox)
 
+Visit the [Status page](https://github.com/nufke/loxbuddy/wiki/Status) for the latest updates on supported features and controls.
+
 ## Screenshots
 
 <div class="flex flex-row gap-3">
@@ -89,10 +91,6 @@ npm run pm2:status      # show status of all pm2 processes
 ```
 
 After (re)starting, you can access the LoxBuddy App by navigating to <http://localhost:4004> in a web browser.
-
-## Supported controls and features
-
-Visit the [Wiki Status](https://github.com/nufke/loxbuddy/wiki/Status) page for the latest updates on supported controls and features.
 
 ## Issues and requests
 

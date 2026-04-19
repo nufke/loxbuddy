@@ -45,7 +45,7 @@
 		isFavorite: controlOptions.isFavorite,
 		iconName: mapInfo.length ? 'loxbuddy:location' : controlStore.getIcon(control, controlOptions.isSubControl),
 		textName: control.name,
-		statusName: mapInfo.length ? `N ${Number(mapInfo[2]).toFixed(3)} E ${Number(mapInfo[3]).toFixed(3)}` : httpUrl,
+		statusName: mapInfo.length ? `${mapInfo[2]}, ${mapInfo[3]}` : httpUrl,
 		buttons: mapInfo.length ? [] : buttons,
 		dialog: dialog
 	});
