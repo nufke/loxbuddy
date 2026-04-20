@@ -120,6 +120,12 @@
 		layoutRail = !layoutRail;
 	}
 
+	function onVisibilityChange() {
+		if (document.visibilityState === 'visible') {
+			appStore.resetLockScreenDialogTimeout();
+		}
+	}
+
 	$effect( () => {
 		let found = routes.find( item => item.href == path );
 		if (found && !found.menu) {
@@ -154,6 +160,8 @@
 	enableDragDropTouch(document, document, options);
 	weatherStore.startWeatherForecast();
 </script>
+
+<svelte:document onvisibilitychange={onVisibilityChange} />
 
 <svelte:head>
   <title>LoxBuddy</title>

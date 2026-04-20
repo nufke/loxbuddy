@@ -72,7 +72,7 @@ or submit a [pull request](https://github.com/nufke/loxbuddy/pulls).
 | LightV2                  | Not started       |                                       |
 | LoadManager              | Available         |                                       |
 | MailBox                  | Not started       |                                       |
-| Map\*                    | Available         | uses TextState control                |
+| Map\*                    | Available         | uses InfoOnlyText control             |
 | Media                    | Not started       |                                       |
 | MediaClient              | Not started       |                                       |
 | Meter                    | Under development | No statistics yet                     |
@@ -93,7 +93,7 @@ or submit a [pull request](https://github.com/nufke/loxbuddy/pulls).
 | Sauna                    | Not started       |                                       |
 | Sequential               | Not started       |                                       |
 | Slider                   | Available         |                                       |
-| SmokeAlarm               | Under development | No alarm notifications yet             |
+| SmokeAlarm               | Under development | No alarm notifications yet            |
 | SolarPump                | Not started       |                                       |
 | SolarPumpController      | Not started       |                                       |
 | SpotPriceOptimizer       | Not started       |                                       |

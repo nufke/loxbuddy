@@ -46,7 +46,7 @@
 	}
 
 	function getTextName() {
-		const origNameFound = $_('IRoomControllerV2').includes(control.name);
+		const origNameFound = $_('IRoomController').includes(control.name);
 		const room = controlStore.rooms.get(control.room);
 		return (origNameFound && room) ? room.name : control.name;
 	}

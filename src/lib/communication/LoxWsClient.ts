@@ -131,8 +131,22 @@ export class LoxWsClient {
 
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		this.client.on('event_value', (event: any) => {
-			console.debug(`[LoxWsClient] event_value received: ${event}`);
+			console.debug(`[LoxWsClient] event_value received: ${event.detail.value}`);
 			controlStore.setState(event.detail.uuid.stringValue, event.detail.value);
+		});
+
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		this.client.on('event_daytimer', (event: any) => {
+			const str = event.detail.toString();
+			console.debug(`[LoxWsClient] event_daytimer received: ${str}`);
+			controlStore.setState(event.detail.uuid.stringValue, str);
+		});
+
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		this.client.on('event_weather', (event: any) => {
+			const str = event.detail.toString();
+			console.debug(`[LoxWsClient] event_weather received: ${str}`);
+			controlStore.setState(event.detail.uuid.stringValue, str);
 		});
 
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
