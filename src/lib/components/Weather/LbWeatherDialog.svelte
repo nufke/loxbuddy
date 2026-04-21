@@ -24,7 +24,8 @@
 		}
 	}
 
-	function resetSlider() {
+	function close() {
+		appStore.weatherDialog.state = false;
 		slider = Array.from({length: 8}, (v,i) => v = (i==0));
 	}
 
@@ -71,7 +72,7 @@
 						<Dialog.Title class="h5 flex justify-center items-center">{current.location}</Dialog.Title>
 					</div>
 					<div class="absolute right-1 top-1">
-						<button type="button" aria-label="close" class="btn-icon text-left hover:preset-tonal" onclick={()=> {appStore.weatherDialog.state = false; resetSlider();}}>
+						<button type="button" aria-label="close" class="btn-icon text-left hover:preset-tonal" onclick={close}>
 							<LbIcon name="x" height="16" width="16"/>
 						</button>
 					</div>

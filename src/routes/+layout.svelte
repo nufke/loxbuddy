@@ -159,6 +159,9 @@
 	Logger(logLevel, true);
 	enableDragDropTouch(document, document, options);
 	weatherStore.startWeatherForecast();
+	
+	/* disable right click context menu*/
+	document.addEventListener('contextmenu', event => event.preventDefault());
 </script>
 
 <svelte:document onvisibilitychange={onVisibilityChange} />
@@ -172,7 +175,7 @@
 		document.documentElement.setAttribute('data-theme', theme.toLowerCase());
 		locale = localStorage.getItem('locale') || 'en';
 		document.documentElement.setAttribute('lang', locale);
-</script>
+	</script>
 </svelte:head>
 
 <!-- click activity resets timeout for lockscreen -->
