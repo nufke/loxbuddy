@@ -206,7 +206,7 @@
 										</div>
 									</div>
 								</button>
-								<button type="button" class="w-full mt-2 btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50" 
+								<button type="button" class="w-full mt-2 btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50 active:bg-primary-500" 
 												onclick={(e) => {e.stopPropagation(); e.preventDefault(); startStopTimer()}}>
 									<span class="text-lg">{$_( (override > 0) ? "Stop" : "Start")} {$_("Timer").toLocaleLowerCase()}</span>
 								</button>

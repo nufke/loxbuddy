@@ -406,11 +406,11 @@
 								</div>
 								<div class="container grid grid-cols-2 gap-2">
 									<button type="button" class="w-full btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50 shadow-sm text-surface-950-50
-																								rounded-lg border border-white/15 hover:border-white/50" onclick={openCalendarView}>
+																								rounded-lg border border-white/15 hover:border-white/50 active:bg-primary-500" onclick={openCalendarView}>
 										<span class="text-base">{$_("Open calendar")}</span>
 									</button>
 									<button type="button" class="w-full btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50 shadow-sm text-surface-950-50
-																								rounded-lg border border-white/15 hover:border-white/50" onclick={addEntry}>
+																								rounded-lg border border-white/15 hover:border-white/50 active:bg-primary-500" onclick={addEntry}>
 										<span class="text-base">{$_("Add entry")}</span>
 									</button>
 								</div>

@@ -235,7 +235,7 @@
 							</div>
 							<footer class="mt-2 container w-full">
 								<button type="button" class="w-full btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50
-									shadow-sm rounded-lg border border-white/15 hover:border-white/50"
+									shadow-sm rounded-lg border border-white/15 hover:border-white/50 active:bg-primary-500"
 										onclick={addEntry}>
 									<span class="text-lg {entryIds.length > 15 ? 'dark:text-surface-800 text-surface-200' : ''}">{$_("Add new alarm time")}</span>
 								</button>

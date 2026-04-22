@@ -144,7 +144,7 @@
 							<div class="w-full grid grid-cols-1 {controlView.dialog.class} gap-2 overflow-y-auto" {style} bind:this={viewport} >
 								{#each controlView.buttons as button}
 									{#if button.type === 'button' && button.click}
-										<button type="button" class="w-full btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50" 
+										<button type="button" class="w-full btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50 active:bg-primary-500 active:bg-primary-500"
 												onclick={(e) => {e.stopPropagation(); e.preventDefault(); button.click();}}>
 												{#if button.name}
 													<span>{$_(button.name)}</span>
@@ -190,7 +190,7 @@
 							<div class="container grid grid-cols-1 {controlView.dialog.class} gap-2 overflow-y-auto" {style} bind:this={viewport}>
 								{#each controlView.dialog.buttons as button}
 									{#if button.type === 'button' && button.click}
-										<button type="button" class="w-full {button.class} btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50" 
+										<button type="button" class="w-full {button.class} btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50 active:bg-primary-500"
 												onclick={button.click}>
 												{#if button.name}
 													<span class="text-lg">{$_(button.name)}</span>

@@ -310,18 +310,18 @@
 							{/if}
 							<div class="flex grid {view.enableDelete ? 'grid-cols-5' : 'grid-cols-4'} gap-2 mt-2">
 							{#if view.enableDelete}
-								<button class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
+								<button class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50 active:bg-primary-500"
 												onclick={openDeleteView}>
 									<div class="w-[20px] items-center justify-center text-red-500 flex w-full">
 										<LbIcon name="trash-2"/>
 									</div>
 								</button>
 								{/if}
-								<button class="w-full col-span-2 btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
+								<button class="w-full col-span-2 btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50 active:bg-primary-500"
 												onclick={close}>
 									<p class="truncate text-lg">{$_("Cancel")}</p>
 								</button>
-								<button class="w-full col-span-2 btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
+								<button class="w-full col-span-2 btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50 active:bg-primary-500"
 												onclick={updateEntries}>
 									<p class="truncate text-lg">{$_("OK")}</p>
 								</button>

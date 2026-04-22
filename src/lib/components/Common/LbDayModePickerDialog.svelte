@@ -78,18 +78,18 @@
 									{/each}
 								</form>
 							</div>
-							<button type="button" class="mt-4 btn btn-md dark:bg-surface-950 bg-surface-50 rounded-lg border border-white/15 shadow-sm hover:border-white/50"
+							<button type="button" class="mt-4 btn btn-md dark:bg-surface-950 bg-surface-50 rounded-lg border border-white/15 shadow-sm hover:border-white/50 active:bg-primary-500"
 											onclick={expandList}>
 								<p class="text-xs flex items-center justify-end">{hideEntries ? $_("Show more") : $_("Show less")}</p>
 							</button>
 							<div class="mt-4 flex grid grid-cols-2 gap-2">
 								<button type="button"
-									class="btn btn-lg dark:bg-surface-950 bg-surface-50 w-full rounded-lg border border-white/15 shadow-sm hover:border-white/50"
+									class="btn btn-lg dark:bg-surface-950 bg-surface-50 w-full rounded-lg border border-white/15 shadow-sm hover:border-white/50 active:bg-primary-500"
 									onclick={close}>
 									<span class="text-lg">{$_('Cancel')}</span>
 								</button>
 								<button type="button"
-									class="btn btn-lg dark:bg-surface-950 bg-surface-50 w-full rounded-lg border border-white/15 shadow-sm hover:border-white/50"
+									class="btn btn-lg dark:bg-surface-950 bg-surface-50 w-full rounded-lg border border-white/15 shadow-sm hover:border-white/50 active:bg-primary-500"
 									onclick={() => { onValueChange({modes: newDayModes}); close();}}>
 									<span class="text-lg">{$_('OK')}</span>
 								</button>

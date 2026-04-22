@@ -55,11 +55,11 @@
 						</div>
 						<div class="flex justify-center items-center w-full">
 						<div class="flex grid grid-cols-2 gap-2 mt-1 mb-1">
-							<button type="button" class="w-full btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50" 
+							<button type="button" class="w-full btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50 active:bg-primary-500"
 											onclick={close}>
 								<span class="text-lg">{$_("Cancel")}</span>
 							</button>
-							<button type="button" class="w-full btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50" 
+							<button type="button" class="w-full btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50 active:bg-primary-500"
 										onclick={ () => { valueChanged() ? onValueChange({value: localDate}) : null}}>
 								<span class="text-lg">{$_("OK")}</span>
 							</button>

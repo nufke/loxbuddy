@@ -190,18 +190,18 @@
 												'dark:text-surface-300 text-surface-700'}">{getActiveScreens()}</p>
 								<div class="container grid grid-cols-5 gap-2 mb-2">
 									<button type="button" class="btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50 shadow-sm text-surface-950-50
-																				rounded-lg border border-white/10 hover:border-white/50" onclick={() => screenAction("FullDown")}>
+																				rounded-lg border border-white/10 hover:border-white/50 active:bg-primary-500" onclick={() => screenAction("FullDown")}>
 																				<span class="w-[32px] flex justify-center items-center"><LbIcon name="chevron-down"/></span></button> <!-- to span to avoid scaling of icons -->
 									<button type="button" class="btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50 shadow-sm text-surface-950-50
-																				rounded-lg border border-white/10 hover:border-white/50" onclick={() => screenAction("FullUp")}>
+																				rounded-lg border border-white/10 hover:border-white/50 active:bg-primary-500" onclick={() => screenAction("FullUp")}>
 																				<span class="w-[32px] flex justify-center items-center"><LbIcon name="chevron-up"/></span></button>
 									<button type="button" class="btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50 shadow-sm text-surface-950-50
-																				rounded-lg border border-white/10 hover:border-white/50" onclick={() => screenAction("shade")}>
+																				rounded-lg border border-white/10 hover:border-white/50 active:bg-primary-500" onclick={() => screenAction("shade")}>
 																				<span class="w-[32px] flex justify-center items-center"><LbIcon name="blinds"/></span></button>
 									<button type="button" class="btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50 shadow-sm text-surface-950-50
-																				rounded-lg border border-white/10 hover:border-white/50" onclick={() => screenAction("stop")}>
+																				rounded-lg border border-white/10 hover:border-white/50 active:bg-primary-500" onclick={() => screenAction("stop")}>
 																				<span class="w-[32px] flex justify-center items-center"><LbIcon name="octagon-minus"/></span></button>
-									<button type="button" class="btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50 shadow-sm {screenSelected ? 'text-surface-800-200' : 'text-surface-200-800'}
+									<button type="button" class="btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50 shadow-sm {screenSelected ? 'text-surface-800-200 active:bg-primary-500' : 'text-surface-200-800'}
 																				rounded-lg border border-white/10 hover:border-white/50" onclick={() => selectScreenOptions()}>
 																				<span class="w-[32px] flex justify-center items-center"><LbIcon name="settings"/></span></button>
 								</div>

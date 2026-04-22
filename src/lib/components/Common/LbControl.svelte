@@ -90,7 +90,7 @@
 							<div class="ml-2"></div>
 						{/if}
 						{#if button.type === 'button' && button.iconName}
-							<button type="button" class="btn-icon w-[18px] h-[18px] p-3 dark:bg-surface-950 bg-surface-50 rounded-lg border border-white/15 hover:border-white/50" 
+							<button type="button" class="btn-icon w-[18px] h-[18px] p-3 dark:bg-surface-950 bg-surface-50 rounded-lg border border-white/15 hover:border-white/50	active:bg-primary-500" 
 											onclick={(e) => { e.stopPropagation(); e.preventDefault(); button.click(e)}}>
 								<LbIcon class={button.iconColor} name={button.iconName}/>
 							</button>
@@ -168,7 +168,7 @@
 						<div class="ml-2"></div>
 					{/if}
 					{#if button.type === 'button' && button.iconName}
-						<button type="button" class="btn-icon w-[18px] h-[18px] p-3 dark:bg-surface-950 bg-surface-50 rounded-lg border border-white/15 hover:border-white/50" 
+						<button type="button" class="btn-icon w-[18px] h-[18px] p-3 dark:bg-surface-950 bg-surface-50 rounded-lg border border-white/15 hover:border-white/50 active:bg-primary-500"
 										onclick={(e) => { e.stopPropagation(); e.preventDefault(); button.click(e)}}>
 							<span style="font-size:26px">
 								<LbIcon class={button.iconColor} name={button.iconName} />

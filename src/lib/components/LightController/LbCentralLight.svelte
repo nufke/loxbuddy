@@ -187,10 +187,10 @@
 							<p class="text-lg text-center {lightsOn ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700'}">{getActiveLights()}</p>
 							<div class="grid grid-cols-3 gap-2 mt-2 mb-2">
 								<button type="button" class="w-full btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50 shadow-sm text-surface-950-50
-																			rounded-lg border border-white/15 hover:border-white/50" onclick={() => changeLight('On')}>{$_('On')}</button>
+																			rounded-lg border border-white/15 hover:border-white/50 active:bg-primary-500" onclick={() => changeLight('On')}>{$_('On')}</button>
 								<button type="button" class="w-full btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50 shadow-sm text-surface-950-50
-																			rounded-lg border border-white/15 hover:border-white/50" onclick={() => changeLight('Off')}>{$_('Off')}</button>
-								<button type="button" class="w-full btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50 shadow-sm {scenesEnabled ? 'text-surface-800-200' : 'text-surface-200-800'}
+																			rounded-lg border border-white/15 hover:border-white/50 active:bg-primary-500" onclick={() => changeLight('Off')}>{$_('Off')}</button>
+								<button type="button" class="w-full btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50 shadow-sm {scenesEnabled ? 'text-surface-800-200 active:bg-primary-500' : 'text-surface-200-800'}
 																			rounded-lg border border-white/15 hover:border-white/50" onclick={() => selectScenes()}>{$_('Scenes')}</button>
 							</div>
 						</header>
