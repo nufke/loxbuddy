@@ -13,6 +13,7 @@
 	let shadePosition = $derived(controlStore.getState(control.states.shadePosition) * 100);
 	let autoActive = $derived(Number(controlStore.getState(control.states.autoActive)));
 	let isAutomatic = $derived(Number(control.details.isAutomatic));
+	let isLocked = $derived(Number(controlStore.getState(control.states.locked)));
 	let type = control.details.animation;
 
 	/* blinds type
@@ -89,6 +90,7 @@
 	});
 
 	function getPosition() {
+		if (isLocked) return $_('Locked');
 		if (position < 1 && (shadePosition < 1 || type != 0)) return $_('Opened');
 		if (position > 99 && (shadePosition > 99 || type != 0)) return $_('Closed');
 		let str = (position < 1 ) ? $_('Opened') : ( (position > 99 ) ? $_('Closed') : fmt.sprintf('%1.0f%% ', position) + $_('Closed').toLowerCase());
@@ -106,6 +108,7 @@
 
 	let jalousie = $derived({
 		position: position,
+		locked: isLocked,
 		shadePosition: type == 0 ? shadePosition : 100 // only use shadePosition for lamellen
 	});
 
@@ -115,12 +118,11 @@
 		showControl: controlOptions.showControl,
 		isFavorite: controlOptions.isFavorite,
 		iconName: controlStore.getIcon(control, controlOptions.isSubControl),
-		iconColor: (position > 0) ? 'dark:text-primary-500 text-primary-700' : 'text-surface-950 dark:text-surface-50',
 		textName: control.name,
 		statusName: getPosition(),
 		statusColor: (position > 0) ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700',
-		badgeIconName: isAutomatic ? 'automatic' : '',
-		badgeIconColor: autoActive ? 'dark:bg-primary-500 bg-primary-700' : 'dark:bg-surface-50 bg-surface-950',
+		badgeIconName: isLocked ? 'lucide:lock-keyhole' : isAutomatic ? 'automatic' : '',
+		badgeIconColor: isLocked ? 'bg-error-500' : autoActive ? 'dark:bg-primary-500 bg-primary-700' : 'dark:bg-surface-50 bg-surface-950',
 		buttons: buttons,
 		dialog: { ...dialog,
 			details: jalousie

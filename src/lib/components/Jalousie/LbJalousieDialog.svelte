@@ -51,18 +51,21 @@
 									{/if}
 								</div>
 							</div>
-							<div class="mt-2 truncate">
-								<p class="text-lg truncate {autoActive ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700'}">
-									{ autoActive ? $_("Sun position detection enabled") : $_("Sun position detection disabled")}</p>
-							</div>
-							<div class="mt-2 truncate">
-								<p class="text-lg truncate {controlView.statusColor}">{controlView.statusName}</p>
+							<div class="mt-2 text-center">
+								{#if controlView.dialog.details.locked}
+									<p class="text-lg dark:text-surface-300 text-surface-700">{$_("Jalousie locked")}</p>
+								{:else}
+									<p class="text-lg {autoActive ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700'}">
+										{ autoActive ? $_("Sun position detection enabled") : $_("Sun position detection disabled")}</p>
+									<p class="text-lg truncate {controlView.statusColor}">{controlView.statusName}</p>
+								{/if}
 							</div>
 							<div class="container flex grid grid-cols-2 gap-2 mt-6">
 							{#if controlView.dialog && controlView.dialog.buttons}
 								{#each controlView.dialog.buttons as button}
 									{#if button.type === 'button'}
-										<button type="button" class="w-full {button.class} btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50 active:bg-primary-500"
+										<button type="button" disabled={controlView.dialog.details.locked} class="w-full {button.class} btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50
+												{controlView.dialog.details.locked ? '' : 'active:bg-primary-500'}"
 												onclick={(e) => { e.stopPropagation(); e.preventDefault(); button.click()}}
 												onmousedown={(e) => { e.stopPropagation(); e.preventDefault(); button.mousedown()}}
 												onmouseup={(e) => { e.stopPropagation(); e.preventDefault(); button.mouseup()}}>

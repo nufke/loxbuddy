@@ -122,6 +122,7 @@
     "IP address:port": "IP address:port",
     "IRoomController": "Intelligent room control",
     "Jalousie": "Blinds",
+    "Jalousie locked": "Blinds locked, control disabled",
     "Language": "Language",
     "Licenced under": "Licenced under",
     "Lifetime": "Lifetime",

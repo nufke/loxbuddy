@@ -99,6 +99,10 @@
 		return Number(controlStore.getState(control.states.autoActive));
 	}
 
+	function isLocked(control: Control) {
+		return Number(controlStore.getState(control.states.locked));
+	}
+
 	function getStatusColor(control: Control) {
 		let position = Math.round(Number(controlStore.getState(control.states.position)) * 100);
 		return position > 1 ? 'dark:text-primary-500 text-primary-700' : 'text-surface-950 dark:text-surface-50';
@@ -225,11 +229,12 @@
 														</div>
 														<div class="relative inline-flex h-12 p-0 justify-self-end">
 															<LbJalousieIcon {control} width="32" height="32"/>
-															{#if control.details.isAutomatic }
+															{#if control.details.isAutomatic || isLocked(control)}
 																<div class="absolute -top-[0px] -left-[9px] inline-flex items-center justify-center w-[18px] h-[18px]
-																	{isAutoActive(control) ? 'dark:bg-primary-500 bg-primary-700' : 'dark:bg-surface-50 bg-surface-950'} rounded-full
+																	{isLocked(control) ? 'bg-error-500' : isAutoActive(control) ? 'dark:bg-primary-500 bg-primary-700' : 'dark:bg-surface-50 bg-surface-950'} rounded-full
 																	border border-1 dark:border-surface-950 border-surface-50">
-																	<LbIcon class='dark:text-surface-950 text-surface-50' name="automatic" height="10" width="10"/>
+																	<LbIcon class='dark:text-surface-950 text-surface-50' name={ isLocked(control) ? 'lucide:lock-keyhole' : 
+																		isAutoActive(control) ? 'automatic' : ''} height="10" width="10"/>
 																</div>
 															{/if}
 														</div>
