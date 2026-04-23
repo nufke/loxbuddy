@@ -219,7 +219,7 @@
 									<div class="flex flex-col overflow-y-auto space-y-2" {style} bind:this={viewport} onscroll={() => parseScroll(windowHeight, viewport)}>
 										{#each screenControls as control}
 											<button class="w-full flex h-[60px] items-center justify-start rounded-lg border border-white/10 hover:border-white/50
-												{isSelected(control) ? 'dark:bg-surface-800 bg-surface-200' : 'dark:bg-surface-950 bg-surface-50'} px-2 py-2"
+												{isSelected(control) ? 'bg-surface-200-800' : 'bg-surface-50-950'} px-2 py-2"
 												onclick={() => selectScreen(control)}>
 												<div class="relative flex truncate w-full">
 													<div class="p-2 grid grid-cols-2 w-fit w-full justify-between items-center h-[60px]">
@@ -230,11 +230,9 @@
 														<div class="relative inline-flex h-12 p-0 justify-self-end">
 															<LbJalousieIcon {control} width="32" height="32"/>
 															{#if control.details.isAutomatic || isLocked(control)}
-																<div class="absolute -top-[0px] -left-[9px] inline-flex items-center justify-center w-[18px] h-[18px]
-																	{isLocked(control) ? 'bg-error-500' : isAutoActive(control) ? 'dark:bg-primary-500 bg-primary-700' : 'dark:bg-surface-50 bg-surface-950'} rounded-full
-																	border border-1 dark:border-surface-950 border-surface-50">
-																	<LbIcon class='dark:text-surface-950 text-surface-50' name={ isLocked(control) ? 'lucide:lock-keyhole' : 
-																		isAutoActive(control) ? 'automatic' : ''} height="10" width="10"/>
+																<div class="absolute -right-[2px] inline-flex items-center justify-center w-[20px] h-[20px] rounded-full {isSelected(control) ? 'bg-surface-200-800' : 'bg-surface-50-950'}">
+																	<LbIcon class={isLocked(control)? 'text-warning-500' : isAutoActive(control) ? 'dark:text-primary-500 text-primary-700' : 'text-surface-500'}
+																	  name={isLocked(control) ? 'lucide:lock-keyhole' : 'bold_loxbuddy:letter-a'} height="12" width="12"/>
 																</div>
 															{/if}
 														</div>

@@ -120,9 +120,9 @@
 		iconName: controlStore.getIcon(control, controlOptions.isSubControl),
 		textName: control.name,
 		statusName: getPosition(),
-		statusColor: (position > 0) ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700',
-		badgeIconName: isLocked ? 'lucide:lock-keyhole' : isAutomatic ? 'automatic' : '',
-		badgeIconColor: isLocked ? 'bg-error-500' : autoActive ? 'dark:bg-primary-500 bg-primary-700' : 'dark:bg-surface-50 bg-surface-950',
+		statusColor: isLocked ? 'text-warning-500' : (position > 0) ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700',
+		badgeIconName: isLocked ? 'lucide:lock-keyhole' : 'bold_loxbuddy:letter-a',
+		badgeIconColor: isLocked ? 'text-warning-500' : autoActive ? 'dark:text-primary-500 text-primary-700' : 'text-surface-500',
 		buttons: buttons,
 		dialog: { ...dialog,
 			details: jalousie

@@ -54,6 +54,8 @@ class LbIconStore {
 			setCustomIconLoader( (name: string) => this.updateIconProps(name, setName, 1.0), `thin_${setName}`);
 			setCustomIconLoader( (name: string) => this.updateIconProps(name, setName, 1.5), `light_${setName}`);
 			setCustomIconLoader( (name: string) => this.updateIconProps(name, setName, 2.0), `medium_${setName}`);
+			setCustomIconLoader( (name: string) => this.updateIconProps(name, setName, 2.5), `semibold_${setName}`);
+			setCustomIconLoader( (name: string) => this.updateIconProps(name, setName, 3.0), `bold_${setName}`);
 		});
   }
 }

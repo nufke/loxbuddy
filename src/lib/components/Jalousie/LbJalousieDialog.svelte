@@ -44,9 +44,8 @@
 								<div class="relative inline-flex h-18 w-18 items-center justify-center overflow-hidden rounded-full border border-white/10 dark:bg-surface-950">
 									<LbJalousieIcon control={controlView.control} width="36" height="36"/>
 									{#if controlView.badgeIconName?.length}
-										<div class="absolute top-[9px] left-[10px] inline-flex items-center justify-center w-[18px] h-[18px] {controlView.badgeIconColor} rounded-full
-																border border-1 dark:border-surface-950 border-surface-50">
-											<LbIcon class='dark:text-surface-950 text-surface-50' name={controlView.badgeIconName} height="10" width="10"/>
+										<div class="absolute top-[7px] right-[10px] inline-flex items-center justify-center w-[24px] h-[24px] bg-surface-50-950 rounded-full">
+											<LbIcon class={controlView.badgeIconColor} name={controlView.badgeIconName} height="14" width="14"/>
 										</div>
 									{/if}
 								</div>

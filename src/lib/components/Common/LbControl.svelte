@@ -12,6 +12,8 @@
 	let { controlView = $bindable(), controlOptions = DEFAULT_CONTROLOPTIONS } : { controlView: ControlView, controlOptions: ControlOptions } = $props();
 	let isCategory = page.url.pathname.includes('/category');
 
+	let locked = controlView.dialog?.details?.locked;
+
 	function getT() {
 		let temp = controlView.iconText?.split('.') || '';
 		return {
@@ -67,9 +69,8 @@
 							style={getIconColorHex(controlView.iconColor)}/>
 						{/if}
 						{#if controlView.badgeIconName?.length}
-							<div class="absolute top-[4px] left-[6px] inline-flex items-center justify-center w-[14px] h-[14px] {controlView.badgeIconColor} rounded-full
-													border border-1 dark:border-surface-950 border-surface-50">
-								<LbIcon class='dark:text-surface-950 text-surface-50' name={controlView.badgeIconName} height="8" width="8"/>
+							<div class="absolute top-[0px] right-[2px] inline-flex items-center justify-center w-[22px] h-[22px] bg-surface-50-950 rounded-full">
+								<LbIcon class={controlView.badgeIconColor} name={controlView.badgeIconName} height="12" width="12"/>
 							</div>
 						{/if}
 					</div>
@@ -139,9 +140,8 @@
 						style={getIconColorHex(controlView.iconColor)}/>
 					{/if}
 					{#if controlView.badgeIconName?.length}
-						<div class="absolute top-[4px] left-[6px] inline-flex items-center justify-center w-[14px] h-[14px] {controlView.badgeIconColor} rounded-full
-												 border border-1 dark:border-surface-950 border-surface-50">
-							<LbIcon class='dark:text-surface-950 text-surface-50' name={controlView.badgeIconName} height="8" width="8"/>
+						<div class="absolute top-[0px] right-[2px] inline-flex items-center justify-center w-[22px] h-[22px] bg-surface-50-950 rounded-full">
+							<LbIcon class={controlView.badgeIconColor} name={controlView.badgeIconName} height="12" width="12"/>
 						</div>
 					{/if}
 				</div>
@@ -168,7 +168,7 @@
 						<div class="ml-2"></div>
 					{/if}
 					{#if button.type === 'button' && button.iconName}
-						<button type="button" class="btn-icon w-[18px] h-[18px] p-3 dark:bg-surface-950 bg-surface-50 rounded-lg border border-white/15 hover:border-white/50 active:bg-primary-500"
+						<button type="button" disabled={locked} class="btn-icon w-[18px] h-[18px] p-3 dark:bg-surface-950 bg-surface-50 rounded-lg border border-white/15 hover:border-white/50 {locked ? '' : 'active:bg-primary-500'}"
 										onclick={(e) => { e.stopPropagation(); e.preventDefault(); button.click(e)}}>
 							<span style="font-size:26px">
 								<LbIcon class={button.iconColor} name={button.iconName} />

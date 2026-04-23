@@ -24,9 +24,9 @@
 		iconColor: active ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700',
 		textName: control.name,
 		badgeIconName: locked ? 'Lock' : '',
-		badgeIconColor: locked ? 'bg-red-500' : '',
+		badgeIconColor: locked ? 'bg-warning-500' : '',
 		statusName: locked ? $_('Locked') : ( active ? $_('Presence active') : $_('No presence') ),
-		statusColor: locked ? 'text-red-500' : ( active ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700' ),
+		statusColor: locked ? 'text-warning-500' : ( active ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700' ),
 		dialog: dialog
 	});
 </script>
