@@ -27,7 +27,7 @@ client.on('message', (message) => {
 client.bind(7071); // bind to Loxone devices
 
 function timeout(delay: number) {
-    return new Promise(resolve => setTimeout(resolve, delay));
+    return new Promise((resolve) => setTimeout(resolve, delay));
 }
 
 export async function GET() {

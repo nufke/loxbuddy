@@ -38,7 +38,7 @@
 
 	let dayOfTheWeek = $derived(format(appStore.date, 'eeee'));
 	let opModes = $derived(controlStore.operatingModes);
-	let temperatureList = $derived(controlView.list ? controlView.list.filter( item => item.visible == true) : []); // hide items not marked as visible 
+	let temperatureList = $derived(controlView.list ? controlView.list.filter((item) => item.visible == true) : []); // hide items not marked as visible 
 	let selectedItem = $derived(temperatureList.find( (item: ListItem) => $_(item.name) === controlView.statusName ));
 	let selectedTab = $state(1);
 	let tempActual = $derived(Number(controlStore.getState(controlView.control?.states.tempActual)));
@@ -221,7 +221,7 @@
 
 	function getTemperatureMode(item: any) {
 		const mode = Number(item.value);
-		let obj = temperatureList.find( item => item.id == mode);
+		let obj = temperatureList.find((item) => item.id == mode);
 		return obj && obj.name ? $_(obj.name) : '';
 	}
 
@@ -235,7 +235,7 @@
 
 	function getTemperature(item: any) {
 		const mode = Number(item.value);
-		let obj = temperatureList.find( item => item.id == mode);
+		let obj = temperatureList.find((item) => item.id == mode);
 		return (obj && obj.value) ? 
 			' ('+ obj.value.toLocaleString(appStore.locale, { maximumFractionDigits: 1, minimumFractionDigits: 1 }) + '°)' // TODO Fahrenheit
 			: '';
@@ -263,7 +263,7 @@
 	function filteredEntries() {
 		let list: CalendarListItem[] = [];
 		entries?.entry.forEach( (entry: Entry) => {
-			let itemFound = list.find( item => entry.from == item.from && 
+			let itemFound = list.find((item) => entry.from == item.from && 
 				entry.to == item.to &&
 				entry.needActivate == item.needActivate &&
 				entry.value == item.value);

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Dialog, Portal } from '@skeletonlabs/skeleton-svelte';
-	import { type ControlView, type SecuredDetails, type SecuredDetailsValue } from '$lib/types/models';
+	import { type ControlView, type SecuredDetails } from '$lib/types/models';
 	import LbIcon from '$lib/components/Common/LbIcon.svelte';
 	import { _ } from 'svelte-i18n';
 	import LbInfo from '$lib/components/Common/LbInfo.svelte';
@@ -15,7 +15,7 @@
 
 	let imageIdx = 0; // image cache index
 	let img: any = $state();
-	let resource = $state('');
+	let resource = $state();
 
 	let events = $derived(String(controlStore.getState(controlView.control.states.lastBellEvents)));
 	let lastBellEvents = $derived((events.includes('|') ? events.split('|').reverse(): []));
@@ -24,20 +24,22 @@
 	let dialogHeight = $state(500);
 	let imageHeight = $state(200);
 	let history = $derived(lastBellEvents.length);
-	let	securedDetails = $derived(resource ? JSON.parse(resource) : {});
+	let	securedDetails = $derived(resource) as SecuredDetails;
 	let bellImages = $derived(new SvelteMap<string, string>());
 	let isJpgVideo = $derived(securedDetails?.videoInfo?.streamUrl.match(/.jpg$/) ? 1 : 0);
 
 	$effect( () => {
 		if (uuid) {
-			controlStore.fetchUrl(uuid, `jdev/sps/io/${uuid}/securedDetails`).then( resp => resource = resp );
+			controlStore.fetchUrl(uuid, `jdev/sps/io/${uuid}/securedDetails`)
+			.then((response) => response.json())
+			.then((data) => { resource = data; })
 		}
 	});
 
 	$effect( () => {
 		if (isJpgVideo) {
 			setInterval( () => {
-				securedDetails = resource ? JSON.parse(resource) : {};
+				securedDetails = resource as SecuredDetails;
 			}, 1000); // refresh resource every second
 		}
 	});

@@ -190,6 +190,23 @@ export const INITIAL_STRUCTURE: Structure = {
 	structureDate: ''
 }
 
+export type StatisticV2 = {
+	groups: StatisticGroupEntry[];
+}
+
+export type StatisticGroupEntry = {
+	id: string;
+	mode: number;
+	accumulated?: boolean;
+	dataPoints: StatisticDataPoint[];
+}
+
+export type StatisticDataPoint = {
+	title: string;
+	format: string;
+	output: string;
+}
+
 export type Control = {
 	name: string;									// GUI name of the control
 	type: string;									// type of control, e.g., switch, button, slider, etc.
@@ -203,6 +220,7 @@ export type Control = {
 	restrictions: number;
 	details?: any;								// control details
 	states?: any;									// control states
+	statisticV2?: StatisticV2; 		// statistics v2
 	preset?: any;									// control presets
 	links?: string[];							// UUID links for TextState control
 	securedDetails?: SecuredDetails; // secured details (optional)
@@ -619,14 +637,6 @@ export type CalendarEntryView = {
 }
 
 export type SecuredDetails = {
-	LL: {
-		control: string;
-		value: string;
-		Code: string;
-	}
-}
-
-export type SecuredDetailsValue = {
 	videoInfo: {
 		alertImage: string;
 		streamUrl: string;
@@ -688,4 +698,17 @@ export type DeviceInfo = {
 }
 export type DeviceInfoMap = {
 	[key: string]: DeviceInfo;
+}
+
+export type StatisticsDiff = {
+	[key: string]: {
+		data: StatisticsDiffEntry[];
+		total: number;
+		totalNeg: number;
+	}
+}
+
+export type StatisticsDiffEntry = {
+	ts: number;		// time
+	values: number[]; // values
 }

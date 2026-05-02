@@ -224,8 +224,8 @@ export class MqttClient {
 	 * Dummy placeholder to fetch information
 	 * @param url endpoint?
 	*/
-	async fetch(url: string) {
-		// TODO
+	async fetch(url: string): Promise<Response> {
+		return fetch(url); // TODO
 	}
 
 }

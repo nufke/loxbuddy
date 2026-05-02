@@ -17,7 +17,7 @@
 		let items: any[] = [];
 		let opModes = controlStore.operatingModes;
 		let opModesKeys = Array.from(opModes.keys());
-		opModesKeys.forEach( key => { 
+		opModesKeys.forEach((key) => { 
 			items.push({
 				mode: key,
 				name: opModes.get(key),

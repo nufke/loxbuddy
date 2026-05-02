@@ -39,10 +39,10 @@
 	});
 
 	let entryObj = $derived(controlStore.getState(control.states.entryList) as AlarmClockEntries);
-	let entryIds = $derived(entryObj ? Object.keys(entryObj).map(n => Number(n)) : []);
+	let entryIds = $derived(entryObj ? Object.keys(entryObj).map((n) => Number(n)) : []);
 	let entryList = $derived(entryObj ? Object.values(entryObj) : []);
 	let prevEntryListLength: number = $state(0);
-	let alarms = $derived(entryObj ? Object.values(entryObj).filter( entry => entry.isActive) : []);
+	let alarms = $derived(entryObj ? Object.values(entryObj).filter((entry) => entry.isActive) : []);
 	let nextEntryTime = $derived(Number(controlStore.getState(control.states.nextEntryTime)) || 0);
 	let windowHeight = $derived(innerHeight.current || 0);
 
@@ -86,7 +86,7 @@
 	function publishEntry(entry: AlarmClockEntry, i: number = -1) {
 		let id = (i == -1) ? newId() : entryIds[i]; /* -1 is new entry */
 		let extName = (i == -1) ? ' ' + String(id) : ''; /* extend name for new entries */
-		let setting = entry.nightLight ? (entry.daily ? '1' : '0') : entry.modes?.map(s => s.toString());
+		let setting = entry.nightLight ? (entry.daily ? '1' : '0') : entry.modes?.map((s) => s.toString());
 		let cmd = 'entryList/put/' + String(id) + '/' +
 			entry.name + extName + '/' + entry.alarmTime + '/' + 
 			(entry.isActive ? '1' : '0') + '/' + setting;
@@ -161,7 +161,7 @@
 
 	$effect( () => {
 		if (entryList.length) { /* to trigger the scroll, we need to be sensitive to the entryList */
-			tick().then( () => {
+			tick().then(() => {
 				if ( viewport && prevEntryListLength != entryIds.length ) {
 					viewport.scroll({ top: viewport.scrollHeight, behavior: 'smooth' });
 					prevEntryListLength = entryIds.length;

@@ -18,8 +18,9 @@
 	let selectedControl: Control | undefined= $state();
 	let selectedControlOptions: ControlOptions | undefined = $state();
 	let lightList = control.details.controls as LightItem[];
-	lightList.forEach( item => item.selected = false ); // default all lights unselected
 	let lightsUuid = control.details.controls.map((item: LightItem) => item.uuid);
+
+	lightList.forEach((item) => item.selected = false ); // default all lights unselected
 
 	let scenesEnabled = $state(false);
 	let viewport: any = $state(); // TODO make HTMLDivElement
@@ -36,7 +37,7 @@
 	);
 
 	let lightsOn = $derived(lightList.length - lightsOff.length);
-	let selectedLightCount = $derived(lightList.filter( item => item.selected == true).length);
+	let selectedLightCount = $derived(lightList.filter((item) => item.selected == true).length);
 
 	let windowHeight = $derived(innerHeight.current || 0);
 	let margin = 200;
@@ -70,7 +71,7 @@
 	}
 
 	function close() {
-		lightList.forEach( item => item.selected = false ); // empty selected lights
+		lightList.forEach((item) => item.selected = false ); // empty selected lights
 		scenesEnabled = false;
 		selectedControl = undefined;
 		selectedControlOptions = undefined;
@@ -119,7 +120,7 @@
 	}
 
 	function selectLight(control: Control) {
-		let index = lightList.findIndex( item => item.uuid == control.uuidAction);
+		let index = lightList.findIndex((item) => item.uuid == control.uuidAction);
 		if (lightList[index]) {
 			lightList[index].selected = !lightList[index].selected;
 		}
@@ -127,7 +128,7 @@
 	}
 	
 	function isSelected(control: Control) {
-		let light = lightList.find( item => item.uuid == control.uuidAction);
+		let light = lightList.find((item) => item.uuid == control.uuidAction);
 		return light ? light.selected : false;
 	}
 
@@ -151,7 +152,7 @@
 
 	function selectScenes() {
 		if (!scenesEnabled) return; // more than one scene selected
-		let light = lightList.find( item => item.selected);
+		let light = lightList.find((item) => item.selected);
 		let control: Control | undefined = controlStore.controlList.find( (control: Control) => control.uuidAction == light?.uuid);
 		if (control) {
 			selectedControl = control;

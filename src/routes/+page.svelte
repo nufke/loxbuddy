@@ -17,8 +17,8 @@
 
 	let userSettings = $derived(controlStore.userSettings);
 	let userDefinedOrder = $derived(appStore.userDefinedOrder);
-	let centralRooms = $derived(controlStore.roomList.filter( (room) => room.name.includes($_('General')) || room.name.includes($_('Central'))));
-	let centralRoomsUuids = $derived(centralRooms.map( room => room.uuid));
+	let centralRooms = $derived(controlStore.roomList.filter((room) => room.name.includes($_('General')) || room.name.includes($_('Central'))));
+	let centralRoomsUuids = $derived(centralRooms.map((room) => room.uuid));
 	let controlOptions: ControlOptions = $derived(DEFAULT_CONTROLOPTIONS);
 
 	let centralControls = $derived(
@@ -72,7 +72,7 @@
 			{#each centralRooms as centralRoom}
 				<button class="pl-2 h5" onclick={() => {goto('/room/'+centralRoom.uuid)}}>{centralRoom.name}</button>
 				<div class="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 lg:flex-wrap">
-					{#each centralControls.filter( control => control.room == centralRoom.uuid) as control (control)}
+					{#each centralControls.filter((control) => control.room == centralRoom.uuid) as control (control)}
 						{@const Component = lbControl.getControl(control.type)}
 						<div animate:flip={{ duration: appStore.dnd.duration }}
 							draggable={appStore.dnd.isEnabled}

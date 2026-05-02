@@ -20,9 +20,10 @@
 	let screenSelected = $state(false);
 
 	let screenList = control.details.controls as ScreenItem[];
-	screenList.forEach( item => item.selected = false); // default all screens unselected
-
 	let screenUuid = control.details.controls.map((item: ScreenItem) => item.uuid);
+
+	screenList.forEach((item) => item.selected = false); // default all screens unselected
+
 	let screenControls = $derived(controlStore.controlList.filter(
 		(controls: Control) => screenUuid.indexOf(controls.uuidAction) > -1
 	));
@@ -36,7 +37,7 @@
 		screenControls.filter((control: Control) => Number(controlStore.getState(control.states.position)) * 100 > 1)
 	);
 
-	let selectedScreenCount = $derived(screenList.filter( item => item.selected == true).length);
+	let selectedScreenCount = $derived(screenList.filter((item) => item.selected == true).length);
 	let windowHeight = $derived(innerHeight.current || 0);
 	let margin = 200;
 	let size = $derived(windowHeight * 0.9 - viewport?.clientHeight - margin || 0);
@@ -66,7 +67,7 @@
 	}
 
 	function selectScreen(control: Control) {
-		let index = screenList.findIndex( item => item.uuid == control.uuidAction);
+		let index = screenList.findIndex((item) => item.uuid == control.uuidAction);
 		if (screenList[index]) {
 			screenList[index].selected = !screenList[index].selected;
 		}
@@ -74,13 +75,13 @@
 	}
 
 	function isSelected(control: Control) {
-		let screen = screenList.find( item => item.uuid == control.uuidAction);
+		let screen = screenList.find((item) => item.uuid == control.uuidAction);
 		return screen ? screen.selected : false;
 	}
 
 	function selectScreenOptions() {
 		if (!screenSelected) return; // more than one screen selected
-		let screen = screenList.find( item => item.selected);
+		let screen = screenList.find((item) => item.selected);
 		let control: Control | undefined = controlStore.controlList.find( (control: Control) => control.uuidAction == screen?.uuid);
 		if (control) {
 			selectedControl = control;
@@ -109,7 +110,7 @@
 	}
 
 	function close() {
-		screenList.forEach( item => item.selected = false ); // clear selected screens
+		screenList.forEach((item) => item.selected = false ); // clear selected screens
 		screenSelected = false;
 		selectedControl = undefined;
 		selectedControlOptions = undefined;
@@ -117,7 +118,7 @@
 	}
 
 	function screenAction(action: string) {
-		screenList.forEach( screen => { 
+		screenList.forEach((screen) => { 
 			if (screen.selected) {
 				controlStore.setControl(screen.uuid, action);
 			}

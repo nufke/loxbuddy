@@ -98,7 +98,7 @@
 		{#each labels as label}
 			<button class="h6 ml-2" onclick={() => {goto('/room/'+label.uuid)}}>{label.name}</button>
 			<div class="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 lg:flex-wrap">
-				{#each filteredControls.filter( item => item.room == label.uuid) as control (control)}
+				{#each filteredControls.filter((item) => item.room == label.uuid) as control (control)}
 					{@const Component = lbControl.getControl(control.type)}
 					<div animate:flip={{ duration: appStore.dnd.duration }}
 						draggable={appStore.dnd.isEnabled}

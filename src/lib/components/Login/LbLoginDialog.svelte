@@ -33,12 +33,9 @@
 	})
 
 	async function startDemo() {
-		demo.start();
-		appStore.setDemo(1);
-		appStore.setLocale('en');
-		appStore.loginDialog.state = false;
-		goto('/');
 		clearFormFields();
+		appStore.setDemo(1);
+		await startLoxWsClient();
 	}
 
 	async function reconnect() {
@@ -66,7 +63,7 @@
 			}
 			// 3. Check username/password combination via http call (no login yet)
 			try {
-				await checkCredentials(hostUrl, userName, password);
+				checkCredentials(hostUrl, userName, password);
 			} catch (error) {
 				showMessageDialog('Login credentials invalid!');
 				return;

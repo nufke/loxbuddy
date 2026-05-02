@@ -75,7 +75,7 @@ self.addEventListener('fetch', (event) => {
 			const response = await cache.match(event.request);
 
 			if (response) {
-				console.log(`[service-worker] Returning from Cache`, event.request.url);
+				console.log(`[service-worker] Returning from Cache`, );
 				return response;
 			}
 

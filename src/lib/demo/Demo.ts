@@ -191,7 +191,7 @@ export class Demo {
 		const val = msg.split('/');
 		switch (val[1]) {
 			case '778': { /* off */
-				lights.forEach( light => {
+				lights.forEach((light) => {
 					switch(light.type) {
 						case 'Dimmer': controlStore.setState(light.states.position, '0'); break;
 						case 'ColorPickerV2' : { 
@@ -205,7 +205,7 @@ export class Demo {
 				break;
 			}
 			case '777': { /* on */
-				lights.forEach( light => {
+				lights.forEach((light) => {
 					switch(light.type) {
 						case 'Dimmer': controlStore.setState(light.states.position, '100'); break;
 						case 'ColorPickerV2' : { 
@@ -219,7 +219,7 @@ export class Demo {
 				break;
 			}
 			case '1': { /* default */
-				lights.forEach( light => {
+				lights.forEach((light) => {
 					switch(light.type) {
 						case 'Dimmer': controlStore.setState(light.states.position, '20'); break;
 						case 'ColorPickerV2' : { 
@@ -599,11 +599,11 @@ export class Demo {
 	setDayTimerModes(control: Control, modeList: string[]) {
 		const modeListId = control.states.modeList;
 		const opModes = controlStore.operatingModes;
-		const list = modeList.map( i => Number(i));
+		const list = modeList.map((i) => Number(i));
 		const modes = list.filter((item, index) => list.indexOf(item) === index).sort();
 		let modeListStr = "";
 		let i = 0;
-		modes.forEach( mode => {
+		modes.forEach((mode) => {
 			if (i>0) {
 				modeListStr += ',';
 			}
@@ -623,13 +623,18 @@ export class Demo {
 	/**
 	 * Dummy fetch in demo mode
 	 */
-	fetch(url: string) {
+	fetch(url: string): Promise<Response>  {
 		console.info('[DEMO] fetch URL:', url);
-		switch (url) {
-			case 'jdev/sps/io/__uuid_messageCenter/getEntries/2' : return this.createPromise(JSON.stringify(messageCenter)); // original miniserver response is a string, not an object
-			case 'jdev/sps/io/__uuid__controls_intercom/securedDetails' : return this.createPromise(states.__uuid__controls_intercom_securedDetails);
-			default: return this.createPromise(JSON.stringify({text: 'default reponse'}));
+		if (url.includes('jdev/sps/io/__uuid_messageCenter/getEntries/2')) {
+			 return this.createPromise(JSON.stringify(messageCenter)); // original miniserver response is a string, not an object
 		}
+		if (url.includes('jdev/sps/io/__uuid__controls_intercom/securedDetails')) {
+			return this.createPromise(states.__uuid__controls_intercom_securedDetails);
+		}
+		if (url.includes('dev/sps/getStatistic/')) {
+			return this.createPromise(''); // TODO Response with empty payload
+		}
+		return this.createPromise(JSON.stringify({text: 'default reponse'}));
 	}
 
 	/**
@@ -638,15 +643,26 @@ export class Demo {
 	disconnect() {
 		controlStore.clearStructure();
 	}
-
-	private createPromise(msg: any) {
-		return new Promise((resolve) => {
+	
+	/**
+	 * Helper function to create response promise
+	 */
+	 // Programatically create a Response
+	private createPromise(msg: string): Promise<Response> {
+    const headers = { 
+			'status': 200,
+			'statusText': 'text'
+		};
+		return new Promise<Response>((resolve) => {
 			setTimeout(() => {
-				resolve(msg);
+				resolve(new Response(msg, headers));
 			}, 300);
 		});
 	}
 
+	/**
+	 * Helper function to extract HSV colors from string
+	 */
 	private getHsv(color: string) {
 		const regex = new RegExp('hsv\\(([0-9]+),([0-9]+),([0-9]+)\\)');
 		const found = color.match(regex);

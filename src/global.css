@@ -56,3 +56,37 @@
         }
     }
 }
+
+[data-mode="dark"] {
+	.d3-text {
+		fill: var(--color-surface-50);
+		color: var(--color-surface-50);
+	}
+
+	.d3-line-horizontal {
+		stroke: var(--color-surface-400);
+		stroke-width: 1;
+	}
+
+	.d3-line-vertical {
+		stroke: var(--color-surface-700);
+		stroke-width: 1;
+	}
+}
+
+[data-mode="light"] {
+	.d3-text {
+		fill: var(--color-surface-950);
+		color: var(--color-surface-950);
+	}
+
+	.d3-line-horizontal {
+		stroke: var(--color-surface-300);
+		stroke-width: 1;
+	}
+
+	.d3-line-vertical {
+		stroke: var(--color-surface-200);
+		stroke-width: 1;
+	}
+}

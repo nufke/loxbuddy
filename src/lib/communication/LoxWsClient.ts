@@ -200,7 +200,7 @@ export class LoxWsClient {
 		.then((data) => {
 			controlStore.userSettings = data;
 		})
-		.catch(e => console.error('[LoxWsClient] getUserSettings fetch error: ', e));
+		.catch((error) => console.error('[LoxWsClient] getUserSettings fetch error: ', error));
 	}
 
 	/**
@@ -216,7 +216,7 @@ export class LoxWsClient {
 		.then((data) => {
 			controlStore.systemStatus = JSON.parse(data.LL.value);
 		})
-		.catch(e => console.error('[LoxWsClient] getSystemStatus fetch error: ', e));
+		.catch((error) => console.error('[LoxWsClient] getSystemStatus fetch error: ', error));
 	}
 
 	/**
@@ -228,26 +228,22 @@ export class LoxWsClient {
 		.then((data) => {
 			controlStore.iconList = data;
 		})
-		.catch(e => console.error('[LoxWsClient] getIconList fetch error: ', e));
+		.catch((error) => console.error('[LoxWsClient] getIconList fetch error: ', error));
 	}
 
 	/**
 	 * Generic webservice command using Miniserver user credentials
 	 * @param url webservices endpoint (e.g., /jdev/sps/io/...)
 	*/
-	async fetch(url: string) {
-		return fetch(`${this.hostName}/${url}?autht=${appStore.credentials.token}&user=${this.userName}`)
-		.then((response) => response.json())
-		.then((data) => {
-			//console.debug('[LoxWsClient] fetch data', data)
-			return data?.LL?.value ? data.LL.value : data;
-		});
+	async fetch(url: string): Promise<Response> {
+		const request = new Request(`${this.hostName}/${url}?autht=${appStore.credentials.token}&user=${this.userName}`);
+		return fetch(request);
 	}
 }
 
 /**
  * Establish connection with Miniserver if credentials are available
- * If Demo was runnig before, reload Demo
+ * If Demo was runnig before, reload Demo instead
  */
 export const startLoxWsClient = async () => {
 	const cred = utils.deserialize(localStorage.getItem('credentials'));
@@ -256,23 +252,28 @@ export const startLoxWsClient = async () => {
 	if (appStore.isDemo) {
 		demo.start();
 		appStore.setLocale('en'); // switch to en locale for demo
+		appStore.loginDialog.state = false;
 		return;
 	}
 
 	if (cred && cred.hostName && cred.userName && cred.token && appId) {
-		const loxClient = new LoxWsClient(cred.hostName, cred.userName, '', appId, 0);
-		await loxClient.connect(cred.token);
-	} else {
-		appStore.loginDialog.state = true; 
+		if (await checkTokenValidity(cred.hostName, cred.userName, cred.token)) {
+			const loxClient = new LoxWsClient(cred.hostName, cred.userName, '', appId, 0);
+			await loxClient.connect(cred.token);
+			return;
+		}
 	}
-}
+
+	console.error('[LoxWsClient] Unable to connect and authenticate');
+	appStore.loginDialog.state = true;
+	}
 
 /**
- * Check credentials using HTTP webservice (no login)
+ * Check credentials using HTTP webservice with username and password (no login)
  * NOTE: no catch implemented in this fetch, this should be handled in the caller
  */
-export const checkCredentials = async (url: string, userName: string, password: string) => {
-	await fetch(`${url}/jdev/sps/getusersettings`, {
+export const checkCredentials = (url: string, userName: string, password: string) => {
+	fetch(`${url}/jdev/sps/getusersettings`, {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
@@ -287,15 +288,23 @@ export const checkCredentials = async (url: string, userName: string, password: 
 }
 
 /**
- * Check validity of token. Returns true is token is valid
+ * Check validity of token.
+ * Returns true if the token is valid. Returns false if token is invalid or server is not responsive
+ * NOTE: exception handling is implemented here in case server is not responsive
  */
 export const checkTokenValidity = async (url: string, userName: string, token: string) => {
-	return fetch(`${url}/jdev/sps/getusersettings?autht=${token}&user=${userName}`)
+	return fetch(`${url}/jdev/sys/checktoken/${token}/${userName}?autht=${token}&user=${userName}`, {cache: "no-store"})
 	.then((response) => {
-		if (response.status == 200) {
-			return true;
-		} else {
-			return false;
-		}
+  	if (response.ok) {
+    	return response.json();
+  	}
+  	throw new Error(`Something went wrong. Response status: ${response.status}`);
+	})
+	.then(() => {
+  	return true;
+	})
+	.catch(() => {
+		console.error('[LoxWsClient] Miniserver not responding. Unable to check token');
+		return false;
 	});
 }

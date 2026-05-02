@@ -38,7 +38,7 @@
 	}
 
 	function getTemperature() {
-		let entry = temperatureList.find( item => item.id == value);
+		let entry = temperatureList.find((item) => item.id == value);
 		return entry ? (entry.name + ' (' + entry.value + '°)') : '';
 	}
 
@@ -220,7 +220,7 @@
 		}
 		// Add the last entry
 		mergedEntries.push(currentEntry);
-		mergedEntries.forEach( m => m.latest = false);  // reset priority flag
+		mergedEntries.forEach((m) => m.latest = false);  // reset priority flag
 		return mergedEntries;
 	}
 </script>

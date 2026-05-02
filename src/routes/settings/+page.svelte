@@ -102,9 +102,9 @@
 	function getStartpageName(startpageUrl: string) {
 		if (startPage == '/' || startPage.length < 3) return 'Home';
 		let p = startpageUrl.split('/');
-		let room: any = rooms.find( room => room.uuid == p[2]);
+		let room: any = rooms.find((room) => room.uuid == p[2]);
 		if (room && room.name) return room.name;
-		let category: any = categories.find( cat => cat.uuid == p[2]);
+		let category: any = categories.find((cat) => cat.uuid == p[2]);
 		if (category && category.name) return category.name;
 		return 'Home'; // fallback
 	}

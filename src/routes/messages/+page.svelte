@@ -10,16 +10,15 @@
 	import { innerWidth } from 'svelte/reactivity/window';
 
 	let group = $state('1');
-	let resource = $state('');
+	let messages = $state() as SystemStatus;
 
 	let messageCenter = $derived(controlStore.messageCenterList[0]); // select first message center
-	let	messages = $derived(resource ? JSON.parse(resource) : {}) as SystemStatus;
-	let activeMessages = $derived(messages && messages.entries ? messages.entries.filter( entry => entry.isHistoric == false) : []);
-	let pastMessages = $derived(messages && messages.entries ? messages.entries.filter( entry => entry.isHistoric == true) : []);
+	let activeMessages = $derived(messages && messages.entries ? messages.entries.filter((entry) => entry.isHistoric == false) : []);
+	let pastMessages = $derived(messages && messages.entries ? messages.entries.filter((entry) => entry.isHistoric == true) : []);
 	let notifications = $derived(controlStore.notifications);
 	let notificationList = $derived(Object.values(controlStore.notificationsMap).sort((a, b) => b.message.ts - a.message.ts));
-	let activeNotifications = $derived(notificationList.filter( items => items.status < 3)); // new or read
-	let archivedNotifications = $derived(notificationList.filter( items => items.status == 3)); // new or read
+	let activeNotifications = $derived(notificationList.filter((items) => items.status < 3)); // new or read
+	let archivedNotifications = $derived(notificationList.filter((items) => items.status == 3)); // new or read
 	let selectedEntry: SystemStatusEntry | undefined = $state();
 	let openDialog = $state(false);
 
@@ -27,7 +26,9 @@
 
 	$effect( () => {
 		if (messageCenter && messageCenter.uuidAction) {
-			controlStore.fetchUrl(messageCenter.uuidAction, `jdev/sps/io/${messageCenter?.uuidAction}/getEntries/2`).then( resp => resource = resp );
+			controlStore.fetchUrl(messageCenter.uuidAction, `jdev/sps/io/${messageCenter?.uuidAction}/getEntries/2`)
+			.then((response) => response.json())
+			.then((data) => messages = data );
 		}
 	});
 
@@ -50,7 +51,7 @@
 
 	function confirmEntry() {
 		if (selectedEntry) {
-			let actionOK = selectedEntry.actions.find( a => a.title = 'OK');
+			let actionOK = selectedEntry.actions.find((a) => a.title = 'OK');
 			let cmd = 'action/' + actionOK.actionId + '/' + (actionOK.isSecured ? '1' : '0');
 			// TODO check command for action 
 			//console.debug('[routes/Messages] Confirm entry', cmd);

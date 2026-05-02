@@ -75,7 +75,7 @@ or submit a [pull request](https://github.com/nufke/loxbuddy/pulls).
 | Map\*                    | Available         | uses InfoOnlyText control             |
 | Media                    | Not started       |                                       |
 | MediaClient              | Not started       |                                       |
-| Meter                    | Under development | No statistics yet                     |
+| Meter                    | Under development |                                       |
 | MeterV2                  | Not started       |                                       |
 | MultifunctionSW          | Not started       |                                       |
 | NFCCodeTouch             | Not started       |                                       |

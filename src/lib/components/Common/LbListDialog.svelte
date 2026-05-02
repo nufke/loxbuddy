@@ -20,11 +20,11 @@
 	let showScrollTop = $state(false);
 	let showScrollBottom = $state(false);
 
-	let selectedItem = $derived(controlView.list ? controlView.list.findIndex( (item: ListItem) => { return item.name === controlView.statusName }) : 0);
-	let subControls = $derived( controlView.control && controlView.control.subControls ? Object.values(controlView.control.subControls) : []);
-	let subControlsColorPicker = $derived(subControls.filter( control => control.type === 'ColorPickerV2'));
+	let selectedItem = $derived(controlView.list ? controlView.list.findIndex((item: ListItem) => { return item.name === controlView.statusName }) : 0);
+	let subControls = $derived(controlView.control && controlView.control.subControls ? Object.values(controlView.control.subControls) : []);
+	let subControlsColorPicker = $derived(subControls.filter((control) => control.type === 'ColorPickerV2'));
 	let isLightController = $derived(controlView.control?.type=='LightControllerV2' || controlView.control?.type=='LightController');
-	let id = $derived(subControls.findIndex( subControl => subControl.type === 'ColorPickerV2')); // select first color subControl
+	let id = $derived(subControls.findIndex((subControl) => subControl.type === 'ColorPickerV2')); // select first color subControl
 	let windowHeight = $derived(innerHeight.current || 0);
 	let margin = $derived(getMargin(controlView.control, selectedTab));
 	let size = $derived(windowHeight * 0.9 - viewport?.clientHeight - margin || 0);

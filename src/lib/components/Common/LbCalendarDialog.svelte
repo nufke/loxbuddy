@@ -69,12 +69,12 @@
 	}
 
 	function getTemperature(entry: Entry) {
-		let idx = temperatureList.findIndex( item => item.id == entry.value);
+		let idx = temperatureList.findIndex((item) => item.id == entry.value);
 		return (idx != -1) ? temperatureList[idx].value + '°' : '';
 	}
 
 	function getModeIndex(mode: number) { // check index using the initial modes, as entries could have been removed
-		return initialModes.findIndex(item => item == mode);
+		return initialModes.findIndex((item) => item == mode);
 	}
 
 	// although we calculate with 24:00 for the graphics, we use 00:00 notation to display time 

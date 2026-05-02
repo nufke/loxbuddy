@@ -24,7 +24,7 @@
 
 	function updateEntries(list: string[]) {
 		let obj: any = {};
-		list.forEach( item => {
+		list.forEach((item) => {
 			const regex = new RegExp('([0-9]{4}-[0-9]{2}-[0-9]{2}).*([0-9]{2}:[0-9]{2}:[0-9]{2}).(.*)');
 			const found = item.match(regex);
 			if (found && found[1] && found[2] && found[3]) {

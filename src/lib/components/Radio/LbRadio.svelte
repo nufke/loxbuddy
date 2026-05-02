@@ -41,7 +41,7 @@
 
 	let selectedRadio = $derived(Number(controlStore.getState(control.states.activeOutput)));
 
-	let radioIndex = $derived(radioList.find( item => item.id == selectedRadio));
+	let radioIndex = $derived(radioList.find((item) => item.id == selectedRadio));
 
 	let	dialog: DialogView = $state({
 		action: (state: boolean) => {dialog.state = state},

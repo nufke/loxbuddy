@@ -5,7 +5,7 @@ import type { Structure, MsInfo, Control, Category, Room, NotificationMap, Notif
 							GlobalStates, MessageCenter, NotificationMessage, Icon } from '$lib/types/models';
 import { utils } from '$lib/helpers/Utils';
 import { lbControl } from '$lib/helpers/LbControl';
-import { Demo } from '$lib/demo/Demo';
+import { Demo, demo } from '$lib/demo/Demo';
 import { LoxWsClient} from '$lib/communication/LoxWsClient';
 
 /**
@@ -29,7 +29,7 @@ class LbControlStore {
 	systemStatus: SystemStatus = $state(EMPTY_SYSTEM_STATUS);
 	notifications: NotificationMessage | NotificationList = $derived(this.getState(this.globalStates.notifications));
 	notificationsMap: NotificationMap = $derived(this.updateNotificationMap(this.notifications));
-	msStatus: number = $derived(this.systemStatus.entries ? Math.max(...this.systemStatus.entries.filter( item => item.isHistoric == false).map( item => item.severity)) : 0);
+	msStatus: number = $derived(this.systemStatus.entries ? Math.max(...this.systemStatus.entries.filter((item) => item.isHistoric == false).map((item) => item.severity)) : 0);
 	iconList: Icon[] | undefined = $state();
 
 	constructor() {
@@ -151,12 +151,14 @@ class LbControlStore {
 		return await client?.getFile(url);
 	}
 
-	async fetchUrl(uuid: string, url: string) {
-		const client = this.controlClient.get(uuid);
-		return await client?.fetch(url);
+	fetchUrl(uuid: string, url: string) {
+		const client = this.controlClient.get(uuid) || demo;
+		return client.fetch(url);
 	}
 
-	/* disconnect client based on the registered Miniserver serial number */
+	/**
+	 * Disconnect client based on the registered Miniserver serial number
+	 */
 	disconnectClient() {
 		this.clearStructure();
 		const client = this.controlClient.get(this.msInfo.serialNr); // TODO disconnect active client

@@ -71,7 +71,7 @@
 	let isDemo = $derived(appStore.isDemo);
 	let path = $derived(page.url.pathname);
 	let showWeather = $derived(appStore.showWeather && currentWeather.time > 0 && dailyForecast.length && hourlyForecast[0]);
-	let activeNotifications = $derived(Object.values(controlStore.notificationsMap).filter( items => items.status == 1));
+	let activeNotifications = $derived(Object.values(controlStore.notificationsMap).filter((items) => items.status == 1));
 	let navigation = $derived(routes.filter((m) => !m.menu));
 
 	function getCurrentIcon(cur: WeatherCurrentConditions) {
@@ -127,7 +127,7 @@
 	}
 
 	$effect( () => {
-		let found = routes.find( item => item.href == path );
+		let found = routes.find((item) => item.href == path );
 		if (found && !found.menu) {
 			menuIcon = 'menu';
 		} else {
@@ -161,7 +161,7 @@
 	weatherStore.startWeatherForecast();
 	
 	/* disable right click context menu*/
-	document.addEventListener('contextmenu', event => event.preventDefault());
+	//document.addEventListener('contextmenu', event => event.preventDefault());
 </script>
 
 <svelte:document onvisibilitychange={onVisibilityChange} />
@@ -282,10 +282,10 @@
 			</div>
 		</Navigation.Menu>
 	</Navigation>
-	<div class="pt-[55px] {navigation.find ( item => item.href == path ) ? 'pb-[68px]' : '' }">
+	<div class="pt-[55px] {navigation.find ((item) => item.href == path ) ? 'pb-[68px]' : '' }">
 		{@render children()}
 	</div>
-	{#if navigation.find ( item => item.href == path )}
+	{#if navigation.find ((item) => item.href == path )}
 	<div>
 		<Navigation layout="bar" class="fixed bottom-0 h-[68px] overflow-hidden flex justify-center ">
 			<Navigation.Menu class="grid grid-cols-5 gap-2">

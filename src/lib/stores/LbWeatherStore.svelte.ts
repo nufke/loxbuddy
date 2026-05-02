@@ -107,8 +107,8 @@ class LbWeatherStore {
 	fetchWeatherForecast(url: string) {
 		console.info(`[LbWeatherStore] Fetch weather forecast from ${url}`);
 		fetch(url)
-		.then(response => response.text())
-		.then(data => this.grabWeatherData(data));
+		.then((response) => response.text())
+		.then((data) => this.grabWeatherData(data));
 	}
 
 	grabWeatherData(data: string) {
@@ -203,17 +203,17 @@ class LbWeatherStore {
 		const temp: WeatherDailyForecast[] = []; 
 		const startDate = this.hourly[0].date;
 		for(let i = 1; i <= this.days; i++) {
-			const hours = this.hourly.filter(h => h.date == startDate + (i-1) * 24 * 3600 * 1000 );
-			const noon = hours.find( n => n.hour == 12);
+			const hours = this.hourly.filter((h) => h.date == startDate + (i-1) * 24 * 3600 * 1000 );
+			const noon = hours.find((n) => n.hour == 12);
 			const sunTime = hours.length ? SunCalc.getTimes(new Date(hours[0].date + 12 * 3600 * 1000), Number(this.latitude), Number(this.longitude)) : null;
 			if (hours.length) {
 				const item: WeatherDailyForecast = {
 					time: hours[0].date,
 					conditions: noon ? noon.conditions : hours[0].conditions,
 					icon: noon ? noon.icon : hours[0].icon,
-					airTemperatureHigh: Math.max(...hours.map( h => h.airTemperature)),
-					airTemperatureLow: Math.min(...hours.map( h => h.airTemperature)),  
-					precipitationProbability: Math.max(...hours.map( h => h.precipitationProbability)),
+					airTemperatureHigh: Math.max(...hours.map((h) => h.airTemperature)),
+					airTemperatureLow: Math.min(...hours.map((h) => h.airTemperature)),  
+					precipitationProbability: Math.max(...hours.map((h) => h.precipitationProbability)),
 					sunRise: sunTime ? utils.epoch2TimeStr(sunTime.sunrise.valueOf()/1000) : '',
 					sunSet: sunTime ? utils.epoch2TimeStr(sunTime.sunset.valueOf()/1000) : '',
 					moonIllumination: SunCalc.getMoonIllumination(new Date(hours[0].date)).fraction
