@@ -20,10 +20,9 @@
 
 	let controlUuid = controlView.control.uuidAction; // not updated
 	let statisticV2 = controlView.control.statisticV2;
-	let isStorage = controlView.control.details.type == 'storage';
-	let isBirectional = controlView.control.details.type == 'bidirectional';
-	let isUnidirectional = controlView.control.details.type == 'unidirectional';
+	let type = controlView.control.details.type
 	let totalFormat = controlView.control.details.totalFormat;
+	let powerName = controlView.control.details.powerName;
 
 	let statisticsInfo = $state({}) as StatisticsInfo;
 	let statisticsDiff = $state({}) as StatisticsDiff;
@@ -112,7 +111,7 @@
 							values.push(view.getFloat64(i*size + 4 + j*8, true));
 						}
 						// we swap the array order for storage (battery) as in/out are reversed 
-						stats.push({ts: ts, values: (isStorage ? values.reverse() : values)});
+						stats.push({ts: ts, values: (type == 'storage' ? values.reverse() : values)});
 					}
 				}
 				return stats;
@@ -146,10 +145,24 @@
 		}
 	}
 
+	function getUnit() {
+		const max = Math.max(statisticsDiff[2].total, statisticsDiff[2].totalNeg);
+		return utils.formatString(max, totalFormat)[1];
+	}
+
 	function close() {
 		controlView.dialog.action(false);
 		selector = items[0]; // reset selector
 		date = new SvelteDate(); // reset date
+	}
+
+	function getLabel(s: string) {
+		switch (type) {
+			case 'storage': return (s == 'out') ? $_('Charging') : $_('Discharging');
+			case 'unidirectional': return $_('Consume');
+			case 'bidirectional': return (s == 'out') ? $_('Consume') : $_('Supply');
+			default: '';
+		}
 	}
 
 	$effect( () => {
@@ -196,26 +209,25 @@
 									</div>
 								{/if}
 							</div>
-							<div class="w-full grid grid-cols-2 m-2">
-								<div class="ml-3 justify-start">
+							<div class="w-full grid grid-cols-2">
+								<div class="m-2 ml-1 justify-start">
 									<p class="text-surface-950-50">{$_('Actual')}</p>
-									<p class={isActualPositive() ? 'dark:text-secondary-500 text-secondary-700' : 
-										'dark:text-primary-500 text-primary-700'}>{getActual()} ({isActualPositive() ? $_('Supply') : $_('Consume')})</p>
-									<p class="mt-2 text-surface-950-50">{isUnidirectional ? $_('Supply') : $_('Consume')}</p>
+									<p class={controlView.statusColor}>{controlView.statusName}</p>
+									<p class="mt-2 text-surface-950-50">{getLabel('out')}</p>
 										<p class="dark:text-primary-500 text-primary-700">{getValue('out')}
-										{#if isBirectional || isStorage}  
+										{#if type == 'bidirectional' || type == 'storage'}  
 											({getPercent('out')}%)
 										{/if}
 										</p>
-									{#if isBirectional || isStorage}
-										<p class="mt-2 text-surface-950-50">{$_('Supply')}</p>
+										{#if type == 'bidirectional' || type == 'storage'} 
+										<p class="mt-2 text-surface-950-50">{getLabel('in')}</p>
 										<p class="dark:text-secondary-500 text-secondary-700">{getValue('in')}
 											({getPercent('in')}%)
 										</p>
 									{/if}
 								</div>
 								<div class="flex justify-end">
-									{#if !isUnidirectional}
+									{#if type == 'bidirectional' || type == 'storage'}
 										<svg xmlns="http://www.w3.org/2000/svg" height="150" width="150" viewBox="0 0 100 100">
 											<circle class={ getPercent('out') ? 'dark:stroke-secondary-500 stroke-secondary-700' :
 											'dark:stroke-surface-300 stroke-surface-700'} r="32" cx="50" cy="50" stroke-width="12" fill="none"/>
@@ -229,7 +241,8 @@
 									{/if}
 								</div>
 							</div>
-							<div class="w-full">
+							<div class="mt-2 w-full">
+								<p class="flex justify-center">{powerName} ({getUnit()})</p>
 								<BarChart statistics={statisticsDiff[2]} />
 							</div>
 						</div>

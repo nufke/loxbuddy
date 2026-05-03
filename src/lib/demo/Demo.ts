@@ -666,6 +666,7 @@ export class Demo {
 
 		let length: number;
 		let timestepSeconds: number;
+
 		switch (dataPointUnit) {
 			case 'hour':  timestepSeconds = 3600; length = 24; break;
 			case 'day':   timestepSeconds = 86400; length = Math.round((toUnixUtc - fromUnixUtc + 1) / 86400); break;
@@ -673,6 +674,7 @@ export class Demo {
 			case 'year':  timestepSeconds = 31557600; length = 1; break;
 			default:      timestepSeconds = 3600; length = 24;
 		}
+
 		const size = 4 + numDataPoints * 8;
 		const buffer = new ArrayBuffer(size * length);
 		const view = new DataView(buffer);

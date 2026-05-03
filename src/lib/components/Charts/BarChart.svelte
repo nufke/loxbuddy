@@ -6,7 +6,7 @@
 
 	let { statistics } = $props();
 
-	const margin = { top: 20, right: 10, bottom: 30, left: 26 };
+	const margin = { top: 10, right: 10, bottom: 30, left: 30 };
 	const yGrid = [0, 20, 40, 60, 80, 100];
 	let height = 200;
 	let months = $_('Months').split('|');
@@ -23,7 +23,7 @@
 	}
 
 	let viewport: any = $state(); // TODO make HTMLDivElement
-	let data = $derived(statistics?.data);
+	let data = $derived(statistics?.data ?? []);
 	let selector = $derived(statistics?.selector);
 	let width = $derived(viewport?.clientWidth || 450);
 	let graphWidth = $derived(width - (margin.left + margin.right));
@@ -121,7 +121,7 @@
 					<text class="d3-text text-xs" style="text-anchor: middle;" x={xOffset} y="0">{getDate(tick)}</text>
 					<text class="d3-text text-xs" style="text-anchor: middle;" x={xOffset} y="-15">{getDayName(tick)}</text>
 				{:else}
-					{#if selector != 'Month' || getDaysInMonth(data[0].ts*1000) >= tick } 
+					{#if selector != 'Month' || (data[0] && getDaysInMonth(data[0].ts*1000) >= tick )} 
 						<text class="d3-text text-xs" style="text-anchor: middle;" x={xOffset} y="-15">{getDate(tick)}</text>
 					{/if}
 				{/if}

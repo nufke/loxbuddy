@@ -5,7 +5,7 @@
   "__uuid__controls_alarm_status": "All OK",
 
   "__uuid__controls_pv_meter_states_jLocked": "",
-  "__uuid__controls_pv_meter_states_actual": "0.046656",
+  "__uuid__controls_pv_meter_states_actual": "-0.046656",
   "__uuid__controls_pv_meter_states_total": "15395.896460099048",
   "__uuid__controls_pv_meter_states_totalDay": "21.327889667039823",
   "__uuid__controls_pv_meter_states_totalWeek": "66.16646010048272",
@@ -13,7 +13,7 @@
   "__uuid__controls_pv_meter_states_totalYear": "3970.6304601005295",
 
   "__uuid__controls_battery_states_jLocked": "",
-  "__uuid__controls_battery_states_actual": "0.7951",
+  "__uuid__controls_battery_states_actual": "-0.7951",
   "__uuid__controls_battery_states_total": "5421.057169277915",
   "__uuid__controls_battery_states_totalNeg": "5400.316186477901",
   "__uuid__controls_battery_states_storage": "93.05",

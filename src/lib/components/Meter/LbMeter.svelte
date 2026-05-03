@@ -12,6 +12,7 @@
 
 	let actualFormat = $derived(control.details.actualFormat);
 	let totalFormat = $derived(control.details.totalFormat);
+	let type = $derived(control.details.type);
 
 	let actual = $derived(Number(controlStore.getState(control.states.actual))); 
 	let total = $derived(Number(controlStore.getState(control.states.total)));
@@ -52,7 +53,25 @@
 		},
 	});
 
-	function getColor() {}
+	function setColor(val: number, status: boolean = false) {
+		if (val == 0) return status ? 'dark:text-surface-300 text-surface-700' : 'dark:text-surface-50 text-surface-950';
+		switch (type) {
+			case 'storage': return (val > 0) ? 'dark:text-secondary-500 text-secondary-700' : 'dark:text-primary-500 text-primary-700';
+			case 'unidirectional': return 'dark:text-primary-500 text-primary-700';
+			case 'bidirectional': return (val > 0) ? 'dark:text-primary-500 text-primary-700' : 'dark:text-secondary-500 text-secondary-700';
+			default: return 'dark:text-surface-50 text-surface-950';
+		}
+	}
+
+	function setStatus() {
+		let status = `${(utils.formatString(actual, actualFormat)[0]).toLocaleString(appStore.locale)} ${utils.formatString(actual, actualFormat)[1]} `;
+		switch (type) {
+			case 'storage': status += `(${(actual > 0) ? $_('Discharging') : $_('Charging')})`; break;
+			case 'bidirectional': status += `(${(actual > 0) ? $_('Consume') : $_('Supply')})`; break;
+			default: '';
+		}
+		return status;
+	}
 
 	let dialog: DialogView = $state({
 		action: (state: boolean) => {dialog.state = state},
@@ -64,10 +83,10 @@
 		control: control,
 		isFavorite: controlOptions.isFavorite,
 		iconName: controlStore.getIcon(control, controlOptions.isSubControl),
-		iconColor: (actual > 0) ? 'dark:text-secondary-500 text-secondary-700' : ((actual == 0) ? 'dark:text-surface-50 text-surface-950' : 'dark:text-primary-500 text-primary-700'),
+		iconColor: setColor(actual),
 		textName: control.name,
-		statusName: (utils.formatString(actual, actualFormat)[0]).toLocaleString(appStore.locale) + ' ' + utils.formatString(actual, actualFormat)[1] + ' (' + ((actual > 0) ? $_('Supply') : $_('Consume')) + ')',
-		statusColor: (actual > 0) ? 'dark:text-secondary-500 text-secondary-700' : ((actual == 0) ? 'dark:text-surface-300 text-surface-700' : 'dark:text-primary-500 text-primary-700'),
+		statusName: setStatus(),
+		statusColor: setColor(actual, true),
 		dialog: {
 			...dialog,
 			details }
