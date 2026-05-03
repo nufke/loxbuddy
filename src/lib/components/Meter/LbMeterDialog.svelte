@@ -98,7 +98,7 @@
 				statisticsDiff[item.id] = {data: [], total: 0, totalNeg: 0, selector: selector}; // empty graph data
 				return;
 			}
-			let resp = await controlStore.fetchUrl(controlUuid, `dev/sps/getStatistic/${controlUuid}/diff/${fromUnixUtc}/${untilUnixUtc}/${dataPointUnit}/${item.id}/`)
+			let resp = await controlStore.fetchUrl(controlUuid, `jdev/sps/getStatistic/${controlUuid}/diff/${fromUnixUtc}/${untilUnixUtc}/${dataPointUnit}/${item.id}/`)
 			.then((response) => {	return response.ok ? response.arrayBuffer() : null; })
 			.then((buffer) => {
 				let stats: StatisticsDiffEntry[] = [];

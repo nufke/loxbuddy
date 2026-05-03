@@ -633,10 +633,10 @@ export class Demo {
 		if (url.includes('jdev/sps/io/__uuid__controls_intercom/securedDetails')) {
 			return this.createPromise(states.__uuid__controls_intercom_securedDetails);
 		}
-		if (url.includes('dev/sps/getStatistic/')) {
+		if (url.includes('jdev/sps/getStatistic/')) {
 			return this.createStatistics(url);
 		}
-		if (url.includes('dev/sps/getStatisticInfo/')) {
+		if (url.includes('jdev/sps/getStatisticInfo/')) {
 			return this.createStatisticInfo(url);
 		}
 		return this.createPromise(JSON.stringify({text: 'default reponse'}));
@@ -651,8 +651,8 @@ export class Demo {
 	}
 
 	createStatistics(url: string) {
-		// dev/sps/getStatistic/{uuid}/diff/{from}/{until}/{unit}/{id}/
-		const match = url.match(/dev[/]sps[/]getStatistic[/]([^/]+)[/]diff[/](\d+)[/](\d+)[/](\w+)[/](\d+)[/]/);
+		// jdev/sps/getStatistic/{uuid}/diff/{from}/{until}/{unit}/{id}/
+		const match = url.match(/jdev[/]sps[/]getStatistic[/]([^/]+)[/]diff[/](\d+)[/](\d+)[/](\w+)[/](\d+)[/]/);
 		if (!match) return this.createPromise(new ArrayBuffer(0));
 
 		const controlUuid = match[1];
