@@ -206,6 +206,24 @@ class Utils {
 	wait(delay: number) {
     return new Promise((resolve) => setTimeout(resolve, delay));
 	}
+
+	getScaleUnit(strFormat: string) {
+		const match = strFormat?.match(/.*f\s*(.*)/);
+		if (!match?.[1]) return { scale: 1, unit: '' };
+		const prefixes: Record<string, number> = { m: 1e-3, k: 1e3, M: 1e6, G: 1e9 };
+		const prefix = prefixes[match[1][0]];
+		return prefix ? { scale: prefix, unit: match[1].slice(1) } : { scale: 1, unit: match[1] };
+	}
+
+	formatString(n: number, strFormat: string): [number, string] {
+		const { scale, unit } = this.getScaleUnit(strFormat);
+		const base = Math.abs(n) * scale;
+		if (base < 1e3) return [Math.round(n * scale * 10) / 10, unit];
+		if (base < 1e6) return [Math.round(n * scale / 1e3 * 10) / 10, 'k' + unit];
+		if (base < 1e9) return [Math.round(n * scale / 1e6 * 100) / 100, 'M' + unit];
+		return [Math.round(n * scale / 1e9 * 100) / 100, 'G' + unit];
+	}
+
 }
 
 export const utils = new Utils();

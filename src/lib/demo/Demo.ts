@@ -126,6 +126,7 @@ export class Demo {
 			case 'Daytimer': this.daytimer(control, msg); break;
 			case 'IRCDaytimer': this.daytimer(control, msg); break; /* reuse DayTimer */
 			case 'IRCV2Daytimer': this.daytimer(control, msg); break; /* reuse DayTimer */
+			case 'Meter': this.meter(control, msg); break;
 			case 'Pushbutton': break; /* no action */
 			default: console.error('[DEMO] Control', control.name, 'of type', control.type, 'not found.');
 		}
@@ -140,6 +141,14 @@ export class Demo {
 		if (parentControl && parentControl.type === 'LightControllerV2') {
 			controlStore.setState(parentControl.states.activeMoodsNum, '-1'); // manual
 		}
+	}
+
+	meter(control: Control, msg: string) {
+		const states = ['total', 'totalNeg', 'storage', 'totalDay', 'totalWeek', 'totalMonth', 'totalYear',
+		 'totalNegDay', 'totalNegWeek', 'totalNegMonth', 'totalNegYear'];
+		const defaultValue = '1';
+		const s = control.states;
+		states.forEach(key => controlStore.setState(s[key], defaultValue));
 	}
 
 	radio(control: Control, msg: string) {
@@ -614,13 +623,6 @@ export class Demo {
 	}
 
 	/**
-	 * Dummy getFile in demo mode
-	 */
-	getFile(url: string) {
-		console.info('[DEMO] getFile not yet implemented');
-	}
-
-	/**
 	 * Dummy fetch in demo mode
 	 */
 	fetch(url: string): Promise<Response>  {
@@ -632,9 +634,61 @@ export class Demo {
 			return this.createPromise(states.__uuid__controls_intercom_securedDetails);
 		}
 		if (url.includes('dev/sps/getStatistic/')) {
-			return this.createPromise(''); // TODO Response with empty payload
+			return this.createStatistics(url);
+		}
+		if (url.includes('dev/sps/getStatisticInfo/')) {
+			return this.createStatisticInfo(url);
 		}
 		return this.createPromise(JSON.stringify({text: 'default reponse'}));
+	}
+
+	createStatisticInfo(url: string) {
+		const match = url.match(/getStatisticInfo\/([^/]+)/);
+		const controlUuid = match?.[1];
+		const groups = controlUuid ? (controlStore.controls.get(controlUuid)?.statisticV2?.groups ?? []) : [];
+		const info = groups.map(g => ({ id: Number(g.id), activeSince: 1704067200 })); // 2024-01-01
+		return this.createPromise(JSON.stringify(info));
+	}
+
+	createStatistics(url: string) {
+		// dev/sps/getStatistic/{uuid}/diff/{from}/{until}/{unit}/{id}/
+		const match = url.match(/dev[/]sps[/]getStatistic[/]([^/]+)[/]diff[/](\d+)[/](\d+)[/](\w+)[/](\d+)[/]/);
+		if (!match) return this.createPromise(new ArrayBuffer(0));
+
+		const controlUuid = match[1];
+		const fromUnixUtc = Number(match[2]);
+		const toUnixUtc = Number(match[3]);
+		const dataPointUnit = match[4];
+		const groupId = match[5];
+
+		const group = controlStore.controls.get(controlUuid)?.statisticV2?.groups?.find(g => g.id === groupId);
+		const numDataPoints = group?.dataPoints?.length ?? 1;
+
+		let length: number;
+		let timestepSeconds: number;
+		switch (dataPointUnit) {
+			case 'hour':  timestepSeconds = 3600; length = 24; break;
+			case 'day':   timestepSeconds = 86400; length = Math.round((toUnixUtc - fromUnixUtc + 1) / 86400); break;
+			case 'month': timestepSeconds = 2629800; length = 12; break;
+			case 'year':  timestepSeconds = 31557600; length = 1; break;
+			default:      timestepSeconds = 3600; length = 24;
+		}
+		const size = 4 + numDataPoints * 8;
+		const buffer = new ArrayBuffer(size * length);
+		const view = new DataView(buffer);
+		const periodScale: Record<string, number> = { hour: 1, day: 24, month: 24 * 30, year: 24 * 365 };
+		const scale = periodScale[dataPointUnit] ?? 1;
+		const valueOut = 1.2 * scale;
+		const valueIn = 0.8 * scale;
+
+		const values = [valueOut, valueIn];
+		for (let i = 0; i < length; i++) {
+			view.setUint32(i * size, fromUnixUtc + i * timestepSeconds, true);
+			for (let j = 0; j < numDataPoints; j++) {
+				view.setFloat64(i * size + 4 + j * 8, values[j], true);
+			}
+		}
+		return this.createPromise(buffer);
 	}
 
 	/**
@@ -643,12 +697,19 @@ export class Demo {
 	disconnect() {
 		controlStore.clearStructure();
 	}
-	
+
+	/**
+	 * Helper function to get file in demo mode
+	 */
+	getFile(url: string) {
+		console.info('[DEMO] getFile not yet implemented in demo mode.');
+	}
+
 	/**
 	 * Helper function to create response promise
 	 */
 	 // Programatically create a Response
-	private createPromise(msg: string): Promise<Response> {
+	private createPromise(msg: any): Promise<Response> {
     const headers = { 
 			'status': 200,
 			'statusText': 'text'
@@ -656,7 +717,7 @@ export class Demo {
 		return new Promise<Response>((resolve) => {
 			setTimeout(() => {
 				resolve(new Response(msg, headers));
-			}, 300);
+			}, 100);
 		});
 	}
 

@@ -14,7 +14,7 @@
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
-	let windowList: WindowListItem[] = control.details.windows;
+	let windowList: WindowListItem[] = $derived(control.details.windows);
 
 	let viewport: any = $state(); // TODO make HTMLDivElement
 	let hasScroll = $state(true);

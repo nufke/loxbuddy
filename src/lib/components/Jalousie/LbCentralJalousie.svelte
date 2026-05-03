@@ -19,10 +19,8 @@
 	let selectedControlOptions: ControlOptions | undefined = $state();
 	let screenSelected = $state(false);
 
-	let screenList = control.details.controls as ScreenItem[];
-	let screenUuid = control.details.controls.map((item: ScreenItem) => item.uuid);
-
-	screenList.forEach((item) => item.selected = false); // default all screens unselected
+	let screenList = $derived(control.details.controls) as ScreenItem[];
+	let screenUuid = $derived(control.details.controls.map((item: ScreenItem) => item.uuid));
 
 	let screenControls = $derived(controlStore.controlList.filter(
 		(controls: Control) => screenUuid.indexOf(controls.uuidAction) > -1
@@ -45,6 +43,10 @@
 
 	$effect( () => { // check scroll status and window change and viewwport construction
 		parseScroll(windowHeight, viewport);
+	});
+
+	$effect( () => {
+		screenList.forEach((item) => item.selected = false); // default all screens unselected
 	});
 
 	function parseScroll(height: number, view: any = undefined) {

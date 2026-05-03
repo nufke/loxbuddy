@@ -9,7 +9,7 @@
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS}: { control: Control, controlOptions: ControlOptions } = $props();
 
-	let temperatureDetails = control.details.temperatures;
+	let temperatureDetails = $derived(control.details.temperatures);
 
 	let subControls = $derived(Object.values(control.subControls))
 	let selectedDayTimer = $derived(subControls.find( subControl => subControl.name == (isHeatPeriod ? 'Heating' : 'Cooling')) || subControls[0] );

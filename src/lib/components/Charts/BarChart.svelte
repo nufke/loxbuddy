@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { scaleLinear } from 'd3-scale';
 	import { innerWidth } from 'svelte/reactivity/window';
-	import { format } from 'date-fns';
+	import { format, getDaysInMonth } from 'date-fns';
 	import { _ } from 'svelte-i18n';
 
-	let { data, selector } = $props();
+	let { statistics } = $props();
 
 	const margin = { top: 20, right: 10, bottom: 30, left: 26 };
 	const yGrid = [0, 20, 40, 60, 80, 100];
@@ -23,10 +23,15 @@
 	}
 
 	let viewport: any = $state(); // TODO make HTMLDivElement
+	let data = $derived(statistics?.data);
+	let selector = $derived(statistics?.selector);
 	let width = $derived(viewport?.clientWidth || 450);
 	let graphWidth = $derived(width - (margin.left + margin.right));
 	let { xGrid, xTicks, columnWidth, barWidth, xOffset } = $derived.by(() => getGraphLayout(selector, graphWidth));
-	let yValues = $derived(calcValues(data));
+	let dataMax = $derived(Math.max(...data.flatMap((item: any) => item.values)));
+	let scale = $derived(dataMax >= 1e9 ? 1e9 : dataMax >= 1e6 ? 1e6 : dataMax >= 1e3 ? 1e3 : 1);
+	let scaledData = $derived(data.map((item: any) => ({ ...item, values: item.values.map((v: number) => v / scale) })));
+	let yValues = $derived(calcValues(scaledData));
 
 	function getGraphLayout(s: string, gWidth: number): Omit<GraphData, 'yValues'> {
 		let xGrid: number[];
@@ -50,16 +55,16 @@
 	function calcValues(inp: any) {
 		const values = inp.flatMap((item: any) => item.values);
 		const max = Math.max(...values);
-		return Array.from({length: 6}, (_, i) => (max<=1) ? Number((i*(getRounding(max)/5)).toFixed(1)) : (i*(getRounding(max)/5)));
+		return Array.from({length: 6}, (_, i) => (max <= 2) ? Number((i*(getRounding(max)/5)).toFixed(1)) : (i*(getRounding(max)/5)));
 	}
 
 	function getRounding(n: number) {
-    const steps = [0.5, 1, 2, 5, 10, 20, 50, 100, 200, 500, 1000, 2000, 5000];
+    const steps = [0.5, 1, 2, 5, 10, 20, 50, 100, 200, 500, 1000];
     return steps.find(s => s > n) ?? 1;
 	}
 
 	function getDate(n: number) {
-		return (selector == 'Week') ? format(data[0].ts*1000 + (n - 1) * 86400000, 'd-M') : 
+		return (selector == 'Week') && data.length ? format(data[0].ts*1000 + (n - 1) * 86400000, 'd-M') :
 			(selector == 'Year') ? months[n-1] : n;
 	}
 
@@ -116,7 +121,9 @@
 					<text class="d3-text text-xs" style="text-anchor: middle;" x={xOffset} y="0">{getDate(tick)}</text>
 					<text class="d3-text text-xs" style="text-anchor: middle;" x={xOffset} y="-15">{getDayName(tick)}</text>
 				{:else}
-					<text class="d3-text text-xs" style="text-anchor: middle;" x={xOffset} y="-15">{getDate(tick)}</text>
+					{#if selector != 'Month' || getDaysInMonth(data[0].ts*1000) >= tick } 
+						<text class="d3-text text-xs" style="text-anchor: middle;" x={xOffset} y="-15">{getDate(tick)}</text>
+					{/if}
 				{/if}
 			</g>
 		{/each}
@@ -125,7 +132,7 @@
 				<text class="d3-text text-xs" style="text-anchor: end;" x={margin.left-6} y="4">{value}</text>
 			</g>
 		{/each}
-		{#each data as point, i}
+		{#each scaledData as point, i}
 			{#if point.values[0] > 0}
 				<rect class="dark:fill-primary-500 fill-primary-700"
 					x={xScaleValue(i) + columnWidth/2 - barWidth/2 -2} /* TODO check correction of 2 */

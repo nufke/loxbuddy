@@ -24,7 +24,7 @@
 
 	let dayOfTheWeek = $derived(format(appStore.date, 'eeee'));
 
-	let isAnalog = Boolean(control.details.analog);
+	let isAnalog = $derived(Boolean(control.details.analog));
 	let value = $derived(Number(controlStore.getState(control.states.value)));
 	let valueFormatted = $derived(fmt.sprintf(control.details.format, value));
 

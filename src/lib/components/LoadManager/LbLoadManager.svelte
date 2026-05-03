@@ -9,8 +9,8 @@
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
-	let loads = control.details.loads;
-	let mode = control.details.mode;
+	let loads = $derived(control.details.loads);
+	let mode = $derived(control.details.mode);
 
 	let currentPower = $derived(Number(controlStore.getState(control.states.currentPower)));
 	let peakOverloadPower = $derived(Number(controlStore.getState(control.states.peakOverloadPower)));

@@ -14,7 +14,7 @@
 	let autoActive = $derived(Number(controlStore.getState(control.states.autoActive)));
 	let isAutomatic = $derived(Number(control.details.isAutomatic));
 	let isLocked = $derived(Number(controlStore.getState(control.states.locked)));
-	let type = control.details.animation;
+	let type = $derived(control.details.animation);
 
 	/* blinds type
 		0: Venetian blinds (jaloezie/lamellen)

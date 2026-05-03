@@ -12,8 +12,7 @@
 	let max = $derived(Number(controlStore.getState(control.states.max)));
 	let step = $derived(Number(controlStore.getState(control.states.step)));
 	let value = $derived(Number(controlStore.getState(control.states.value)));
-
-	let increaseOnly = control.details.increaseOnly;
+	let increaseOnly = $derived(control.details.increaseOnly);
 
 	function updateValue(isUp: number) {
 		let newValue = value + step * isUp;

@@ -17,10 +17,8 @@
 
 	let selectedControl: Control | undefined= $state();
 	let selectedControlOptions: ControlOptions | undefined = $state();
-	let lightList = control.details.controls as LightItem[];
-	let lightsUuid = control.details.controls.map((item: LightItem) => item.uuid);
-
-	lightList.forEach((item) => item.selected = false ); // default all lights unselected
+	let lightList = $derived(control.details.controls) as LightItem[];
+	let lightsUuid = $derived(control.details.controls.map((item: LightItem) => item.uuid));
 
 	let scenesEnabled = $state(false);
 	let viewport: any = $state(); // TODO make HTMLDivElement
@@ -46,6 +44,10 @@
 
 	$effect( () => { // check scroll status and window change and viewwport construction
 		parseScroll(windowHeight, viewport);
+	});
+
+	$effect( () => {
+		lightList.forEach((item) => item.selected = false ); // default all lights unselected
 	});
 
 	function parseScroll(height: number, view: any = undefined) {

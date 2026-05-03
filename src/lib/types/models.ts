@@ -705,10 +705,17 @@ export type StatisticsDiff = {
 		data: StatisticsDiffEntry[];
 		total: number;
 		totalNeg: number;
+		selector: string;
 	}
 }
 
 export type StatisticsDiffEntry = {
 	ts: number;		// time
 	values: number[]; // values
+}
+
+export type StatisticsInfo = {
+	[key: string]: {
+		activeSince: number;
+	}
 }

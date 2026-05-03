@@ -10,8 +10,9 @@
 		endOfISOWeek, startOfMonth, endOfMonth, startOfYear, endOfYear, getUnixTime } from 'date-fns';
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 	import { SvelteDate } from 'svelte/reactivity';
-	import type { StatisticsDiff, StatisticsDiffEntry } from '$lib/types/models';
+	import type { StatisticsDiff, StatisticsInfo, StatisticsDiffEntry } from '$lib/types/models';
 	import BarChart from '$lib/components/Charts/BarChart.svelte';
+	import { utils } from '$lib/helpers/Utils';
 
 	let { controlView = $bindable() }: { controlView: ControlView } = $props();
 
@@ -24,23 +25,18 @@
 	let isUnidirectional = controlView.control.details.type == 'unidirectional';
 	let totalFormat = controlView.control.details.totalFormat;
 
-	let statisticsInfo = $state();
+	let statisticsInfo = $state({}) as StatisticsInfo;
 	let statisticsDiff = $state({}) as StatisticsDiff;
 	let selected = $state(0);
 	let date = $state(new SvelteDate());
 	let selector = $state(items[0]);
-	let displayedSelector = $state(items[0]);
-	
-
-	// .toLocaleString(appStore.locale)
 
 	function getValue(key: string, idx: number = -1) {
 		const d = statisticsDiff['2']; // TODO we only use ID 2
 		if (!d) return idx == -1 ? '–' : 0;
-		const match = totalFormat.match(/.*f(.*)/);
-		const unit = match?.[1] ?? '';
 		const val = key === 'out' ? d.total : d.totalNeg;
-		if (idx == -1) return `${Math.round(val * 10) / 10} ${unit}`;
+		const str = utils.formatString(val, totalFormat);
+		if (idx == -1) return `${str[0].toLocaleString(appStore.locale)} ${str[1]}`;
 		return val;
 	}
 
@@ -78,12 +74,14 @@
 		let untilUnixUtc: number;
 		let dataPointUnit: string;
 
-		/*
-		statisticsInfo = await controlStore.fetchUrl(controlUuid, `jdev/sps/getStatisticInfo/${controlUuid}`)
+		await controlStore.fetchUrl(controlUuid, `jdev/sps/getStatisticInfo/${controlUuid}`)
 			.then((resource) => resource.json())
-			.then((data) => data.LL?.value ? data.LL.value : data);
-		console.log('statisticsInfo', statisticsInfo);
-		*/
+			.then((json) => {
+				let obj = json.LL?.value && utils.isValidJSONObject(json.LL.value) ? JSON.parse(json.LL.value) : json;
+				if (obj.length) {
+					obj.forEach( (item) => { statisticsInfo[item.id] = {activeSince: item.activeSince}; });
+				}
+			});
 
 		switch (selector) {
 			case 'Day': fromUnixUtc =  getUnixTime(startOfDay(newDate)); untilUnixUtc = getUnixTime(endOfDay(newDate)); dataPointUnit = 'hour'; break;
@@ -94,31 +92,38 @@
 			default: /* none */
 		}
 
-		await Promise.all(statisticV2.groups.map(async (item) => {
-			await controlStore.fetchUrl(controlUuid, `dev/sps/getStatistic/${controlUuid}/diff/${fromUnixUtc}/${untilUnixUtc}/${dataPointUnit}/${item.id}/`)
-			.then((response) => response.arrayBuffer())
+		statisticV2.groups.map(async (item) => {
+			if (fromUnixUtc < statisticsInfo[Number(item.id)]?.activeSince) {
+				console.error('[LbMeterDialog] No statistics available before', new Date(statisticsInfo[Number(item.id)].activeSince*1000));
+				statisticsDiff[item.id] = {data: [], total: 0, totalNeg: 0, selector: selector}; // empty graph data
+				return;
+			}
+			let resp = await controlStore.fetchUrl(controlUuid, `dev/sps/getStatistic/${controlUuid}/diff/${fromUnixUtc}/${untilUnixUtc}/${dataPointUnit}/${item.id}/`)
+			.then((response) => {	return response.ok ? response.arrayBuffer() : null; })
 			.then((buffer) => {
-				let data: StatisticsDiffEntry[] = [];
-				const view = new DataView(buffer);
-				const size = 4 + item.dataPoints.length*8;
-				for( let i = 0; i < view.byteLength/size; i++) {
-					let ts = view.getUint32(i*size, true);
-					let values: number[] = [];
-					for( let j = 0; j < item.dataPoints.length; j++) {
-						values.push(view.getFloat64(i*size + 4 + j*8, true));
+				let stats: StatisticsDiffEntry[] = [];
+				if (buffer) {
+					const view = new DataView(buffer);
+					const size = 4 + item.dataPoints.length*8;
+					for( let i = 0; i < Math.floor(view.byteLength/size); i++) {
+						let ts = view.getUint32(i*size, true);
+						let values: number[] = [];
+						for( let j = 0; j < item.dataPoints.length; j++) {
+							values.push(view.getFloat64(i*size + 4 + j*8, true));
+						}
+						// we swap the array order for storage (battery) as in/out are reversed 
+						stats.push({ts: ts, values: (isStorage ? values.reverse() : values)});
 					}
-					// we swap the array order for storage (battery) as in/out are reversed 
-					data.push({ts: ts, values: (isStorage ? values.reverse() : values)});
 				}
-				statisticsDiff[item.id] = {
-					data: data,
-					total: data.flatMap(i=> i.values[0]).reduce((a, b) => a + b, 0),
-					totalNeg: data.flatMap(i=> i.values[1]).reduce((a, b) => a + b, 0) ?? 0, // TODO might not exist
-				}
-				//console.log('statisticsDiff[item.id]', statisticsDiff[item.id])
+				return stats;
 			});
-		}));
-		displayedSelector = selector;
+			statisticsDiff[item.id] = {
+				data: resp,
+				total: resp.flatMap(i=> i.values[0]).reduce((a, b) => a + b, 0),
+				totalNeg: resp.flatMap(i=> i.values[1]).reduce((a, b) => a + b, 0) ?? 0, // TODO might not exist
+				selector: selector
+			};
+		});
 	}
 
 	function showDate(s: string) {
@@ -212,17 +217,20 @@
 								<div class="flex justify-end">
 									{#if !isUnidirectional}
 										<svg xmlns="http://www.w3.org/2000/svg" height="150" width="150" viewBox="0 0 100 100">
-											<circle class="dark:stroke-secondary-500 stroke-secondary-700" r="32" cx="50" cy="50" stroke-width="12" fill="none"/>
+											<circle class={ getPercent('out') ? 'dark:stroke-secondary-500 stroke-secondary-700' :
+											'dark:stroke-surface-300 stroke-surface-700'} r="32" cx="50" cy="50" stroke-width="12" fill="none"/>
+											{#if getPercent('out')}
 											<circle class="dark:stroke-primary-500 stroke-primary-700" r="32" cx="50" cy="50" 
 												transform="rotate({-90+(getPercent('out')/100)},50,50)"
 													stroke-dasharray="calc({2*3.1415*32*getPercent('out')/100}) 
 													calc({2*3.1415*32*(100-getPercent('out'))/100})" stroke-width="12" fill="none"/>
+											{/if}
 										</svg>
 									{/if}
 								</div>
 							</div>
 							<div class="w-full">
-								<BarChart data={statisticsDiff[2].data} selector={displayedSelector}/>
+								<BarChart statistics={statisticsDiff[2]} />
 							</div>
 						</div>
 					</Dialog.Description>
