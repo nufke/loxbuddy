@@ -6,13 +6,14 @@
 	import { fadeInOut } from '$lib/helpers/styles';
 	import { _ } from 'svelte-i18n';
 	import LbInfo from '$lib/components/Common/LbInfo.svelte';
-	import { format, getDate, getWeek, sub, startOfDay, endOfDay, startOfISOWeek, 
+	import { format, sub, startOfDay, endOfDay, startOfISOWeek, 
 		endOfISOWeek, startOfMonth, endOfMonth, startOfYear, endOfYear, getUnixTime } from 'date-fns';
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 	import { SvelteDate } from 'svelte/reactivity';
 	import type { StatisticsDiff, StatisticsInfo, StatisticsDiffEntry } from '$lib/types/models';
 	import BarChart from '$lib/components/Charts/BarChart.svelte';
 	import { utils } from '$lib/helpers/Utils';
+	import { fade } from 'svelte/transition';
 
 	let { controlView = $bindable() }: { controlView: ControlView } = $props();
 
@@ -26,9 +27,9 @@
 
 	let statisticsInfo = $state({}) as StatisticsInfo;
 	let statisticsDiff = $state({}) as StatisticsDiff;
-	let selected = $state(0);
 	let date = $state(new SvelteDate());
 	let selector = $state(items[0]);
+	let dataPointUnit: string = $state('');
 
 	function getValue(key: string, idx: number = -1) {
 		const d = statisticsDiff['2']; // TODO we only use ID 2
@@ -39,22 +40,16 @@
 		return val;
 	}
 
-	function getActual() {
-		const value = Math.abs(controlView.dialog.details.actual.out[0]);
-		const unit = controlView.dialog.details.actual.out[1];
-		return value + ' ' + unit;
-	}
-
-	function isActualPositive() {
-		return controlView.dialog.details.actual.out[0] > 0;
-	}
-
 	function getPercent(key: string) {
 		const d = statisticsDiff['2']; // TODO we only use ID 2
 		if (!d) return 0;
 		const total = d.total + d.totalNeg;
 		const input = key === 'out' ? d.total : d.totalNeg;
 		return (input == 0) ? 0 : ((total == 0) ? 100 : Math.round((input/total)*100));
+	}
+
+	function isToday() {
+		return startOfDay(date).getTime() === startOfDay(new SvelteDate()).getTime()
 	}
 
 	function futureDate(s: string) {
@@ -71,14 +66,16 @@
 		if (!statisticV2) return;
 		let fromUnixUtc: number;
 		let untilUnixUtc: number;
-		let dataPointUnit: string;
-
+		let activeSince: number = getUnixTime(new Date());
 		await controlStore.fetchUrl(controlUuid, `jdev/sps/getStatisticInfo/${controlUuid}`)
 			.then((resource) => resource.json())
 			.then((json) => {
 				let obj = json.LL?.value && utils.isValidJSONObject(json.LL.value) ? JSON.parse(json.LL.value) : json;
 				if (obj.length) {
-					obj.forEach( (item) => { statisticsInfo[item.id] = {activeSince: item.activeSince}; });
+					obj.forEach( (item) => { 
+						statisticsInfo[item.id] = {activeSince: item.activeSince};
+						activeSince = Math.min(activeSince, item.activeSince);
+					});
 				}
 			});
 
@@ -87,15 +84,19 @@
 			case 'Week': fromUnixUtc = getUnixTime(startOfISOWeek(newDate)); untilUnixUtc = getUnixTime(endOfISOWeek(newDate)); dataPointUnit = 'day'; break;
 			case 'Month': fromUnixUtc = getUnixTime(startOfMonth(newDate)); untilUnixUtc = getUnixTime(endOfMonth(newDate)); dataPointUnit = 'day'; break;
 			case 'Year': fromUnixUtc = getUnixTime(startOfYear(newDate)); untilUnixUtc = getUnixTime(endOfYear(newDate)); dataPointUnit = 'month'; break;
-			case 'All': fromUnixUtc = getUnixTime(startOfYear(newDate)); untilUnixUtc = getUnixTime(endOfYear(newDate)); dataPointUnit = 'year'; break;
+			case 'All': fromUnixUtc = activeSince; untilUnixUtc = getUnixTime(new SvelteDate()); dataPointUnit = 'year'; break;
 			default: /* none */
 		}
 
 		statisticV2.groups.map(async (item) => {
-			if (fromUnixUtc < statisticsInfo[Number(item.id)]?.activeSince) {
+			if (untilUnixUtc < statisticsInfo[Number(item.id)]?.activeSince) {
 				console.error('[LbMeterDialog] No statistics available before', new Date(statisticsInfo[Number(item.id)].activeSince*1000));
 				statisticsDiff[item.id] = {data: [], total: 0, totalNeg: 0, selector: selector}; // empty graph data
 				return;
+			}
+			if (fromUnixUtc < statisticsInfo[Number(item.id)]?.activeSince) {
+				console.warn('[LbMeterDialog] Not all statistics available');
+				fromUnixUtc =  statisticsInfo[Number(item.id)]?.activeSince;
 			}
 			let resp = await controlStore.fetchUrl(controlUuid, `jdev/sps/getStatistic/${controlUuid}/diff/${fromUnixUtc}/${untilUnixUtc}/${dataPointUnit}/${item.id}/`)
 			.then((response) => {	return response.ok ? response.arrayBuffer() : null; })
@@ -128,10 +129,10 @@
 	function showDate(s: string) {
 		switch (s) {
 			case 'Day' : return format(date,'dd-MM-yyyy');
-			case 'Week' : return format(startOfISOWeek(date),'dd-MM-yyyy') + ' - ' + format(endOfISOWeek(date),'dd-MM-yyyy');
+			case 'Week' : return format(startOfISOWeek(date),'dd-MM') + ' - ' + format(endOfISOWeek(date),'dd-MM');
 			case 'Month': return format(date,'MMMM yyyy');
 			case 'Year' : return format(date,'yyyy');
-			case 'All' : ''
+			default: /* none */
 		}
 	}
 
@@ -141,13 +142,18 @@
 			case 'Week' : date = sub(date, {weeks: n}); break;
 			case 'Month': date = sub(date, {months: n}); break;
 			case 'Year' : date = sub(date, {years: n}); break;
-			case 'All' : ''
+			default: /* none */
 		}
 	}
 
 	function getUnit() {
-		const max = Math.max(statisticsDiff[2].total, statisticsDiff[2].totalNeg);
+		const max = Math.max(statisticsDiff[2]?.total, statisticsDiff[2]?.totalNeg);
 		return utils.formatString(max, totalFormat)[1];
+	}
+
+	function undo() {
+		selector = items[0]; // reset selector
+		date = new SvelteDate(); // reset date
 	}
 
 	function close() {
@@ -192,10 +198,10 @@
 						</div>
 					</header>
 					<Dialog.Description>
-						<div class="w-full flex flex-col items-center justify-center">
+						<div class="relative w-full flex flex-col items-center justify-center">
 							<div class="w-full grid grid-cols-5 items-center justify-center m-2 bg-surface-50-950 rounded-lg">
 								{#each items as item (item)}
-									<button type="button" class="btn btn-base {selector == item ? 'bg-surface-300-700' : 'bg-surface-50-950'}" onclick={() => (selector = item)}>
+									<button type="button" class="py-1 btn btn-base {selector == item ? 'bg-surface-300-700' : 'bg-surface-50-950'}" onclick={() => (selector = item)}>
 										{$_(item)}
 									</button>
 								{/each}
@@ -203,9 +209,14 @@
 							<div class="h-[50px]">
 								{#if selector != 'All'}
 									<div class="flex flex-row gap-1 items-center justify-center m-2 bg-surface-50-950 rounded-lg">
-										<button type="button" class="btn btn-base" onclick={() => calcDate(1, selector)}><LbIcon name="chevron-left" height="22"/></button>
-										<button type="button" class="btn btn-base">{showDate(selector)}</button>
-										<button type="button" class="btn btn-base" disabled={futureDate(selector)} onclick={() => calcDate(-1, selector)}><LbIcon name="chevron-right" height="22"/></button>
+										<button type="button" class="px-1 py-2 btn btn-base" onclick={() => calcDate(1, selector)}><LbIcon name="chevron-left" height="22"/></button>
+										<button type="button" class="px-0 py-2btn btn-base">{showDate(selector)}</button>
+										<button type="button" class="px-1 py-2btn btn-base" disabled={futureDate(selector)} onclick={() => calcDate(-1, selector)}><LbIcon name="chevron-right" height="22"/></button>
+										{#if !isToday()}
+										<div class="absolute right-0 items-center justify-center bg-surface-50-950 rounded-lg" transition:fade={{ duration: 300 }}>
+											<button type="button" class="py-2 btn btn-base" onclick={undo}><LbIcon name="undo-2" height="22"/></button>
+										</div>
+										{/if}
 									</div>
 								{/if}
 							</div>
@@ -244,6 +255,7 @@
 							<div class="mt-2 w-full">
 								<p class="flex justify-center">{powerName} ({getUnit()})</p>
 								<BarChart statistics={statisticsDiff[2]} />
+								<p class="flex justify-center">{$_(utils.capitalize(dataPointUnit))}</p>
 							</div>
 						</div>
 					</Dialog.Description>

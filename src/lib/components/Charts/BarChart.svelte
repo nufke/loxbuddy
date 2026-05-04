@@ -1,51 +1,41 @@
 <script lang="ts">
 	import { scaleLinear } from 'd3-scale';
 	import { innerWidth } from 'svelte/reactivity/window';
-	import { format, getDaysInMonth } from 'date-fns';
+	import { format, getDaysInMonth, getHours, getISODay, getDate as getDateOfMonth, getMonth } from 'date-fns';
 	import { _ } from 'svelte-i18n';
 
 	let { statistics } = $props();
 
 	const margin = { top: 10, right: 10, bottom: 30, left: 30 };
 	const yGrid = [0, 20, 40, 60, 80, 100];
-	let height = 200;
-	let months = $_('Months').split('|');
-
+	const height = 200;
+	const months = $_('Months').split('|');
 	const range = (start: number, end:number, step:number = 1) => Array.from({length: end}, (el, i) => start + (i * step) );
-
-	type GraphData = {
-		xGrid: number[];
-		xTicks: number[];
-		columnWidth: number;
-		barWidth: number;
-		xOffset: number;
-		yValues: number[];
-	}
 
 	let viewport: any = $state(); // TODO make HTMLDivElement
 	let data = $derived(statistics?.data ?? []);
 	let selector = $derived(statistics?.selector);
 	let width = $derived(viewport?.clientWidth || 450);
 	let graphWidth = $derived(width - (margin.left + margin.right));
-	let { xGrid, xTicks, columnWidth, barWidth, xOffset } = $derived.by(() => getGraphLayout(selector, graphWidth));
+	let { xGrid, xTicks, columnWidth, barWidth, xOffset } = $derived.by(() => getGraphLayout(selector, graphWidth, data.length));
 	let dataMax = $derived(Math.max(...data.flatMap((item: any) => item.values)));
 	let scale = $derived(dataMax >= 1e9 ? 1e9 : dataMax >= 1e6 ? 1e6 : dataMax >= 1e3 ? 1e3 : 1);
 	let scaledData = $derived(data.map((item: any) => ({ ...item, values: item.values.map((v: number) => v / scale) })));
 	let yValues = $derived(calcValues(scaledData));
 
-	function getGraphLayout(s: string, gWidth: number): Omit<GraphData, 'yValues'> {
+	function getGraphLayout(s: string, gWidth: number, length: number) {
 		let xGrid: number[];
 		let xTicks: number[];
-
 		switch (s) {
 			case 'Day':   xGrid = range(0, 25, 1); xTicks = range(0, 25, 2); break;
 			case 'Week':  xGrid = range(0, 8, 1);  xTicks = range(1, 7, 1);  break;
 			case 'Month': xGrid = range(0, 32, 1); xTicks = range(1, 31, 2); break;
 			case 'Year':  xGrid = range(0, 13, 1); xTicks = range(1, 12, 1); break;
+			case 'All':   xGrid = range(0, length+1, 1); xTicks = range(1, length, 1); break;
 			default:      xGrid = range(0, 3, 1);  xTicks = range(0, 3, 1);
 		}
 
-		const columnWidth = gWidth / xGrid.length;
+		const columnWidth = gWidth / xTicks.length;
 		const xOffset = (s === 'Day') ? 0 : -columnWidth / 2 - (s === 'Week' ? 4 : 2);
 		const barWidth = columnWidth / (s === 'Week' ? 4 : 3);
 
@@ -65,7 +55,19 @@
 
 	function getDate(n: number) {
 		return (selector == 'Week') && data.length ? format(data[0].ts*1000 + (n - 1) * 86400000, 'd-M') :
-			(selector == 'Year') ? months[n-1] : n;
+			(selector == 'Year') ? months[n-1] :
+			(selector == 'All') && data.length && n > 0 ? format(data[n-1].ts*1000, 'yyyy') : n; // 
+	}
+
+	function getXIndex(point: any, i: number): number {
+		const ms = point.ts * 1000;
+		switch (selector) {
+			case 'Day':   return getHours(ms);
+			case 'Week':  return getISODay(ms) - 1;
+			case 'Month': return getDateOfMonth(ms) - 1;
+			case 'Year':  return getMonth(ms);
+			default:      return i;
+		}
 	}
 
 	function getDayName(n: number) {
@@ -135,14 +137,14 @@
 		{#each scaledData as point, i}
 			{#if point.values[0] > 0}
 				<rect class="dark:fill-primary-500 fill-primary-700"
-					x={xScaleValue(i) + columnWidth/2 - barWidth/2 -2} /* TODO check correction of 2 */
+					x={xScaleValue(getXIndex(point, i)) + columnWidth/2 - barWidth/2 + barWidth/2}
 					y={yScaleValue(point.values[0])}
 					width={barWidth}
 					height={yScaleValue(0) - yScaleValue(point.values[0])}/>
 			{/if}
 			{#if point.values[1] > 0}
 				<rect class="dark:fill-secondary-500 fill-secondary-700"
-					x={xScaleValue(i) + columnWidth/2 + barWidth/2 -2} /* TODO check correction of 2 */
+					x={xScaleValue(getXIndex(point, i)) + columnWidth/2 - barWidth/2 - barWidth/2}
 					y={yScaleValue(point.values[1])}
 					width={barWidth}
 					height={yScaleValue(0) - yScaleValue(point.values[1])}/>

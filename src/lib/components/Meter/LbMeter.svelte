@@ -11,47 +11,8 @@
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
 	let actualFormat = $derived(control.details.actualFormat);
-	let totalFormat = $derived(control.details.totalFormat);
 	let type = $derived(control.details.type);
-
 	let actual = $derived(Number(controlStore.getState(control.states.actual))); 
-	let total = $derived(Number(controlStore.getState(control.states.total)));
-	let totalDay = $derived(Number(controlStore.getState(control.states.totalDay)));
-	let totalWeek = $derived(Number(controlStore.getState(control.states.totalWeek)));
-	let totalMonth = $derived(Number(controlStore.getState(control.states.totalMonth)));
-	let totalYear = $derived(Number(controlStore.getState(control.states.totalYear)));
-	let storage = $derived(Number(controlStore.getState(control.states.storage)));
-	let totalNeg = $derived(Number(controlStore.getState(control.states.totalNeg)));
-	let totalNegDay = $derived(Number(controlStore.getState(control.states.totalNegDay)));
-	let totalNegWeek = $derived(Number(controlStore.getState(control.states.totalNegWeek)));
-	let totalNegMonth = $derived(Number(controlStore.getState(control.states.totalNegMonth)));
-	let totalNegYear = $derived(Number(controlStore.getState(control.states.totalNegYear)));
-
-	let details = $derived({
-		actual: {
-			out: utils.formatString(actual, actualFormat),
-		},
-		day: {
-			out: utils.formatString(totalDay, totalFormat),
-			in: utils.formatString(totalNegDay, totalFormat)
-		},
-		week: {
-			out: utils.formatString(totalWeek, totalFormat),
-			in: utils.formatString(totalNegWeek, totalFormat)
-		},
-		month: {
-			out: utils.formatString(totalMonth, totalFormat),
-			in: utils.formatString(totalNegMonth, totalFormat),
-		},
-		year: {
-			out: utils.formatString(totalYear, totalFormat),
-			in: utils.formatString(totalNegYear, totalFormat)
-		},
-		all: {
-			out: utils.formatString(total, totalFormat),
-			in: utils.formatString(totalNeg, totalFormat)
-		},
-	});
 
 	function setColor(val: number, status: boolean = false) {
 		if (val == 0) return status ? 'dark:text-surface-300 text-surface-700' : 'dark:text-surface-50 text-surface-950';
@@ -87,9 +48,7 @@
 		textName: control.name,
 		statusName: setStatus(),
 		statusColor: setColor(actual, true),
-		dialog: {
-			...dialog,
-			details }
+		dialog: dialog
 	});
 </script>
 

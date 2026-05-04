@@ -224,6 +224,9 @@ class Utils {
 		return [Math.round(n * scale / 1e9 * 100) / 100, 'G' + unit];
 	}
 
+	 capitalize(s: string) {
+		return s[0].toUpperCase() + s.slice(1);
+	}
 }
 
 export const utils = new Utils();
