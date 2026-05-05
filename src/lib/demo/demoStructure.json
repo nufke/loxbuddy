@@ -338,8 +338,8 @@
 				"jLockable": true,
 				"type": "storage",
 				"displayType": 0,
-				"actualFormat": "%.3f kW",
-				"totalFormat": "%.1f kWh",
+				"actualFormat": "%.3fkW",
+				"totalFormat": "%.1fkWh",
 				"powerName": "Power",
 				"storageFormat": "%.0f%%",
 				"storageMax": 100
