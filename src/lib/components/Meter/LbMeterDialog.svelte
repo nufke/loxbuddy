@@ -281,8 +281,8 @@
 							</div>
 							{#if type == 'storage'}
 								<div class="mt-2 w-full">
-									<p class="flex justify-center">{statisticsDiff[2]?.title} (%)</p>
-									<LineChart statistics={statisticsDiff[2]} storage={true} fixedStep={100}/>
+									<p class="flex justify-center">{statisticsDiff[3]?.title} (%)</p>
+									<LineChart statistics={statisticsDiff[3]} storage={true} fixedStep={100}/>
 									<p class="flex justify-center">{$_(utils.capitalize(dataPointUnit))}</p>
 								</div>
 							{/if}

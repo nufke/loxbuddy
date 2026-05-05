@@ -63,6 +63,16 @@
 		color: var(--color-surface-50);
 	}
 
+	.d3-text-marker-0 {
+		fill: var(--color-primary-500);
+		color: var(--color-primary-500);
+	}
+
+	.d3-text-marker-1 {
+		fill: var(--color-secondary-500);
+		color: var(--color-secondary-500);
+	}
+
 	.d3-line-horizontal {
 		stroke: var(--color-surface-400);
 		stroke-width: 1;
@@ -72,12 +82,27 @@
 		stroke: var(--color-surface-700);
 		stroke-width: 1;
 	}
+
+	.d3-line-vertical-marker {
+		stroke: var(--color-surface-50);
+		stroke-width: 2;
+	}
 }
 
 [data-mode="light"] {
 	.d3-text {
 		fill: var(--color-surface-950);
 		color: var(--color-surface-950);
+	}
+
+	.d3-text-marker-0 {
+		fill: var(--color-primary-700);
+		color: var(--color-primary-700);
+	}
+
+	.d3-text-marker-1 {
+		fill: var(--color-secondary-700);
+		color: var(--color-secondary-700);
 	}
 
 	.d3-line-horizontal {
@@ -89,4 +114,10 @@
 		stroke: var(--color-surface-200);
 		stroke-width: 1;
 	}
+
+	.d3-line-vertical-marker {
+		stroke: var(--color-surface-950);
+		stroke-width: 2;
+	}
+
 }

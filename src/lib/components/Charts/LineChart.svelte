@@ -4,10 +4,11 @@
 	import { innerWidth } from 'svelte/reactivity/window';
 	import { getHours } from 'date-fns';
 	import { _ } from 'svelte-i18n';
+	import { utils } from '$lib/helpers/Utils';
 
 	let { statistics, storage, fixedStep = 0 } = $props();
 
-	const margin = { top: 10, right: 10, bottom: 30, left: 30 };
+	const margin = { top: 20, right: 10, bottom: 30, left: 30 };
 	const height = 180;
   const stopColorCss = ['var(--color-primary-500)', 'var(--color-secondary-500)']
 	const range = (start: number, end: number, step: number = 1) => Array.from({ length: end }, (_, i) => start + i * step);
@@ -21,39 +22,19 @@
 	let width = $derived(viewport?.clientWidth || 450);
 	let graphWidth = $derived(width - (margin.left + margin.right));
 
-	let scaledData = $derived.by(() => {
+	let scale = $derived.by(() => {
 		const vals = data.map((d: any) => d.values[0]);
 		const absMax = Math.max(0, ...vals.map(Math.abs));
-		const s = absMax >= 500e6 ? 1e9 : absMax >= 500e3 ? 1e6 : absMax >= 500 ? 1e3 : 1;
-		return data.map((d: any) => ({ ts: d.ts, value: d.values[0] / s }));
+		return absMax >= 500e6 ? 1e9 : absMax >= 500e3 ? 1e6 : absMax >= 500 ? 1e3 : 1;
 	});
 
+	let scaledData = $derived(data.map((d: any) => ({ ts: d.ts, value: d.values[0] / scale })));
 	let yMin = $derived(Math.min(0, ...scaledData.map((d: any) => d.value)));
 	let yMax = $derived(Math.max(0, ...scaledData.map((d: any) => d.value)));
 	let yValues = $derived(calcYValues(yMin, yMax));
-
-function calcYValues(min: number, max: number): number[] {
-		if (min === 0 && max === 0) return [0, 1, 2, 3, 4];
-		const steps = fixedStep ? [25] : [0.25, 0.5, 1, 2, 5, 10, 20, 50, 100, 200, 500, 1000]; // overrule step for fixed 0-100% percent
-		const negExt = min < 0 ? -min : 0;
-		const posExt = max > 0 ? max : 0;
-		const step = steps.find(s =>
-			(negExt > 0 ? Math.ceil(negExt / s) : 0) + (posExt > 0 ? Math.ceil(posExt / s) : 0) <= 4
-		) ?? 1000;
-		const negCount = negExt > 0 ? Math.ceil(negExt / step) : 0;
-		const posCount = posExt > 0 ? Math.ceil(posExt / step) : 0;
-		const pad = 3 - negCount - posCount;
-		const finalNeg = negCount + (max <= 0 ? pad : 0);
-		return Array.from({ length: 5 }, (_, i) => (i - finalNeg) * step);
-	}
-
-	function getXIndex(point: any): number {
-    return getHours(point.ts * 1000);
-	}
-
-	function getDate(n: number) {
-		return n;
-	}
+	let hoveredIdx: number | null = $state(null);
+	let markerX = $state(0);
+	let markerY = $state(0);
 
 	let xScaleGrid = $derived(scaleLinear()
 		.domain([0, xGrid.length - 1])
@@ -75,7 +56,7 @@ function calcYValues(min: number, max: number): number[] {
 
 	let linePath = $derived(
 		line<any>()
-			.x((d, i) => xScaleValue(getXIndex(d, i)))
+			.x((d) => xScaleValue(getXIndex(d)))
 			.y((d) => yScaleValue(d.value))
 			.defined((d) => d.value != null && isFinite(d.value))
 			(scaledData) ?? ''
@@ -83,12 +64,70 @@ function calcYValues(min: number, max: number): number[] {
 
 	let areaPath = $derived(
 		area<any>()
-			.x((d, i) => xScaleValue(getXIndex(d, i)))
+			.x((d) => xScaleValue(getXIndex(d)))
 			.y0(yZero)
 			.y1((d) => yScaleValue(d.value))
 			.defined((d) => d.value != null && isFinite(d.value))
 			(scaledData) ?? ''
 	);
+
+	function calcYValues(min: number, max: number): number[] {
+		if (min === 0 && max === 0) return [0, 1, 2, 3, 4];
+		const steps = fixedStep ? [25] : [0.25, 0.5, 1, 2, 5, 10, 20, 50, 100, 200, 500, 1000]; // overrule step for fixed 0-100% percent
+		const negExt = min < 0 ? -min : 0;
+		const posExt = max > 0 ? max : 0;
+		const step = steps.find(s =>
+			(negExt > 0 ? Math.ceil(negExt / s) : 0) + (posExt > 0 ? Math.ceil(posExt / s) : 0) <= 4
+		) ?? 1000;
+		const negCount = negExt > 0 ? Math.ceil(negExt / step) : 0;
+		const posCount = posExt > 0 ? Math.ceil(posExt / step) : 0;
+		const pad = 3 - negCount - posCount;
+		const finalNeg = negCount + (max <= 0 ? pad : 0);
+		return Array.from({ length: 5 }, (_, i) => (i - finalNeg) * step);
+	}
+
+	function getXIndex(point: any): number {
+    return getHours(point.ts * 1000);
+	}
+
+	function handlePointerMove(e: PointerEvent) {
+		const rect = (e.currentTarget as SVGSVGElement).getBoundingClientRect();
+		const mouseX = e.clientX - rect.left;
+		let nearestIdx = -1;
+		let minDist = Infinity;
+		scaledData.forEach((point: any, i: number) => {
+			const px = xScaleValue(getXIndex(point));
+			const dist = Math.abs(px - mouseX);
+			if (dist < minDist) { minDist = dist; nearestIdx = i; }
+		});
+		const colWidth = graphWidth / (xGrid.length - 1);
+		if (nearestIdx >= 0 && minDist < colWidth) {
+			hoveredIdx = nearestIdx;
+			const pt = scaledData[nearestIdx];
+			markerX = xScaleValue(getXIndex(pt));
+			markerY = yScaleValue(pt.value);
+		} else {
+			hoveredIdx = null;
+		}
+	}
+
+	function handlePointerDown(e: PointerEvent) {
+		(e.currentTarget as SVGSVGElement).setPointerCapture(e.pointerId);
+		handlePointerMove(e);
+	}
+
+	function handlePointerUp() {
+		hoveredIdx = null;
+	}
+
+	function handlePointerLeave() {
+		hoveredIdx = null;
+	}
+
+	function fmtMarker(v: number): string {
+		const [val, unit] = utils.formatString(v * scale, statistics?.format ?? '');
+		return unit ? `${val} ${unit}` : `${val}`;
+	}
 
 	$effect(() => {
 		if (innerWidth.current) { width = viewport.clientWidth; }
@@ -96,7 +135,12 @@ function calcYValues(min: number, max: number): number[] {
 </script>
 
 <div class="chart" bind:this={viewport}>
-	<svg {width} {height}>
+	<svg {width} {height} style="touch-action: none;"
+		onpointerdown={handlePointerDown}
+		onpointermove={handlePointerMove}
+		onpointerup={handlePointerUp}
+		onpointercancel={handlePointerLeave}
+		onpointerleave={handlePointerLeave}>
 		<defs>
 			<linearGradient id="lc-grad-positive" x1="0" y1={margin.top} x2="0" y2={yZero} gradientUnits="userSpaceOnUse">
 				<stop offset="0%" stop-color={GradientColor[0]} stop-opacity="1"/>
@@ -129,7 +173,7 @@ function calcYValues(min: number, max: number): number[] {
 
 		{#each xTicks as tick}
 			<g transform="translate({xScaleTick(tick)}, {height})">
-				<text class="d3-text text-xs" style="text-anchor: middle;" x={xOffset} y="-15">{getDate(tick)}</text>
+				<text class="d3-text text-xs" style="text-anchor: middle;" x={xOffset} y="-15">{tick}</text>
 			</g>
 		{/each}
 
@@ -148,6 +192,17 @@ function calcYValues(min: number, max: number): number[] {
 			<path d={linePath} fill="none" stroke-width="2"
 				class={storage ? 'dark:stroke-primary-500 stroke-primary-700' : 'dark:stroke-secondary-500 stroke-secondary-700'}
 				clip-path="url(#lc-clip-negative)"/>
+		{/if}
+		{#if hoveredIdx !== null}
+			{@const pt = scaledData[hoveredIdx]}
+			<line class="d3-line-vertical-marker" stroke-width="2" stroke-opacity="0.5"
+				x1={markerX} y1={margin.top} x2={markerX} y2={height - margin.bottom}/>
+			<circle cx={markerX} cy={markerY} r="4"
+				class="dark:fill-surface-50 fill-primary-950"/>
+			<text class="d3-text text-xs {pt.value >= 0 ? 'dark:fill-primary-500 fill-primary-700' : 'dark:fill-secondary-500 fill-secondary-700'}"
+				style="text-anchor: middle; font-weight: bold;" x={markerX} y={14}>
+				{fmtMarker(pt.value)}
+			</text>
 		{/if}
 	</svg>
 </div>

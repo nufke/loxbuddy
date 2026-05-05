@@ -3,10 +3,11 @@
 	import { innerWidth } from 'svelte/reactivity/window';
 	import { format, getDaysInMonth, getHours, getISODay, getDate as getDateOfMonth, getMonth } from 'date-fns';
 	import { _ } from 'svelte-i18n';
+	import { utils } from '$lib/helpers/Utils';
 
 	let { statistics } = $props();
 
-	const margin = { top: 10, right: 10, bottom: 30, left: 30 };
+	const margin = { top: 26, right: 10, bottom: 30, left: 30 };
 	const yGrid = [0, 20, 40, 60, 80, 100];
 	const height = 180;
 	const months = $_('Months').split('|');
@@ -22,6 +23,33 @@
 	let scale = $derived(dataMax >= 500e6 ? 1e9 : dataMax >= 500e3 ? 1e6 : dataMax >= 500 ? 1e3 : 1);
 	let scaledData = $derived(data.map((item: any) => ({ ...item, values: item.values.map((v: number) => v / scale) })));
 	let yValues = $derived(calcValues(scaledData));
+	let hoveredIdx: number | null = $state(null);
+	let markerX: number = $state(0);
+
+	let xScaleGrid = $derived(scaleLinear()
+		.domain([0, xGrid.length-1])
+		.range([margin.left, width - margin.right])
+	);
+
+	let xScaleTick = $derived(scaleLinear()
+		.domain([0, (Math.max.apply(null, xTicks))/(xTicks[1]-xTicks[0])])
+		.range([margin.left, width - margin.right])
+	);
+
+	let xScaleValue = $derived(scaleLinear()
+		.domain([0, xGrid.length-1])
+		.range([margin.left, width - margin.right])
+	);
+
+	let yScaleGrid =  $derived(scaleLinear()
+		.domain([0, 100])
+		.range([height - margin.bottom, margin.top])
+	);
+
+	let yScaleValue = $derived(scaleLinear()
+		.domain([0, Math.max.apply(null, yValues)])
+		.range([height - margin.bottom, margin.top])
+	);
 
 	function getGraphLayout(s: string, gWidth: number, length: number) {
 		let xGrid: number[];
@@ -75,30 +103,42 @@
 		return [...days.slice(1), days[0]][n-1]; // TODO define start of week
 	}
 
-	let xScaleGrid = $derived(scaleLinear()
-		.domain([0, xGrid.length-1])
-		.range([margin.left, width - margin.right])
-	);
+	function handlePointerMove(e: PointerEvent) {
+		const rect = (e.currentTarget as SVGSVGElement).getBoundingClientRect();
+		const mouseX = e.clientX - rect.left;
+		let nearestIdx = -1;
+		let minDist = Infinity;
+		scaledData.forEach((point: any, i: number) => {
+			const px = xScaleValue(getXIndex(point, i)) + columnWidth / 2;
+			const dist = Math.abs(px - mouseX);
+			if (dist < minDist) { minDist = dist; nearestIdx = i; }
+		});
+		if (nearestIdx >= 0 && minDist < columnWidth) {
+			hoveredIdx = nearestIdx;
+			const pt = scaledData[nearestIdx];
+			markerX = xScaleValue(getXIndex(pt, nearestIdx)) + columnWidth / 2;
+		} else {
+			hoveredIdx = null;
+		}
+	}
 
-	let xScaleTick = $derived(scaleLinear()
-		.domain([0, (Math.max.apply(null, xTicks))/(xTicks[1]-xTicks[0])])
-		.range([margin.left, width - margin.right])
-	);
+	function handlePointerDown(e: PointerEvent) {
+		(e.currentTarget as SVGSVGElement).setPointerCapture(e.pointerId);
+		handlePointerMove(e);
+	}
 
-	let xScaleValue = $derived(scaleLinear()
-		.domain([0, xGrid.length-1])
-		.range([margin.left, width - margin.right])
-	);
+	function handlePointerUp() {
+		hoveredIdx = null;
+	}
 
-	let yScaleGrid =  $derived(scaleLinear()
-		.domain([0, 100])
-		.range([height - margin.bottom, margin.top])
-	);
+	function handlePointerLeave() {
+		hoveredIdx = null;
+	}
 
-	let yScaleValue = $derived(scaleLinear()
-		.domain([0, Math.max.apply(null, yValues)])
-		.range([height - margin.bottom, margin.top])
-	);
+	function fmtMarker(v: number): string {
+		const [val, unit] = utils.formatString(v * scale, statistics?.format ?? '');
+		return unit ? `${val} ${unit}` : `${val}`;
+	}
 
 	$effect( () => {
 		if (innerWidth.current) { width = viewport.clientWidth; }
@@ -106,7 +146,12 @@
 </script>
 
 <div class="chart" bind:this={viewport}>
-	<svg {width} {height}>
+	<svg {width} {height} style="touch-action: none;"
+		onpointerdown={handlePointerDown}
+		onpointermove={handlePointerMove}
+		onpointerup={handlePointerUp}
+		onpointercancel={handlePointerLeave}
+		onpointerleave={handlePointerLeave}>
 		{#each xGrid as grid}
 			<g transform="translate({xScaleGrid(grid)}, {height})">
 				<line class="d3-line-vertical" x1="0" y1={-margin.bottom} x2="0" y2={margin.top - height}/>
@@ -150,5 +195,20 @@
 					height={yScaleValue(0) - yScaleValue(point.values[1])}/>
 			{/if}
 		{/each}
+		{#if hoveredIdx !== null}
+			{@const pt = scaledData[hoveredIdx]}
+			<line class="d3-line-vertical-marker" stroke-width="1" stroke-opacity="0.5"
+				x1={markerX} y1={margin.top} x2={markerX} y2={height - margin.bottom}/>
+			<text class="d3-text-marker-0 text-xs"
+				style="text-anchor: middle; font-weight: bold;" x={markerX} y={10}>
+				{fmtMarker(pt.values[0])}
+			</text>
+			{#if pt.values[1] != null}
+				<text class="d3-text-marker-1 text-xs"
+					style="text-anchor: middle; font-weight: bold;" x={markerX} y={22}>
+					{fmtMarker(pt.values[1])}
+				</text>
+			{/if}
+		{/if}
 	</svg>
 </div>

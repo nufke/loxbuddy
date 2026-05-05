@@ -208,8 +208,8 @@ class Utils {
 	}
 
 	getScaleUnit(strFormat: string) {
-		const match = strFormat?.match(/.*f\s*(.*)|,[\d]*(.*)/); // format .1fkW or 0,000kW
-		const unitFound = match?.[1] ?? match?.[2] ?? '';
+		const match = strFormat?.match(/.*f\s*(.*)|,[\d]*(.*)|[\d](%)/); // format .1fkW or 0,000kW or 0%
+		const unitFound = match?.[1] ?? match?.[2] ?? match?.[3] ?? '';
 		if (!unitFound) return { scale: 1, unit: '' };
 		const prefixes: Record<string, number> = { m: 1e-3, k: 1e3, M: 1e6, G: 1e9 };
 		const prefix = prefixes[unitFound[0]];
