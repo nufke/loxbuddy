@@ -8,7 +8,7 @@
 
 	const margin = { top: 10, right: 10, bottom: 30, left: 30 };
 	const yGrid = [0, 20, 40, 60, 80, 100];
-	const height = 200;
+	const height = 180;
 	const months = $_('Months').split('|');
 	const range = (start: number, end:number, step:number = 1) => Array.from({length: end}, (el, i) => start + (i * step) );
 
@@ -19,7 +19,7 @@
 	let graphWidth = $derived(width - (margin.left + margin.right));
 	let { xGrid, xTicks, columnWidth, barWidth, xOffset } = $derived.by(() => getGraphLayout(selector, graphWidth, data.length));
 	let dataMax = $derived(Math.max(...data.flatMap((item: any) => item.values)));
-	let scale = $derived(dataMax >= 1e9 ? 1e9 : dataMax >= 1e6 ? 1e6 : dataMax >= 1e3 ? 1e3 : 1);
+	let scale = $derived(dataMax >= 500e6 ? 1e9 : dataMax >= 500e3 ? 1e6 : dataMax >= 500 ? 1e3 : 1);
 	let scaledData = $derived(data.map((item: any) => ({ ...item, values: item.values.map((v: number) => v / scale) })));
 	let yValues = $derived(calcValues(scaledData));
 

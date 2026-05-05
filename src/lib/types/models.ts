@@ -703,6 +703,10 @@ export type DeviceInfoMap = {
 export type StatisticsDiff = {
 	[key: string]: {
 		data: StatisticsDiffEntry[];
+		title: string;
+		format: string;
+		fromUnixUtc: number;
+		untilUnixUtc: number;
 		total: number;
 		totalNeg: number;
 		selector: string;

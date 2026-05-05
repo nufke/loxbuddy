@@ -208,11 +208,12 @@ class Utils {
 	}
 
 	getScaleUnit(strFormat: string) {
-		const match = strFormat?.match(/.*f\s*(.*)/);
-		if (!match?.[1]) return { scale: 1, unit: '' };
+		const match = strFormat?.match(/.*f\s*(.*)|,[\d]*(.*)/); // format .1fkW or 0,000kW
+		const unitFound = match?.[1] ?? match?.[2] ?? '';
+		if (!unitFound) return { scale: 1, unit: '' };
 		const prefixes: Record<string, number> = { m: 1e-3, k: 1e3, M: 1e6, G: 1e9 };
-		const prefix = prefixes[match[1][0]];
-		return prefix ? { scale: prefix, unit: match[1].slice(1) } : { scale: 1, unit: match[1] };
+		const prefix = prefixes[unitFound[0]];
+		return prefix ? { scale: prefix, unit: unitFound.slice(1) } : { scale: 1, unit: unitFound };
 	}
 
 	formatString(n: number, strFormat: string): [number, string] {
@@ -225,7 +226,7 @@ class Utils {
 	}
 
 	 capitalize(s: string) {
-		return s[0].toUpperCase() + s.slice(1);
+		return s ? s[0].toUpperCase() + s.slice(1) : s;
 	}
 }
 

@@ -6,7 +6,7 @@ import states from '$lib/demo/demoStates.json';
 import userSettings from '$lib/demo/userSettings.json';
 import notification from '$lib/demo/notifications.json';
 import messageCenter from '$lib/demo/messageCenter.json';
-import { format } from 'date-fns';
+import { format, getDaysInMonth } from 'date-fns';
 
 type IntervalMap = {
 	[key: string]: NodeJS.Timeout;
@@ -651,15 +651,16 @@ export class Demo {
 	}
 
 	createStatistics(url: string) {
-		// jdev/sps/getStatistic/{uuid}/diff/{from}/{until}/{unit}/{id}/
-		const match = url.match(/jdev[/]sps[/]getStatistic[/]([^/]+)[/]diff[/](\d+)[/](\d+)[/](\w+)[/](\d+)[/]/);
+		// jdev/sps/getStatistic/{uuid}/{diff}/{from}/{until}/{unit}/{id}/
+		const match = url.match(/jdev[/]sps[/]getStatistic[/]([^/]+)[/](\w+)[/](\d+)[/](\d+)[/](\w+)[/](\d+)[/]/);
 		if (!match) return this.createPromise(new ArrayBuffer(0));
 
 		const controlUuid = match[1];
-		const fromUnixUtc = Number(match[2]);
-		const toUnixUtc = Number(match[3]);
-		const dataPointUnit = match[4];
-		const groupId = match[5];
+		const diff = match[2];
+		const fromUnixUtc = Number(match[3]);
+		const untilUnixUtc = Number(match[4]);
+		const dataPointUnit = match[5];
+		const groupId = match[6];
 
 		const group = controlStore.controls.get(controlUuid)?.statisticV2?.groups?.find(g => g.id === groupId);
 		const numDataPoints = group?.dataPoints?.length ?? 1;
@@ -669,9 +670,9 @@ export class Demo {
 
 		switch (dataPointUnit) {
 			case 'hour':  timestepSeconds = 3600; length = 24; break;
-			case 'day':   timestepSeconds = 86400; length = Math.round((toUnixUtc - fromUnixUtc + 1) / 86400); break;
-			case 'month': timestepSeconds = 2629800; length = 12; break;
-			case 'year':  timestepSeconds = 31557600; length = 1; break;
+			case 'day':   timestepSeconds = 86400; length = getDaysInMonth(fromUnixUtc) ; break;
+			case 'month': timestepSeconds = getDaysInMonth(fromUnixUtc) * 86400; length = 12; break;
+			case 'year':  timestepSeconds = 365 * 86400; length = 3; break;
 			default:      timestepSeconds = 3600; length = 24;
 		}
 
@@ -680,8 +681,8 @@ export class Demo {
 		const view = new DataView(buffer);
 		const periodScale: Record<string, number> = { hour: 1, day: 24, month: 24 * 30, year: 24 * 365 };
 		const scale = periodScale[dataPointUnit] ?? 1;
-		const valueOut = 1.2 * scale;
-		const valueIn = 0.8 * scale;
+		const valueOut = 22 * scale;
+		const valueIn = 10 * scale;
 
 		const values = [valueOut, valueIn];
 		for (let i = 0; i < length; i++) {

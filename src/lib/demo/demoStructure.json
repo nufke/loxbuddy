@@ -340,8 +340,8 @@
 				"displayType": 0,
 				"actualFormat": "%.3f kW",
 				"totalFormat": "%.1f kWh",
-				"powerName": "Consumption",
-				"storageFormat": "%.2f%%",
+				"powerName": "Power",
+				"storageFormat": "%.0f%%",
 				"storageMax": 100
 			},
 			"states": {
@@ -366,8 +366,8 @@
 						"mode": 11,
 						"dataPoints": [
 							{
-								"title": "Consumption",
-								"format": "%.3f kW",
+								"title": "Power",
+								"format": "%.3fkW",
 								"output": "actual"
 							}
 						]
@@ -379,12 +379,12 @@
 						"dataPoints": [
 							{
 								"title": "Readings",
-								"format": "%.1f kWh",
+								"format": "%.1fkWh",
 								"output": "total"
 							},
 							{
 								"title": "Readings",
-								"format": "%.1f kWh",
+								"format": "%.1fkWh",
 								"output": "totalNeg"
 							}
 						]
@@ -395,7 +395,7 @@
 						"dataPoints": [
 							{
 								"title": "Storage",
-								"format": "%.2f%%",
+								"format": "%.0f%%",
 								"output": "storageLevel"
 							}
 						]
