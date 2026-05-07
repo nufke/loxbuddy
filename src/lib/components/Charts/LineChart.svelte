@@ -5,11 +5,12 @@
 	import { getHours } from 'date-fns';
 	import { _ } from 'svelte-i18n';
 	import { utils } from '$lib/helpers/Utils';
+	import { tick } from 'svelte';
 
 	let { statistics, storage, fixedStep = 0 } = $props();
 
-	const margin = { top: 20, right: 10, bottom: 30, left: 30 };
-	const height = 180;
+	const margin = { top: 40, right: 10, bottom: 40, left: 30 };
+	const height = 220;
   const stopColorCss = ['var(--color-primary-500)', 'var(--color-secondary-500)']
 	const range = (start: number, end: number, step: number = 1) => Array.from({ length: end }, (_, i) => start + i * step);
 	const xGrid = range(0, 25);
@@ -29,12 +30,15 @@
 	});
 
 	let scaledData = $derived(data.map((d: any) => ({ ts: d.ts, value: d.values[0] / scale })));
+	let dataMax = $derived(Math.max(0, ...data.map((d: any) => Math.abs(d.values[0]))));
 	let yMin = $derived(Math.min(0, ...scaledData.map((d: any) => d.value)));
 	let yMax = $derived(Math.max(0, ...scaledData.map((d: any) => d.value)));
 	let yValues = $derived(calcYValues(yMin, yMax));
 	let hoveredIdx: number | null = $state(null);
 	let markerX = $state(0);
 	let markerY = $state(0);
+	let labelX = $state(0);
+	let textEl: SVGTextElement | null = $state(null);
 
 	let xScaleGrid = $derived(scaleLinear()
 		.domain([0, xGrid.length - 1])
@@ -90,7 +94,7 @@
     return getHours(point.ts * 1000);
 	}
 
-	function handlePointerMove(e: PointerEvent) {
+	async function handlePointerMove(e: PointerEvent) {
 		const rect = (e.currentTarget as SVGSVGElement).getBoundingClientRect();
 		const mouseX = e.clientX - rect.left;
 		let nearestIdx = -1;
@@ -106,9 +110,17 @@
 			const pt = scaledData[nearestIdx];
 			markerX = xScaleValue(getXIndex(pt));
 			markerY = yScaleValue(pt.value);
+			await tick();
+			const w = textEl?.getComputedTextLength() ?? 0;
+			clampLabel(markerX, w);
 		} else {
 			hoveredIdx = null;
 		}
+	}
+
+	function clampLabel(x: number, w: number) {
+		const halfW = w / 2;
+		labelX = Math.min(Math.max(x, margin.left + halfW), width - margin.right - halfW);
 	}
 
 	function handlePointerDown(e: PointerEvent) {
@@ -157,32 +169,29 @@
 				<rect x={margin.left} y={yZero} width={graphWidth} height={Math.max(0, height - margin.bottom - yZero)}/>
 			</clipPath>
 		</defs>
-
+		<text class="d3-text text-md" style="text-anchor: middle;" x={width/2} y="12">{statistics?.title} ({utils.formatString(dataMax, statistics?.format)[1]})</text>
+		<text class="d3-text text-md" style="text-anchor: middle;" x={width/2} y={height - margin.bottom + 38}>{$_(utils.capitalize(statistics?.xLabel))}</text>
 		{#each xGrid as grid}
 			<g transform="translate({xScaleGrid(grid)}, {height})">
 				<line class="d3-line-vertical" x1="0" y1={-margin.bottom} x2="0" y2={margin.top - height}/>
 			</g>
 		{/each}
-
 		{#each yValues as value}
 			<g transform="translate(0, {yScaleValue(value)})">
 				<line class="d3-line-horizontal {value === 0 ? 'opacity-60' : ''}"
 					x1={margin.left} y1="0" x2={margin.left + graphWidth} y2="0"/>
 			</g>
 		{/each}
-
 		{#each xTicks as tick}
-			<g transform="translate({xScaleTick(tick)}, {height})">
-				<text class="d3-text text-xs" style="text-anchor: middle;" x={xOffset} y="-15">{tick}</text>
+			<g transform="translate({xScaleTick(tick)}, {height - margin.bottom})">
+				<text class="d3-text text-xs" style="text-anchor: middle;" x={xOffset} y="15">{tick}</text>
 			</g>
 		{/each}
-
 		{#each yValues as value}
 			<g transform="translate(0, {yScaleValue(value)})">
 				<text class="d3-text text-xs" style="text-anchor: end;" x={margin.left - 6} y="4">{value}</text>
 			</g>
 		{/each}
-
 		{#if linePath}
 			<path d={areaPath} fill="url(#lc-grad-positive)" clip-path="url(#lc-clip-positive)"/>
 			<path d={areaPath} fill="url(#lc-grad-negative)" clip-path="url(#lc-clip-negative)"/>
@@ -199,8 +208,8 @@
 				x1={markerX} y1={margin.top} x2={markerX} y2={height - margin.bottom}/>
 			<circle cx={markerX} cy={markerY} r="4"
 				class="dark:fill-surface-50 fill-primary-950"/>
-			<text class="d3-text text-xs {pt.value >= 0 ? 'dark:fill-primary-500 fill-primary-700' : 'dark:fill-secondary-500 fill-secondary-700'}"
-				style="text-anchor: middle; font-weight: bold;" x={markerX} y={14}>
+			<text bind:this={textEl} class="d3-text text-xs {pt.value >= 0 ? 'dark:fill-primary-500 fill-primary-700' : 'dark:fill-secondary-500 fill-secondary-700'}"
+				style="text-anchor: middle; font-weight: bold;" x={labelX} y={margin.top - 8}>
 				{fmtMarker(pt.value)}
 			</text>
 		{/if}

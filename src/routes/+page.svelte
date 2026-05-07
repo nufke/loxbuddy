@@ -96,7 +96,7 @@
 		<Dialog.Backdrop class="fixed inset-0 z-150 bg-surface-50-950 backdrop-blur-sm {fadeInOut}"/>
 		<Dialog.Positioner class="fixed inset-0 z-150 flex justify-center items-center p-4">
 			<Dialog.Content class="card bg-surface-100-900 p-4 pt-3 shadow-sm rounded-lg border border-white/5 hover:border-white/10
-								md:max-w-9/10 md:max-h-9/10 w-[350px] {fadeInOut}">
+								max-w-full max-h-full w-[350px] {fadeInOut}">
 				<Dialog.Description>
 					<div class="mt-4 grid w-full place-items-center overflow-x-scroll rounded-lg p-3 lg:overflow-visible">
 						<svg class="text-gray-300 animate-spin" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" width="24" height="24">

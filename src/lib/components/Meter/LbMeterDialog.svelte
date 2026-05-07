@@ -145,13 +145,14 @@
 				}
 				statisticsDiff[item.id] = {
 					data: stats,
-					title: item.dataPoints.length > 1 ? powerName : item.dataPoints[0].title,
+					title: powerName,
 					format: item.dataPoints[0].format,
 					fromUnixUtc: fromUnixUtc,
 					untilUnixUtc: untilUnixUtc,
 					total: stats.flatMap(i=> i.values[0]).reduce((a, b) => a + b, 0),
 					totalNeg: stats.flatMap(i=> i.values[1]).reduce((a, b) => a + b, 0) || 0, // TODO might not exist
-					selector: selector
+					selector: selector,
+					xLabel: dataPointUnit
 				};
 			});
 		});
@@ -176,11 +177,6 @@
 			default: /* none */
 		}
 		await doSelect(date, s);
-	}
-
-	function getUnit(id: number, format: string) {
-		const max = Math.max(statisticsDiff[id]?.total, statisticsDiff[id]?.totalNeg);
-		return utils.formatString(max, format)[1];
 	}
 
 	async function undo() {
@@ -225,7 +221,7 @@
 			<Dialog.Backdrop class="fixed inset-0 z-10 bg-surface-50-950/75 backdrop-blur-sm {fadeInOut}"/>
 			<Dialog.Positioner class="fixed inset-0 z-10 flex justify-center items-center p-4">
 				<Dialog.Content class="card bg-surface-100-900 p-4 pt-3 space-y-4 shadow-sm rounded-lg border border-white/5 hover:border-white/10
-								md:max-w-9/10 md:max-h-9/10 overflow-auto {controlView.dialog.size?.width || 'w-[450px]'} {fadeInOut}">
+								max-w-full max-h-full overflow-hidden flex flex-col {controlView.dialog.size?.width || 'w-[450px]'} {fadeInOut}">
 					<!--<LbInfo control={controlView.control}/>-->
 					<header class="grid grid-cols-[5%_90%_5%]">
 						<div class="flex justify-center items-center"></div><!-- placeholder for menu -->
@@ -238,7 +234,7 @@
 							</button>
 						</div>
 					</header>
-					<Dialog.Description>
+					<Dialog.Description class="flex-1 min-h-0 flex flex-col overflow-hidden">
 						{#if selectedTab==1}
 							{#if type != 'storage'}
 								<div class="mb-6 flex flex-col items-center justify-center">
@@ -274,18 +270,16 @@
 									</div>
 								</div>
 							{/if}
-							<div class="w-full">
-								<p class="flex justify-center">{statisticsDiff[1]?.title} ({getUnit(1, statisticsDiff[1]?.format)})</p>
-								<LineChart statistics={statisticsDiff[1]} storage={type == 'storage'} fixedStep={0}/>
-								<p class="flex justify-center">{$_(utils.capitalize(dataPointUnit))}</p>
-							</div>
-							{#if type == 'storage'}
-								<div class="mt-2 w-full">
-									<p class="flex justify-center">{statisticsDiff[3]?.title} (%)</p>
-									<LineChart statistics={statisticsDiff[3]} storage={true} fixedStep={100}/>
-									<p class="flex justify-center">{$_(utils.capitalize(dataPointUnit))}</p>
+							<div class="flex-1 min-h-0 overflow-y-auto">
+								<div class="w-full">
+									<LineChart statistics={statisticsDiff[1]} storage={type == 'storage'} fixedStep={0}/>
 								</div>
-							{/if}
+								{#if type == 'storage'}
+									<div class="mt-4 mb-3 w-full">
+										<LineChart statistics={statisticsDiff[3]} storage={true} fixedStep={100}/>
+									</div>
+								{/if}
+							</div>
 						{/if}
 						{#if selectedTab==2}
 							<div class="relative w-full flex flex-col items-center justify-center">
@@ -340,10 +334,10 @@
 										{/if}
 									</div>
 								</div>
-								<div class="w-full">
-									<p class="flex justify-center">{powerName} ({getUnit(2, statisticsDiff[2]?.format)})</p>
+							</div>
+							<div class="flex-1 min-h-0 overflow-y-auto">
+								<div class="mt-4 w-full">
 									<BarChart statistics={statisticsDiff[2]} />
-									<p class="flex justify-center">{$_(utils.capitalize(dataPointUnit))}</p>
 								</div>
 							</div>
 						{/if}

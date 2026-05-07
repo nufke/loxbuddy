@@ -710,6 +710,7 @@ export type StatisticsDiff = {
 		total: number;
 		totalNeg: number;
 		selector: string;
+		xLabel: string;
 	}
 }
 

@@ -1185,11 +1185,11 @@
 			"defaultIcon": "IconsFilled/location-pin.svg",
 			"restrictions": 0,
 			"details": {
-					"jLockable": false,
-					"format": "%s"
+				"jLockable": false,
+				"format": "%s"
 			},
 			"states": {
-					"text": "__uuid__controls_location_on_map"
+				"text": "__uuid__controls_location_on_map"
 			}
 		},
 		"__uuid__controls_alarmclock": {
@@ -1684,8 +1684,8 @@
 			"defaultIcon": null,
 			"restrictions": 0,
 			"details": {
-					"jLockable": false,
-					"type": 71
+				"jLockable": false,
+				"type": 71
 			}
 		},
 		"__uuid__controls_alarm_status": {
@@ -1700,13 +1700,302 @@
 			"defaultIcon": "IconsFilled/alarm-1.svg",
 			"restrictions": 0,
 			"details": {
-					"jLockable": false,
-					"format": "%s"
+				"jLockable": false,
+				"format": "%s"
 			},
 			"states": {
-					"textAndIcon": "__uuid__controls_alarm_status",
-					"iconAndColor": "__uuid__controls_alarm_status_states_iconAndColor"
-
+				"textAndIcon": "__uuid__controls_alarm_status",
+				"iconAndColor": "__uuid__controls_alarm_status_states_iconAndColor"
+			}
+		},
+		"__uuid__controls_efm": {
+			"name": "Energy overview",
+			"type": "EFM",
+			"uuidAction": "__uuid__controls_efm",
+			"room": "__uuid__rooms_central_energy",
+			"cat": "__uuid__cats_energy",
+			"defaultRating": 3,
+			"isFavorite": true,
+			"isSecured": false,
+			"defaultIcon": null,
+			"restrictions": 0,
+			"details": {
+				"jLockable": true,
+				"actualFormat": "%.3fkW",
+				"totalFormat": "%.1fkWh",
+				"storageFormat": "%.0f%%",
+				"nodes": [
+					{
+						"uuid": "__uuid__controls_efm_details_node_group0",
+						"nodeType": "Group",
+						"title": "Energie Toevoer",
+						"icon": "",
+						"actualEfmState": "__uuid__controls_efm_states_actual0",
+						"nodes": [
+							{
+								"uuid": "__uuid__controls_efm_details_node_group0_net",
+								"nodeType": "Grid",
+								"title": "Net",
+								"icon": "IconsFilled/power-grid.svg",
+								"ctrlUuid": "__uuid__controls_net"
+							},
+							{
+								"uuid": "__uuid__controls_efm_details_node_group0_bat",
+								"nodeType": "Storage",
+								"title": "Battery",
+								"icon": "IconsFilled/recharge-energy.svg",
+								"ctrlUuid": "__uuid__controls_battery"
+							},
+							{
+								"uuid": "__uuid__controls_efm_details_node_group0_pv",
+								"nodeType": "Production",
+								"title": "PV",
+								"icon": "IconsFilled/solar-panel.svg",
+								"ctrlUuid": "__uuid__controls_pv_meter"
+							}
+						]
+					},
+					{
+						"uuid": "__uuid__controls_efm_details_node_group1",
+						"nodeType": "Group",
+						"title": "Algemeen",
+						"icon": "",
+						"actualEfmState": "__uuid__controls_efm_states_actual1",
+						"nodes": [
+							{
+								"uuid": "__uuid__controls_efm_details_node_group1_wash",
+								"nodeType": "Load",
+								"title": "Washing Machine",
+								"icon": "IconsFilled/washing-machine.svg",
+								"ctrlUuid": "__uuid__controls_washing_machine"
+							},
+							{
+								"uuid": "__uuid__controls_efm_details_node_group1_dishwasher",
+								"nodeType": "Load",
+								"title": "Dishwasher",
+								"icon": "IconsFilled/water-drops.svg",
+								"ctrlUuid": "__uuid__controls_dish_washer"
+							}
+						]
+					},
+					{
+						"uuid": "__uuid__controls_efm_details_node_group2",
+						"nodeType": "Load",
+						"title": "Cooker+Oven",
+						"icon": "IconsFilled/oven.svg",
+						"actualEfmState": "__uuid__controls_efm_states_actual2",
+						"ctrlUuid": "__uuid__controls_cooker_oven",
+						"nodes": [
+							{
+								"uuid": "__uuid__controls_efm_details_node_group2_cooker",
+								"nodeType": "Load",
+								"title": "Cooker",
+								"icon": "IconsFilled/stove.svg",
+								"ctrlUuid": "__uuid__controls_cooker"
+							},
+							{
+								"uuid": "__uuid__controls_efm_details_node_group2_oven",
+								"nodeType": "Load",
+								"title": "Oven",
+								"icon": "IconsFilled/oven.svg",
+								"ctrlUuid": "__uuid__controls_over"
+							}
+						]
+					},
+					{
+						"uuid": "__uuid__controls_efm_details_node_group3",
+						"nodeType": "Load",
+						"title": "Power supply",
+						"icon": "IconsFilled/flash-1.svg",
+						"actualEfmState": "__uuid__controls_efm_states_actual3",
+						"ctrlUuid": "__uuid__controls_power_supply",
+						"nodes": [
+							{
+								"uuid": "__uuid__controls_efm_details_node_group3_kitchen",
+								"nodeType": "Load",
+								"title": "Lighting Kitchen",
+								"icon": "IconsFilled/ceiling-lights.svg",
+								"ctrlUuid": "__uuid__controls_power_supply_kitchen"
+							},
+							{
+								"uuid": "__uuid__controls_efm_details_node_group3_bedroom",
+								"nodeType": "Load",
+								"title": "Bedroom",
+								"icon": "IconsFilled/ceiling-lights.svg",
+								"ctrlUuid": "__uuid__controls_power_supply_bedroom"
+							},
+							{
+								"uuid": "__uuid__controls_efm_details_node_group3_living",
+								"nodeType": "Load",
+								"title": "Living Room",
+								"icon": "IconsFilled/music-note.svg",
+								"ctrlUuid": "__uuid__controls_power_supply_living"
+							},
+							{
+								"uuid": "__uuid__controls_efm_details_node_group3_lighting",
+								"nodeType": "Load",
+								"title": "Central lighting",
+								"icon": "IconsFilled/ceiling-lights.svg",
+								"ctrlUuid": "__uuid__controls_power_supply_lighting"
+							}
+						]
+					},
+					{
+						"uuid": "__uuid__controls_efm_details_node_group4",
+						"nodeType": "Group",
+						"title": "High load users",
+						"icon": "",
+						"actualEfmState": "__uuid__controls_efm_states_actual4",
+						"nodes": [
+							{
+								"uuid": "__uuid__controls_efm_details_node_group4_wallbox1",
+								"nodeType": "Wallbox",
+								"title": "Wallbox 1",
+								"icon": "IconsFilled/eco-car-charge.svg",
+								"ctrlUuid": "__uuid__controls_power_supply_wallbox1"
+							},
+							{
+								"uuid": "__uuid__controls_efm_details_node_group4_heatpump",
+								"nodeType": "Load",
+								"title": "Heat pump",
+								"icon": "IconsFilled/heat-pump.svg",
+								"ctrlUuid": "__uuid__controls_power_supply_heatpump"
+							},
+							{
+								"uuid": "__uuid__controls_efm_details_node_group4_sauna",
+								"nodeType": "Load",
+								"title": "Sauna",
+								"icon": "IconsFilled/sauna-oven.svg",
+								"ctrlUuid": "__uuid__controls_power_supply_sauna"
+							}
+						]
+					},
+					{
+						"uuid": "__uuid__controls_efm_details_node_group5",
+						"nodeType": "Load",
+						"title": "Andere",
+						"icon": "",
+						"actualEfmState": "__uuid__controls_efm_states_actual5",
+						"ctrlUuid": "__uuid__controls_efm_subControls_andere"
+					}
+				]
+			},
+			"states": {
+				"jLocked": "__uuid__controls_efm_states_jLocked",
+				"Ppwr": "__uuid__controls_efm_states_Ppwr",
+				"Gpwr": "__uuid__controls_efm_states_Gpwr",
+				"Spwr": "__uuid__controls_efm_states_Spwr",
+				"Pre": "__uuid__controls_efm_states_Pre",
+				"Pri": "__uuid__controls_efm_states_Pri",
+				"CO2": "__uuid__controls_efm_states_CO2",
+				"selfConsumption": "__uuid__controls_efm_states_selfConsumption",
+				"actual0": "__uuid__controls_efm_states_actual0",
+				"actual1": "__uuid__controls_efm_states_actual1",
+				"actual2": "__uuid__controls_efm_states_actual2",
+				"actual3": "__uuid__controls_efm_states_actual3",
+				"actual4": "__uuid__controls_efm_states_actual4",
+				"actual5": "__uuid__controls_efm_states_actual5"
+			},
+			"statisticV2": {
+				"groups": [
+					{
+						"id": "1",
+						"mode": 11,
+						"accumulated": true,
+						"dataPoints": [
+							{
+								"title": "Readings",
+								"format": "%.1fkWh",
+								"output": "totalSelfConsumption"
+							}
+						]
+					},
+					{
+						"id": "2",
+						"mode": 11,
+						"accumulated": true,
+						"dataPoints": [
+							{
+								"title": "Total revenue",
+								"format": "%.2f€",
+								"output": "total"
+							}
+						]
+					},
+					{
+						"id": "3",
+						"mode": 10,
+						"dataPoints": []
+					}
+				]
+			},
+			"subControls": {
+				"__uuid__controls_efm_subControls_andere": {
+					"name": "Andere",
+					"type": "Meter",
+					"uuidAction": "__uuid__controls_efm_subControls_andere",
+					"room": "184b7e23-025d-3e38-ffff03d07da64ce9",
+					"cat": "184b7bde-0139-3c44-ffff03d07da64ce9",
+					"defaultRating": 0,
+					"isFavorite": false,
+					"isSecured": false,
+					"defaultIcon": null,
+					"restrictions": 0,
+					"details": {
+						"jLockable": true,
+						"type": "bidirectional",
+						"displayType": 0,
+						"actualFormat": "%.3fkW",
+						"totalFormat": "%.1fkWh",
+						"powerName": "Power"
+					},
+					"states": {
+						"jLocked": "__uuid__controls_efm_subControls_andere_states_jLocked",
+						"actual": "__uuid__controls_efm_subControls_andere_states_actual",
+						"total": "__uuid__controls_efm_subControls_andere_states_total",
+						"totalNeg": "__uuid__controls_efm_subControls_andere_states_totalNeg",
+						"totalDay": "__uuid__controls_efm_subControls_andere_states_totalDay",
+						"totalWeek": "__uuid__controls_efm_subControls_andere_states_totalWeek",
+						"totalMonth": "__uuid__controls_efm_subControls_andere_states_totalMonth",
+						"totalYear": "__uuid__controls_efm_subControls_andere_states_totalYear",
+						"totalNegDay": "__uuid__controls_efm_subControls_andere_states_totalNegDay",
+						"totalNegWeek": "__uuid__controls_efm_subControls_andere_states_totalNegWeek",
+						"totalNegMonth": "__uuid__controls_efm_subControls_andere_states_totalNegMonth",
+						"totalNegYear": "__uuid__controls_efm_subControls_andere_states_totalNegYear"
+					},
+					"statisticV2": {
+						"groups": [
+							{
+								"id": "1",
+								"mode": 10,
+								"dataPoints": [
+									{
+										"title": "Power",
+										"format": "%.3fkW",
+										"output": "actual"
+									}
+								]
+							},
+							{
+								"id": "2",
+								"mode": 11,
+								"accumulated": true,
+								"dataPoints": [
+									{
+										"title": "Readings",
+										"format": "%.1fkWh",
+										"output": "total"
+									},
+									{
+										"title": "Readings",
+										"format": "%.1fkWh",
+										"output": "totalNeg"
+									}
+								]
+							}
+						]
+					}
+				}
 			}
 		}
 	},
