@@ -70,14 +70,15 @@
   <div class="space-y-2">
 		{#if centralRooms.length}
 			{#each centralRooms as centralRoom}
+			{@const selectedControls = centralControls.filter((control) => control.room == centralRoom.uuid)}
 				<button class="pl-2 h5" onclick={() => {goto('/room/'+centralRoom.uuid)}}>{centralRoom.name}</button>
 				<div class="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 lg:flex-wrap">
-					{#each centralControls.filter((control) => control.room == centralRoom.uuid) as control (control)}
+					{#each selectedControls as control (control)}
 						{@const Component = lbControl.getControl(control.type)}
 						<div animate:flip={{ duration: appStore.dnd.duration }}
 							draggable={appStore.dnd.isEnabled}
 							ondragstart={() => {draggingItem = control; dragGroup = centralRoom.name}}
-							ondragend={() => {draggingItem = undefined; dragGroup = ''}}
+							ondragend={() => {draggingItem = undefined; dragGroup = ''; controlStore.updateSortingOrder(selectedControls, key);}}
 							ondragenter={() => { centralControls = swapItems(centralControls, control, centralRoom.name)}}
 							ondragover={(event) => {event.preventDefault(); if (event && event.dataTransfer) event.dataTransfer.dropEffect = 'move';}}>
 							<Component {control} controlOptions={{...controlOptions, isFavorite: true}}/>

@@ -19,10 +19,10 @@
 	let theme = $state(localStorage.getItem('theme') || 'LoxBuddy');
 	let mode = $state(localStorage.getItem('mode') || 'dark');
 	let startPage = $state(localStorage.getItem('startPage') || '/');
-	let userDefinedOrder = $state(localStorage.getItem('userDefinedOrder') || '0');
+	let sorting = $state(localStorage.getItem('sorting') || '0');
  	let group = $state('room');
 	let localeSettings = $derived(appStore.locale);
-	let sorting = $derived(appStore.dnd.isEnabled);
+	let sortingEnabled = $derived(appStore.dnd.isEnabled);
 
 	const loc = ['en', 'de', 'nl'];
 	const language: any = {
@@ -31,7 +31,14 @@
 		nl: 'Dutch'
 	};
 
+	const sortOrder: any = {
+		0: 'Sorting using LoxConfig',
+		1: 'User-defined sorting',
+		2: 'App-specific sorting'
+	};
+
 	let lang = $derived(language[localeSettings]);
+	let sortState = $derived(sortOrder[sorting]);
 
 	appStore.nav = '/';
 
@@ -39,16 +46,38 @@
 		{ name: 'Home', uuid: '/'}
 	];
 
-	async function setLocale(s: number) {
-		appStore.setLocale(loc[s]);
-	}
+	let sortingSelectView: GeneralView = $state({
+		label: $_('Sorting order'),
+		openDialog: false,
+		buttons: [],
+		cancel: () => {},
+		ok: (e: number) => {sorting = String(e); appStore.setSorting(sorting)}
+	});
+
+	let sortingSelectViewButtons = $derived([
+		{
+			id: 0,
+			name: sortOrder['0'],
+			selected: sorting == '0'
+		},
+		{
+			id: 1,
+			name: sortOrder['1'],
+			selected: sorting == '1'
+		},
+		{
+			id: 2,
+			name: sortOrder['2'],
+			selected: sorting == '2'
+		}
+	]);
 
 	let languageSelectView: GeneralView = $state({
 		label: $_('Select language'),
 		openDialog: false,
 		buttons: [],
 		cancel: () => {},
-		ok: (e: any) => {setLocale(e)}
+		ok: (e: number) => {appStore.setLocale(loc[e])}
 	});
 
 	let languageSelectViewButtons = $derived([
@@ -99,6 +128,11 @@
 		languageSelectView.openDialog = true;
 	}
 
+	function openUserDefinedSorting() {
+		sortingSelectView.buttons = sortingSelectViewButtons;
+		sortingSelectView.openDialog = true;
+	}
+
 	function getStartpageName(startpageUrl: string) {
 		if (startPage == '/' || startPage.length < 3) return 'Home';
 		let p = startpageUrl.split('/');
@@ -131,15 +165,9 @@
 		}
 	};
 
-	const onSorting = (event: { checked: boolean }) => {
-		sorting = event.checked;
+	const onSortingEnabled = (event: { checked: boolean }) => {
+		sortingEnabled = event.checked;
 		appStore.dnd.isEnabled = event.checked;
-	}
-
-	const onUserDefinedOrdering = (event: { checked: boolean }) => {
-		userDefinedOrder = event.checked ? '1' : '0';
-		localStorage.setItem('userDefinedOrder', userDefinedOrder);
-		appStore.userDefinedOrder = event.checked;
 	}
 
 	function setWeatherUrl(url: string) {
@@ -193,8 +221,8 @@
 	</div>
 	<button aria-current="true" type="button" class="w-full border-b dark:border-surface-900 border-surface-200 p-3 pr-5 pl-5 text-left text-lg">
 		<div class="flex w-full justify-between">
-			<p>{$_("User-defined ordering")}</p>
-			<Switch checked={userDefinedOrder == "1"} onCheckedChange={onUserDefinedOrdering}>
+			<p>{$_("Sorting enabled")}</p>
+			<Switch checked={sortingEnabled} onCheckedChange={onSortingEnabled}>
 				<Switch.Control class="w-12 h-8 mr-1 data-[state=checked]:preset-filled-primary-500">
 					<Switch.Thumb />
 				</Switch.Control>
@@ -202,16 +230,10 @@
 			</Switch>
 		</div>
 	</button>
-	<button aria-current="true" type="button" class="w-full border-b dark:border-surface-900 border-surface-200 p-3 pr-5 pl-5 text-left text-lg">
-		<div class="flex w-full justify-between">
-			<p>{$_("Sorting")}</p>
-			<Switch checked={sorting} onCheckedChange={onSorting}>
-				<Switch.Control class="w-12 h-8 mr-1 data-[state=checked]:preset-filled-primary-500">
-					<Switch.Thumb />
-				</Switch.Control>
-				<Switch.HiddenInput />
-			</Switch>
-		</div>
+	<button aria-current="true" type="button" class="flex w-full justify-between border-b dark:border-surface-900 border-surface-200 p-3 pr-5 pl-5 text-left text-lg"
+					onclick={openUserDefinedSorting}>
+		<p>{$_("Sorting option")}</p>
+		<p>{$_(sortState)}</p>
 	</button>
 	<button aria-current="true" type="button" class="flex w-full justify-between border-b dark:border-surface-900 border-surface-200 p-3 pr-5 pl-5 text-left text-lg"
 					onclick={() => {openThemeDialog = true;}}>
@@ -584,3 +606,4 @@
 </Dialog>
 
 <LbGeneralDialog bind:view={languageSelectView}/>
+<LbGeneralDialog bind:view={sortingSelectView}/>

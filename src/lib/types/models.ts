@@ -658,8 +658,8 @@ export type UserSettings = {
 				position: number;
 				isFav?: boolean;
 			}
-		};
-	};
+		}
+	}
 }
 
 export const DEFAULT_USERSETTINGS: UserSettings = {

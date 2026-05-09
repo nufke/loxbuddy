@@ -582,7 +582,13 @@
             "category/__uuid__rooms_central": {
                 "position": 0
             }
+        },
+        "__uuid__controls_alarm_status": {
+            "room": {
+                "isFav": true,
+                "position": 0
+            }
         }
     },
-    "ts": 530735020
+    "ts": 1767290400
 }

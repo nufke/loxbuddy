@@ -60,7 +60,7 @@
 			<div animate:flip={{ duration: appStore.dnd.duration }}
 				draggable={appStore.dnd.isEnabled}
 				ondragstart={() => {draggingItem = control; dragGroup = fav}}
-				ondragend={() => {draggingItem = undefined; dragGroup = ''}}
+				ondragend={() => {draggingItem = undefined; dragGroup = ''; controlStore.updateSortingOrder(favoriteControls, fav)}}
 				ondragenter={() => { favoriteControls = swapItems(favoriteControls, control, fav)}}
 				ondragover={(event) => {event.preventDefault(); if (event && event.dataTransfer) event.dataTransfer.dropEffect = 'move';}}>
 					<Component {control} controlOptions={{...controlOptions, isFavorite: true}}/>

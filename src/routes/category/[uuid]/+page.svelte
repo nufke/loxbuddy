@@ -22,6 +22,7 @@
 
 	let controlOptions: ControlOptions = $derived(DEFAULT_CONTROLOPTIONS);
 	let userDefinedOrder = $derived(appStore.userDefinedOrder);
+
 	let filteredControls: Control[] = $derived(
 		controlStore.controlList.filter((control) => (control.cat === data.uuid) && ((control.restrictions & 1) != 1))
 		.sort((a, b) => a.name.localeCompare(b.name, appStore.locale))
@@ -39,7 +40,8 @@
 	);
 
 	let favorites: Control[] = $derived(
-		filteredControls.filter((control) => isFavorite(userSettings.userDefaultStructure, control, room))
+		controlStore.controlList.filter((control) => (control.cat === data.uuid) && ((control.restrictions & 1) != 1))
+		.filter((control) => isFavorite(userSettings.userDefaultStructure, control, room))
 		.sort((a, b) => a.name.localeCompare(b.name, appStore.locale))
 		.sort((a, b) => getPosition(userSettings.userDefaultStructure, b, room) - getPosition(userSettings.userDefaultStructure, a, room))
 	);
@@ -86,7 +88,7 @@
 				<div animate:flip={{ duration: appStore.dnd.duration }}
 					draggable={appStore.dnd.isEnabled}
 					ondragstart={() => {draggingItem = control; dragGroup = room}}
-					ondragend={() => {draggingItem = undefined; dragGroup = ''}}
+					ondragend={() => {draggingItem = undefined; dragGroup = ''; controlStore.updateSortingOrder(favorites, key)}}
 					ondragenter={() => { favorites = swapItems(favorites, control, room)}}
 					ondragover={(event) => {event.preventDefault(); if (event && event.dataTransfer) event.dataTransfer.dropEffect = 'move';}}>
 						<Component control={control} controlOptions={{...controlOptions, isFavorite: true}}/>
@@ -96,6 +98,7 @@
 	{/if}
 	<div class="space-y-2">
 		{#each labels as label}
+			{@const selectedControls = filteredControls.filter((item) => item.cat == label.uuid)}
 			<button class="h6 ml-2" onclick={() => {goto('/room/'+label.uuid)}}>{label.name}</button>
 			<div class="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 lg:flex-wrap">
 				{#each filteredControls.filter((item) => item.room == label.uuid) as control (control)}
@@ -103,8 +106,8 @@
 					<div animate:flip={{ duration: appStore.dnd.duration }}
 						draggable={appStore.dnd.isEnabled}
 						ondragstart={() => {draggingItem = control; dragGroup = label.name}}
-						ondragend={() => {draggingItem = undefined; dragGroup = ''}}
-						ondragenter={() => { filteredControls = swapItems(filteredControls, control, label.name)}}
+						ondragend={() => {draggingItem = undefined; dragGroup = ''; controlStore.updateSortingOrder(selectedControls, 'category/' + label.uuid)}}
+						ondragenter={() => { filteredControls = swapItems(selectedControls, control, label.name)}}
 						ondragover={(event) => {event.preventDefault(); if (event && event.dataTransfer) event.dataTransfer.dropEffect = 'move';}}>
 						<Component control={control} {controlOptions}/>
 					</div>

@@ -67,7 +67,7 @@
 				draggable={appStore.dnd.isEnabled}
 				class=""
 				ondragstart={() => {draggingItem = item; dragGroup = fav}}
-				ondragend={() => {draggingItem = undefined; dragGroup = ''}}
+				ondragend={() => {draggingItem = undefined; dragGroup = ''; controlStore.updateSortingOrder(favorites, fav)}}
 				ondragenter={() => { favorites = swapItems(favorites, item, fav)}}
 				ondragover={(event) => {event.preventDefault(); if (event && event.dataTransfer) event.dataTransfer.dropEffect = 'move';}}>
 				<LbCard {key} {item} isFavorite={true}/>
@@ -81,7 +81,7 @@
 			<div animate:flip={{ duration: appStore.dnd.duration  }}
 				draggable={appStore.dnd.isEnabled}
 				ondragstart={() => {draggingItem = item; dragGroup = key}}
-				ondragend={() => {draggingItem = undefined; dragGroup = ''}}
+				ondragend={() => {draggingItem = undefined; dragGroup = ''; controlStore.updateSortingOrder(items, key)}}
 				ondragenter={() => { items = swapItems(items, item, key)}}
 				ondragover={(event) => {event.preventDefault(); if (event && event.dataTransfer) event.dataTransfer.dropEffect = 'move';}}>
 				<LbCard {key} {item} isFavorite={false}/>

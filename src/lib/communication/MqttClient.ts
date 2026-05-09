@@ -221,6 +221,13 @@ export class MqttClient {
 	}
 
 	/**
+	 * Dummy placeholder to store user settings (e.g. sorting/order of controls)
+	 */
+	setUserSettings(settings: string) {
+		console.info('[MqttClient] setUserSettings not implemented');
+	}
+
+	/**
 	 * Dummy placeholder to fetch information
 	 * @param url endpoint?
 	*/

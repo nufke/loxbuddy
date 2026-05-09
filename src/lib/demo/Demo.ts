@@ -50,8 +50,8 @@ export class Demo {
 		}, 200);
 
 		setTimeout( () => {
-			controlStore.userSettings = userSettings;
-		}, 1000);
+			controlStore.setUserSettings(userSettings);
+		}, 100);
 
 		// Meter
 		setInterval(() => {
@@ -706,6 +706,13 @@ export class Demo {
 	 */
 	getFile(url: string) {
 		console.info('[DEMO] getFile not yet implemented in demo mode.');
+	}
+
+	/**
+	 * Store user settings (e.g. sorting/order of controls)
+	 */
+	setUserSettings(settings: string) {
+		console.info('[DEMO] setUserSettings not implemented in demo mode.');
 	}
 
 	/**

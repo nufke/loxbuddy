@@ -1,7 +1,7 @@
 import { SvelteMap } from 'svelte/reactivity';
 import { MqttClient } from '$lib/communication/MqttClient';
 import { DEFAULT_USERSETTINGS, EMPTY_SYSTEM_STATUS, DEFAULT_GLOBALSTATES, DEFAULT_MSINFO } from '$lib/types/models';
-import type { Structure, MsInfo, Control, Category, Room, NotificationMap, NotificationList, UserSettings, SystemStatus,
+import type { Structure, MsInfo, Control, Category, Room, NotificationMap, NotificationList, UserSettings, LocalSettings, SystemStatus,
 							GlobalStates, MessageCenter, NotificationMessage, Icon } from '$lib/types/models';
 import { utils } from '$lib/helpers/Utils';
 import { lbControl } from '$lib/helpers/LbControl';
@@ -154,6 +154,40 @@ class LbControlStore {
 	fetchUrl(uuid: string, url: string) {
 		const client = this.controlClient.get(uuid) || demo;
 		return client.fetch(url);
+	}
+
+	updateSortingOrder(list: Control[] | Room[] | Category[], key: string) {
+		const ds = this.userSettings.userDefaultStructure;
+		list.forEach((item, index) => {
+			const uuid = (item as Control).uuidAction ?? (item as Room | Category).uuid;
+			ds[uuid] ??= {}; /* create if not exists */
+			ds[uuid][key] = {
+				...(ds[uuid][key] ?? { isFav: true }),
+				position: list.length - index
+			};
+		});
+		const lookupUuid = (list[0] as Control).uuidAction ?? (list[0] as Room | Category).uuid;
+		this.updateUserSettings(this.userSettings, lookupUuid)
+	}
+
+	updateUserSettings(settings: UserSettings, uuid: string) {
+		const sorting = Number(utils.deserialize(localStorage.getItem('sorting')));
+		const client = this.controlClient.get(uuid) || demo;
+		switch (sorting) {
+			case 1: client.setUserSettings(JSON.stringify(this.userSettings));  break; /* user-defined sorting */
+			case 2: localStorage.setItem('userSettings', utils.serialize(settings)); break; /* app-specific sorting */
+			default: /* none */
+		}
+	}
+
+	setUserSettings(settings: UserSettings) {
+		const sorting = Number(utils.deserialize(localStorage.getItem('sorting')));
+		const userSettings = utils.deserialize(localStorage.getItem('userSettings')) || DEFAULT_USERSETTINGS;
+		switch (sorting) {
+			case 1: this.userSettings = settings; break; /* user-defined sorting */
+			case 2: this.userSettings = userSettings || settings; break; /* app-specific sorting */
+			default: /* none */
+		}
 	}
 
 	/**

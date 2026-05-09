@@ -22,7 +22,8 @@ class LbAppStore {
 	showStatus: boolean = $state(true);
 	showWeather: boolean = $state(true);
 	startPage: string = $state('/');
-	userDefinedOrder: boolean = $state(false);
+	sorting: string = $state('0'); // default sorting
+	userDefinedOrder: boolean = $derived(this.sorting != '0');
 	locale: string = $state('en'); // default English
 	credentials: Credentials = $state(NO_CREDENTIALS);
 	dnd = $state({isEnabled: false, duration: 300});
@@ -60,7 +61,7 @@ class LbAppStore {
 		this.showWeather = localStorage.getItem('showWeather') == '1';
 		this.locale = localStorage.getItem('locale') || 'en';
 		this.credentials = utils.deserialize(localStorage.getItem('credentials'));
-		this.userDefinedOrder = localStorage.getItem('userDefinedOrder') == '1';
+		this.sorting = localStorage.getItem('sorting') || '0';
 	}
 
 	storeCredentials(credentials: Credentials) {
@@ -80,6 +81,11 @@ class LbAppStore {
 		locale.set(loc); // set svelte-i18n
 		setDefaultOptions({locale: dateFnsLocale[loc]});
 		console.info('[LbAppStore] Locale set to', appStore.locale);
+	}
+
+	setSorting(s: string) {
+		this.sorting = s;
+		localStorage.setItem('sorting', s);
 	}
 
 	resetLockScreenDialogTimeout() {

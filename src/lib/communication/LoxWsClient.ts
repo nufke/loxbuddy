@@ -91,7 +91,7 @@ export class LoxWsClient {
 
 		// get UserSettings for sorting and favorites
 		console.info('[LoxWsClient] Get user settings...');
-		this.getUserSettings();
+		this.fetchUserSettings();
 
 		// get System status
 		console.info('[LoxWsClient] Get system status...');
@@ -100,7 +100,7 @@ export class LoxWsClient {
 		// get icon list
 		console.info('[LoxWsClient] Get icons...');
 		this.getIconList();
-		
+
 		// update locale based on structure language
 		appStore.setLocale(controlStore.msInfo.languageCode.toLowerCase().slice(0, 2));
 	}
@@ -186,9 +186,16 @@ export class LoxWsClient {
 	}
 
 	/**
+	 * Store user settings (e.g. sorting/order of controls)
+	 */
+	setUserSettings(settings: string) {
+		console.info('[LoxWsClient] setUserSettings not implemented');
+	}
+
+	/**
 	 * Retrieve user settings (e.g. sorting/order of controls)
 	 */
-	getUserSettings() {
+	fetchUserSettings() {
 		fetch(`${this.hostName}/jdev/sps/getusersettings?autht=${appStore.credentials.token}&user=${this.userName}`)
 		.then((response) => {
 			if (response.ok) {
@@ -198,7 +205,7 @@ export class LoxWsClient {
 			}
 		})
 		.then((data) => {
-			controlStore.userSettings = data;
+			controlStore.setUserSettings(data);
 		})
 		.catch((error) => console.error('[LoxWsClient] getUserSettings fetch error: ', error));
 	}
