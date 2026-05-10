@@ -1,7 +1,39 @@
 import { SvelteMap } from 'svelte/reactivity';
-import { setCustomIconLoader, loadIcon } from '@iconify/svelte';
+import { setCustomIconLoader, loadIcon, addCollection } from '@iconify/svelte';
+import type { IconifyJSON } from '@iconify/types';
 import loxiconmap from '$lib/helpers/lox2iconify.json';
-import { registerIcons } from '$lib/helpers/registerIcons';
+import { registerCustomIcons } from '$lib/helpers/registerIcons';
+import lucideIcons from '@iconify/json/json/lucide.json';
+import lucideLabIcons from '@iconify/json/json/lucide-lab.json';
+import tablerIcons from '@iconify/json/json/tabler.json';
+import hugeIcons from '@iconify/json/json/hugeicons.json';
+import streamlineUltimateIcons from '@iconify/json/json/streamline-ultimate.json';
+import streamlinePlumpIcons from '@iconify/json/json/streamline-plump.json';
+import streamlineSharpIcons from '@iconify/json/json/streamline-sharp.json';
+import streamlineCyberIcons from '@iconify/json/json/streamline-cyber.json';
+import streamlineIcons from '@iconify/json/json/streamline.json';
+import lineMdIcons from '@iconify/json/json/line-md.json';
+import iconParkOutlineIcons from '@iconify/json/json/icon-park-outline.json';
+import iconParkTwoToneIcons from '@iconify/json/json/icon-park-twotone.json';
+import iconoirIcons from '@iconify/json/json/iconoir.json';
+import ionIcons from '@iconify/json/json/ion.json';
+import mageIcons from '@iconify/json/json/mage.json';
+import majestIcons from '@iconify/json/json/majesticons.json';
+import mynauiIcons from '@iconify/json/json/mynaui.json';
+import solarIcons from '@iconify/json/json/solar.json';
+import siIcons from '@iconify/json/json/si.json';
+import heroIcons from '@iconify/json/json/heroicons.json';
+import heroIconsOutline from '@iconify/json/json/heroicons-outline.json';
+import charmIcons from '@iconify/json/json/charm.json';
+import akarIcons from '@iconify/json/json/akar-icons.json';
+import famIcons from '@iconify/json/json/famicons.json';
+import flowbiteIcons from '@iconify/json/json/flowbite.json';
+import guidanceIcons from '@iconify/json/json/guidance.json';
+import iconamoonIcons from '@iconify/json/json/iconamoon.json';
+import phIcons from '@iconify/json/json/ph.json';
+import proIcons from '@iconify/json/json/proicons.json';
+import tDesignIcons from '@iconify/json/json/tdesign.json';
+import ciIcons from '@iconify/json/json/ci.json';
 
 type IconMap = {
 	[key: string]: string;
@@ -13,8 +45,19 @@ type IconMap = {
 class LbIconStore {
 	public iconMap: SvelteMap<string, string> = new SvelteMap();
 
-	constructor() {
-		registerIcons(); // register LoxBuddy icons
+	constructor() {}
+
+	registerIcons() {
+		// pre-load icons from local bundles
+		[	lucideIcons, lucideLabIcons, tablerIcons, hugeIcons,
+			streamlineUltimateIcons, streamlinePlumpIcons, streamlineSharpIcons, streamlineCyberIcons, streamlineIcons,
+			lineMdIcons, iconParkOutlineIcons, iconParkTwoToneIcons, iconoirIcons, ionIcons,
+			mageIcons, majestIcons, mynauiIcons, solarIcons, siIcons,
+			heroIcons, heroIconsOutline, charmIcons, akarIcons, famIcons,
+			flowbiteIcons, guidanceIcons, iconamoonIcons, phIcons, proIcons, tDesignIcons, ciIcons ]
+			.forEach((iconSet) => addCollection(iconSet as IconifyJSON));
+
+		registerCustomIcons(); // register LoxBuddy icons
 		this.loadIconMap(loxiconmap); // load icon mapping table
 		this.registerCallbacks(loxiconmap); // register callbacks to update icon properties
 	}

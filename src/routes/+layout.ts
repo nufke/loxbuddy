@@ -2,8 +2,9 @@ import { browser } from '$app/environment';
 import '$lib/i18n'; // Import to initialize.
 import { locale, waitLocale } from 'svelte-i18n';
 import type { LayoutLoad } from './$types';
-import { nl, enGB, de } from 'date-fns/locale'
-import { setDefaultOptions } from 'date-fns'
+import { nl, enGB, de } from 'date-fns/locale';
+import { setDefaultOptions } from 'date-fns';
+import { iconStore } from '$lib/stores/LbIconStore.svelte';
 
 export const load: LayoutLoad = async () => {
 	let localeSettings = localStorage.getItem('locale') || '';
@@ -14,6 +15,9 @@ export const load: LayoutLoad = async () => {
 	setDefaultOptions({ locale: getDateLocale(localeSettings) });
 	await waitLocale();
 	locale.set(localeSettings);
+
+	// pre-load icons
+	iconStore.registerIcons();
 }
 
 function getDateLocale(locale: string) {
