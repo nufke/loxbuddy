@@ -646,7 +646,7 @@ export class Demo {
 		const match = url.match(/getStatisticInfo\/([^/]+)/);
 		const controlUuid = match?.[1];
 		const groups = controlUuid ? (controlStore.controls.get(controlUuid)?.statisticV2?.groups ?? []) : [];
-		const info = groups.map(g => ({ id: Number(g.id), activeSince: 1704067200 })); // 2024-01-01
+		const info = groups.map(g => ({ id: Number(g.id), activeSince: 1704067200 })); // 2024-01-01 GMT
 		return this.createPromise(JSON.stringify(info));
 	}
 
@@ -657,7 +657,7 @@ export class Demo {
 
 		const controlUuid = match[1];
 		const diff = match[2];
-		const fromUnixUtc = Number(match[3]);
+		let fromUnixUtc = Number(match[3]);
 		const untilUnixUtc = Number(match[4]);
 		const dataPointUnit = match[5];
 		const groupId = match[6];
@@ -672,7 +672,7 @@ export class Demo {
 			case 'hour':  timestepSeconds = 3600; length = 24; break;
 			case 'day':   timestepSeconds = 86400; length = getDaysInMonth(fromUnixUtc) ; break;
 			case 'month': timestepSeconds = getDaysInMonth(fromUnixUtc) * 86400; length = 12; break;
-			case 'year':  timestepSeconds = 365 * 86400; length = 3; break;
+			case 'year':  timestepSeconds = 365 * 86400; length = 3; fromUnixUtc = 1704067200; break; // 2024-01-01 GMT
 			default:      timestepSeconds = 3600; length = 24;
 		}
 

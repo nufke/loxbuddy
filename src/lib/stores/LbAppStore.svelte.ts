@@ -69,6 +69,11 @@ class LbAppStore {
 		localStorage.setItem('credentials', utils.serialize(credentials));
 	}
 
+	clearCredentials() {
+		this.credentials = NO_CREDENTIALS;
+		localStorage.setItem('credentials', utils.serialize(NO_CREDENTIALS));
+	}
+
 	setDemo(state: number) {
 		this.isDemo = state == 1;
 		localStorage.setItem('demo', String(state));

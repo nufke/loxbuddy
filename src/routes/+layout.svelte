@@ -30,7 +30,7 @@
 
 	const options = {
 		allowDragScroll: true,
-		contextMenuDelayMS: 900,
+		contextMenuDelayMS: 1900, // disable context menu
 		dragImageOpacity: 1,
 		targetImageOpacity: 0.2,
 		dragScrollPercentage: 10,
@@ -38,7 +38,7 @@
 		dragThresholdPixels: 5,
 		forceListen: false,
 		isPressHoldMode: true, // enabled to enforce waiting time
-		pressHoldDelayMS: 300, // was 400 (default)
+		pressHoldDelayMS: 400,
 		pressHoldMargin: 25,
 		pressHoldThresholdPixels: 0
 	};
@@ -282,7 +282,7 @@
 			</div>
 		</Navigation.Menu>
 	</Navigation>
-	<div class="pt-[55px] {navigation.find ((item) => item.href == path ) ? 'pb-[68px]' : '' }">
+	<div class="pt-[58px] {navigation.find ((item) => item.href == path ) ? 'pb-[68px]' : '' }">
 		{@render children()}
 	</div>
 	{#if navigation.find ((item) => item.href == path )}

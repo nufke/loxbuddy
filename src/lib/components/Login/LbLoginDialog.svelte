@@ -34,6 +34,7 @@
 
 	async function startDemo() {
 		clearFormFields();
+		appStore.clearCredentials();
 		appStore.setDemo(1);
 		await startLoxWsClient();
 	}

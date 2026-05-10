@@ -265,6 +265,11 @@ var DragDropTouch = class {
       `touchcancel`,
       this._touchend.bind(this)
     );
+    // disable contextmenu
+    this._dragRoot.addEventListener(
+      `contextmenu`,
+      (e) => e.preventDefault()
+    );
   }
   /**
    * ...docs go here...

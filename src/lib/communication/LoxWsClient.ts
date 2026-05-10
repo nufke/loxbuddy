@@ -258,6 +258,7 @@ export const startLoxWsClient = async () => {
 
 	if (appStore.isDemo) {
 		demo.start();
+		appStore.clearCredentials();
 		appStore.setLocale('en'); // switch to en locale for demo
 		appStore.loginDialog.state = false;
 		return;
