@@ -48,7 +48,6 @@
 		"vite-plugin-node-polyfills": "^0.26.0"
 	},
 	"dependencies": {
-		"@iconify/json": "^2.2.471",
 		"@jaames/iro": "^5.5.2",
 		"@lucide/svelte": "^0.553.0",
 		"@types/d3": "^7.4.3",

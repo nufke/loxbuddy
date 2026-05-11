@@ -6,7 +6,8 @@ import states from '$lib/demo/demoStates.json';
 import userSettings from '$lib/demo/userSettings.json';
 import notification from '$lib/demo/notifications.json';
 import messageCenter from '$lib/demo/messageCenter.json';
-import { format, getDaysInMonth } from 'date-fns';
+import { format, getDaysInMonth, isLeapYear, fromUnixTime, getUnixTime, 
+	addHours, addDays, addMonths, addYears } from 'date-fns';
 
 type IntervalMap = {
 	[key: string]: NodeJS.Timeout;
@@ -665,28 +666,38 @@ export class Demo {
 		const group = controlStore.controls.get(controlUuid)?.statisticV2?.groups?.find(g => g.id === groupId);
 		const numDataPoints = group?.dataPoints?.length ?? 1;
 
-		let length: number;
-		let timestepSeconds: number;
+		if (dataPointUnit === 'year') fromUnixUtc = 1704067200; // 2024-01-01 GMT
+		const fromDate = fromUnixTime(fromUnixUtc);
 
+		let length: number;
 		switch (dataPointUnit) {
-			case 'hour':  timestepSeconds = 3600; length = 24; break;
-			case 'day':   timestepSeconds = 86400; length = getDaysInMonth(fromUnixUtc) ; break;
-			case 'month': timestepSeconds = getDaysInMonth(fromUnixUtc) * 86400; length = 12; break;
-			case 'year':  timestepSeconds = 365 * 86400; length = 3; fromUnixUtc = 1704067200; break; // 2024-01-01 GMT
-			default:      timestepSeconds = 3600; length = 24;
+			case 'hour':  length = 24; break;
+			case 'day':   length = getDaysInMonth(fromDate); break;
+			case 'month': length = 12; break;
+			case 'year':  length = 3; break;
+			default:      length = 24;
 		}
 
 		const size = 4 + numDataPoints * 8;
 		const buffer = new ArrayBuffer(size * length);
 		const view = new DataView(buffer);
-		const periodScale: Record<string, number> = { hour: 1, day: 24, month: 24 * 30, year: 24 * 365 };
+		const daysInYear = isLeapYear(fromDate) ? 366 : 365;
+		const periodScale: Record<string, number> = { hour: 1, day: 24, month: getDaysInMonth(fromDate) * 24, year: daysInYear * 24 };
 		const scale = periodScale[dataPointUnit] ?? 1;
 		const valueOut = 22 * scale;
 		const valueIn = 10 * scale;
 
+		const stepFn: Record<string, (d: Date, i: number) => Date> = {
+			hour:  (d, i) => addHours(d, i),
+			day:   (d, i) => addDays(d, i),
+			month: (d, i) => addMonths(d, i),
+			year:  (d, i) => addYears(d, i),
+		};
+		const addStep = stepFn[dataPointUnit] ?? ((d: Date, i: number) => addHours(d, i));
+
 		const values = [valueOut, valueIn];
 		for (let i = 0; i < length; i++) {
-			view.setUint32(i * size, fromUnixUtc + i * timestepSeconds, true);
+			view.setUint32(i * size, getUnixTime(addStep(fromDate, i)), true);
 			for (let j = 0; j < numDataPoints; j++) {
 				view.setFloat64(i * size + 4 + j * 8, values[j], true);
 			}
