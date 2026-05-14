@@ -9,6 +9,9 @@
 	let days = $_('Days').split('|');
 	let months = $_('Months').split('|');
 	let start = 0; // first day of the week (0 = Sunday, 1 = Monday)
+	let calenderHeight = 300;
+	let cw = 'w-9';
+	let ts = 'text-md';
 
 	let localDate = $state(new SvelteDate(date));
 	let offset = $state(0); // offset in months from currently selected date
@@ -20,30 +23,26 @@
 	let year = $derived(viewDate.getFullYear());
 	let weeks = $derived(weeksFrom(viewDate, start));
 
-	let calenderHeight = 300;
-	let cw = 'w-9';
-	let ts = 'text-md';
-
-	function getDateStr(date: Date) {
+	function getDateStr(date: Date): string {
 		const pad = (n:number) => n < 10 ? '0' + n : n;
 		return date.getFullYear() + "-" + pad(date.getMonth()+1) + '-' + pad(date.getDate());
 	}
 
-	function getTimeStr(date: Date) {
+	function getTimeStr(date: Date): string {
 		const hours = date.getHours() 
 		const minutes = date.getUTCMinutes(); 
 		return (hours < 10 ? `0${hours}` : hours) + ':' + (minutes < 10 ? `0${minutes}` : minutes);
 	}
 
-	function setMonth(direction: number) {
+	function setMonth(direction: number): void {
 		offset = offset + direction;
 	}
 
-	function updateDate(newDate: SvelteDate) {
+	function updateDate(newDate: SvelteDate): void {
 		date = newDate;
 	}
 
-	function reset() {
+	function reset(): void {
 		localDate = new SvelteDate();
 		dateStr = getDateStr(localDate);
 		timeStr = getTimeStr(localDate);
@@ -51,7 +50,7 @@
 		selected = dateStr;
 	}
 
-	function selectDate(newDateStr: string) {
+	function selectDate(newDateStr: string): void {
 		selected = newDateStr;
 		dateStr = newDateStr;
 		localDate = new SvelteDate(dateStr + " " + timeStr);
@@ -59,13 +58,13 @@
 		offset = 0;
 	}
 
-	function viewDateFrom(date: string, offset: number) {
+	function viewDateFrom(date: string, offset: number): Date {
 		let viewDate = new Date(date);
 		viewDate.setMonth(viewDate.getMonth() + offset);
 		return viewDate;
 	}
 
-	function weeksFrom(viewDate: Date, start: number) {
+	function weeksFrom(viewDate: Date, start: number): any[] {
 		let first = new Date(viewDate.getTime());
 		first.setDate(1);
 		first.setDate(first.getDate() + ((start - first.getDay() - 7) % 7));

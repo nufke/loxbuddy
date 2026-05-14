@@ -32,14 +32,14 @@
 		showSpinner: false
 	})
 
-	async function startDemo() {
+	async function startDemo(): Promise<void> {
 		clearFormFields();
 		appStore.clearCredentials();
 		appStore.setDemo(1);
 		await startLoxWsClient();
 	}
 
-	async function reconnect() {
+	async function reconnect(): Promise<void> {
 		if (appStore.credentials) {
 			clearFormFields();
 			appStore.loginDialog.state = false;
@@ -49,7 +49,7 @@
 		}
 	}
 
-	async function validate() {
+	async function validate(): Promise<void> {
 		const hostUrl = hostName.match(/^http/) ? hostName.replace(/\/$/, '') : 'http://' + hostName.replace(/\/$/, '');
 		if (hostName.length && userName.length && password.length) {
 			// 1. Check if all fields are filled
@@ -94,7 +94,7 @@
 		}
 	}
 
-	async function search() {
+	async function search(): Promise<void> {
 		popupView.list = [];
 		popupView.showSpinner = true;
 		const response = await fetch('/login'); // Svelte server call
@@ -104,12 +104,12 @@
 		popupView.showSpinner = false;
 	}
 
-	function select(item: any) {
+	function select(item: any): void {
 		hostName = item.ipaddr;
 		openPopup = false;
 	}
 
-	async function doSearch() {
+	async function doSearch(): Promise<void> {
 		popupView = {
 			title: 'Search Miniserver',
 			list: [],
@@ -121,7 +121,7 @@
 		await search();
 	}
 	
-	function showMessageDialog(description: string) {
+	function showMessageDialog(description: string): void {
 		popupView = {
 			title: '',
 			list: [],
@@ -132,7 +132,7 @@
 		openPopup = true;
 	}
 
-	function showConnectDialog(description: string) {
+	function showConnectDialog(description: string): void {
 		popupView = {
 			title: '',
 			list: [],
@@ -143,7 +143,7 @@
 		openPopup = true;
 	}
 	
-	function clearFormFields() {
+	function clearFormFields(): void {
 		hostName = '';
 		userName = '';
 		password = '';

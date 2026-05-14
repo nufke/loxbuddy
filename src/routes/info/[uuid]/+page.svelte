@@ -26,16 +26,16 @@
 		text += '\n';
 	}
 
-	function getState(key: string) {
+	function getState(key: string): any {
 		return controlStore.getState(key);
 	}
 
-	function getSubStates(sub: Control) {
+	function getSubStates(sub: Control): [string, string][] {
 		let states: [string, string][] = sub.states ? Object.entries(sub.states) : [];
 		return states;
 	}
 
-	function doCopy() {
+	function doCopy(): void {
 		textarea.select();
 		document.execCommand('copy'); // TODO deprecated
 	}

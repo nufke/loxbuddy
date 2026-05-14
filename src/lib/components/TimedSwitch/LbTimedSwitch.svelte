@@ -49,25 +49,6 @@
 		}
 	);
 
-	function formatTime(delay: number) {
-		if (delay > 0) {
-			let minutes = Math.floor(delay/60);
-			let seconds = delay - minutes * 60;
-			let time = (minutes > 0) ? String(minutes) + ' min ' : '';
-			time += String(seconds) + ' s';
-			return time;
-		}
-		return (delay == -1) ? $_('On') : $_('Off')
-	}
-
-	function setButtons() {
-		let dialogButtons: SingleButtonView[] = [];
-		dialogButtons.push(dialogButton1);
-		if (deactivationDelay != -1) dialogButtons.push(dialogButton2);
-		if (deactivationDelay > 0) dialogButtons.push(dialogButton3);
-		return dialogButtons;
-	}
-
 	let controlButtons: SingleButtonView[] = $state([
 		{
 			iconName: 'timer-2',
@@ -101,6 +82,25 @@
 			buttons: setButtons()
 		}
 	});
+
+	function formatTime(delay: number): string {
+		if (delay > 0) {
+			let minutes = Math.floor(delay/60);
+			let seconds = delay - minutes * 60;
+			let time = (minutes > 0) ? String(minutes) + ' min ' : '';
+			time += String(seconds) + ' s';
+			return time;
+		}
+		return (delay == -1) ? $_('On') : $_('Off')
+	}
+
+	function setButtons(): SingleButtonView[] {
+		let dialogButtons: SingleButtonView[] = [];
+		dialogButtons.push(dialogButton1);
+		if (deactivationDelay != -1) dialogButtons.push(dialogButton2);
+		if (deactivationDelay > 0) dialogButtons.push(dialogButton3);
+		return dialogButtons;
+	}
 </script>
 
 <div>

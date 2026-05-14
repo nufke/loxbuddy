@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { _ } from 'svelte-i18n';
 	import { lbControl } from '$lib/helpers/LbControl';
-	import type { Control, ControlOptions } from '$lib/types/models';
+	import type { Control, ControlOptions, UserDefaultStructure } from '$lib/types/models';
 	import { DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import { appStore } from '$lib/stores/LbAppStore.svelte';
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
@@ -13,31 +13,33 @@
 	let animatingItems = new Set();
 
 	let userSettings = $derived(controlStore.userSettings);
+	let userDefaultStructure = $derived(userSettings.userDefaultStructure) as UserDefaultStructure;
 	let controlOptions: ControlOptions = $derived(DEFAULT_CONTROLOPTIONS);
 	let userDefinedOrder = $derived(appStore.userDefinedOrder);
+
 	let favoriteControls = $derived(
-		controlStore.controlList.filter((control) => isFavorite(userSettings.userDefaultStructure, control, fav))
+		controlStore.controlList.filter((control) => isFavorite(userDefaultStructure, control, fav))
 		.sort((a, b) => a.name.localeCompare(b.name, appStore.locale))
-		.sort((a, b) => getPosition(userSettings.userDefaultStructure, b, fav) - getPosition(userSettings.userDefaultStructure, a, fav))
+		.sort((a, b) => getPosition(userDefaultStructure, b, fav) - getPosition(userDefaultStructure, a, fav))
 	);
 
-	function isFavorite(obj: any, control: Control, key: string) {
-		if (obj && obj[control.uuidAction] && userDefinedOrder) { 
-			return obj[control.uuidAction][key] ? obj[control.uuidAction][key].isFav : false;
+	function isFavorite(obj: UserDefaultStructure, control: Control, key: string): boolean {
+		if (obj && obj[control.uuidAction] && obj[control.uuidAction][key] && userDefinedOrder) { 
+			return obj[control.uuidAction][key].isFav ?? false;
 		} else {
 			return control.isFavorite;
 		}
 	}
 
-	function getPosition(obj: any, control: Control, key: string) {
-		if (obj && obj[control.uuidAction] && userDefinedOrder) { 
-			return obj[control.uuidAction][key] ? obj[control.uuidAction][key].position : 0;
+	function getPosition(obj: UserDefaultStructure, control: Control, key: string): number {
+		if (obj && obj[control.uuidAction] && obj[control.uuidAction][key] && userDefinedOrder) { 
+			return obj[control.uuidAction][key].position ?? 0;
 		} else {
 			return control.defaultRating;
 		}
 	}
 
-	function swapItems(list: Control[], item: Control, group: string) {
+	function swapItems(list: Control[], item: Control, group: string): Control[] {
 		let newList = list;
 		if (draggingItem === item || animatingItems.has(item) || group !== dragGroup) {
 			return list;

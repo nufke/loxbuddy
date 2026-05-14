@@ -12,7 +12,7 @@
 
 	let { view = $bindable(), mode, dayModes, entries, temperatureList = [] } = $props();
 
-	const notation = (num: number) => String(num).padStart(2, '0') + ':00'
+	const notation = (num: number): string => String(num).padStart(2, '0') + ':00'
 	const hours = [...Array(24).keys(), 0];
 
 	// these variables should not be reactive, as we keep their initial state
@@ -21,26 +21,26 @@
 	let initialModes: number[] = [];
 
 	let selectedEntry = $state();
-
 	let modeEntries: number[] = $derived(entries.entry.map( (m: Entry) => m.mode));
 	let modes = $derived(modeEntries.filter((mode, idx) => modeEntries.indexOf(mode) == idx));
 	let opModes = $derived(controlStore.operatingModes);
-
 	let currentTime = $derived(format(appStore.date, 'p'));
 
-	$effect( () => {
-		if (entries && initialEntries.length < entries.entry.length) {
-			initialEntries = entries.entry;
-			initialModes = modes;
-			length = initialModes.length * 155;
-		}
+	let calendarEntryView: CalendarEntryView = $state({
+		control: view.control,
+		subControl: view.subControl,
+		isIRC: false, // updated when Dialog is opened
+		isCooling: false, // updated when Dialog is opened
+		label: '',
+		enableDelete: true,
+		openDialog: false
 	});
 
-	function getDayTimerColor(needActivate: string) {
+	function getDayTimerColor(needActivate: string): string {
 		return needActivate == '0' ? 'dark:fill-primary-500 fill-primary-700' : 'dark:fill-tertiary-500 fill-tertiary-700'
 	}
 
-	function getIRCColor(mode: string) {
+	function getIRCColor(mode: string): string {
 		let fillColor = '';
 		let mode_ = Number(mode);
 		mode_ = view.isIRCV1 ? mode_ : (mode_ + 10); // differentiate between IRC V1 and V2
@@ -60,31 +60,31 @@
 		return fillColor;
 	}
 
-	function getTextColor() {
+	function getTextColor(): string {
 		return 'dark:fill-surface-950 fill-surface-50';
 	}
 
-	function getTime(time: string) {
+	function getTime(time: string): number {
 		return utils.hours2dec(time);
 	}
 
-	function getTemperature(entry: Entry) {
+	function getTemperature(entry: Entry): string {
 		let idx = temperatureList.findIndex((item) => item.id == entry.value);
 		return (idx != -1) ? temperatureList[idx].value + '°' : '';
 	}
 
-	function getModeIndex(mode: number) { // check index using the initial modes, as entries could have been removed
+	function getModeIndex(mode: number): number { // check index using the initial modes, as entries could have been removed
 		return initialModes.findIndex((item) => item == mode);
 	}
 
 	// although we calculate with 24:00 for the graphics, we use 00:00 notation to display time 
 	// TODO: fix formatting of date-fnd notation 0:00
-	function showTime(time: Entry) {
+	function showTime(time: Entry): string {
 		return 	utils.hours2hours(time.from) + ' - ' + 
 						utils.hours2hours(time.to, true);  // correct 24:00 -> 00:00
 	}
 
-	function addEntry() {
+	function addEntry(): void {
 		let isCooling = view.isCooling ? 2 : 1;
 		selectedEntry = {
 			mode: String(mode),
@@ -102,7 +102,7 @@
 		calendarEntryView.openDialog = true;
 	}
 
-	function updateEntry(entry: Entry) {
+	function updateEntry(entry: Entry): void {
 		selectedEntry = entry;
 		calendarEntryView.label = $_('Update entry');
 		calendarEntryView.control = view.control;
@@ -113,26 +113,24 @@
 		calendarEntryView.openDialog = true;
 	}
 
-	function getCoolingDayTimerInfo() {
+	function getCoolingDayTimerInfo(): string {
 		if (view.isIRCV1) {
 			return ' (' + (view.isCooling ? $_("Cooling") : $_("Heating") ) + ')';
 		}
 		return '';
 	}
 
-	function close() {
+	function close(): void {
 		initialEntries = [];
 		view.openDialog = false;
 	}
 
-	let calendarEntryView: CalendarEntryView = $state({
-		control: view.control,
-		subControl: view.subControl,
-		isIRC: false, // updated when Dialog is opened
-		isCooling: false, // updated when Dialog is opened
-		label: '',
-		enableDelete: true,
-		openDialog: false
+	$effect( () => {
+		if (entries && initialEntries.length < entries.entry.length) {
+			initialEntries = entries.entry;
+			initialModes = modes;
+			length = initialModes.length * 155;
+		}
 	});
 </script>
 

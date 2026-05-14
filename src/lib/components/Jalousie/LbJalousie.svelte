@@ -89,23 +89,6 @@
 		]
 	});
 
-	function getPosition() {
-		if (isLocked) return $_('Locked');
-		if (position < 1 && (shadePosition < 1 || type != 0)) return $_('Opened');
-		if (position > 99 && (shadePosition > 99 || type != 0)) return $_('Closed');
-		let str = (position < 1 ) ? $_('Opened') : ( (position > 99 ) ? $_('Closed') : fmt.sprintf('%1.0f%% ', position) + $_('Closed').toLowerCase());
-		if (shadePosition < 1 && type == 0) {
-			return str += ', ' + $_('Slats are horizontal').toLocaleLowerCase();
-		}
-		if (shadePosition > 99 && type == 0) {
-			return str += ', ' + $_('Slats are vertical').toLocaleLowerCase();
-		}
-		if (type == 0) {
-			return str += fmt.sprintf(', lamellen %1.0f%%', shadePosition);
-		}
-		return str;
-	}
-
 	let jalousie = $derived({
 		position: position,
 		locked: isLocked,
@@ -128,6 +111,23 @@
 			details: jalousie
 		}
 	});
+
+	function getPosition(): string {
+		if (isLocked) return $_('Locked');
+		if (position < 1 && (shadePosition < 1 || type != 0)) return $_('Opened');
+		if (position > 99 && (shadePosition > 99 || type != 0)) return $_('Closed');
+		let str = (position < 1 ) ? $_('Opened') : ( (position > 99 ) ? $_('Closed') : fmt.sprintf('%1.0f%% ', position) + $_('Closed').toLowerCase());
+		if (shadePosition < 1 && type == 0) {
+			return str += ', ' + $_('Slats are horizontal').toLocaleLowerCase();
+		}
+		if (shadePosition > 99 && type == 0) {
+			return str += ', ' + $_('Slats are vertical').toLocaleLowerCase();
+		}
+		if (type == 0) {
+			return str += fmt.sprintf(', lamellen %1.0f%%', shadePosition);
+		}
+		return str;
+	}
 </script>
 
 <div>

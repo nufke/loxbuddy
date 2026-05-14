@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import type { PageProps } from './$types';
-	import type { Control, Room, Category, ControlOptions } from '$lib/types/models';
+	import type { Control, Room, Category, ControlOptions, UserDefaultStructure } from '$lib/types/models';
 	import { DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import { _ } from 'svelte-i18n';
 	import { lbControl } from '$lib/helpers/LbControl';
@@ -14,6 +14,7 @@
 	let key = 'category';
 	let room = 'room';
 	let userSettings = $derived(controlStore.userSettings);
+	let userDefaultStructure = $derived(userSettings.userDefaultStructure) as UserDefaultStructure;
 	let dragGroup = $state('');
 	let draggingItem: any;
 	let animatingItems = new Set();
@@ -26,7 +27,7 @@
 	let filteredControls: Control[] = $derived(
 		controlStore.controlList.filter((control) => (control.cat === data.uuid) && ((control.restrictions & 1) != 1))
 		.sort((a, b) => a.name.localeCompare(b.name, appStore.locale))
-		.sort((a, b) => getPosition(userSettings.userDefaultStructure, b, key + '/' + b.room) - getPosition(userSettings.userDefaultStructure, a, key + '/' + a.room))
+		.sort((a, b) => getPosition(userDefaultStructure, b, key + '/' + b.room) - getPosition(userDefaultStructure, a, key + '/' + a.room))
 	);
 
 	let labels: Room[] = $derived(
@@ -41,22 +42,22 @@
 
 	let favorites: Control[] = $derived(
 		controlStore.controlList.filter((control) => (control.cat === data.uuid) && ((control.restrictions & 1) != 1))
-		.filter((control) => isFavorite(userSettings.userDefaultStructure, control, room))
+		.filter((control) => isFavorite(userDefaultStructure, control, room))
 		.sort((a, b) => a.name.localeCompare(b.name, appStore.locale))
-		.sort((a, b) => getPosition(userSettings.userDefaultStructure, b, room) - getPosition(userSettings.userDefaultStructure, a, room))
+		.sort((a, b) => getPosition(userDefaultStructure, b, room) - getPosition(userDefaultStructure, a, room))
 	);
 
-	function isFavorite(obj: any, control: Control, key: string) {
-		if (obj && obj[control.uuidAction] && userDefinedOrder) {
-			return obj[control.uuidAction][key] ? obj[control.uuidAction][key].isFav : false;
+	function isFavorite(obj: UserDefaultStructure, control: Control, key: string): boolean {
+		if (obj && obj[control.uuidAction] && obj[control.uuidAction][key] && userDefinedOrder) {
+			return obj[control.uuidAction][key].isFav ?? false;
 		} else {
-			control.defaultRating > 0;
+			return control.defaultRating > 0;
 		}
 	}
 
-	function getPosition(obj: any, control: Control, key: string) {
-		if (obj && obj[control.uuidAction] && userDefinedOrder) {
-			return obj[control.uuidAction][key] ? obj[control.uuidAction][key].position : 0;
+	function getPosition(obj: UserDefaultStructure, control: Control, key: string): number {
+		if (obj && obj[control.uuidAction] && obj[control.uuidAction][key] && userDefinedOrder) {
+			return obj[control.uuidAction][key].position ?? 0;
 		} else {
 			return control.defaultRating;
 		}

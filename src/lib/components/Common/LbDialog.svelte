@@ -23,7 +23,6 @@
 	let hasScroll = $state(true);
 	let showScrollTop = $state(false);
 	let showScrollBottom = $state(true);
-
 	let value = $derived(controlView.slider && controlView.slider.position? [controlView.slider.position] : [0]);
 	let min = $derived(controlView.slider ? controlView.slider.min : 0);
 	let max = $derived(controlView.slider ? controlView.slider.max : 100);
@@ -31,32 +30,35 @@
 	let orientation = $derived(controlView.slider ? controlView.slider.orientation : 'horizontal');
 	let locked = $derived(controlView.slider ? controlView.slider.locked : false);
 	let controlOptions: ControlOptions = $derived({...DEFAULT_CONTROLOPTIONS, isLink: true});
-
 	let windowHeight = $derived(innerHeight.current || 0);
 	let margin = $derived(getMargin(controlView.control));
 	let size = $derived(windowHeight * 0.9 - viewport?.clientHeight - margin || 0);
 	let style = $derived(size > 0 && viewport?.clientHeight == viewport?.scrollHeight ? 'height: 100%' : 'height: ' + (viewport?.clientHeight + size) + 'px');
 
-	function setPostion(position: any) {
+	let linkedControls: Control[] = $derived(
+		controlStore.controlList.filter((control) => controlView.links ? controlView.links.includes(control.uuidAction) : null)
+			.sort((a, b) => a.name.localeCompare(b.name, appStore.locale)));
+
+	function setPostion(position: any): void {
 		let pos: number = position.length ? position[0] : position; // skeleton Slider returns array, select first one
 		if (controlView && controlView.buttons && controlView.buttons[0]) {
 			controlView.buttons[0].click({sliderPosition: pos});
 		}
 	}
 
-	function getStatusColorHex(hexColor: string|undefined) {
+	function getStatusColorHex(hexColor: string|undefined): string {
 		return (hexColor && hexColor[0] == '#') ? 'color: ' + hexColor : '';
 	}
 
-	function getIconColorHex(hexColor: string | undefined) {
+	function getIconColorHex(hexColor: string | undefined): string {
 		return (hexColor && hexColor[0] == '#') ? 'fill: ' + hexColor : '';
 	}
 
-	function getPowerLevel(n: number) {
+	function getPowerLevel(n: number): string {
 		return (n.toLocaleString(appStore.locale, { minimumFractionDigits: 1 })) + ' kW max.';
 	}
 
-	function getPowerStatus(mask: number) {
+	function getPowerStatus(mask: number): {name: string, color: string} {
 		const statusLoads = controlView.dialog.details.loadManager.statusLoads & (mask+1);
 		const lockedLoads = controlView.dialog.details.loadManager.lockedLoads & (mask+1);
 		return { 
@@ -65,11 +67,7 @@
 		}
 	}
 
-	let linkedControls: Control[] = $derived(
-		controlStore.controlList.filter((control) => controlView.links ? controlView.links.includes(control.uuidAction) : null)
-			.sort((a, b) => a.name.localeCompare(b.name, appStore.locale)));
-
-	function getMargin(control: Control) {
+	function getMargin(control: Control): number {
 		let margin: number = 200;
 		switch(control.type) {
 			case 'Switch': margin = 100; break;
@@ -82,20 +80,20 @@
 		return margin;
 	}
 
-	$effect( () => { // check scroll status and window change and viewwport construction
-		parseScroll(windowHeight, viewport);
-	});
-
-	function parseScroll(height: number, view: any = undefined) {
+	function parseScroll(height: number, view: any = undefined): void {
 		if (!view) return;
 		hasScroll = view.scrollHeight > view.clientHeight;
 		showScrollTop = height > 0 && hasScroll && (view?.scrollTop > 10);
 		showScrollBottom = height > 0 && hasScroll && (view.scrollTop + view.clientHeight < (view.scrollHeight - 10));
 	}
 
-	function close() {
+	function close(): void {
 		controlView.dialog.action(false);
 	}
+
+	$effect( () => { // check scroll status and window change and viewwport construction
+		parseScroll(windowHeight, viewport);
+	});
 </script>
 
 {#if controlView.dialog.state} <!-- only construct dialog when opened, important to get current clientHeight -->

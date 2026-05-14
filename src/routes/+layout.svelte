@@ -74,27 +74,46 @@
 	let activeNotifications = $derived(Object.values(controlStore.notificationsMap).filter((items) => items.status == 1));
 	let navigation = $derived(routes.filter((m) => !m.menu));
 
-	function getCurrentIcon(cur: WeatherCurrentConditions) {
-		let sunRise = utils.time2epoch(cur.time, cur.sunRise);
-		let sunSet = utils.time2epoch(cur.time, cur.sunSet);
-		let dayOrNight = (cur.time > sunRise) && (cur.time < sunSet) ? '-day.svg' : '-night.svg';
-		return '../../meteocons/svg/' + cur.icon + dayOrNight;
+	/**
+	 * Get weather icon based on current conditions
+	 * @param current Current weather conditions
+	 * @returns weather icon referenced by string name
+	 */
+	function getCurrentIcon(current: WeatherCurrentConditions): string {
+		let sunRise = utils.time2epoch(current.time, current.sunRise);
+		let sunSet = utils.time2epoch(current.time, current.sunSet);
+		let dayOrNight = (current.time > sunRise) && (current.time < sunSet) ? '-day.svg' : '-night.svg';
+		return '../../meteocons/svg/' + current.icon + dayOrNight;
 	}
 
-	function checkUrl(href: string) {
+
+	/**
+	 * Helper function to check if the menu items is active based on the current page
+	 * @param href URL as string
+	 * @returns true is link is same as current page, otherwise return false
+	 */
+	function checkUrl(href: string): boolean {
 		if (href === '/') {
 			return page.url.pathname === href;
 		}
 		return page.url.pathname.includes(href);
 	}
 
-	function openWeather() {
+	/**
+	 * Open weather dialog page
+	 */
+	function openWeather(): void {
 		if (currentWeather.time > 0) {
 			appStore.weatherDialog.state = true;
 			appStore.setWeatherDialogTimeout();
 		}
 	}
 
+	/**
+	 * Get status color of Miniserver sate
+	 * @param state Current state of the Miniserver
+	 * @returns tailwind text and fill style for the given state 
+	*/
 	function getStatusColor(state: number) {
 		let str = 'text-surface-500 fill-surface-500';
 		switch (state) {
@@ -107,25 +126,40 @@
 		return str;
 	}
 
-	function navigate(s: string) {
-		switch (s) {
+	/**
+	 * Helper function to navigate to the given url
+	 * @param url page address
+	*/
+	function navigate(url: string): void {
+		switch (url) {
 			case '/weather': openWeather(); break;
 			case '/login': appStore.loginDialog.state = true; break;
 			case '/logout': if (isDemo) { appStore.setDemo(0); } appStore.loginDialog.state = true; controlStore.disconnectClient(); break;
-			default: goto(s);
+			default: goto(url);
 		}
 	}
 
-	function toggleLayout() {
+	/**
+	 * Toggle side bar
+	 */
+	function toggleLayout(): void {
 		layoutRail = !layoutRail;
 	}
 
-	function onVisibilityChange() {
+	/**
+	 * Helper function to disable Lock screen timeout when visibility changes,
+	 * for example, when the app is revisited while it was running in the background
+	 * In this case, you like to avoid that the lock screen remains visible
+	*/
+	function onVisibilityChange(): void {
 		if (document.visibilityState === 'visible') {
 			appStore.resetLockScreenDialogTimeout();
 		}
 	}
 
+	/** 
+	 * Svelte helper function to update menu icon after a change of the path
+	*/
 	$effect( () => {
 		let found = routes.find((item) => item.href == path );
 		if (found && !found.menu) {
@@ -135,10 +169,16 @@
 		}
 	});
 
+	/**
+	 * Svelte helper function to update the routes
+	*/
 	$effect( () => {
 		routes[1] = { label: 'Weather', href: '/weather', icon: 'cloud-sun', menu: true, visible: Boolean(showWeather) };
 	});
 
+	/** 
+	 * Svelte helper function to check the app status at startup and start the demo
+	*/
 	$effect( () => {
 		if (loxStatus || isDemo) { // connected or demo
 			routes[0] = { label: 'Logout', href: '/logout', icon: 'log-out', menu: true, visible: true };
@@ -148,6 +188,10 @@
 		}
 	});
 
+	/**
+	 * When starting the app the first time, try to establish websocket communication
+	 * If not successfull, e.g. when credentials are not avaialble, show the login screen
+	*/
 	startLoxWsClient();
 
 	// TODO add configuration
@@ -161,7 +205,7 @@
 	weatherStore.startWeatherForecast();
 	
 	/* disable right click context menu*/
-	//document.addEventListener('contextmenu', event => event.preventDefault());
+	document.addEventListener('contextmenu', event => event.preventDefault());
 </script>
 
 <svelte:document onvisibilitychange={onVisibilityChange} />

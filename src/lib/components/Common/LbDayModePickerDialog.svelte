@@ -13,29 +13,35 @@
 	let hideEntries = $state(true);
 	let entries = $derived(reorderEntries(dayModes));
 
-	function reorderEntries(modes: any, hideEntries: boolean = true) {
-		let items: any[] = [];
+	type Mode = {
+		mode: string;
+		name: string;
+		show: boolean;
+	}
+
+	function reorderEntries(modes: any, hideEntries: boolean = true): Mode[] {
+		let items: Mode[] = [];
 		let opModes = controlStore.operatingModes;
 		let opModesKeys = Array.from(opModes.keys());
 		opModesKeys.forEach((key) => { 
 			items.push({
 				mode: key,
-				name: opModes.get(key),
+				name: opModes.get(key) ?? '',
 				show: modes[key] ? true : !hideEntries
 			});
 		});
 		return items;
 	}
 
-	function expandList() {
+	function expandList(): void {
 		hideEntries = !hideEntries;
 	}
 
-	function close() {
+	function close(): void {
 		view.openDialog = false;
 	}
 
-	function setDayMode(m: string) {
+	function setDayMode(m: string): void {
 		if (newDayModes.includes(m)) {
 			newDayModes = newDayModes.filter( (s: string) => s != m); // remove item
 		} else {

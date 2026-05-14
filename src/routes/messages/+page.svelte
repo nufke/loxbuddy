@@ -9,6 +9,8 @@
 	import { format } from 'date-fns';
 	import { innerWidth } from 'svelte/reactivity/window';
 
+	let severity = ['', 'Info', 'Warning', 'Error'];
+
 	let group = $state('1');
 	let messages = $state() as SystemStatus;
 
@@ -22,21 +24,11 @@
 	let selectedEntry: SystemStatusEntry | undefined = $state();
 	let openDialog = $state(false);
 
-	let severity = ['', 'Info', 'Warning', 'Error'];
-
-	$effect( () => {
-		if (messageCenter && messageCenter.uuidAction) {
-			controlStore.fetchUrl(messageCenter.uuidAction, `jdev/sps/io/${messageCenter?.uuidAction}/getEntries/2`)
-			.then((response) => response.json())
-			.then((data) => messages = data );
-		}
-	});
-
-	function didRead(notification: NotificationMessage) {
+	function didRead(notification: NotificationMessage): void {
 		controlStore.updateNotificationMap(notification, 2);
 	}
 
-	function getRoomName(entry: SystemStatusEntry) {
+	function getRoomName(entry: SystemStatusEntry): string {
 		let room: Room | undefined;
 		if (entry && entry.roomUuid) {
 			room = controlStore.rooms.get(entry.roomUuid);
@@ -44,12 +36,12 @@
 		return room ? room.name : '';
 	}
 
-	function showEntry(entry: SystemStatusEntry) {
+	function showEntry(entry: SystemStatusEntry): void {
 		selectedEntry = entry;
 		openDialog = true;
 	}
 
-	function confirmEntry() {
+	function confirmEntry(): void {
 		if (selectedEntry) {
 			let actionOK = selectedEntry.actions.find((a) => a.title = 'OK');
 			let cmd = 'action/' + actionOK.actionId + '/' + (actionOK.isSecured ? '1' : '0');
@@ -59,11 +51,19 @@
 		}
 	}
 
-	function getDate(epoch: number) {
+	function getDate(epoch: number): string {
 		if (!epoch) return;
 		const date = new Date(epoch * 1000);
 		return format(date, "PPP p")
 	}
+
+	$effect( () => {
+		if (messageCenter && messageCenter.uuidAction) {
+			controlStore.fetchUrl(messageCenter.uuidAction, `jdev/sps/io/${messageCenter?.uuidAction}/getEntries/2`)
+			.then((response) => response.json())
+			.then((data) => messages = data );
+		}
+	});
 </script>
 
 <div class="container flex mx-auto max-w-[800px] w-screen overflow-hidden">

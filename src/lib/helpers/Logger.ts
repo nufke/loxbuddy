@@ -27,7 +27,7 @@ export const Logger = (() => {
   const _info = console.info;
   const _warn = console.warn;
   const _error = console.error;
-	return function (logLevel: LogLevel, toList: boolean = false) {
+	return function (logLevel: LogLevel, toList: boolean = false): void {
 		switch (logLevel) {
 			case LogLevel.DEBUG: {
 				console.debug = toList ? (...args) => { logMsg(args, LogLevel.DEBUG); _info.apply(console, args) } : _debug;

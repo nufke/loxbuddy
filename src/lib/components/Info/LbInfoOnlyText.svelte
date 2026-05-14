@@ -29,7 +29,7 @@
 		dialog: dialog
 	});
 
-	function close() {
+	function close(): void {
 		controlView.dialog.action(false);
 	}
 </script>

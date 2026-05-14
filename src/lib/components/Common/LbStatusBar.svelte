@@ -7,13 +7,13 @@
 
 	let value = $derived(Math.floor(100 * currentPower / maxPower) || 0);
 
-	function printValue(n: number, scale: string, unit: string, mode: number = -1) {
+	function printValue(n: number, scale: string, unit: string, mode: number = -1): string {
 		// 0 = Overload Manager, 1 = Peak Manager, 2 = Peak Overload Manager
 		let label = (mode > -1) ? ((mode == 1) ? $_('Average power') : $_('Current power')) : '';
 		return [label, (n.toLocaleString(appStore.locale, { minimumFractionDigits: 1 })), scale + unit].join(' ');
 	}
 
-	function format(n: number, mode: number = -1) {
+	function format(n: number, mode: number = -1): string {
 		let su = {scale: 1E3, unit: 'W'};
 
 		if (Math.abs(n) < 1E3/su.scale) { 

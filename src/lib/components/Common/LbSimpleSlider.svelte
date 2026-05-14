@@ -9,31 +9,31 @@
 	let startTouch = $state(false);
 	let windowHeight = $derived(innerHeight.current || 0);
  
-	function handleMouseUp(e: any) {
+	function handleMouseUp(e: any): void {
 		onValueChange({value: value});
 		startMouseMove = false;
 	}
 
-	function handleMouseDown(e: any) {
+	function handleMouseDown(e: any): void {
 		startMouseMove = true;
 	}
 
-	function handleMouseMove(e: any) {
+	function handleMouseMove(e: any): void {
 		if (startMouseMove) {
 			onValueChange({value: value});
 		}
 	}
 
-	function handleTouchEnd(e: any) {
+	function handleTouchEnd(e: any): void {
 		onValueChange({value: value});
 		startTouch = false;
 	}
 
-	function handleTouchStart(e: any) {
+	function handleTouchStart(e: any): void {
 		startTouch = true;
 	}
 
-	function handleTouchMove(e: any) {
+	function handleTouchMove(e: any): void {
 		const newValue = calculateTouchPosition(e);
 		if (startTouch && newValue != value) {
 			value = newValue;
@@ -41,7 +41,7 @@
 		}
 	}
 
-	function calculateTouchPosition(e: any) {
+	function calculateTouchPosition(e: any): number {
 		const rect = viewport.getBoundingClientRect();
 		let pos: number;
 		if (orientation == 'vertical') {
@@ -52,17 +52,17 @@
 		return Math.round((min + pos * max)/step) * step;
 	}
 
+	function dimmerBackground(): string {
+		return mode == 'dark' ?
+		'background: linear-gradient(to right, var(--color-surface-50) 0%, var(--color-surface-50) ' + (value-min)/(max-min)*100 + '%, var(--color-surface-950) ' + (value-min)/(max-min)*100 + '%, var(--color-surface-950) 100%)' :
+		'background: linear-gradient(to right, var(--color-surface-950) 0%, var(--color-surface-950) ' + (value-min)/(max-min)*100 + '%, var(--color-surface-50) ' + (value-min)/(max-min)*100 + '%, var(--color-surface-50) 100%)';
+	}
+
 	$effect( () => {
 		if (locked) {
 			viewport.disabled = true;
 		}
 	});
-
-	function dimmerBackground() {
-		return mode == 'dark' ?
-		'background: linear-gradient(to right, var(--color-surface-50) 0%, var(--color-surface-50) ' + (value-min)/(max-min)*100 + '%, var(--color-surface-950) ' + (value-min)/(max-min)*100 + '%, var(--color-surface-950) 100%)' :
-		'background: linear-gradient(to right, var(--color-surface-950) 0%, var(--color-surface-950) ' + (value-min)/(max-min)*100 + '%, var(--color-surface-50) ' + (value-min)/(max-min)*100 + '%, var(--color-surface-50) 100%)';
-	}
 </script>
 
 <div class="ml-1 mr-1 mb-1 { (orientation == 'vertical' && windowHeight > 630) ? 'rotate-270 m-3 ml-3 mb-8':''}">

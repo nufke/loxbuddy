@@ -22,12 +22,12 @@
 	let weekDayNrs = $derived(opModesKeys.filter( (key) => daysFull.includes(getMode(key))));
 	let filteredWeekDayNrs = $derived(weekDayNrs.filter( (key) => entry.modes.includes(Number(key))));
 
-	function getMode(mode: string) {
+	function getMode(mode: string): string {
 		const name = opModes.get(mode);
 		return name ? name.toLowerCase() : '';
 	}
 
-	function setValue(i: number) {
+	function setValue(i: number): void {
 		if (setEntry.modes.includes(i)) {
 			setEntry.modes = setEntry.modes.filter( (n: number) => n != i); // remove item
 		} else {
@@ -35,7 +35,7 @@
 		}
 	}
 
-	async function close() {
+	async function close(): Promise<void> {
 		openDialog = false;
 		await tick();
 		setEntry.modes = entry.modes; // restore latest accepted modes

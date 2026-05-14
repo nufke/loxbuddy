@@ -42,44 +42,6 @@
 	let size = $derived(windowHeight * 0.9 - viewport?.clientHeight - margin || 0);
 	let style = $derived(size > 0 && viewport?.clientHeight == viewport?.scrollHeight ? 'height: 100%' : 'height: ' + (viewport?.clientHeight + size) + 'px');
 
-	$effect( () => { // check scroll status and window change and viewwport construction
-		parseScroll(windowHeight, viewport);
-	});
-
-	$effect( () => {
-		lightList.forEach((item) => item.selected = false ); // default all lights unselected
-	});
-
-	function parseScroll(height: number, view: any = undefined) {
-		if (!view) return;
-		hasScroll = view.scrollHeight > view.clientHeight;
-		showScrollTop = height > 0 && hasScroll && (view?.scrollTop > 10);
-		showScrollBottom = height > 0 && hasScroll && (view.scrollTop + view.clientHeight < (view.scrollHeight - 10));
-	}
-
-	function getActiveLights() {
-		let status = '';
-		switch (lightsOn) {
-			case 0:
-				status = $_('All off');
-				break;
-			case 1:
-				status = fmt.sprintf($_('On in %s room'), 1);
-				break;
-			default:
-				status = fmt.sprintf($_('On in %s rooms'), lightsOn);
-		}
-		return status;
-	}
-
-	function close() {
-		lightList.forEach((item) => item.selected = false ); // empty selected lights
-		scenesEnabled = false;
-		selectedControl = undefined;
-		selectedControlOptions = undefined;
-		controlView.dialog.action(false);
-	}
-
 	let dialog: DialogView = $state({
 		action: (state: boolean) => {
 			dialog.state = state; },
@@ -98,30 +60,61 @@
 		dialog: dialog
 	});
 
-		function getControlName(control: Control) {
+	function parseScroll(height: number, view: any = undefined): void {
+		if (!view) return;
+		hasScroll = view.scrollHeight > view.clientHeight;
+		showScrollTop = height > 0 && hasScroll && (view?.scrollTop > 10);
+		showScrollBottom = height > 0 && hasScroll && (view.scrollTop + view.clientHeight < (view.scrollHeight - 10));
+	}
+
+	function getActiveLights(): string {
+		let status = '';
+		switch (lightsOn) {
+			case 0:
+				status = $_('All off');
+				break;
+			case 1:
+				status = fmt.sprintf($_('On in %s room'), 1);
+				break;
+			default:
+				status = fmt.sprintf($_('On in %s rooms'), lightsOn);
+		}
+		return status;
+	}
+
+	function close(): void {
+		lightList.forEach((item) => item.selected = false ); // empty selected lights
+		scenesEnabled = false;
+		selectedControl = undefined;
+		selectedControlOptions = undefined;
+		controlView.dialog.action(false);
+	}
+
+	function getControlName(control: Control): string {
 		const origNameFound = $_('LightControllerV2').includes(control.name);
 		const room = controlStore.rooms.get(control.room);
 		return (origNameFound && room) ? room.name : control.name;
 	}
 
-	function getRoomName(control: Control) {
+	function getRoomName(control: Control): string {
 		const origNameFound = $_('LightControllerV2').includes(control.name);
 		const room = controlStore.rooms.get(control.room);
 		return (origNameFound || !room) ? '' : room.name;
 	}
 
-	function getStatusName(control: Control) {
+	function getStatusName(control: Control): string {
 		let moodList = controlStore.getState(control.states.moodList) as MoodList[];
 		let activeMoodsNum = Number(controlStore.getState(control.states.activeMoodsNum));
-		return (activeMoodsNum < 0) ? $_('Manual') : moodList?.find((item:MoodList) => item.id == activeMoodsNum)?.name;
+		return (activeMoodsNum < 0) ? $_('Manual') : 
+			moodList?.find((item:MoodList) => item.id == activeMoodsNum)?.name ?? '';
 	}
 
-	function getStatusColor(control: Control) {
+	function getStatusColor(control: Control): string {
 		let activeMoodsNum = Number(controlStore.getState(control.states.activeMoodsNum));
 		return activeMoodsNum == 778 ? 'text-surface-950 dark:text-surface-50' : 'dark:text-primary-500 text-primary-700';
 	}
 
-	function selectLight(control: Control) {
+	function selectLight(control: Control): void {
 		let index = lightList.findIndex((item) => item.uuid == control.uuidAction);
 		if (lightList[index]) {
 			lightList[index].selected = !lightList[index].selected;
@@ -129,12 +122,12 @@
 		scenesEnabled = selectedLightCount == 1;
 	}
 	
-	function isSelected(control: Control) {
+	function isSelected(control: Control): boolean {
 		let light = lightList.find((item) => item.uuid == control.uuidAction);
-		return light ? light.selected : false;
+		return light && light.selected || false;
 	}
 
-	function changeLight(mood: string) {
+	function changeLight(mood: string): void {
 		lightList.forEach( light => { 
 			if (light.selected) {
 				let control: Control | undefined = controlStore.controlList.find( (control: Control) => control.uuidAction == light.uuid);
@@ -152,7 +145,7 @@
 		});
 	}
 
-	function selectScenes() {
+	function selectScenes(): void {
 		if (!scenesEnabled) return; // more than one scene selected
 		let light = lightList.find((item) => item.selected);
 		let control: Control | undefined = controlStore.controlList.find( (control: Control) => control.uuidAction == light?.uuid);
@@ -161,6 +154,14 @@
 			selectedControlOptions = {...DEFAULT_CONTROLOPTIONS, showDialog: true, showControl: false};
 		}
 	}
+
+	$effect( () => { // check scroll status and window change and viewwport construction
+		parseScroll(windowHeight, viewport);
+	});
+
+	$effect( () => {
+		lightList.forEach((item) => item.selected = false ); // default all lights unselected
+	});
 </script>
 
 <div>

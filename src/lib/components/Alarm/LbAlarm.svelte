@@ -11,17 +11,6 @@
 	let armed = $derived(Number(controlStore.getState(control.states.armed))==1);
 	let disabledMove = $derived(Number(controlStore.getState(control.states.disabledMove))==1);
 
-	function setUnsetAlarm(delay: boolean = false) {
-		let cmd = armed ? 'off' : (delay ? 'delayedon/' : 'on/');
-		cmd += armed ? '' : (disabledMove ? '0' : '1');
-		controlStore.setControl(control.uuidAction, cmd);
-	}
-
-	function setUnsetMmovement(e: any) {
-		let cmd = 'dismv/' + (e.checked ? '0' : '1');
-		controlStore.setControl(control.uuidAction, cmd);
-	}
-
 	let buttons: SingleButtonView[] = $derived([
 		{
 			name: armed ? 'Disarm alarm' : 'Arm alarm',
@@ -54,12 +43,6 @@
 		state: false
 	});
 
-	function getStatus() {
-		let status = armed ? $_('Armed') : $_('Disarmed');
-		status += armed ? (disabledMove ? '' : ' ('+ $_('Presence detection on') + ')' ) : '';
-		return status;
-	}
-
 	let controlView: ControlView = $derived({
 		...DEFAULT_CONTROLVIEW,
 		control: control,
@@ -75,6 +58,23 @@
 			buttons
 		}
 	});
+
+	function setUnsetAlarm(delay: boolean = false): void {
+		let cmd = armed ? 'off' : (delay ? 'delayedon/' : 'on/');
+		cmd += armed ? '' : (disabledMove ? '0' : '1');
+		controlStore.setControl(control.uuidAction, cmd);
+	}
+
+	function setUnsetMmovement(e: any): void {
+		let cmd = 'dismv/' + (e.checked ? '0' : '1');
+		controlStore.setControl(control.uuidAction, cmd);
+	}
+
+	function getStatus(): string {
+		let status = armed ? $_('Armed') : $_('Disarmed');
+		status += armed ? (disabledMove ? '' : ' ('+ $_('Presence detection on') + ')' ) : '';
+		return status;
+	}
 </script>
 
 <div>

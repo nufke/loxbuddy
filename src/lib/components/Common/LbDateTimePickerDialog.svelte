@@ -14,12 +14,12 @@
 	let width = $derived((innerWidth.current && innerWidth.current < 900) || !view.isDateView ? 'w-[420px]' : 'w-[660px]');
 	let flexCol = $derived(innerWidth.current && innerWidth.current < 900 ? 'flex-col' : 'flex-row space-x-4');
 
-	function valueChanged() {
+	function valueChanged(): boolean {
 		view.openDialog = false;
 		return (localDate != date)
 	}
 
-	function close() {
+	function close(): void {
 		view.openDialog = false;
 	}
 </script>

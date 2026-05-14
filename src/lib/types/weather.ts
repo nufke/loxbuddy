@@ -19,6 +19,27 @@ export type WeatherCurrentConditions = {
 	moonIllumination: number;
 };
 
+export const EMPTY_CURRENT_CONDITIONS: WeatherCurrentConditions = {
+	time: 0,
+	location: '',
+	conditions: '',
+	icon: '',
+	airTemperature: 0,
+	stationPressure: 0,
+	relativeHumidity: 0,
+	windAverage: 0,
+	windDirection: 0,
+	uv: 0,
+	feelsLike: 0,
+	lightingStrikeCount1h: 0,
+	lightingStrikeDistance: 0,
+	precipitationToday: 0,
+	solarRadiation: '',
+	sunRise: '',
+	sunSet: '',
+	moonIllumination: 0
+}
+
 export type WeatherDailyForecast = {
 	time: number;											// epoch time (start of day)
 	conditions: string;								// description

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { _ } from 'svelte-i18n';
-	import type { Room } from '$lib/types/models';
+	import type { Room, UserDefaultStructure } from '$lib/types/models';
 	import LbCard from '$lib/components/Common/LbCard.svelte';
 	import { appStore } from '$lib/stores/LbAppStore.svelte';
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
@@ -14,36 +14,56 @@
 
 	let userSettings = $derived(controlStore.userSettings);
 	let userDefinedOrder = $derived(appStore.userDefinedOrder);
+	let userDefaultStructure = $derived(userSettings.userDefaultStructure) as UserDefaultStructure;
+
 	let items: Room[] = $derived(
 		controlStore.roomList.filter((item) => controlStore.controlList.map((control) => control.room)
 		.indexOf(item.uuid) > -1)
 		.sort((a, b) => a.name.localeCompare(b.name, appStore.locale))
-		.sort((a, b) => getPosition(userSettings.userDefaultStructure, b, key) - getPosition(userSettings.userDefaultStructure, a, key))
+		.sort((a, b) => getPosition(userDefaultStructure, b, key) - getPosition(userDefaultStructure, a, key))
 	);
 
 	let favorites: Room[] = $derived(
-		items.filter((item) => isFavorite(userSettings.userDefaultStructure, item, fav))
+		items.filter((item) => isFavorite(userDefaultStructure, item, fav))
 		.sort((a, b) => a.name.localeCompare(b.name, appStore.locale))
-		.sort((a, b) => getPosition(userSettings.userDefaultStructure, b, fav) - getPosition(userSettings.userDefaultStructure, a, fav))
+		.sort((a, b) => getPosition(userDefaultStructure, b, fav) - getPosition(userDefaultStructure, a, fav))
 	);
 
-	function isFavorite(obj: any, room: Room, key: string) {
-		if (obj && obj[room.uuid] && userDefinedOrder) { 
-			return obj[room.uuid][key] ? obj[room.uuid][key].isFav : false;
+	/**
+	 * Check if given room is set as favorite
+	 * @param obj Object containing the usersettings
+	 * @param control Actual room
+	 * @param key Filter based on given key
+	 */
+	function isFavorite(obj: UserDefaultStructure, room: Room, key: string): boolean {
+		if (obj && obj[room.uuid] && obj[room.uuid][key] && userDefinedOrder) { 
+			return obj[room.uuid][key].isFav ?? false;
 		} else {
 			return room.isFavorite;
 		}
 	}
 
-	function getPosition(obj: any, room: Room, key: string) {
-		if (obj && obj[room.uuid] && userDefinedOrder) {
-			return obj[room.uuid][key] ? obj[room.uuid][key].position : 0;
+	/**
+	 * Get the position of the given room. This defines the order in the sorting
+	 * @param obj Object containing the usersettings
+	 * @param control Actual room
+	 * @param key Filter based on given key
+	 */
+	function getPosition(obj: UserDefaultStructure, room: Room, key: string): number {
+		if (obj && obj[room.uuid] && obj[room.uuid][key] && userDefinedOrder) {
+			return obj[room.uuid][key].position ?? 0;
 		} else {
 			return room.defaultRating;
 		}
 	}
 
-	function swapItems(list: Room[], item: Room, group: string) {
+	/**
+	 * Helper function to swap rooms when sorting is enabled
+	 * @param list List of rooms
+	 * @param item The selected room being moved
+	 * @param group Filter based on the given key
+	 */
+	function swapItems(list: Room[], item: Room, group: string): Room[] {
 		let newList = list;
 		if (draggingItem === item || animatingItems.has(item) || group !== dragGroup) {
 			return list;

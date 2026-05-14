@@ -23,7 +23,26 @@
 	let temperatureList = $derived(getTemperatureList(isHeating, false));
 	let mode = $derived((activeMode == 2) ? 4 : activeMode); // remapping
 
-	function getTemperatureList(isHeatingOn: boolean, isManual: boolean) {
+	let dialog: DialogView = $state({
+		action: (state: boolean) => {dialog.state = state},
+		state: false
+	});
+
+	let controlView: ControlView = $derived({
+		...DEFAULT_CONTROLVIEW,
+		control: control,
+		isFavorite: controlOptions.isFavorite,
+		iconName: '', // no icon, render temperature as text
+		iconText: tempActual,
+		iconColor: 'fill-surface-950 dark:fill-surface-50',  // note: fill for svg text in IRC
+		textName: getTextName(),
+		statusName:  temperatureList && temperatureList[mode] ? $_(temperatureList[mode].name) : '',
+		statusColor: temperatureList && temperatureList[mode] && temperatureList[mode].id > 0 && temperatureList[mode].id != 4 ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700', // TODO other colors for temperatures
+		list: temperatureList,
+		dialog: dialog
+	});
+
+	function getTemperatureList(isHeatingOn: boolean, isManual: boolean): ListItem[] {
 		let modes : ListItem[] = [ /* active modes for IRC V2 */
 			{ id: 0, name: 'Economy', value: 0, visible: true },
 			{ id: 1, name: 'Comfort temperature', value: 0, visible: true },
@@ -45,30 +64,11 @@
 		return modes;
 	}
 
-	function getTextName() {
+	function getTextName(): string {
 		const origNameFound = $_('IRoomController').includes(control.name);
 		const room = controlStore.rooms.get(control.room);
 		return (origNameFound && room) ? room.name : control.name;
 	}
-
-	let dialog: DialogView = $state({
-		action: (state: boolean) => {dialog.state = state},
-		state: false
-	});
-
-	let controlView: ControlView = $derived({
-		...DEFAULT_CONTROLVIEW,
-		control: control,
-		isFavorite: controlOptions.isFavorite,
-		iconName: '', // no icon, render temperature as text
-		iconText: tempActual,
-		iconColor: 'fill-surface-950 dark:fill-surface-50',  // note: fill for svg text in IRC
-		textName: getTextName(),
-		statusName:  temperatureList && temperatureList[mode] ? $_(temperatureList[mode].name) : '',
-		statusColor: temperatureList && temperatureList[mode] && temperatureList[mode].id > 0 && temperatureList[mode].id != 4 ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700', // TODO other colors for temperatures
-		list: temperatureList,
-		dialog: dialog
-	});
 </script>
 
 <div>

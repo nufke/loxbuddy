@@ -20,18 +20,20 @@
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
+	type StartEndTime = {
+		startTime: string;
+		endTime: string;
+	}
+
 	const toaster = createToaster({duration: 1500});
 
 	let dayOfTheWeek = $derived(format(appStore.date, 'eeee'));
-
 	let isAnalog = $derived(Boolean(control.details.analog));
 	let value = $derived(Number(controlStore.getState(control.states.value)));
 	let valueFormatted = $derived(fmt.sprintf(control.details.format, value));
-
 	let mode = $derived(Number(controlStore.getState(control.states.mode)));
 	let entries = $derived(utils.extractEntries(controlStore.getState(control.states.entriesAndDefaultValue))) as EntriesAndDefaultValue;
 	let modeList = $derived(String(controlStore.getState(control.states.modeList))); 
-
 	let currentTime = $derived(appStore.date);
 	let dayModes = $derived(utils.extractDayModes(modeList)) as WeekDays;
 	let status = $derived(isAnalog ? valueFormatted : ( value ? control.details.text.on : control.details.text.off)) as string;
@@ -39,80 +41,6 @@
 	let timeslot = $derived(calcStartEndTime(entries));
 	let overrideDate = $state({start: new SvelteDate(), end: new SvelteDate(), active: false});
 	let outputActive = $derived(false);
-
-	function getDuration() {
-		let statusExt = '';
-		const timerEnds = appStore.date.valueOf() + override * 1000;
-		if (override > 0 || (timeslot && timeslot.endTime)) {
-			const dateStr = timerEnds ? format(timerEnds, 'd MMMM p') : '';
-			const timeStr = timeslot ? utils.hours2hours(timeslot.endTime, true) : '';
-			statusExt = ' ' + $_('Till').toLowerCase() + ' ' + (override > 0 ? dateStr : timeStr);
-		}
-		return statusExt;
-	}
-
-	function getTime(t: string) {
-		let hhmm = t.split(':');
-		let d = setHours(currentTime, Number(hhmm[0]));
-		let d2 = setMinutes(d, Number(hhmm[1]));
-		let d3 = setSeconds(d2, 0);
-		return d3;
-	}
-
-	function calcStartEndTime(entryList: EntriesAndDefaultValue) {
-		if (!entryList) return;
-		let startTime = '00:00';
-		let endTime = '24:00';
-
-		// no entries means not timer set
-		if (entryList.entry.length == 0) {
-			return {startTime: '00:00', endTime: '24:00'};
-		}
-
-		entryList.entry.forEach( (item: any) => {
-			if (Number(item.mode) == mode ) {
-				if (isAfter(currentTime, getTime(item.to))) {
-					startTime = item.to;
-				}
-				if (isBefore(currentTime, getTime(item.from))) {
-					endTime = item.from;
-				}
-				if (isAfter(currentTime, getTime(item.from)) && isBefore(currentTime, getTime(item.to))) {
-					startTime = item.from;
-					return {startTime: startTime, endTime: endTime};
-				}
-			}
-		});
-		return {startTime: startTime, endTime: endTime};
-	}
-
-	function startStopTimer() {
-		if (override > 0) { // Timer active, so deactivate
-			controlStore.setControl(control.uuidAction, 'stopOverride');
-			return;
-		}
-		overrideDate.start = new SvelteDate(); // save start time for visualization
-		overrideDate.active = outputActive;
-		let coeff = 1000 * 60; // round to minute
-		let overrideTimeSec = Math.round((overrideDate.end.getTime() - Date.now())/coeff)*coeff/1000;
-		let overrideValue = outputActive ? '1' : '0'; // TODO analog values
-
-		if (overrideTimeSec > 60) {// TODO define minimum time of 1 minute
-			let cmd = 'startOverride/' + String(overrideValue) + '/' + String(overrideTimeSec);
-			controlStore.setControl(control.uuidAction, cmd);
-		} else {
-			console.error('[LbDaytimer] Daytimer override timeperiod to low:', overrideTimeSec);
-			toaster.info({ title: 'Timer period invalid!'});
-		}
-	}
-
-	function updateTimer(e: any) {
-		overrideDate.end = e.value;
-	}
-
-	function close() {
-		controlView.dialog.action(false);
-	}
 
 	let calendarView = $state({
 		control: control,
@@ -145,6 +73,80 @@
 		statusColor: (value > 0 ) ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700',
 		dialog: dialog
 	});
+
+	function getDuration(): string {
+		let statusExt = '';
+		const timerEnds = appStore.date.valueOf() + override * 1000;
+		if (override > 0 || (timeslot && timeslot.endTime)) {
+			const dateStr = timerEnds ? format(timerEnds, 'd MMMM p') : '';
+			const timeStr = timeslot ? utils.hours2hours(timeslot.endTime, true) : '';
+			statusExt = ' ' + $_('Till').toLowerCase() + ' ' + (override > 0 ? dateStr : timeStr);
+		}
+		return statusExt;
+	}
+
+	function getTime(t: string): Date {
+		let hhmm = t.split(':');
+		let d = setHours(currentTime, Number(hhmm[0]));
+		let d2 = setMinutes(d, Number(hhmm[1]));
+		let d3 = setSeconds(d2, 0);
+		return d3;
+	}
+
+	function calcStartEndTime(entryList: EntriesAndDefaultValue): StartEndTime | undefined {
+		if (!entryList) return;
+		let startTime = '00:00';
+		let endTime = '24:00';
+
+		// no entries means not timer set
+		if (entryList.entry.length == 0) {
+			return {startTime: '00:00', endTime: '24:00'};
+		}
+
+		entryList.entry.forEach( (item: any) => {
+			if (Number(item.mode) == mode ) {
+				if (isAfter(currentTime, getTime(item.to))) {
+					startTime = item.to;
+				}
+				if (isBefore(currentTime, getTime(item.from))) {
+					endTime = item.from;
+				}
+				if (isAfter(currentTime, getTime(item.from)) && isBefore(currentTime, getTime(item.to))) {
+					startTime = item.from;
+					return {startTime: startTime, endTime: endTime};
+				}
+			}
+		});
+		return {startTime: startTime, endTime: endTime};
+	}
+
+	function startStopTimer(): void {
+		if (override > 0) { // Timer active, so deactivate
+			controlStore.setControl(control.uuidAction, 'stopOverride');
+			return;
+		}
+		overrideDate.start = new SvelteDate(); // save start time for visualization
+		overrideDate.active = outputActive;
+		let coeff = 1000 * 60; // round to minute
+		let overrideTimeSec = Math.round((overrideDate.end.getTime() - Date.now())/coeff)*coeff/1000;
+		let overrideValue = outputActive ? '1' : '0'; // TODO analog values
+
+		if (overrideTimeSec > 60) {// TODO define minimum time of 1 minute
+			let cmd = 'startOverride/' + String(overrideValue) + '/' + String(overrideTimeSec);
+			controlStore.setControl(control.uuidAction, cmd);
+		} else {
+			console.error('[LbDaytimer] Daytimer override timeperiod to low:', overrideTimeSec);
+			toaster.info({ title: 'Timer period invalid!'});
+		}
+	}
+
+	function updateTimer(e: any): void {
+		overrideDate.end = e.value;
+	}
+
+	function close(): void {
+		controlView.dialog.action(false);
+	}
 </script>
 
 <div>

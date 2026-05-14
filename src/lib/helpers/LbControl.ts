@@ -66,12 +66,12 @@ class LbControl {
 		{ type: 'PresenceDetector', control: LbPresenceDetector, defaultIcon: 'IconsFilled/presence.svg' }
 	];
 
-	getControl(type: string) {
+	getControl(type: string): any {
 		const comp = this.controlList.find((control) => control.type == type);
 		return comp ? comp.control : LbUnknownControl;
 	}
 
-	getDefaultIcon(type: string) {
+	getDefaultIcon(type: string): string {
 		const comp = this.controlList.find((control) => control.type == type);
 		return comp ? comp.defaultIcon : '';
 	}

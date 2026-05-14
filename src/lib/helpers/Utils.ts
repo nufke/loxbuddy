@@ -1,6 +1,7 @@
 import { format } from 'date-fns';
 import fmt from 'sprintf-js';
-
+import type { EntriesAndDefaultValue } from '$lib/types/models';
+ 
 class Utils {
 
 	loxTimeRef = 1230764400000; // correction to epoch, Loxone calculates from 1-1-2009
@@ -20,7 +21,7 @@ class Utils {
 	}
 
 	// input: r,g,b in [0-255,0-255,0-255], output: h in [0,360] and s,v in [0-100]
-	rgb2hsv(r: number, g: number, b: number) {
+	rgb2hsv(r: number, g: number, b: number): { h: number; s: number; v: number } {
 		const rabs: number = r / 255;
 		const gabs: number = g / 255;
 		const babs: number = b / 255;
@@ -59,7 +60,7 @@ class Utils {
 		};
 	}
 
-	rgb2rgb(hexColor: string, scale: number) {
+	rgb2rgb(hexColor: string, scale: number): string {
 		const regex = new RegExp('#(.{2})(.{2})(.{2})');
 		const found = hexColor.match(regex);
 		let r,g,b;
@@ -73,7 +74,7 @@ class Utils {
 		return rgb;
 	}
 
-	isValidJSONObject(str: string) {
+	isValidJSONObject(str: string): boolean {
 		let obj;
 		try {
 			obj = JSON.parse(str);
@@ -87,59 +88,59 @@ class Utils {
 		}
 	}
 
-	hours2dec(time: string) {
+	hours2dec(time: string): number {
 		if (!time) return 0; // empty input
 		if (!time.includes(':')) return 0; // invalid input
 		const hhmm = time.split(':'); // HH:mm notation
 		return Number((Number(hhmm[0]) + Number(hhmm[1]) / 60).toFixed(2));
 	}
 
-	hours2sec(time: string) {
+	hours2sec(time: string): number {
 		if (!time) return 0; // empty input
 		if (!time.includes(':')) return 0; // invalid input
 		const hhmm = time.split(':'); // HH:mm notation
 		return Number((Number(hhmm[0]) * 3600 + Number(hhmm[1]) * 60));
 	}
 
-	hours2min(time: string) {
+	hours2min(time: string): number {
 		if (!time) return 0; // empty input
 		if (!time.includes(':')) return 0; // invalid input
 		const hhmm = time.split(':'); // HH:mm notation
 		return Number((Number(hhmm[0]) * 60 + Number(hhmm[1])));
 	}
 
-	dec2hours(i: number) {
+	dec2hours(i: number): string {
 		const hrs = Math.floor(i/3600);
 		const min = Math.round((Number(i/3600)-hrs) * 60);
 		return hrs + ':' + (min < 10 ? '0' + min : min);
 	}
 
-	min2hours(i: number) {
+	min2hours(i: number): string {
 		const hrs = Math.floor(i/60);
 		const min = i - (hrs * 60);
 		return hrs + ':' + (min < 10 ? '0' + min : min);
 	}
 	
-	isDST(d: Date) { // correction for daylight saving time
+	isDST(d: Date): boolean { // correction for daylight saving time
 		const jan = new Date(d.getFullYear(), 0, 1).getTimezoneOffset();
 		const jul = new Date(d.getFullYear(), 6, 1).getTimezoneOffset();
 		return Math.max(jan, jul) !== d.getTimezoneOffset();
 	}
 
-	decTime2date(time: number) {
+	decTime2date(time: number): Date {
 		const hrs = Math.floor(time/3600);
 		const min = Math.round((Number(time/3600)-hrs) * 60);
 		const date = new Date();
 		return new Date(date.getFullYear(), date.getMonth(), date.getDate(), hrs, min);
 	}
 
-	hours2date(time: string) {
+	hours2date(time: string): Date {
 		const hhmm = time.split(':'); // HH:mm notation
 		const date = new Date();
 		return new Date(date.getFullYear(), date.getMonth(), date.getDate(), Number(hhmm[0]), Number(hhmm[1]));
 	}
 
-	hours2hours(time: string, correction: boolean = false) { // enable HH:mm notation (avoid H:mm)
+	hours2hours(time: string, correction: boolean = false): string { // enable HH:mm notation (avoid H:mm)
 		if (!time) return ''; // empty input
 		if (!time.includes(':')) return ''; // invalid input
 		const hhmm = time.split(':'); // HH:mm notation
@@ -148,7 +149,7 @@ class Utils {
 		return fmt.sprintf('%02i:%02i', hrs, min); 
 	}
 
-	time2epoch(dateEpoch: number, time: string | undefined) {
+	time2epoch(dateEpoch: number, time: string | undefined): number {
 		if (!time) return 0; // empty input
 		if (!time.includes(':')) return 0; // empty or invalid input
 		const hhmm = time.split(':'); // HH:mm:ss notation, we ignore seconds
@@ -157,12 +158,12 @@ class Utils {
 		return dayStart.valueOf();
 	}
 
-	epoch2TimeStr(epoch: number) {
+	epoch2TimeStr(epoch: number): string {
 		const date = new Date(epoch*1000);
 		return format(date, "p");
 	}
 
-	epoch2TimeStrNextHour(epoch: number) {
+	epoch2TimeStrNextHour(epoch: number): string {
 		let date = new Date(epoch*1000);
 		const ext = date.getMinutes() ? 1 : 0;
 		date = new Date(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours() + ext);
@@ -173,11 +174,11 @@ class Utils {
 		return JSON.stringify(value);
 	}
 
-	deserialize(item: string | null) {
+	deserialize(item: string | null): any {
 		return item ? JSON.parse(item) : null;
 	}
 	
-	extractEntries(s: string) {
+	extractEntries(s: string): EntriesAndDefaultValue {
 		//console.debug('[Utils] raw entries', s);
 		if (!s || s.length == 0) return;
 		let _s: string = s;
@@ -187,7 +188,7 @@ class Utils {
 		return JSON.parse(_s);
 	}
 
-	extractDayModes(s: string) {
+	extractDayModes(s: string): Record<string, string> {
 		const obj: any = {};
 		const regex = /mode=(\d+);name=\\\"([a-z,A-Z,\s,/]+)/g;
 		for (const match of s.matchAll(regex)) {
@@ -196,18 +197,18 @@ class Utils {
 		return obj;
 	}
 
-	generateUuid() {
+	generateUuid(): string {
 		return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c: string) => {
 			const r = Math.random()*16|0, v = c === 'x' ? r : (r & 0x3|0x8);
 			return v.toString(16);
 		});
 	}
 
-	wait(delay: number) {
+	wait(delay: number): Promise<any> {
     return new Promise((resolve) => setTimeout(resolve, delay));
 	}
 
-	getScaleUnit(strFormat: string) {
+	getScaleUnit(strFormat: string): { scale: number; unit: string } {
 		const match = strFormat?.match(/.*f\s*(.*)|[.,\d]*(.*)/); // supported formats: .1fkW 0,000kW 0.000kW 0%
 		const unitFound = (match?.[1] ?? match?.[2] ?? '').replace('%%', '%'); // remove 2nd % in case format is %.0f%% 
 		if (!unitFound) return { scale: 1, unit: '' };
@@ -225,11 +226,11 @@ class Utils {
 		return [Math.round(n * scale / 1e9 * 100) / 100, 'G' + unit];
 	}
 
-	capitalize(s: string) {
+	capitalize(s: string): string {
 		return s ? s[0].toUpperCase() + s.slice(1) : s;
 	}
 
-	frontToBack(list: any[]) {
+	frontToBack<T>(list: T[]): T[] {
 		return [list[list.length-1], ...list.slice(0, list.length-1)];
 	}
 }

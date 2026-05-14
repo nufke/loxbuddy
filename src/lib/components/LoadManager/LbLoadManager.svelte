@@ -21,17 +21,6 @@
 	let lockedLoads = $derived(Number(controlStore.getState(control.states.lockedLoads)));
 	let statusLoads = $derived(Number(controlStore.getState(control.states.statusLoads)));
 
-	function getPowerLevel(n: number) {
-		return (n.toLocaleString(appStore.locale, { maximumFractionDigits: 1, minimumFractionDigits: 1 })) + ' kW ' + $_('Available').toLowerCase();
-	}
-
-	function setColor(powerRatio: number) {
-		if (powerRatio == 0.01) return 'dark:text-surface-300 text-surface-700';
-		if (powerRatio < 0.7) return 'dark:text-primary-500 text-primary-700';
-		if (powerRatio < 0.9) return 'dark:text-warning-500 text-warning-700';
-		return 'dark:text-error-500 text-error-700';
-	}
-
 	let dialog: DialogView = $state({
 		action: (state: boolean) => {dialog.state = state},
 		state: false,
@@ -64,6 +53,17 @@
 			}
 		}
 	});
+
+	function getPowerLevel(n: number): string {
+		return (n.toLocaleString(appStore.locale, { maximumFractionDigits: 1, minimumFractionDigits: 1 })) + ' kW ' + $_('Available').toLowerCase();
+	}
+
+	function setColor(powerRatio: number): string {
+		if (powerRatio == 0.01) return 'dark:text-surface-300 text-surface-700';
+		if (powerRatio < 0.7) return 'dark:text-primary-500 text-primary-700';
+		if (powerRatio < 0.9) return 'dark:text-warning-500 text-warning-700';
+		return 'dark:text-error-500 text-error-700';
+	}
 </script>
 
 <div>

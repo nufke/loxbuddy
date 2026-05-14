@@ -28,7 +28,7 @@
 	let type = controlView.control.details.type
 	let totalFormat = controlView.control.details.totalFormat;
 	let actualFormat = controlView.control.details.actualFormat;
-	let powerName = controlView.control.details.powerName;
+	let powerName = String(controlView.control.details.powerName);
 
 	let storageFormat = $derived(controlView.control.details.storageFormat);
 	let actual = $derived(Number(controlStore.getState(controlView.control.states.actual))); 
@@ -47,16 +47,16 @@
 		await getStatistics(new SvelteDate());
 	});
 
-	function getValue(key: string, idx: number = -1) {
+	function getValue(key: string, idx: number = -1): string {
 		const d = statisticsDiff['2']; // TODO we only use ID 2
-		if (!d) return idx == -1 ? '–' : 0;
+		if (!d) return idx == -1 ? '–' : '0';
 		const val = key === 'out' ? d.total : d.totalNeg;
 		const str = utils.formatString(val, totalFormat);
 		if (idx == -1) return `${str[0].toLocaleString(appStore.locale)} ${str[1]}`;
-		return val;
+		return String(val);
 	}
 
-	function getPercent(key: string) {
+	function getPercent(key: string): number {
 		const d = statisticsDiff['2']; // TODO we only use ID 2
 		if (!d) return 0;
 		const total = d.total + d.totalNeg;
@@ -64,7 +64,7 @@
 		return (input == 0) ? 0 : ((total == 0) ? 100 : Math.round((input/total)*100));
 	}
 	
-	function getActual() {
+	function getActual(): string {
 		let status = (utils.formatString(actual, actualFormat)[0]).toLocaleString(appStore.locale) + ' ' + utils.formatString(actual, actualFormat)[1];
 		if (type == 'storage') {
 			status += ' (' + ((actual > 0) ? $_('Discharging') : $_('Charging')) + ')';
@@ -72,20 +72,21 @@
 		return status;
 	}
 
-	function isToday() {
+	function isToday(): boolean {
 		return startOfDay(date).getTime() === startOfDay(new SvelteDate()).getTime()
 	}
 
-	function startDate(s: string) {
+	function startDate(s: string): boolean {
 		switch (s) {
 			case 'Day': return getUnixTime(startOfDay(date)) < activeSince;
 			case 'Week': return getUnixTime(startOfISOWeek(date)) < activeSince;
 			case 'Month': return getUnixTime(startOfMonth(date)) < activeSince;
 			case 'Year': return getUnixTime(startOfYear(date)) < activeSince;
-		} 
+		}
+		return false;
 	}
 
-	function futureDate(s: string) {
+	function futureDate(s: string): boolean {
 		const today = getUnixTime(new SvelteDate());
 		switch (s) {
 			case 'Day': return getUnixTime(endOfDay(date)) > today;
@@ -93,9 +94,10 @@
 			case 'Month': return getUnixTime(endOfMonth(date)) > today;
 			case 'Year': return getUnixTime(endOfYear(date)) > today;
 		} 
+		return false;
 	}
 
-	async function getStatisticInfo() {
+	async function getStatisticInfo(): Promise<void> {
 		await controlStore.fetchUrl(controlUuid, `jdev/sps/getStatisticInfo/${controlUuid}`)
 			.then((resource) => resource.json())
 			.then((json) => {
@@ -108,7 +110,7 @@
 				}
 			});
 	}
-	async function getStatistics(newDate: SvelteDate, selector: string = '') {
+	async function getStatistics(newDate: SvelteDate, selector: string = ''): Promise<void> {
 		if (!statisticV2) return;
 		let fromUnixUtc: number;
 		let untilUnixUtc: number;
@@ -158,7 +160,7 @@
 		});
 	}
 
-	function showDate(s: string) {
+	function showDate(s: string): string {
 		switch (s) {
 			case 'Day' : return format(date,'dd-MM-yyyy');
 			case 'Week' : return format(startOfISOWeek(date),'dd-MM') + ' - ' + format(endOfISOWeek(date),'dd-MM');
@@ -166,9 +168,10 @@
 			case 'Year' : return format(date,'yyyy');
 			default: /* none */
 		}
+		return ''; 
 	}
 
-	async function calcDate(n: number, s: string) {
+	async function calcDate(n: number, s: string): Promise<void> {
 		switch (s) {
 			case 'Day' : date = sub(date, {days: n}); break;
 			case 'Week' : date = sub(date, {weeks: n}); break;
@@ -179,11 +182,11 @@
 		await doSelect(date, s);
 	}
 
-	async function undo() {
+	async function undo(): Promise<void> {
 		await doSelect(new SvelteDate(), items[0]);
 	}
 
-	async function close() {
+	async function close(): Promise<void> {
 		controlView.dialog.action(false);
 		selectedTab = 1; // reset to first tab
 		selector = items[0]; // reset selector
@@ -191,22 +194,23 @@
 		await getStatistics(date, selector); // reset graph
 	}
 
-	function getLabel(s: string) {
+	function getLabel(s: string): string {
 		switch (type) {
 			case 'storage': return (s == 'out') ? $_('Charging') : $_('Discharging');
 			case 'unidirectional': return powerName;
 			case 'bidirectional': return (s == 'out') ? $_('Consume') : $_('Supply');
-			default: '';
+			default: /* none */
 		}
+		return '';
 	}
 
-	async function doSelect(newDate: SvelteDate, item: string ) {
+	async function doSelect(newDate: SvelteDate, item: string): Promise<void> {
 		selector = item;
 		date = newDate;
 		await getStatistics(date, selector);
 	}
 
-	async function selectTab(tab: number) {
+	async function selectTab(tab: number): Promise<void> {
 		await doSelect(new SvelteDate(), items[0]);
 		await tick();
 		selectedTab = tab;

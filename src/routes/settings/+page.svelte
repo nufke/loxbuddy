@@ -108,32 +108,51 @@
 			.indexOf(item.uuid) > -1)
 			.sort((a, b) => a.name.localeCompare(b.name, appStore.locale)));
 
-	const onDarkModeChange = (event: { checked: boolean }) => {
+	/**
+	 * Helper function to toggle Dark/light mode
+	 * @param event: switch event state
+	*/
+	function onDarkModeChange(event: { checked: boolean }): void {
 		mode = event.checked ? 'dark' : 'light';
 		document.documentElement.setAttribute('data-mode', mode);
 		appStore.mode = mode;
 		localStorage.setItem('mode', mode);
 	};
 
-	function onChangeTheme(s: string) {
-		theme = s || 'LoxBuddy';
+	/**
+	 * Helper function to select new theme
+	 * @param selectedTheme new theme as string
+	*/
+	function onChangeTheme(selectedTheme: string): void {
+		theme = selectedTheme || 'LoxBuddy';
 		document.documentElement.setAttribute('data-theme', theme.toLowerCase());
 		localStorage.setItem('theme', theme);
 		appStore.theme = theme;
 		openThemeDialog = false;
 	};
 
-	function openLanguageSelectView() {
+	/**
+	 * Open language selection dialog
+	 */
+	function openLanguageSelectView(): void {
 		languageSelectView.buttons = languageSelectViewButtons;
 		languageSelectView.openDialog = true;
 	}
 
-	function openUserDefinedSorting() {
+	/**
+	 * Open dialog to specify user defined sorting option
+	*/
+	function openUserDefinedSorting(): void {
 		sortingSelectView.buttons = sortingSelectViewButtons;
 		sortingSelectView.openDialog = true;
 	}
 
-	function getStartpageName(startpageUrl: string) {
+	/**
+	 * Get the name of the start page
+	 * @param startpageUrl Url of the start page
+	 * @returns name of the start page
+	 */
+	function getStartpageName(startpageUrl: string): string {
 		if (startPage == '/' || startPage.length < 3) return 'Home';
 		let p = startpageUrl.split('/');
 		let room: any = rooms.find((room) => room.uuid == p[2]);
@@ -143,20 +162,33 @@
 		return 'Home'; // fallback
 	}
 
-	function onChangeStartpage(cat: string, uuid: string) {
-		startPage = cat.length ? ('/' + cat + '/' + uuid) : uuid;
+	/**
+	 * Update the start page, also store this in local Storage
+	 * @param cat Category name
+	 * @param uuid Unique identifier of the page
+	*/
+	function onChangeStartpage(cat: string, uuid: string): void {
+		startPage = cat.length ? `/${cat}/${uuid}` : uuid;
 		localStorage.setItem('startPage', startPage);
 		appStore.startPage = startPage;
 		openStartpageDialog = false;
 	}
 
-	const onShowStatusChange = (event: { checked: boolean }) => {
+	/**
+	 * Show status of Miniserver and MQTT
+	 * @param event switch event state
+	 */
+	function onShowStatusChange(event: { checked: boolean }): void {
 		showStatus = event.checked ? '1' : '0';
 		localStorage.setItem('showStatus', showStatus);
 		appStore.showStatus = event.checked;
 	};
 
-	const onShowWeather = (event: { checked: boolean }) => {
+	/**
+	 * Show weather forecast in menu
+	 * @param event switch event state
+	 */
+	function onShowWeather(event: { checked: boolean }): void {
 		showWeather = event.checked ? '1' : '0';
 		localStorage.setItem('showWeather', showWeather);
 		appStore.showWeather = event.checked;
@@ -165,12 +197,20 @@
 		}
 	};
 
-	const onSortingEnabled = (event: { checked: boolean }) => {
+	/**
+	 * Enable sorting
+	 * @param event switch event state
+	 */
+	function onSortingEnabled(event: { checked: boolean }): void {
 		sortingEnabled = event.checked;
 		appStore.dnd.isEnabled = event.checked;
 	}
 
-	function setWeatherUrl(url: string) {
+	/**
+	 * Specify weather Url, e.g. path to Weather4Lox emu page
+	 * @param url URL to weather forecast
+	*/
+	function setWeatherUrl(url: string): void {
 		weatherUrl = url;
 		localStorage.setItem('weatherUrl', url);
 		weatherStore.weatherUrl = weatherUrl;
@@ -180,7 +220,7 @@
 
 <div class="container pt-3 flex flex-col max-w-[640px] w-screen mx-auto">
 	<div>
-		<p class="pl-5 h5">Settings</p>
+		<p class="pl-5 h5">{$_("Settings")}</p>
 	</div>
 	<button aria-current="true" type="button" class="w-full border-b dark:border-surface-900 border-surface-200 p-3 pr-5 pl-5 text-left text-lg">
 		<div class="flex w-full justify-between">

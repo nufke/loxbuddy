@@ -33,15 +33,15 @@ class LbControlStore {
 	iconList: Icon[] | undefined = $state();
 
 	constructor() {
-		this.notificationsMap = utils.deserialize(localStorage.getItem('notifications')) || {};
+		this.notificationsMap = utils.deserialize(localStorage.getItem('notifications')) as NotificationMap || {};
 	}
 
-	setControl(uuid: string, cmd: string) {
+	setControl(uuid: string, cmd: string): void {
 		const client = this.controlClient.get(uuid);
 		client?.control(uuid, cmd);
 	}
 
-	updateNotificationMap(notifications: NotificationMessage | NotificationList, statusOverride: number = 0 ) {
+	updateNotificationMap(notifications: NotificationMessage | NotificationList, statusOverride: number = 0 ): NotificationMap {
 		const map: NotificationMap = utils.deserialize(localStorage.getItem('notifications')) || {};
 		const msg = notifications as NotificationMessage;
 		if (msg && msg.uid) {
@@ -58,7 +58,7 @@ class LbControlStore {
 		return map;
 	}
 
-	initStructure(data: Structure, client: Demo | LoxWsClient | MqttClient ) {
+	initStructure(data: Structure, client: Demo | LoxWsClient | MqttClient ): void {
 		// Store reference to client using device serial nr 
 		this.controlClient.set(data.msInfo.serialNr, client);
 		// fill maps
@@ -104,7 +104,7 @@ class LbControlStore {
 		this.controlClient.set(messageCenter[0].uuidAction, client);
 	}
 
-	clearStructure() {
+	clearStructure(): void {
 		this.msInfo = DEFAULT_MSINFO;
 		this.globalStates = DEFAULT_GLOBALSTATES;
 		this.operatingModes.clear();
@@ -114,11 +114,11 @@ class LbControlStore {
 		this.messageCenter.clear();
 	}
 
-	getState(uuid: string) {
+	getState(uuid: string): any {
 		return this.controlState.get(uuid);
 	}
 
-	setState(uuid: string, data: any) {
+	setState(uuid: string, data: any): void {
 		const item = $state(data);
 		this.controlState.set(uuid, item);
 	}
@@ -131,7 +131,7 @@ class LbControlStore {
 		});
 	}
 
-	getIcon(control: Control, isSubControl: boolean | undefined, textState: any = null) {
+	getIcon(control: Control, isSubControl: boolean | undefined, textState: any = null): string {
 		if (textState && textState.icon && textState.icon.length) return textState.icon; /* used for TextState icon */
 		if (control.defaultIcon) return control.defaultIcon;
 		if (!isSubControl) { 
@@ -146,17 +146,17 @@ class LbControlStore {
 		return ''; // no icon found / used (TODO: keep empty?)
 	}
 
-	async getFile(uuid: string, url: string) {
+	async getFile(uuid: string, url: string): Promise<any> {
 		const client = this.controlClient.get(uuid);
 		return await client?.getFile(url);
 	}
 
-	fetchUrl(uuid: string, url: string) {
+	fetchUrl(uuid: string, url: string): Promise<Response> {
 		const client = this.controlClient.get(uuid) || demo;
 		return client.fetch(url);
 	}
 
-	updateSortingOrder(list: Control[] | Room[] | Category[], key: string) {
+	updateSortingOrder(list: Control[] | Room[] | Category[], key: string): void {
 		const ds = this.userSettings.userDefaultStructure;
 		list.forEach((item, index) => {
 			const uuid = (item as Control).uuidAction ?? (item as Room | Category).uuid;
@@ -170,8 +170,8 @@ class LbControlStore {
 		this.updateUserSettings(this.userSettings, lookupUuid)
 	}
 
-	updateUserSettings(settings: UserSettings, uuid: string) {
-		const sorting = Number(utils.deserialize(localStorage.getItem('sorting')));
+	updateUserSettings(settings: UserSettings, uuid: string): void {
+		const sorting = Number(localStorage.getItem('sorting') || '0');
 		const client = this.controlClient.get(uuid) || demo;
 		switch (sorting) {
 			case 1: client.setUserSettings(JSON.stringify(this.userSettings));  break; /* user-defined sorting */
@@ -180,9 +180,9 @@ class LbControlStore {
 		}
 	}
 
-	setUserSettings(settings: UserSettings) {
-		const sorting = Number(utils.deserialize(localStorage.getItem('sorting')));
-		const userSettings = utils.deserialize(localStorage.getItem('userSettings')) || DEFAULT_USERSETTINGS;
+	setUserSettings(settings: UserSettings): void {
+		const sorting = Number(localStorage.getItem('sorting') || '0');
+		const userSettings = utils.deserialize(localStorage.getItem('userSettings')) as UserSettings || DEFAULT_USERSETTINGS;
 		switch (sorting) {
 			case 1: this.userSettings = settings; break; /* user-defined sorting */
 			case 2: this.userSettings = userSettings || settings; break; /* app-specific sorting */
@@ -193,7 +193,7 @@ class LbControlStore {
 	/**
 	 * Disconnect client based on the registered Miniserver serial number
 	 */
-	disconnectClient() {
+	disconnectClient(): void {
 		this.clearStructure();
 		const client = this.controlClient.get(this.msInfo.serialNr); // TODO disconnect active client
 		client?.disconnect();

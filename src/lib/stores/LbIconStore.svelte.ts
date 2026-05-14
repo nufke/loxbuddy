@@ -1,11 +1,21 @@
 import { SvelteMap } from 'svelte/reactivity';
-import { setCustomIconLoader, loadIcon, addCollection } from '@iconify/svelte';
-import type { IconifyJSON } from '@iconify/types';
+import { setCustomIconLoader, loadIcon } from '@iconify/svelte';
 import loxiconmap from '$lib/helpers/lox2iconify.json';
 import { registerCustomIcons } from '$lib/helpers/registerIcons';
 
 type IconMap = {
 	[key: string]: string;
+}
+
+type IconProps = {
+	body: string;
+	left: number;
+	top: number;
+	width: number;
+	height: number;
+	rotate: number;
+	hFlip: boolean;
+	vFlip: boolean;
 }
 
 /**
@@ -16,26 +26,26 @@ class LbIconStore {
 
 	constructor() {}
 
-	registerIcons() {
+	registerIcons(): void {
 		registerCustomIcons(); // register LoxBuddy icons
 		this.loadIconMap(loxiconmap); // load icon mapping table
 		this.registerCallbacks(loxiconmap); // register callbacks to update icon properties
 	}
 
 	// if mapped icon is not found, we return the input icon name
-	getIcon(name: string) {
+	getIcon(name: string): string {
 		return this.iconMap.get(name) || name;
 	}
 
 	// we postfix the default iconset with '-light' such that we can associate a callback to it
-	loadIconMap(map: IconMap) {
+	loadIconMap(map: IconMap): void {
 		Object.entries(map).forEach( icon => { 
 			const name: string =  $state(icon[1].includes(':') ? `light_${icon[1]}` : icon[1]); 
 			this.iconMap.set(icon[0], name); 
 		});
 	}
 
-	async updateIconProps(name: string, iconSet: string, strokeWidth: number) {
+	async updateIconProps(name: string, iconSet: string, strokeWidth: number): Promise<IconProps | null> {
 		const data = await loadIcon(`${iconSet}:${name}`);
 		const scale = data.height/32/0.75 * strokeWidth;
 		return data ? {
@@ -45,7 +55,7 @@ class LbIconStore {
 	}
 
   // register callbacks to update properties of fonts.
-	registerCallbacks(map: IconMap) {
+	registerCallbacks(map: IconMap): void {
 		const iconSet: string[] = [];
 		Object.values(map).forEach( (iconName) => {
 			const item: string[] = iconName.split(':');

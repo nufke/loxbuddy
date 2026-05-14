@@ -2,7 +2,7 @@
 	import { Dialog, Portal } from '@skeletonlabs/skeleton-svelte';
 	import { _ } from 'svelte-i18n';
 	import { lbControl } from '$lib/helpers/LbControl';
-	import type { Control, ControlOptions } from '$lib/types/models';
+	import type { Control, ControlOptions, UserDefaultStructure } from '$lib/types/models';
 	import { DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import { appStore } from '$lib/stores/LbAppStore.svelte';
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
@@ -17,36 +17,55 @@
 
 	let userSettings = $derived(controlStore.userSettings);
 	let userDefinedOrder = $derived(appStore.userDefinedOrder);
+	let userDefaultStructure = $derived(userSettings.userDefaultStructure) as UserDefaultStructure;
 	let centralRooms = $derived(controlStore.roomList.filter((room) => room.name.includes($_('General')) || room.name.includes($_('Central'))));
 	let centralRoomsUuids = $derived(centralRooms.map((room) => room.uuid));
 	let controlOptions: ControlOptions = $derived(DEFAULT_CONTROLOPTIONS);
 
 	let centralControls = $derived(
 		controlStore.controlList.filter((control) => centralRoomsUuids.includes(control.room))
-		.filter((item) => isFavorite(userSettings.userDefaultStructure, item, key))
+		.filter((item) => isFavorite(userDefaultStructure, item, key))
 		.sort((a, b) => a.name.localeCompare(b.name, appStore.locale))
-		.sort((a, b) => getPosition(userSettings.userDefaultStructure, b, key) - getPosition(userSettings.userDefaultStructure, a, key))
+		.sort((a, b) => getPosition(userDefaultStructure, b, key) - getPosition(userDefaultStructure, a, key))
 	);
 
 	let openPopup = $derived(centralControls.length == 0 && appStore.loginDialog.state == false);
 
-	function isFavorite(obj: any, control: Control, key: string) {
-		if (obj && obj[control.uuidAction] && userDefinedOrder) { 
-			return obj[control.uuidAction][key] ? obj[control.uuidAction][key].isFav : false;
+	/**
+	 * Check if given control is set as favorite control
+	 * @param obj Object containing the usersettings
+	 * @param control Actual control
+	 * @param key Filter based on given key
+	 */
+	function isFavorite(obj: UserDefaultStructure, control: Control, key: string): boolean {
+		if (obj && obj[control.uuidAction] && obj[control.uuidAction][key] && userDefinedOrder) { 
+			return obj[control.uuidAction][key].isFav ?? false;
 		} else {
 			return control.defaultRating > 0;
 		}
 	}
 
-	function getPosition(obj: any, control: Control, key: string) {
-		if (obj && obj[control.uuidAction] && userDefinedOrder) { 
-			return obj[control.uuidAction][key] ? obj[control.uuidAction][key].position : 0;
+	/**
+	 * Get the position of the given control. This defines the order in the sorting
+	 * @param obj Object containing the usersettings
+	 * @param control Actual control
+	 * @param key Filter based on given key
+	 */
+	function getPosition(obj: UserDefaultStructure, control: Control, key: string): number {
+		if (obj && obj[control.uuidAction] && obj[control.uuidAction][key] && userDefinedOrder) { 
+			return obj[control.uuidAction][key].position ?? 0;
 		} else {
 			return control.defaultRating;
 		}
 	}
 
-	function swapItems(list: Control[], item: Control, group: string) {
+	/**
+	 * Helper function to swap controls when control sorting is enabled
+	 * @param list List of the controls for the given (central) room
+	 * @param item The selected control being moved
+	 * @param group Filter based on given key
+	 */
+	function swapItems(list: Control[], item: Control, group: string): Control[] {
 		let newList = list;
 		if (draggingItem === item || animatingItems.has(item) || group !== dragGroup) {
 			return list;
@@ -60,7 +79,10 @@
 		return [...newList]; // update list (triggers effect)
 	}
 
-	function cancelConnect() {
+	/**
+	 * Helper function to close the connection dialog and return to login page
+	 */
+	function cancelConnect(): void {
 		openPopup = false;
 		appStore.loginDialog.state = true; // goto login 
 	}

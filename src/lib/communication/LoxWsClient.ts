@@ -1,4 +1,5 @@
 import LoxClient from 'svelte-lox-client';
+import type FileMessage from 'svelte-lox-client/dist/WebSocketMessages/FileMessage';
 import { controlStore } from '$lib/stores/LbControlStore.svelte';
 import { appStore } from '$lib/stores/LbAppStore.svelte';
 import { utils } from '$lib/helpers/Utils';
@@ -42,7 +43,7 @@ export class LoxWsClient {
 	 * Establish connection to Miniserver
 	 * @param token (optional) active token for the connection 
 	 */
-	async connect(token?: string) {
+	async connect(token?: string): Promise<void> {
 		try {
 			if (token) {
 				console.info('[LoxWsClient] Connecting to Miniserver using existing token...');
@@ -66,7 +67,7 @@ export class LoxWsClient {
 	/**
 	 * Retrieve Miniserver settings, such as structure, user settings, system status, etc.
 	 */
-	async getSettings() {
+	async getSettings(): Promise<void> {
 		if (!appStore.loxStatus) return; // make sure we are connected
 
 		// get structure file
@@ -108,7 +109,7 @@ export class LoxWsClient {
 	/**
 	 * Listen to Miniserver events, such as connection status, text and value events, etc.
 	 */
-	registerEvents() {
+	registerEvents(): void {
 		this.client.on('connected', () => {
 			console.info(`[LoxWsClient] Connection to Miniserver established`);
 		});
@@ -163,7 +164,7 @@ export class LoxWsClient {
 	 * @param uuid universally unique ID of the control
 	 * @param value value of the control
 	 */
-	async control(uuid: string, value: string) {
+	async control(uuid: string, value: string): Promise<void> {
 		console.info('[LoxWsClient] Send control:', uuid, value);
 		await this.client.control(uuid, value);
 	}
@@ -173,14 +174,14 @@ export class LoxWsClient {
 	 * @param filename Name of the file to retrieve
 	 * @returns returns the file contents as a FileMessage
 	 */
-	async getFile(filename: string) {
+	async getFile(filename: string): Promise<FileMessage> {
 		return await this.client.sendFileCommand(filename);
 	}
 
 	/**
 	 * Disconnect Miniserver and preserve token
 	 */
-	async disconnect() {
+	async disconnect(): Promise<void> {
 		await this.client.disconnect(true);
 		appStore.loxStatus = 0;
 	}
@@ -188,14 +189,14 @@ export class LoxWsClient {
 	/**
 	 * Store user settings (e.g. sorting/order of controls)
 	 */
-	setUserSettings(settings: string) {
+	setUserSettings(settings: string): void {
 		console.info('[LoxWsClient] setUserSettings not implemented');
 	}
 
 	/**
 	 * Retrieve user settings (e.g. sorting/order of controls)
 	 */
-	fetchUserSettings() {
+	fetchUserSettings(): void {
 		fetch(`${this.hostName}/jdev/sps/getusersettings?autht=${appStore.credentials.token}&user=${this.userName}`)
 		.then((response) => {
 			if (response.ok) {
@@ -213,7 +214,7 @@ export class LoxWsClient {
 	/**
 	 * Retrieve Miniserver system status
 	 */
-	getSystemStatus() {
+	getSystemStatus(): void {
 		fetch(`${this.hostName}/jdev/sps/io/${controlStore.messageCenterList[0].uuidAction}/getEntries/2?autht=${appStore.credentials.token}&user=${this.userName}`)
 		.then((response) => {
 			if (response.ok) {
@@ -229,7 +230,7 @@ export class LoxWsClient {
 	/**
 	 * Retrieve Miniserver icon list
 	 */
-	getIconList() {
+	getIconList(): void {
 		fetch(`${this.hostName}/jdev/sps/geticonlist?autht=${appStore.credentials.token}&user=${this.userName}`)
 		.then((response) => response.json())
 		.then((data) => {
@@ -252,7 +253,7 @@ export class LoxWsClient {
  * Establish connection with Miniserver if credentials are available
  * If Demo was runnig before, reload Demo instead
  */
-export const startLoxWsClient = async () => {
+export const startLoxWsClient = async (): Promise<void> => {
 	const cred = utils.deserialize(localStorage.getItem('credentials'));
 	const appId = localStorage.getItem('appId') || undefined;
 
@@ -280,7 +281,7 @@ export const startLoxWsClient = async () => {
  * Check credentials using HTTP webservice with username and password (no login)
  * NOTE: no catch implemented in this fetch, this should be handled in the caller
  */
-export const checkCredentials = (url: string, userName: string, password: string) => {
+export const checkCredentials = (url: string, userName: string, password: string): void => {
 	fetch(`${url}/jdev/sps/getusersettings`, {
 		method: 'GET',
 		headers: {
@@ -300,7 +301,7 @@ export const checkCredentials = (url: string, userName: string, password: string
  * Returns true if the token is valid. Returns false if token is invalid or server is not responsive
  * NOTE: exception handling is implemented here in case server is not responsive
  */
-export const checkTokenValidity = async (url: string, userName: string, token: string) => {
+export const checkTokenValidity = async (url: string, userName: string, token: string): Promise<boolean> => {
 	return fetch(`${url}/jdev/sys/checktoken/${token}/${userName}?autht=${token}&user=${userName}`, {cache: "no-store"})
 	.then((response) => {
   	if (response.ok) {

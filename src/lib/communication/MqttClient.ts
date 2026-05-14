@@ -31,7 +31,13 @@ export class MqttClient {
 	 * @param userName Name of the user
 	 * @param passwd Password of the user
 	 */
-	async connect(hostName: string, port: string, userName: string, passwd: string, topicPrefix: string) {
+	async connect(
+		hostName: string,
+		port: string,
+		userName: string,
+		passwd: string,
+		topicPrefix: string
+	): Promise<void> {
 		this.hostName = hostName;
 		this.port = Number(port) || 1883;
 		this.userName = userName;
@@ -60,7 +66,7 @@ export class MqttClient {
 	/**
 	 * Listen to MQTT server events, such as connection status and messages
 	 */
-	registerEvents() {
+	registerEvents(): void {
 		this.client.on('connect', () => this.onConnect());
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		this.client.on('message', (topic: string, message: any) => this.onMessage(topic, message));
@@ -82,7 +88,7 @@ export class MqttClient {
 	/**
 	 * Callback when client is connected to the MQTT server
 	 */
-	onConnect() {
+	onConnect(): void {
 		console.info('[MqttClient] Connected\n');
 		this.isConnected = true;
 		appStore.mqttStatus = 1; // connected=green
@@ -108,7 +114,7 @@ export class MqttClient {
 	 * @param message Received message for this MQTT topic
 	 */
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	private onMessage(topic: string, message: any) {
+	private onMessage(topic: string, message: any): void {
 		//console.info('[MqttClient] Message received for topic ', topic);
 		const msg = message.toString();
 		this.monitorStructure(topic, msg);
@@ -123,7 +129,7 @@ export class MqttClient {
 	 * @param msg Message
 	 * @param retain flag to retain message in MQTT server (default: false)
 	 */
-	publishTopic(uuid: string, msg: string, retain: boolean = false) {
+	publishTopic(uuid: string, msg: string, retain: boolean = false): void {
 		const qos = 1; // TODO add to configuration?
 		const serialNr = controlStore.msInfo.serialNr;
 		const topic = this.topicPrefix + '/' + serialNr + '/' + uuid + '/cmd';
@@ -138,7 +144,7 @@ export class MqttClient {
 	 * @param topic Incoming topic
 	 * @param msg Incoming mesage
 	 */
-	monitorStructure(topic: string, msg: string) {
+	monitorStructure(topic: string, msg: string): void {
 		const regex = new RegExp(this.topicPrefix + '/(.*)/structure');
 		const found = topic.match(regex);
 		if (found && found[1]) {
@@ -157,7 +163,7 @@ export class MqttClient {
 	 * @param topic Incoming topic
 	 * @param msg Incoming mesage
 	 */
-	monitorInitialStates(topic: string, msg: string) {
+	monitorInitialStates(topic: string, msg: string): void {
 		const regex = new RegExp(this.topicPrefix + '/(.*)/states');
 		const found = topic.match(regex);
 		if (found && found[1]) {
@@ -172,7 +178,7 @@ export class MqttClient {
 	 * @param topic Incoming topic
 	 * @param msg Incoming mesage
 	 */
-	monitorStates(topic: string, msg: string) {
+	monitorStates(topic: string, msg: string): void {
 		const regex = new RegExp(this.topicPrefix + '/(.+)/(.*)');
 		const found = topic.match(regex);
 		if (found && found[1] && found[2]) {
@@ -187,7 +193,7 @@ export class MqttClient {
 	 * @param topic Incoming topic
 	 * @param msg Incoming mesage
 	 */
-	monitorWeatherStates(topic: string, msg: string) {
+	monitorWeatherStates(topic: string, msg: string): void {
 		const regex = new RegExp(this.weatherPrefix + '/(.+)');
 		const found = topic.match(regex);
 		if (found && found[1] && /current|daily|hourly/.test(found[1]) ) {
@@ -200,7 +206,7 @@ export class MqttClient {
 	 * @param uuid universally unique ID of the control
 	 * @param value value of the control
 	 */
-	async control(uuid: string, value: string) {
+	async control(uuid: string, value: string): Promise<void> {
 		console.info('[MqttClient] Send / publish control:', uuid, value);
 		this.client.publish(uuid, value);
 	}
@@ -208,7 +214,7 @@ export class MqttClient {
 	/**
 	 * Disconnect MQTT client
 	 */
-	async disconnect() {
+	async disconnect(): Promise<void> {
 		// TODO
 	}
 
@@ -216,14 +222,14 @@ export class MqttClient {
 	 * Dummy placeholder 
 	 * @param filename filename
 	 */
-	async getFile(filename: string) {
+	async getFile(filename: string): Promise<void> {
 		// TODO
 	}
 
 	/**
 	 * Dummy placeholder to store user settings (e.g. sorting/order of controls)
 	 */
-	setUserSettings(settings: string) {
+	setUserSettings(settings: string): void {
 		console.info('[MqttClient] setUserSettings not implemented');
 	}
 

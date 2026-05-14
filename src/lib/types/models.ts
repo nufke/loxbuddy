@@ -650,16 +650,18 @@ export type SecuredDetails = {
 	}
 }
 
-export type UserSettings = {
-	ts?: number;
-	userDefaultStructure: {
+export type UserDefaultStructure = {
+	[key: string]: {
 		[key: string]: {
-			[key: string]: {
-				position: number;
-				isFav?: boolean;
-			}
+			position: number;
+			isFav?: boolean;
 		}
 	}
+}
+
+export type UserSettings = {
+	ts?: number;
+	userDefaultStructure: UserDefaultStructure
 }
 
 export const DEFAULT_USERSETTINGS: UserSettings = {

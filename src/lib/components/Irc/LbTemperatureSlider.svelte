@@ -5,31 +5,29 @@
 
 	let isDragging = false;
 	let trackSelected = false;
-
 	let trackMin = 20;
 	let trackMax = 380;
 	let trackRatio = (max - min) / (trackMax - trackMin);
 
 	let targetTempLimit = $derived(Math.max(min, Math.min(target, max)));
 	let actualTempLimit = $derived(Math.max(min, Math.min(actual, max)));
-	
 	let targetPos = $derived(((targetTempLimit-min)/trackRatio + trackMin) || 0);
 	let actualPos = $derived(((actualTempLimit-min)/trackRatio + trackMin) || 0);
 
-	function mouseMove(e: any)	{
+	function mouseMove(e: any): void {
 		if (!isDragging && !trackSelected) return;
 		let x = Math.max(trackMin, Math.min(e.offsetX, trackMax));
 		targetTempLimit = (x-trackMin)*trackRatio + min;
 		onValueChange({ value: Math.round(targetTempLimit*10)/10 });
 	}
 
-	function targetMouseDown(e: any) {
+	function targetMouseDown(e: any): void  {
 		if (manual) {
 			isDragging = true; /* only allow dragging when manual is enabled */
 		}
 	}
 
-	function trackMouseDown(e: any) {
+	function trackMouseDown(e: any): void  {
 		if (manual) {
 			trackSelected = true;
 			isDragging = true;
@@ -37,7 +35,7 @@
 		}
 	}
 
-	function mouseUp(e: any) {
+	function mouseUp(e: any): void  {
 		isDragging = false;
 		trackSelected = false;
 	}

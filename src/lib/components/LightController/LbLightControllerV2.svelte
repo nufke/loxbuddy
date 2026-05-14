@@ -11,35 +11,6 @@
 	let moodList = $derived(controlStore.getState(control.states.moodList)) as MoodList[];
 	let activeMoodsNum = $derived(Number(controlStore.getState(control.states.activeMoodsNum)));
 
-	function selectMood(e:any) {
-		let moodIndex: number;
-		if (e && e.checked == undefined) { // no mood given, select next mood
-			moodIndex = moodList.findIndex((item:any) => { return item.id == activeMoodsNum });
-			moodIndex++;
-			if (moodIndex > moodList.length-1) {
-				moodIndex = 0;
-			}
-		} else {
-			moodIndex = e.checked;
-		}
-		controlStore.setControl(control.uuidAction, 'changeTo/' + String(moodList[moodIndex].id));
-	}
-
-	function getTextName() {
-		const origNameFound = $_('LightControllerV2').includes(control.name);
-		const room = controlStore.rooms.get(control.room);
-		return (origNameFound && room) ? room.name : control.name;
-	}
-
-	function getStatus() {
-		if (activeMoodsNum < 0) return $_('Manual');
-		if (moodList) {
-			let moodObj = moodList.find((item: MoodList) => item.id == activeMoodsNum);
-			if (moodObj) return moodObj.name;
-		}
-		return '';
-	}
-
 	let buttons: SingleButtonView[] = $state([
 		{
 			iconName: 'plus',
@@ -69,6 +40,35 @@
 		buttons: buttons,
 		dialog: dialog
 	});
+
+	function selectMood(e:any): void {
+		let moodIndex: number;
+		if (e && e.checked == undefined) { // no mood given, select next mood
+			moodIndex = moodList.findIndex((item:any) => { return item.id == activeMoodsNum });
+			moodIndex++;
+			if (moodIndex > moodList.length-1) {
+				moodIndex = 0;
+			}
+		} else {
+			moodIndex = e.checked;
+		}
+		controlStore.setControl(control.uuidAction, 'changeTo/' + String(moodList[moodIndex].id));
+	}
+
+	function getTextName(): string {
+		const origNameFound = $_('LightControllerV2').includes(control.name);
+		const room = controlStore.rooms.get(control.room);
+		return (origNameFound && room) ? room.name : control.name;
+	}
+
+	function getStatus(): string {
+		if (activeMoodsNum < 0) return $_('Manual');
+		if (moodList) {
+			let moodObj = moodList.find((item: MoodList) => item.id == activeMoodsNum);
+			if (moodObj) return moodObj.name;
+		}
+		return '';
+	}
 </script>
 
 <div>

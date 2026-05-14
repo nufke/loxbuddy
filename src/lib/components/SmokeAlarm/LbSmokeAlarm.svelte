@@ -23,12 +23,35 @@
 	let minutes = $state(0);
 	let duration = $state('');
 
-	$effect( () => {
-		updateStatus(level);
-		if (timeServiceMode==1) duration = '';
+	let dialog: DialogView = $state({
+		action: (state: boolean) => {dialog.state = state},
+		state: false,
 	});
 
-	function updateStatus(level: number) {
+	let serviceButton: SingleButtonView = $derived(
+		{
+			name: (timeServiceMode > 0) ? 'Stop alarm suppression' : 'Start alarm suppression',
+			type: 'button',
+			color: '',
+			click: () => {
+				(timeServiceMode > 0) ? stopService() : startService()
+			}
+		}
+	);
+
+	let controlView: ControlView = $derived({
+		...DEFAULT_CONTROLVIEW,
+		control: control,
+		isFavorite: controlOptions.isFavorite,
+		iconName: controlStore.getIcon(control, controlOptions.isSubControl),
+		iconColor: statusColor,
+		textName: control.name,
+		statusName: statusName,
+		statusColor: statusColor,
+		dialog: dialog
+	});
+
+	function updateStatus(level: number): void {
 		switch (level) {
 			case 0: 
 				statusName = 'Everything OK'; 
@@ -55,21 +78,21 @@
 		}
 	}
 
-	function stopService() {
+	function stopService(): void {
 		if (timeServiceMode > 0) { // only stop if servicemode is running
 			controlStore.setControl(control.uuidAction, 'servicemode/0');
 		}
 		duration = '';
 	}
 
-	function startService() {
+	function startService(): void {
 		if (serviceTime > 0) { // TODO minimal time for service
 			let cmd = 'servicemode/' + String(serviceTime);
 			controlStore.setControl(control.uuidAction, cmd);
 		}
 	}
 
-	function setTimer(h: number, m: number) {
+	function setTimer(h: number, m: number): void {
 		hours += h;
 		hours = (hours>23) ? (hours = 0) : (hours<0) ? (hours = 23) : hours;
 		minutes += m;
@@ -77,39 +100,16 @@
 		serviceTime= hours * 3600 + minutes * 60;
 	}
 
-	let serviceButton: SingleButtonView = $derived(
-		{
-			name: (timeServiceMode > 0) ? 'Stop alarm suppression' : 'Start alarm suppression',
-			type: 'button',
-			color: '',
-			click: () => {
-				(timeServiceMode > 0) ? stopService() : startService()
-			}
-		}
-	);
-
-	let dialog: DialogView = $state({
-		action: (state: boolean) => {dialog.state = state},
-		state: false,
-	});
-
-	let controlView: ControlView = $derived({
-		...DEFAULT_CONTROLVIEW,
-		control: control,
-		isFavorite: controlOptions.isFavorite,
-		iconName: controlStore.getIcon(control, controlOptions.isSubControl),
-		iconColor: statusColor,
-		textName: control.name,
-		statusName: statusName,
-		statusColor: statusColor,
-		dialog: dialog
-	});
-
-	async function close() {
+	async function close(): Promise<void> {
 		controlView.dialog.action(false);
 		await tick();
 		selectedTab = 1;
 	}
+
+	$effect( () => {
+		updateStatus(level);
+		if (timeServiceMode==1) duration = '';
+	});
 </script>
 
 <div>

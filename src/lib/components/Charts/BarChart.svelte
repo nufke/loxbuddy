@@ -56,7 +56,15 @@
 		.range([height - margin.bottom, margin.top])
 	);
 
-	function getGraphLayout(s: string, gWidth: number, length: number) {
+	type GraphLayout = {
+		xGrid: number[];
+		xTicks: number[];
+		columnWidth: number;
+		barWidth: number;
+		xOffset: number;
+	}
+
+	function getGraphLayout(s: string, gWidth: number, length: number): GraphLayout {
 		let xGrid: number[];
 		let xTicks: number[];
 		let days = data[0] ? getDaysInMonth(data[0].ts*1000) : 31;
@@ -76,21 +84,21 @@
 		return { xGrid, xTicks, columnWidth, barWidth, xOffset };
 	}
 
-	function calcValues(inp: any) {
+	function calcValues(inp: any): number[] {
 		const values = inp.flatMap((item: any) => item.values);
 		const max = Math.max(...values);
 		return Array.from({length: 6}, (_, i) => (max <= 2) ? Number((i*(getRounding(max)/5)).toFixed(1)) : (i*(getRounding(max)/5)));
 	}
 
-	function getRounding(n: number) {
+	function getRounding(n: number): number {
     const steps = [0.5, 1, 2, 5, 10, 20, 50, 100, 200, 500, 1000];
     return steps.find(s => s > n) ?? 1;
 	}
 
-	function getDate(n: number) {
+	function getDate(n: number): string {
 		return (selector == 'Week') && data.length ? format(data[0].ts*1000 + (n - 1) * 86400000, 'd-M') :
 			(selector == 'Year') ? months[n-1] :
-			(selector == 'All') && data.length && n > 0 ? format(data[n-1].ts*1000, 'yyyy') : n; // 
+			(selector == 'All') && data.length && n > 0 ? format(data[n-1].ts*1000, 'yyyy') : String(n); // 
 	}
 
 	function getXIndex(point: any, i: number): number {
@@ -104,12 +112,12 @@
 		}
 	}
 
-	function getDayName(n: number) {
+	function getDayName(n: number): string {
 		let days = $_('Days').split('|');
 		return [...days.slice(1), days[0]][n-1]; // TODO define start of week
 	}
 
-	async function handlePointerMove(e: PointerEvent) {
+	async function handlePointerMove(e: PointerEvent): Promise<void> {
 		const rect = (e.currentTarget as SVGSVGElement).getBoundingClientRect();
 		const mouseX = e.clientX - rect.left;
 		let nearestIdx = -1;
@@ -132,20 +140,20 @@
 		}
 	}
 
-	function handlePointerDown(e: PointerEvent) {
+	function handlePointerDown(e: PointerEvent): void {
 		(e.currentTarget as SVGSVGElement).setPointerCapture(e.pointerId);
 		handlePointerMove(e);
 	}
 
-	function handlePointerUp() {
+	function handlePointerUp(): void {
 		hoveredIdx = null;
 	}
 
-	function handlePointerLeave() {
+	function handlePointerLeave(): void {
 		hoveredIdx = null;
 	}
 
-	function clampLabels(x: number, w0: number, w1: number) {
+	function clampLabels(x: number, w0: number, w1: number): void {
 		if (w1 === 0) {
 			label0X = Math.min(Math.max(x, margin.left + w0 / 2), width - margin.right - w0 / 2);
 			return;

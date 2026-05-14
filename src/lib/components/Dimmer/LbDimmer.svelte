@@ -21,18 +21,6 @@
 		orientation: 'vertical'
 	});
 
-	function updatePosition(e: any, isUp: number) {
-		let newPosition;
-		if (e && e.sliderPosition == undefined && sliderBar.position >= min && sliderBar.position <= max ) { // no sliderPosition, is button
-			newPosition = sliderBar.position + sliderBar.step * isUp;
-			if (newPosition > sliderBar.max) newPosition = sliderBar.max;
-			if (newPosition < sliderBar.min) newPosition = sliderBar.min;
-		} else { // is slider
-			newPosition = e.sliderPosition;
-		}
-		controlStore.setControl(control.uuidAction, String(newPosition));
-	}
-
 	let plusMinusButtons: SingleButtonView[] = $state([
 		{
 			iconName: 'minus',
@@ -84,6 +72,18 @@
 			]
 		}
 	});
+
+	function updatePosition(e: any, isUp: number): void {
+		let newPosition;
+		if (e && e.sliderPosition == undefined && sliderBar.position >= min && sliderBar.position <= max ) { // no sliderPosition, is button
+			newPosition = sliderBar.position + sliderBar.step * isUp;
+			if (newPosition > sliderBar.max) newPosition = sliderBar.max;
+			if (newPosition < sliderBar.min) newPosition = sliderBar.min;
+		} else { // is slider
+			newPosition = e.sliderPosition;
+		}
+		controlStore.setControl(control.uuidAction, String(newPosition));
+	}
 </script>
 
 <div>

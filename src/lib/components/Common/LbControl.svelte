@@ -11,10 +11,9 @@
 
 	let { controlView = $bindable(), controlOptions = DEFAULT_CONTROLOPTIONS } : { controlView: ControlView, controlOptions: ControlOptions } = $props();
 	let isCategory = page.url.pathname.includes('/category');
-
 	let locked = controlView.dialog?.details?.locked;
 
-	function getT() {
+	function getT(): {num: string, frac: string} {
 		let temp = controlView.iconText?.split('.') || '';
 		return {
 			num: temp[0] && temp[1]? (temp[0] + '.') : temp[0],
@@ -22,29 +21,27 @@
 		}
 	}
 
-	function getStatusColorHex(hexColor: string | undefined) {
+	function getStatusColorHex(hexColor: string | undefined): string {
 		return (hexColor && hexColor[0] == '#') ? 'color: ' + hexColor : '';
 	}
 
-	function getIconColorHex(hexColor: string | undefined) {
+	function getIconColorHex(hexColor: string | undefined): string {
 		return (hexColor && hexColor[0] == '#') ? 'color: ' + hexColor : '';
 	}
 
-	function openDialog() {
+	function openDialog(): void {
 		if (!controlView.iconName.length && !controlView.iconText?.length) return; // no dialog if we are at subcontrol level (we have no icon at this level)
 		controlView.dialog.action(true);
 	}
-	function label(control: Control) {
+
+	function getLabel(control: Control): string {
 		let label : Category | Room | undefined;
 		if (isCategory) {
 			label = controlStore.roomList.find((room) => room.uuid === control.room);
 		} else {
 			label = controlStore.categoryList.find((cat) => cat.uuid === control.cat);
 		}
-		if (label && label.name) {
-		 return label.name;
-		}
-		return '';
+		return label?.name ?? '';
 	}
 </script>
 
@@ -111,7 +108,7 @@
 			</div>
 		</div>
 		<div class="pl-1 pt-2 truncate">
-			<p class="truncate text-xs dark:text-surface-300 text-surface-700">{label(controlView.control)}</p>
+			<p class="truncate text-xs dark:text-surface-300 text-surface-700">{getLabel(controlView.control)}</p>
 			<p class="truncate text-lg">{controlView.textName}</p>
 			<p class="truncate text-md {controlView.statusColor}" style={getStatusColorHex(controlView.statusColor)}>{controlView.statusName}</p>
 		</div>

@@ -14,7 +14,12 @@
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
-	let windowList: WindowListItem[] = $derived(control.details.windows);
+	let margin = 200;
+
+	type Summary = {
+		name: string;
+		isColor: boolean;
+	}
 
 	let viewport: any = $state(); // TODO make HTMLDivElement
 	let hasScroll = $state(true);
@@ -23,7 +28,7 @@
 
 	let windowStates = $derived(String(controlStore.getState(control.states.windowStates)));
 	let windowStatesList = $derived(getSortedWindowList(windowStates.split(',')));
-
+	let windowList: WindowListItem[] = $derived(control.details.windows);
 	let numOpen = $derived(Number(controlStore.getState(control.states.numOpen)));
 	let numClosed = $derived(Number(controlStore.getState(control.states.numClosed))); // TODO
 	let numTilted = $derived(Number(controlStore.getState(control.states.numTilted)));
@@ -31,23 +36,36 @@
 	let numLocked = $derived(Number(controlStore.getState(control.states.numLocked))); // TODO
 	let numUnlocked = $derived(Number(controlStore.getState(control.states.numUnlocked)));
 	let allClosed = $derived((numOpen + numTilted + numUnlocked) == 0);
-
 	let windowHeight = $derived(innerHeight.current || 0);
 	let summary = $derived(getSummary(numOpen, numTilted, numUnlocked));
-
-	let margin = 200;
 	let size = $derived(windowHeight * 0.9 - viewport?.clientHeight - margin);
 	let style = $derived(size > 0 && viewport?.clientHeight == viewport?.scrollHeight ? 'height: 100%' : 'height: ' + (viewport?.clientHeight + size) + 'px');
 
-	// TODO check what the summary is
-	function getSummary(open: number, tilted: number, unlocked: number) {
-		let summary: any = [];
-		if (open) { summary.push({ name: String(open) + ' ' + $_('Open'), color: true}) }
-		//if (numClosed) { summary.push({ name: String(numClosed) + ' ' + $_('Closed'), color: false}) }
-		if (tilted) { summary.push({ name: String(tilted) + ' ' + $_('Tilted'), color: true}) }
-		//if (numOffline) { summary.push({ name: String(numClosed) + ' ' + $_('Offline'), color: false}) }
-		//if (numLocked) { summary.push({ name: String(numClosed) + ' ' + $_('Locked'), color: false}) }
-		if (unlocked) { summary.push({ name: String(unlocked) + ' ' + $_('Unlocked'), color: true}) }
+	let dialog: DialogView = $state({
+		action: (state: boolean) => {	dialog.state = state; },
+		state: false
+	});
+
+	let controlView: ControlView = $derived({
+		...DEFAULT_CONTROLVIEW,
+		control: control,
+		isFavorite: controlOptions.isFavorite,
+		iconName: controlStore.getIcon(control, controlOptions.isSubControl),
+		iconColor: allClosed ? 'text-surface-950 dark:text-surface-50' : 'dark:text-primary-500 text-primary-700',
+		textName: control.name,
+		statusName: getStatus(),
+		statusColor: allClosed ? 'text-surface-950 dark:text-surface-50' : 'dark:text-primary-500 text-primary-700', 
+		dialog: dialog
+	});
+
+	function getSummary(open: number, tilted: number, unlocked: number): Summary[] {
+		let summary: Summary[] = [];
+		if (open) { summary.push({ name: String(open) + ' ' + $_('Open'), isColor: true}) }
+		//if (numClosed) { summary.push({ name: String(numClosed) + ' ' + $_('Closed'), isColor: false}) }
+		if (tilted) { summary.push({ name: String(tilted) + ' ' + $_('Tilted'), isColor: true}) }
+		//if (numOffline) { summary.push({ name: String(numClosed) + ' ' + $_('Offline'), isColor: false}) }
+		//if (numLocked) { summary.push({ name: String(numClosed) + ' ' + $_('Locked'), isColor: false}) }
+		if (unlocked) { summary.push({ name: String(unlocked) + ' ' + $_('Unlocked'), isColor: true}) }
 		return summary;
 	}
 
@@ -60,7 +78,7 @@
 		16: Unlocked 4 
 	*/
 
-	function getSortedWindowList(states: string[]) {
+	function getSortedWindowList(states: string[]): WindowListItem[] {
 		let list: WindowListItem[] = [];
 		for( let i = 0; i < windowList.length; i++) {
 			let prio: number[] = [32,32,32,32,32,32];
@@ -87,7 +105,7 @@
 		return list;
 	}
 
-	function getRoomName(i: number) {
+	function getRoomName(i: number): string {
 		let room: Room | undefined;
 		if (windowList[i] && windowList[i].room) {
 			room = controlStore.rooms.get(windowList[i].room);
@@ -95,7 +113,7 @@
 		return room ? room.name : '';
 	}
 
-	function getStatus() {
+	function getStatus(): string {
 		if (allClosed) { 
 			return $_('All closed');
 		}
@@ -103,52 +121,35 @@
 		return str.toLowerCase();
 	}
 
-	function getState(state: number) {
-		let stateList: any = [];
-		if (state == 0) { stateList.push({ name: $_('Offline'), color: false}) }
-		if (state & 1) { stateList.push({ name: $_('Closed'), color: false}) }
-		if (state & 2) { stateList.push({ name: $_('Tilted'), color: true}) }
-		if (state & 4) { stateList.push({ name: $_('Open'), color: true}) }
-		if (state & 8) { stateList.push({ name: $_('Locked'), color: false}) }
-		if (state & 16) { stateList.push({ name: $_('Unlocked'), color: true}) }
+	function getState(state: number): Summary[] {
+		let stateList: Summary[] = [];
+		if (state == 0) { stateList.push({ name: $_('Offline'), isColor: false}) }
+		if (state & 1) { stateList.push({ name: $_('Closed'), isColor: false}) }
+		if (state & 2) { stateList.push({ name: $_('Tilted'), isColor: true}) }
+		if (state & 4) { stateList.push({ name: $_('Open'), isColor: true}) }
+		if (state & 8) { stateList.push({ name: $_('Locked'), isColor: false}) }
+		if (state & 16) { stateList.push({ name: $_('Unlocked'), isColor: true}) }
 		return stateList
 	}
 
-	function getStatusColor(index: number) {
+	function getStatusColor(index: number): string {
 		let state = Number(windowStatesList[index]);
 		return (state & 22) ? 'dark:text-primary-500 text-primary-700' : 'text-surface-950 dark:text-surface-50';
 	}
 
-	$effect( () => { // check scroll status and window change and viewwport construction
-		parseScroll(windowHeight, viewport);
-	});
-
-	function parseScroll(height: number, view: any = undefined) {
+	function parseScroll(height: number, view: any = undefined): void {
 		if (!view) return;
 		hasScroll = view.scrollHeight > view.clientHeight;
 		showScrollTop = height > 0 && hasScroll && (view?.scrollTop > 10);
 		showScrollBottom = height > 0 && hasScroll && (view.scrollTop + view.clientHeight < (view.scrollHeight - 10));
 	}
 
-	function close() {
+	function close(): void {
 		controlView.dialog.action(false);
 	}
 
-	let dialog: DialogView = $state({
-		action: (state: boolean) => {	dialog.state = state; },
-		state: false
-	});
-
-	let controlView: ControlView = $derived({
-		...DEFAULT_CONTROLVIEW,
-		control: control,
-		isFavorite: controlOptions.isFavorite,
-		iconName: controlStore.getIcon(control, controlOptions.isSubControl),
-		iconColor: allClosed ? 'text-surface-950 dark:text-surface-50' : 'dark:text-primary-500 text-primary-700',
-		textName: control.name,
-		statusName: getStatus(),
-		statusColor: allClosed ? 'text-surface-950 dark:text-surface-50' : 'dark:text-primary-500 text-primary-700', 
-		dialog: dialog
+	$effect( () => { // check scroll status and window change and viewwport construction
+		parseScroll(windowHeight, viewport);
 	});
 </script>
 
@@ -180,7 +181,7 @@
 								<p class="flex relative text-lg text-center mt-2 mb-2 lowercase">
 									{#each summary as state, i}
 										{@const isLast = i === summary.length - 1}
-											<span class={ state.color ? 'dark:text-primary-500 text-primary-700' : 'text-surface-950 dark:text-surface-50'}>{state.name}</span>{#if !isLast }
+											<span class={ state.isColor ? 'dark:text-primary-500 text-primary-700' : 'text-surface-950 dark:text-surface-50'}>{state.name}</span>{#if !isLast }
 												<span>,&nbsp;</span>{/if}
 									{/each}
 								</p>
@@ -204,7 +205,7 @@
 														<p class="text-right text-base trucate">
 															{#each getState(window.state) as state, i}
 																{@const isLast = i === getState(window.state).length - 1}
-																<span class={ state.color ? 'dark:text-primary-500 text-primary-700' : ( window.state ? 'text-surface-950 dark:text-surface-50' :
+																<span class={ state.isColor ? 'dark:text-primary-500 text-primary-700' : ( window.state ? 'text-surface-950 dark:text-surface-50' :
 																'dark:text-surface-300 text-surface-700')}>{state.name}</span>{#if !isLast }
 																	<span>,&nbsp;</span>{/if}
 															{/each}

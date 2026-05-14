@@ -8,18 +8,16 @@
 	let axis = [...Array(25).keys()];
 	let dt = 13; // grid
 	let o = 8;  // offset
+	let tc = 'dark:fill-surface-50 fill-surface-950'; // text color
 
 	let date = $derived(appStore.date); // current date/time (dynamic)
 	let m = $derived(utils.hours2dec(format(date, 'p'))); // marker
 	let os = $derived(utils.hours2dec(format(overrideDate.start, 'p'))); // override start
 	let oe = $derived(utils.hours2dec(format(overrideDate.end, 'p')) || 24); // override end (correction for 24h)
 	let oa = $derived(overrideDate.active); // override active
-
 	let slots = $derived(entries ? entries.entry.filter((item:any) => Number(item.mode) === mode) : []);
 
-	let tc = 'dark:fill-surface-50 fill-surface-950'; // text color
-
-	function co(t:any) {
+	function co(t:any): string {
 		let fillColor = '';
 		switch(t.value) {
 			case '0': // Digital switch active (green)
@@ -35,13 +33,13 @@
 	}
 
 	// calculate width
-	function cw(t: any) {
+	function cw(t: any): number {
 		let from = utils.hours2dec(t.from);
 		let fromUpdate = (from > m && override > 0 && from < oe ) ? oe : from;
 		return utils.hours2dec(t.to) - fromUpdate;
 	}
 
-	function cx(t: any) { 
+	function cx(t: any): number { 
 		let from = utils.hours2dec(t.from);
 		return (from > m && override > 0 && from < oe ) ? oe : from;
 	}

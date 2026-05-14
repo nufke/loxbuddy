@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import type { PageProps } from './$types';
-	import type { Control, ControlOptions, Category, Room } from '$lib/types/models';
+	import type { Control, ControlOptions, Category, Room, UserDefaultStructure } from '$lib/types/models';
 	import { DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import { _ } from 'svelte-i18n';
 	import { lbControl } from '$lib/helpers/LbControl';
@@ -13,27 +13,27 @@
 
 	const key = 'room';
 	const fav = 'favorites';
-	let userSettings = $derived(controlStore.userSettings);
-	let dragGroup = $state('');
 	let draggingItem: any;
 	let animatingItems = new Set();
-
 	appStore.nav = '/room';
 
+	let dragGroup = $state('');
 	let controlOptions: ControlOptions = $derived(DEFAULT_CONTROLOPTIONS);
 	let userDefinedOrder = $derived(appStore.userDefinedOrder);
+	let userSettings = $derived(controlStore.userSettings);
+	let userDefaultStructure = $derived(userSettings.userDefaultStructure) as UserDefaultStructure;
 
 	let filteredControls: Control[] = $derived(
 		controlStore.controlList.filter((control) => (control.room === data.uuid) && ((control.restrictions & 1) != 1))
 		.sort((a, b) => a.name.localeCompare(b.name, appStore.locale))
-		.sort((a, b) => getPosition(userSettings.userDefaultStructure, b, key + '/' + b.cat) - getPosition(userSettings.userDefaultStructure, a, key + '/' + a.cat))
+		.sort((a, b) => getPosition(userDefaultStructure, b, key + '/' + b.cat) - getPosition(userDefaultStructure, a, key + '/' + a.cat))
 	);
 
 	let favorites: Control[] = $derived(
 		controlStore.controlList.filter((control) => (control.room === data.uuid) && ((control.restrictions & 1) != 1))
-		.filter((control) => isFavorite(userSettings.userDefaultStructure, control, key))
+		.filter((control) => isFavorite(userDefaultStructure, control, key))
 		.sort((a, b) => a.name.localeCompare(b.name, appStore.locale))
-		.sort((a, b) => getPosition(userSettings.userDefaultStructure, b, key) - getPosition(userSettings.userDefaultStructure, a, key))
+		.sort((a, b) => getPosition(userDefaultStructure, b, key) - getPosition(userDefaultStructure, a, key))
 	);
 
 	let labels: Category[] = $derived(
@@ -46,23 +46,41 @@
 		controlStore.roomList.find((item) => filteredControls[0].room == item.uuid)
 	);
 
-	function isFavorite(obj: any, control: Control, key: string) {
-		if (obj && obj[control.uuidAction] && userDefinedOrder) {
-			return obj[control.uuidAction][key] ? obj[control.uuidAction][key].isFav : false;
+	/**
+	 * Check if given control is set as favorite
+	 * @param obj Object containing the usersettings
+	 * @param control Actual control
+	 * @param key Filter based on given key
+	 */
+	function isFavorite(obj: UserDefaultStructure, control: Control, key: string): boolean {
+		if (obj && obj[control.uuidAction] && obj[control.uuidAction][key] && userDefinedOrder) {
+			return obj[control.uuidAction][key].isFav ?? false;
 		} else {
 			return control.defaultRating > 0;
 		}
 	}
 
-	function getPosition(obj: any, control: Control, key: string) {
-		if (obj && obj[control.uuidAction] && userDefinedOrder) {
-			return obj[control.uuidAction][key] ? obj[control.uuidAction][key].position : 0;
+	/**
+	 * Get the position of the given control. This defines the order in the sorting
+	 * @param obj Object containing the usersettings
+	 * @param control Actual control
+	 * @param key Filter based on given key
+	 */
+	function getPosition(obj: UserDefaultStructure, control: Control, key: string): number {
+		if (obj && obj[control.uuidAction] && obj[control.uuidAction][key] && userDefinedOrder) {
+			return obj[control.uuidAction][key].position ?? 0;
 		} else {
 			return control.defaultRating;
 		}
 	}
 
-	function swapItems(list: Control[], item: Control, group: string) {
+	/**
+	 * Helper function to swap controls when control sorting is enabled
+	 * @param list List of the controls for the given (central) room
+	 * @param item The selected control being moved
+	 * @param group Filter based on given key
+	 */
+	function swapItems(list: Control[], item: Control, group: string): Control[] {
 		let newList = list;
 		if (draggingItem === item || animatingItems.has(item) || group !== dragGroup) {
 			return list;

@@ -10,7 +10,22 @@
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
-	function getFormattedString(input: string) {
+	let dialog: DialogView = $state({
+		action: (state: boolean) => {dialog.state = state},
+		state: false
+	});
+
+	let controlView: ControlView = $derived({
+		...DEFAULT_CONTROLVIEW,
+		control: control,
+		isFavorite: controlOptions.isFavorite,
+		iconName: controlStore.getIcon(control, controlOptions.isSubControl),
+		textName: control.name,
+		statusName: getFormattedString(String(controlStore.getState(control.states.value))),
+		dialog: dialog
+	});
+
+	function getFormattedString(input: string): string {
 		let s: string = input;
 		const value = Number(s);
 		if (control.details.format) {
@@ -59,21 +74,6 @@
 		}
 		return s;
 	}
-
-	let dialog: DialogView = $state({
-		action: (state: boolean) => {dialog.state = state},
-		state: false
-	});
-
-	let controlView: ControlView = $derived({
-		...DEFAULT_CONTROLVIEW,
-		control: control,
-		isFavorite: controlOptions.isFavorite,
-		iconName: controlStore.getIcon(control, controlOptions.isSubControl),
-		textName: control.name,
-		statusName: getFormattedString(String(controlStore.getState(control.states.value))),
-		dialog: dialog
-	});
 </script>
 
 <div>

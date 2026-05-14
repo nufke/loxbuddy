@@ -8,19 +8,19 @@
 
 	let editing = $state(false);
 
-	function edit() {
+	function edit(): void {
 		editing = true;
 	}
 
-	function submit() {
+	function submit(): void {
 		editing = false;
 	}
 
-	function focus(element: any) {
+	function focus(element: any): void {
 		element.focus();
 	}
 
-	function strip(s: string) {
+	function strip(s: string): string {
 		return value.replace(/\s+/g, '_').substring(0, 20);
 	}
 </script>

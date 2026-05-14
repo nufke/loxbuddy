@@ -17,26 +17,6 @@
 	let actual = $derived(Number(controlStore.getState(control.states.actual))); 
 	let storageValue = $derived(Number(controlStore.getState(control.states.storage))); 
 
-	function setColor(val: number, status: boolean = false) {
-		if (val == 0) return status ? 'dark:text-surface-300 text-surface-700' : 'dark:text-surface-50 text-surface-950';
-		switch (type) {
-			case 'storage': return (val > 0) ? 'dark:text-secondary-500 text-secondary-700' : 'dark:text-primary-500 text-primary-700';
-			case 'unidirectional': return 'dark:text-primary-500 text-primary-700';
-			case 'bidirectional': return (val > 0) ? 'dark:text-primary-500 text-primary-700' : 'dark:text-secondary-500 text-secondary-700';
-			default: return 'dark:text-surface-50 text-surface-950';
-		}
-	}
-
-	function setStatus() {
-		let status = `${(utils.formatString(actual, actualFormat)[0]).toLocaleString(appStore.locale)} ${utils.formatString(actual, actualFormat)[1]} `;
-		switch (type) {
-			case 'storage': status += `(${(actual > 0) ? $_('Discharging') : $_('Charging')}) SoC: ${fmt.sprintf(storageFormat, storageValue)}`; break;
-			case 'bidirectional': status += `(${(actual > 0) ? $_('Consume') : $_('Supply')})`; break;
-			default: '';
-		}
-		return status;
-	}
-
 	let dialog: DialogView = $state({
 		action: (state: boolean) => {dialog.state = state},
 		state: false,
@@ -53,6 +33,27 @@
 		statusColor: setColor(actual, true),
 		dialog: dialog
 	});
+
+	function setColor(val: number, status: boolean = false): string {
+		if (val == 0) return status ? 'dark:text-surface-300 text-surface-700' : 'dark:text-surface-50 text-surface-950';
+		switch (type) {
+			case 'storage': return (val > 0) ? 'dark:text-secondary-500 text-secondary-700' : 'dark:text-primary-500 text-primary-700';
+			case 'unidirectional': return 'dark:text-primary-500 text-primary-700';
+			case 'bidirectional': return (val > 0) ? 'dark:text-primary-500 text-primary-700' : 'dark:text-secondary-500 text-secondary-700';
+			default: return 'dark:text-surface-50 text-surface-950';
+		}
+	}
+
+	function setStatus(): string {
+		let status = `${(utils.formatString(actual, actualFormat)[0]).toLocaleString(appStore.locale)} ${utils.formatString(actual, actualFormat)[1]} `;
+		switch (type) {
+			case 'storage': status += `(${(actual > 0) ? $_('Discharging') : $_('Charging')}) SoC: ${fmt.sprintf(storageFormat, storageValue)}`; break;
+			case 'bidirectional': status += `(${(actual > 0) ? $_('Consume') : $_('Supply')})`; break;
+			default: '';
+		}
+		return status;
+	}
+
 </script>
 
 <div>

@@ -31,11 +31,17 @@
 			: `transform: rotateZ(${nextDegree}deg); height: calc(23% + 1px)`;
 	});
 
-	function updateDate(newDate: SvelteDate) {
+	function updateDate(newDate: SvelteDate): void {
 		date = newDate;
 	}
 
-	function positions(size: number, offset: number, valueForZero: number, minuteView: boolean, hourAdded: number) {
+	type Position = {
+		x: number,
+		y: number,
+		val: number
+	}
+
+	function positions(size: number, offset: number, valueForZero: number, minuteView: boolean, hourAdded: number): Position[] {
 		const r = (size) / 2;
 		offset = offset || r;
 		const coeff = [0, 1 - 0.5, 1 - 0.134, 1, 1 - 0.134, 1 - 0.5];
@@ -52,15 +58,15 @@
 		return pos;
 	}
 
-	function showTime(value: number, asMeridian: boolean) {
+	function showTime(value: number, asMeridian: boolean): string {
 		if (asMeridian) {
-			if (isPM && value === 12) return 12;
-			return value < 10 || value % 12 < 10 ? `0${value % 12}` : value % 12;
+			if (isPM && value === 12) return '12';
+			return value < 10 || value % 12 < 10 ? `0${value % 12}` : String(value % 12);
 		}
-		return value < 10 ? `0${value}` : value;
+		return value < 10 ? `0${value}` : String(value);
 	}
 
-	function isSelected(selected: number, val: string|number, i: number) {
+	function isSelected(selected: number, val: string|number, i: number): boolean {
 		if (isMinuteView) {
 			return val === selected || (i === 0 && i === selected);
 		} else {
@@ -78,7 +84,7 @@
 		}
 	}
 
-	function onClick(e: any) {
+	function onClick(e: any): void {
 		if (!e.target) return;
 		let a = 0;
 		let b = 0;
@@ -163,7 +169,7 @@
 		}
 	}
 
-	function onToggleMove(e: any) {
+	function onToggleMove(e: any): void {
 		isMouseDown = (e.type === 'mousedown');
 	}
 </script>

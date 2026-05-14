@@ -12,7 +12,7 @@
 
 	let autoActive = $derived(Number(controlStore.getState(controlView.control.states.autoActive)));
 
-	function close() {
+	function close(): void {
 		controlView.dialog.action(false);
 	}
 </script>

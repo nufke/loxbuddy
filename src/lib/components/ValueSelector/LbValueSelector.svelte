@@ -14,15 +14,6 @@
 	let value = $derived(Number(controlStore.getState(control.states.value)));
 	let increaseOnly = $derived(control.details.increaseOnly);
 
-	function updateValue(isUp: number) {
-		let newValue = value + step * isUp;
-		if (newValue > max) newValue = max;
-		if (newValue < min) newValue = min;
-		if (newValue != value) {
-			controlStore.setControl(control.uuidAction, String(newValue));
-		}
-	}
-
 	let buttonMinus: SingleButtonView[] = $state([
 		{
 			iconName: 'minus',
@@ -60,6 +51,15 @@
 		buttons: increaseOnly ? buttonPlus : [...buttonMinus, ...buttonPlus],
 		dialog: dialog
 	});
+
+	function updateValue(isUp: number): void {
+		let newValue = value + step * isUp;
+		if (newValue > max) newValue = max;
+		if (newValue < min) newValue = min;
+		if (newValue != value) {
+			controlStore.setControl(control.uuidAction, String(newValue));
+		}
+	}
 </script>
 
 <div>

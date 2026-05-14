@@ -3,7 +3,7 @@ import { addCollection } from '@iconify/svelte';
 /**
  * Register LoxBuddy icons using Iconify API
  */
-export function registerCustomIcons() {
+export function registerCustomIcons(): void {
 
 	// add 14x14 icons
 	addCollection({

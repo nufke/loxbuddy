@@ -10,18 +10,18 @@
 	let returnObj: any; // Dialog can return any object
 	let selectedButton: any = $derived(view.buttons ? view.buttons.find( (b: Button) => b.selected): null);
 
-	function buttonSelect(id: number) {
+	function buttonSelect(id: number): void {
 		selectedButton = {};
 		selectedButton.id = id;
 		returnObj = id; // store selected button
 	}
 
-	function cancel() {
+	function cancel(): void {
 		view.openDialog = false;
 		view.cancel()
 	}
 
-	function ok() {
+	function ok(): void {
 		view.openDialog = false;
 		view.ok(returnObj);
 	}

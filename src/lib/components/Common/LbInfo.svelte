@@ -3,7 +3,7 @@
 
 	let { control } = $props();
 
-	function rightClickContextMenu(e: any) {
+	function rightClickContextMenu(e: any): void {
 		goto('/info/' + control.uuidAction);
 	}
 </script>

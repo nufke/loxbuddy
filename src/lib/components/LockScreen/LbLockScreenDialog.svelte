@@ -13,11 +13,11 @@
 	let date = $derived(appStore.date);
 	let showWeather = $derived(appStore.showWeather);
 
-	function getCurrentIcon(cur: WeatherCurrentConditions) {
-		let sunRise = utils.time2epoch(cur.time, cur.sunRise);
-		let sunSet = utils.time2epoch(cur.time, cur.sunSet);
-		let dayOrNight = (cur.time > sunRise) && (cur.time < sunSet) ? '-day.svg' : '-night.svg';
-		return '../../meteocons/svg/' + cur.icon + dayOrNight;
+	function getCurrentIcon(current: WeatherCurrentConditions): string {
+		let sunRise = utils.time2epoch(current.time, cur.sunRise);
+		let sunSet = utils.time2epoch(current.time, cur.sunSet);
+		let dayOrNight = (cur.time > sunRise) && (current.time < sunSet) ? '-day.svg' : '-night.svg';
+		return '../../meteocons/svg/' + current.icon + dayOrNight;
 	}
 </script>
 

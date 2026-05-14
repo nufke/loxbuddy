@@ -18,25 +18,25 @@
 	let loaded = $derived(current.time > 0 && daily.length);
 	let date = $derived(appStore.date);
 
-	function openSlider(i: number) {
+	function openSlider(i: number): void {
 		if (hourly[i]) {
 			slider[i] = !slider[i];
 		}
 	}
 
-	function close() {
+	function close(): void {
 		appStore.weatherDialog.state = false;
 		slider = Array.from({length: 8}, (v,i) => v = (i==0));
 	}
 
-	function getCurrentIcon(cur: WeatherCurrentConditions) {
+	function getCurrentIcon(cur: WeatherCurrentConditions): string {
 		let sunRise = utils.time2epoch(cur.time, cur.sunRise);
 		let sunSet = utils.time2epoch(cur.time, cur.sunSet);
 		let dayOrNight = (cur.time > sunRise) && (cur.time < sunSet) ? '-day.svg' : '-night.svg';
 		return '../../meteocons/svg/' + cur.icon + dayOrNight;
 	}
 
-	function getDayIcon(day: WeatherDailyForecast) {
+	function getDayIcon(day: WeatherDailyForecast): string {
 		let sunRise = utils.time2epoch(day.time, day.sunRise);
 		let sunSet = utils.time2epoch(day.time, day.sunSet);
 		let currentDay = utils.time2epoch(current.time, '00:00');
@@ -44,14 +44,14 @@
 		return '../../meteocons/svg/' + day.icon + dayOrNight;
 	}
 
-	function getHourIcon(hour: WeatherHourlyForecast, day: WeatherDailyForecast) {
+	function getHourIcon(hour: WeatherHourlyForecast, day: WeatherDailyForecast): string {
 		let sunRise = utils.time2epoch(hour.time, day.sunRise);
 		let sunSet = utils.time2epoch(hour.time, day.sunSet);
 		let dayOrNight = (hour.time > sunRise) && (hour.time < sunSet) ? '-day.svg' : '-night.svg';
 		return '../../meteocons/svg/' + hour.icon + dayOrNight;
 	}
 
-	function getHourly(day: WeatherDailyForecast) {
+	function getHourly(day: WeatherDailyForecast): WeatherHourlyForecast[] {
 		let hours = hourly.filter((hours) => (hours.time > date.valueOf()) && (hours.time >= day.time) && hours.time < (day.time + 86400000));
 		if (hours.length < 11) {
 			let cnt = 11-hours.length;

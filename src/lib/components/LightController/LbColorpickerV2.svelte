@@ -11,7 +11,6 @@
 	let picker: iro.ColorPicker;
 	let element: HTMLDivElement;
 	let timeout: ReturnType<typeof setTimeout> | undefined;
-
 	let desiredPublishInterval = 300; // in ms
 	let lastRequestTimestamp = Date.now();
 
@@ -25,6 +24,10 @@
 		}
 	];
 
+	let busy = $state(false);
+	let color = $derived(String(controlStore.getState(control.states.color)));
+	let {rgbColor, tempColor, brightness, isTempColor} = $derived(getColor(color));
+
 	let temperatureLayout = $state([
 		{
 			component: iro.ui.Slider,
@@ -36,56 +39,6 @@
 			}
 		}
 	]);
-
-	let busy = $state(false);
-	let color = $derived(String(controlStore.getState(control.states.color)));
-	let {rgbColor, tempColor, brightness, isTempColor} = $derived(getColor(color));
-
-	$effect(() => {
-		if (isTempColor) {
-			busy = false;
-		}
-
-		if (picker) {
-			if (isTempColor) {
-				picker.setOptions({ layout: temperatureLayout });
-			} else {
-				picker.setOptions({ layout: colorLayout });
-			}
-		}
-
-		if (picker && !busy) {
-			if (isTempColor && tempColor) {
-				picker.color.kelvin = tempColor;
-			} else if (rgbColor) {
-				picker.color.rgb = {
-					r: rgbColor[0],
-					g: rgbColor[1],
-					b: rgbColor[2]
-				}
-			}
-		}
-	});
-
-	function getColor(color: string) {
-		let hsv = color.match(/hsv\(([0-9]*),([0-9]*),([0-9]*)\)/);
-		let temp = color.match(/temp\(([0-9]*),([0-9]*)\)/);
-		let rgb, kelvin, brightness, isTempColor;
-		if (hsv && hsv.length > 3) {
-			rgb = utils.hsv2rgb(Number(hsv[1]), Number(hsv[2]), 100);
-			brightness = Number(hsv[3]);
-			isTempColor = false; // rgb
-		} else if (temp && temp.length > 2) {
-			kelvin = Number(temp[2]);
-			brightness = Number(temp[1]);
-			isTempColor = true;
-		} else { // nothing found, set default
-			rgb = [255,255,255];
-			brightness = 100;
-			isTempColor = false; // rgb
-		}
-		return {rgbColor: rgb, tempColor: kelvin, brightness: brightness, isTempColor: isTempColor};
-	}
 
 	/*
 	 * Pending issue:
@@ -131,8 +84,33 @@
 			}, 500);
 		});
 	});
+	
+	onDestroy(() => {
+		clearTimeout(timeout);
+		timeout = undefined;
+	});
 
-	async function handleUpdate(color: ColorType) {
+	function getColor(color: string): {rgbColor: number[] | undefined, tempColor: number | undefined, brightness: number, isTempColor: boolean} {
+		let hsv = color.match(/hsv\(([0-9]*),([0-9]*),([0-9]*)\)/);
+		let temp = color.match(/temp\(([0-9]*),([0-9]*)\)/);
+		let rgb, kelvin, brightness, isTempColor;
+		if (hsv && hsv.length > 3) {
+			rgb = utils.hsv2rgb(Number(hsv[1]), Number(hsv[2]), 100);
+			brightness = Number(hsv[3]);
+			isTempColor = false; // rgb
+		} else if (temp && temp.length > 2) {
+			kelvin = Number(temp[2]);
+			brightness = Number(temp[1]);
+			isTempColor = true;
+		} else { // nothing found, set default
+			rgb = [255,255,255];
+			brightness = 100;
+			isTempColor = false; // rgb
+		}
+		return {rgbColor: rgb, tempColor: kelvin, brightness: brightness, isTempColor: isTempColor};
+	}
+
+	async function handleUpdate(color: ColorType): Promise<void> {
 		let newColor;
 		const type = typeof picker?.state?.layout?.[0] !== 'string'
 			? picker?.state?.layout?.[0]?.options?.sliderType	: undefined;
@@ -150,7 +128,7 @@
 
 	// only publish data at fixed interval
 	// intermediate results will be ignored
-	function publishData(data: string) {
+	function publishData(data: string): void {
 		const currentTimestamp = Date.now();
 		const timeElapsed = currentTimestamp - lastRequestTimestamp;
 
@@ -160,9 +138,30 @@
  	 }
 	}
 
-	onDestroy(() => {
-		clearTimeout(timeout);
-		timeout = undefined;
+	$effect(() => {
+		if (isTempColor) {
+			busy = false;
+		}
+
+		if (picker) {
+			if (isTempColor) {
+				picker.setOptions({ layout: temperatureLayout });
+			} else {
+				picker.setOptions({ layout: colorLayout });
+			}
+		}
+
+		if (picker && !busy) {
+			if (isTempColor && tempColor) {
+				picker.color.kelvin = tempColor;
+			} else if (rgbColor) {
+				picker.color.rgb = {
+					r: rgbColor[0],
+					g: rgbColor[1],
+					b: rgbColor[2]
+				}
+			}
+		}
 	});
 </script>
 

@@ -15,81 +15,30 @@
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
+	let margin = 200;
+
 	let selectedControl: Control | undefined= $state();
 	let selectedControlOptions: ControlOptions | undefined = $state();
 	let screenSelected = $state(false);
-
 	let screenList = $derived(control.details.controls) as ScreenItem[];
 	let screenUuid = $derived(control.details.controls.map((item: ScreenItem) => item.uuid));
+	let viewport: any = $state(); // TODO make HTMLDivElement
+	let hasScroll = $state(true);
+	let showScrollTop = $state(false);
+	let showScrollBottom = $state(false);
 
 	let screenControls = $derived(controlStore.controlList.filter(
 		(controls: Control) => screenUuid.indexOf(controls.uuidAction) > -1
 	));
 
-	let viewport: any = $state(); // TODO make HTMLDivElement
-	let hasScroll = $state(true);
-	let showScrollTop = $state(false);
-	let showScrollBottom = $state(false);
-	
 	let screensClosed = $derived(
 		screenControls.filter((control: Control) => Number(controlStore.getState(control.states.position)) * 100 > 1)
 	);
 
 	let selectedScreenCount = $derived(screenList.filter((item) => item.selected == true).length);
 	let windowHeight = $derived(innerHeight.current || 0);
-	let margin = 200;
 	let size = $derived(windowHeight * 0.9 - viewport?.clientHeight - margin || 0);
 	let style = $derived(size > 0 && viewport?.clientHeight == viewport?.scrollHeight ? 'height: 100%' : 'height: ' + (viewport?.clientHeight + size) + 'px');
-
-	$effect( () => { // check scroll status and window change and viewwport construction
-		parseScroll(windowHeight, viewport);
-	});
-
-	$effect( () => {
-		screenList.forEach((item) => item.selected = false); // default all screens unselected
-	});
-
-	function parseScroll(height: number, view: any = undefined) {
-		if (!view) return;
-		hasScroll = view.scrollHeight > view.clientHeight;
-		showScrollTop = height > 0 && hasScroll && (view?.scrollTop > 10);
-		showScrollBottom = height > 0 && hasScroll && (view.scrollTop + view.clientHeight < (view.scrollHeight - 10));
-	}
-
-	function getActiveScreens() {
-		let status = '';
-		switch (screensClosed.length) {
-			case 0:
-				status = $_('All open');
-				break;
-			default:
-				status = String(screensClosed.length) + ' ' + $_('Closed').toLowerCase();
-		}
-		return status;
-	}
-
-	function selectScreen(control: Control) {
-		let index = screenList.findIndex((item) => item.uuid == control.uuidAction);
-		if (screenList[index]) {
-			screenList[index].selected = !screenList[index].selected;
-		}
-		screenSelected = selectedScreenCount == 1;
-	}
-
-	function isSelected(control: Control) {
-		let screen = screenList.find((item) => item.uuid == control.uuidAction);
-		return screen ? screen.selected : false;
-	}
-
-	function selectScreenOptions() {
-		if (!screenSelected) return; // more than one screen selected
-		let screen = screenList.find((item) => item.selected);
-		let control: Control | undefined = controlStore.controlList.find( (control: Control) => control.uuidAction == screen?.uuid);
-		if (control) {
-			selectedControl = control;
-			selectedControlOptions = {...DEFAULT_CONTROLOPTIONS, showDialog: true, showControl: false};
-		}
-	}
 
 	let dialog: DialogView = $state({
 		action: (state: boolean) => {
@@ -97,47 +46,6 @@
 		},
 		state: false
 	});
-
-	function isAutoActive(control: Control) {
-		return Number(controlStore.getState(control.states.autoActive));
-	}
-
-	function isLocked(control: Control) {
-		return Number(controlStore.getState(control.states.locked));
-	}
-
-	function getStatusColor(control: Control) {
-		let position = Math.round(Number(controlStore.getState(control.states.position)) * 100);
-		return position > 1 ? 'dark:text-primary-500 text-primary-700' : 'text-surface-950 dark:text-surface-50';
-	}
-
-	function close() {
-		screenList.forEach((item) => item.selected = false ); // clear selected screens
-		screenSelected = false;
-		selectedControl = undefined;
-		selectedControlOptions = undefined;
-		controlView.dialog.action(false);
-	}
-
-	function screenAction(action: string) {
-		screenList.forEach((screen) => { 
-			if (screen.selected) {
-				controlStore.setControl(screen.uuid, action);
-			}
-		});
-	}
-
-	function getControlName(control: Control) {
-		const origNameFound = $_('Jalousie').includes(control.name);
-		const room = controlStore.rooms.get(control.room);
-		return (origNameFound && room) ? room.name : control.name;
-	}
-
-	function getRoomName(control: Control) {
-		const origNameFound = $_('Jalousie').includes(control.name);
-		const room = controlStore.rooms.get(control.room);
-		return (origNameFound || !room ) ? '' : room.name;
-	}
 
 	let buttons: SingleButtonView[] = $state([
 		{
@@ -165,6 +73,97 @@
 		statusColor: screensClosed.length ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700',
 		buttons: buttons,
 		dialog: dialog
+	});
+
+	function parseScroll(height: number, view: any = undefined): void {
+		if (!view) return;
+		hasScroll = view.scrollHeight > view.clientHeight;
+		showScrollTop = height > 0 && hasScroll && (view?.scrollTop > 10);
+		showScrollBottom = height > 0 && hasScroll && (view.scrollTop + view.clientHeight < (view.scrollHeight - 10));
+	}
+
+	function getActiveScreens(): string {
+		let status = '';
+		switch (screensClosed.length) {
+			case 0:
+				status = $_('All open');
+				break;
+			default:
+				status = String(screensClosed.length) + ' ' + $_('Closed').toLowerCase();
+		}
+		return status;
+	}
+
+	function selectScreen(control: Control): void {
+		let index = screenList.findIndex((item) => item.uuid == control.uuidAction);
+		if (screenList[index]) {
+			screenList[index].selected = !screenList[index].selected;
+		}
+		screenSelected = selectedScreenCount == 1;
+	}
+
+	function isSelected(control: Control): boolean {
+		let screen = screenList.find((item) => item.uuid == control.uuidAction);
+		return screen && screen.selected || false;
+	}
+
+	function selectScreenOptions(): void {
+		if (!screenSelected) return; // more than one screen selected
+		let screen = screenList.find((item) => item.selected);
+		let control: Control | undefined = controlStore.controlList.find( (control: Control) => control.uuidAction == screen?.uuid);
+		if (control) {
+			selectedControl = control;
+			selectedControlOptions = {...DEFAULT_CONTROLOPTIONS, showDialog: true, showControl: false};
+		}
+	}
+
+	function isAutoActive(control: Control): number {
+		return Number(controlStore.getState(control.states.autoActive));
+	}
+
+	function isLocked(control: Control): number {
+		return Number(controlStore.getState(control.states.locked));
+	}
+
+	function getStatusColor(control: Control): string {
+		let position = Math.round(Number(controlStore.getState(control.states.position)) * 100);
+		return position > 1 ? 'dark:text-primary-500 text-primary-700' : 'text-surface-950 dark:text-surface-50';
+	}
+
+	function close(): void {
+		screenList.forEach((item) => item.selected = false ); // clear selected screens
+		screenSelected = false;
+		selectedControl = undefined;
+		selectedControlOptions = undefined;
+		controlView.dialog.action(false);
+	}
+
+	function screenAction(action: string): void {
+		screenList.forEach((screen) => { 
+			if (screen.selected) {
+				controlStore.setControl(screen.uuid, action);
+			}
+		});
+	}
+
+	function getControlName(control: Control): string {
+		const origNameFound = $_('Jalousie').includes(control.name);
+		const room = controlStore.rooms.get(control.room);
+		return (origNameFound && room) ? room.name : control.name;
+	}
+
+	function getRoomName(control: Control): string {
+		const origNameFound = $_('Jalousie').includes(control.name);
+		const room = controlStore.rooms.get(control.room);
+		return (origNameFound || !room ) ? '' : room.name;
+	}
+
+	$effect( () => { // check scroll status and window change and viewwport construction
+		parseScroll(windowHeight, viewport);
+	});
+
+	$effect( () => {
+		screenList.forEach((item) => item.selected = false); // default all screens unselected
 	});
 </script>
 

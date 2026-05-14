@@ -28,27 +28,11 @@
 	let bellImages = $derived(new SvelteMap<string, string>());
 	let isJpgVideo = $derived(securedDetails?.videoInfo?.streamUrl.match(/.jpg$/) ? 1 : 0);
 
-	$effect( () => {
-		if (uuid) {
-			controlStore.fetchUrl(uuid, `jdev/sps/io/${uuid}/securedDetails`)
-			.then((response) => response.json())
-			.then((data) => { resource = data; })
-		}
-	});
-
-	$effect( () => {
-		if (isJpgVideo) {
-			setInterval( () => {
-				securedDetails = resource as SecuredDetails;
-			}, 1000); // refresh resource every second
-		}
-	});
-
-	function arrayBufferToBase64(buffer: ArrayBuffer) {
+	function arrayBufferToBase64(buffer: ArrayBuffer): string {
 		return btoa(String.fromCharCode(...new Uint8Array(buffer)));
 	}
 
-	function getImages() {
+	function getImages(): boolean {
 		if (lastBellEvents.length) {
 			// Miniserver Gen1 needs time to fetch these images, therefore we introduce a delay (300ms)
 			setInterval( async () => { 
@@ -66,21 +50,37 @@
 		return true;
 	}
 
-	function handleImageLoad() {
+	function handleImageLoad(): void {
 		imageHeight = img?.height || 400;
 	}
 
-	function formatDate(event: string) {
+	function formatDate(event: string): string {
 		let s = event;
 		return s.slice(6,8) + '-' + s.slice(4,6) + '-' + s.slice(0,4) + '  ' + s.slice(8,10) + ":" + s.slice(10,12);
 	}
 
-	async function close() {
+	async function close(): Promise<void> {
 		controlView.dialog.action(false);
 		await tick();
 		selectedTab = 1;
 		lastEvent = lastBellEvents[0];
 	}
+
+	$effect( () => {
+		if (uuid) {
+			controlStore.fetchUrl(uuid, `jdev/sps/io/${uuid}/securedDetails`)
+			.then((response) => response.json())
+			.then((data) => { resource = data; })
+		}
+	});
+
+	$effect( () => {
+		if (isJpgVideo) {
+			setInterval( () => {
+				securedDetails = resource as SecuredDetails;
+			}, 1000); // refresh resource every second
+		}
+	});
 </script>
 
 {#if controlView.dialog.state} <!-- only construct dialog when opened, important to get current clientHeight -->

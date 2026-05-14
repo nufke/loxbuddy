@@ -94,7 +94,7 @@
     return getHours(point.ts * 1000);
 	}
 
-	async function handlePointerMove(e: PointerEvent) {
+	async function handlePointerMove(e: PointerEvent): Promise<void> {
 		const rect = (e.currentTarget as SVGSVGElement).getBoundingClientRect();
 		const mouseX = e.clientX - rect.left;
 		let nearestIdx = -1;
@@ -118,21 +118,21 @@
 		}
 	}
 
-	function clampLabel(x: number, w: number) {
+	function clampLabel(x: number, w: number): void {
 		const halfW = w / 2;
 		labelX = Math.min(Math.max(x, margin.left + halfW), width - margin.right - halfW);
 	}
 
-	function handlePointerDown(e: PointerEvent) {
+	function handlePointerDown(e: PointerEvent): void {
 		(e.currentTarget as SVGSVGElement).setPointerCapture(e.pointerId);
 		handlePointerMove(e);
 	}
 
-	function handlePointerUp() {
+	function handlePointerUp(): void {
 		hoveredIdx = null;
 	}
 
-	function handlePointerLeave() {
+	function handlePointerLeave(): void {
 		hoveredIdx = null;
 	}
 

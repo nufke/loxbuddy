@@ -19,7 +19,6 @@
 	let hasScroll = $state(true);
 	let showScrollTop = $state(false);
 	let showScrollBottom = $state(false);
-
 	let selectedItem = $derived(controlView.list ? controlView.list.findIndex((item: ListItem) => { return item.name === controlView.statusName }) : 0);
 	let subControls = $derived(controlView.control && controlView.control.subControls ? Object.values(controlView.control.subControls) : []);
 	let subControlsColorPicker = $derived(subControls.filter((control) => control.type === 'ColorPickerV2'));
@@ -30,13 +29,13 @@
 	let size = $derived(windowHeight * 0.9 - viewport?.clientHeight - margin || 0);
 	let style = $derived(size > 0 && viewport?.clientHeight == viewport?.scrollHeight ? 'height: 100%' : 'height: ' + (viewport?.clientHeight + size) + 'px');
 
-	function setItem(i: number) {
+	function setItem(i: number): void {
 		if (controlView && controlView.buttons && controlView.buttons[0]) {
 			controlView.buttons[0].click({checked: i});
 		}
 	}
 
-	function getMargin(control: Control, tab: number) {
+	function getMargin(control: Control, tab: number): number {
 		let margin: number = 180;
 		switch(control.type) {
 			case 'LightControllerV2': const lc = [300,200]; margin = lc[tab-1]; break;
@@ -47,22 +46,22 @@
 		return margin;
 	}
 
-	$effect( () => { // check scroll status and window change and viewwport construction
-		parseScroll(windowHeight, viewport);
-	});
-
-	function parseScroll(height: number, view: any = undefined) {
+	function parseScroll(height: number, view: any = undefined): void {
 		if (!view) return;
 		hasScroll = view.scrollHeight > view.clientHeight;
 		showScrollTop = height > 0 && hasScroll && (view?.scrollTop > 10);
 		showScrollBottom = height > 0 && hasScroll && (view.scrollTop + view.clientHeight < (view.scrollHeight - 10));
 	}
 
-	async function close() {
+	async function close(): Promise<void> {
 		controlView.dialog.action(false);
 		await tick();
 		selectedTab = 1;
 	}
+
+	$effect( () => { // check scroll status and window change and viewwport construction
+		parseScroll(windowHeight, viewport);
+	});
 </script>
 
 {#if controlView.dialog.state} <!-- only construct dialog when needed, important to get current clientHeight -->

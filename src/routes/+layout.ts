@@ -3,9 +3,12 @@ import '$lib/i18n'; // Import to initialize.
 import { locale, waitLocale } from 'svelte-i18n';
 import type { LayoutLoad } from './$types';
 import { nl, enGB, de } from 'date-fns/locale';
-import { setDefaultOptions } from 'date-fns';
+import { setDefaultOptions, type Locale } from 'date-fns';
 import { iconStore } from '$lib/stores/LbIconStore.svelte';
 
+/**
+ * Initialize locale, date formatting, and icon store on app load
+ */
 export const load: LayoutLoad = async () => {
 	let localeSettings = localStorage.getItem('locale') || '';
 	if (browser && localeSettings.length == 0) {
@@ -20,7 +23,12 @@ export const load: LayoutLoad = async () => {
 	iconStore.registerIcons();
 }
 
-function getDateLocale(locale: string) {
+/**
+ * Helper function to get the Locale based on the given string
+ * @param locale Locale specified as string
+ * @returns Locale as type
+ */
+function getDateLocale(locale: string): Locale {
 	console.info('[routes] Webkit Locale:', locale);
 	switch (locale) {
 		case 'nl':

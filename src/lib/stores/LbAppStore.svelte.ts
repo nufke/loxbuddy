@@ -60,26 +60,26 @@ class LbAppStore {
 		this.isDemo = localStorage.getItem('demo') == '1';
 		this.showWeather = localStorage.getItem('showWeather') == '1';
 		this.locale = localStorage.getItem('locale') || 'en';
-		this.credentials = utils.deserialize(localStorage.getItem('credentials'));
+		this.credentials = utils.deserialize(localStorage.getItem('credentials')) as Credentials;
 		this.sorting = localStorage.getItem('sorting') || '0';
 	}
 
-	storeCredentials(credentials: Credentials) {
+	storeCredentials(credentials: Credentials): void {
 		this.credentials = credentials;
 		localStorage.setItem('credentials', utils.serialize(credentials));
 	}
 
-	clearCredentials() {
+	clearCredentials(): void {
 		this.credentials = NO_CREDENTIALS;
 		localStorage.setItem('credentials', utils.serialize(NO_CREDENTIALS));
 	}
 
-	setDemo(state: number) {
+	setDemo(state: number): void {
 		this.isDemo = state == 1;
 		localStorage.setItem('demo', String(state));
 	}
 
-	async setLocale(loc: string) {
+	async setLocale(loc: string): Promise<void> {
 		const dateFnsLocale: DateFnsLocale = {nl: nl, en: enGB, de: de};
 		this.locale = loc;
 		localStorage.setItem('locale', loc);
@@ -88,30 +88,30 @@ class LbAppStore {
 		console.info('[LbAppStore] Locale set to', appStore.locale);
 	}
 
-	setSorting(s: string) {
-		this.sorting = s;
+	setSorting(s: string): void {
+		this.sorting = s ?? '0';
 		localStorage.setItem('sorting', s);
 	}
 
-	resetLockScreenDialogTimeout() {
+	resetLockScreenDialogTimeout(): void {
 		this.lockScreenDialog.state = false; 
 		clearTimeout(this.lockScreenDialog.timeout); 
 		this.setLockScreenDialogTimeout();
 	}
 
-	resetWeatherDialogTimeout() {
+	resetWeatherDialogTimeout(): void {
 		//this.weatherDialog.state = false; 
 		clearTimeout(this.weatherDialog.timeout); 
 		this.setWeatherDialogTimeout();
 	}
 
-	setWeatherDialogTimeout() {
+	setWeatherDialogTimeout(): void {
 		this.weatherDialog.timeout = setTimeout(() => {
 			this.weatherDialog.state = false;
 		}, 30000); // 30s TODO add to configuration
 	}
 
-	setLockScreenDialogTimeout() {
+	setLockScreenDialogTimeout(): void {
 		this.lockScreenDialog.timeout = setTimeout(() => {
 			this.lockScreenDialog.state = true;
 		}, 60000); // 60s TODO add to configuration

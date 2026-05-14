@@ -22,6 +22,8 @@
 	let { controlView = $bindable() }: { controlView: ControlView } = $props();
 
 	const toaster = createToaster({duration: 1500});
+	let margin = 250;
+	let subControls = Object.values(controlView.control.subControls);
 
 	let temperatureModeList : ListItem[] = [
 		{ id: 0, name: 'Automatic', visible: false },
@@ -78,32 +80,19 @@
 	let hasScroll = $state(true);
 	let showScrollTop = $state(false);
 	let showScrollBottom = $state(false);
-	let subControls = Object.values(controlView.control.subControls);
 
 	let windowHeight = $derived(innerHeight.current || 0);
 
 	let selectedSubControl = $derived(isV1 ? (subControls.find( subControl => subControl.name == (isHeating ? 'Heating' : 'Cooling')) || subControls[0] ):
 																	subControls[0]);
 
-	let entries = $derived(utils.extractEntries(controlStore.getState(selectedSubControl.states.entriesAndDefaultValue)));
+	let entries = $derived(utils.extractEntries(controlStore.getState(selectedSubControl.states.entriesAndDefaultValue))) as EntriesAndDefaultValue;
 	let modeList = $derived(String(controlStore.getState(selectedSubControl.states.modeList))); 
 	let mode = $derived(Number(controlStore.getState(selectedSubControl.states.mode))); 
 	let dayModes = $derived(utils.extractDayModes(modeList));
 
-	let margin = 250;
 	let size = $derived(windowHeight * 0.9 - viewport?.clientHeight - margin || 0);
 	let style = $derived(size > 0 && viewport?.clientHeight == viewport?.scrollHeight ? 'height: 100%' : 'height: ' + (viewport?.clientHeight + size) + 'px');
-
-	$effect( () => { // check scroll status and window change and viewwport construction
-		parseScroll(windowHeight, viewport);
-	});
-
-	function parseScroll(height: number, view: any = undefined) {
-		if (!view) return;
-		hasScroll = view.scrollHeight > view.clientHeight;
-		showScrollTop = height > 0 && hasScroll && (view?.scrollTop > 10);
-		showScrollBottom = height > 0 && hasScroll && (view.scrollTop + view.clientHeight < (view.scrollHeight - 10));
-	}
 
 	let dateTimeView = $state({
 		isDateView: true,
@@ -130,13 +119,20 @@
 		openDialog: false // updated when dialog is opened
 	});
 
-	function getOperatingMode(s: string) {
+	function parseScroll(height: number, view: any = undefined): void {
+		if (!view) return;
+		hasScroll = view.scrollHeight > view.clientHeight;
+		showScrollTop = height > 0 && hasScroll && (view?.scrollTop > 10);
+		showScrollBottom = height > 0 && hasScroll && (view.scrollTop + view.clientHeight < (view.scrollHeight - 10));
+	}
+
+	function getOperatingMode(s: string): string {
 		const entries = Array.from(opModes.entries());
 		let obj = entries.find ( e => e[1] == s );
 		return obj ? obj[0] : '';
 	}
 
-	function updateEntry(item: CalendarListItem) {
+	function updateEntry(item: CalendarListItem): void {
 		selectedEntry = entries.entry.find( (entry: Entry) =>
 			entry.to == item.to && 
 			entry.from == item.from && 
@@ -155,7 +151,7 @@
 		}
 	}
 
-	function addEntry() {
+	function addEntry(): void {
 		let coolingNr = isCooling ? 2 : 1;
 		selectedEntry = {
 			mode: String(mode),
@@ -173,7 +169,7 @@
 		calendarEntryView.openDialog = true;
 	}
 
-	function setTemperature(item: ListItem) {
+	function setTemperature(item: ListItem): void {
 		if (!isV1 && item.id == 3) { /* manual mode only exists in IRCv2 */
 			setTempManual();
 		} else {
@@ -181,13 +177,13 @@
 		}
 	}
 
-	function setTempManual() {
+	function setTempManual(): void {
 		let cmd = isCooling ? 'setComfortTemperatureCool/' : 'setComfortTemperature/';
 		cmd += tempTarget;
 		controlStore.setControl(controlView.control.uuidAction, cmd);
 	}
 
-	function setTimerOverride(item: ListItem) {
+	function setTimerOverride(item: ListItem): void {
 		let coeff = 1000 * 60; // round to minute
 		let overrideTimeSec = Math.round((date.getTime() - Date.now())/coeff)*coeff/1000;
 		
@@ -209,31 +205,31 @@
 		}
 	}
 
-	function cancelOverride() {
+	function cancelOverride(): void {
 		if (controlView.control) {
 			controlStore.setControl(controlView.control.uuidAction, isV1 ? 'stoptimer' : 'stopOverride');
 		}
 		override = 0;
 	}
 
-	function updatePosition(e: any) { // TODO
+	function updatePosition(e: any): void { // TODO
 	}
 
-	function getTemperatureMode(item: any) {
+	function getTemperatureMode(item: any): string {
 		const mode = Number(item.value);
 		let obj = temperatureList.find((item) => item.id == mode);
 		return obj && obj.name ? $_(obj.name) : '';
 	}
 
-	function updateTimer(e: any) {
+	function updateTimer(e: any): void {
 		date = e.value;
 	}
 
-	function tempFormat(temp: number | undefined) {
+	function tempFormat(temp: number | undefined): string {
 		return temp?.toLocaleString(appStore.locale, { maximumFractionDigits: 1, minimumFractionDigits: 1 }) + '°';
 	}
 
-	function getTemperature(item: any) {
+	function getTemperature(item: any): string {
 		const mode = Number(item.value);
 		let obj = temperatureList.find((item) => item.id == mode);
 		return (obj && obj.value) ? 
@@ -241,26 +237,26 @@
 			: '';
 	}
 
-	function getTimerEpoch(entries: any) {
+	function getTimerEpoch(entries: any): number | undefined {
 		if (!entries) return;
 		if (entries.length ==0) return;
 		let timerDate = entries[0].end * 1000 + utils.loxTimeRef;
 		return utils.isDST(new Date(timerDate)) ? timerDate + 3600000 : timerDate;
 	}
 
-	async function close() {
+	async function close(): Promise<void> {
 		controlView.dialog.action(false);
 		await tick();
 		selectedTab = 1;
 	}
 
-	function openCalendarView() {
+	function openCalendarView(): void {
 		calendarView.subControl = selectedSubControl;
 		calendarView.isCooling = isCooling;
 		calendarView.openDialog = true;
 	}
 
-	function filteredEntries() {
+	function filteredEntries(): CalendarListItem[] {
 		let list: CalendarListItem[] = [];
 		entries?.entry.forEach( (entry: Entry) => {
 			let itemFound = list.find((item) => entry.from == item.from && 
@@ -285,6 +281,10 @@
 	$effect( () => {
 		timerEndsV1 = new SvelteDate(appStore.date.valueOf() + overrideV1 * 1000);
 		timerEndsV2 = new SvelteDate(getTimerEpoch(overrideEntriesV2));
+	});
+
+	$effect( () => { // check scroll status and window change and viewwport construction
+		parseScroll(windowHeight, viewport);
 	});
 </script>
 

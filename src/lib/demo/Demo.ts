@@ -13,9 +13,10 @@ type IntervalMap = {
 	[key: string]: NodeJS.Timeout;
 }
 
-/** Helper class to demonstrate LoxBuddy capabilities.
- *  This demo mimics a Smart Home and the controls. There is 
- *  no Miniserver required to test the functionalities
+/**
+ * Helper class to demonstrate LoxBuddy capabilities.
+ * This demo mimics a Smart Home and the controls. There is 
+ * no Miniserver required to test the functionalities
 */
 export class Demo {
 	private timedSwitchIntervalMap: IntervalMap = {};
@@ -30,7 +31,10 @@ export class Demo {
 	constructor() {
 	}
 
-	start() {
+	/**
+	 * Initialize Demo
+	 */
+	start(): void {
 		console.info('[DEMO] Use demo structure');
 		let i = 0;
 		let j = 0;
@@ -88,7 +92,12 @@ export class Demo {
 		}
 	}
 
-	control(uuid: string, msg: string) {
+	/**
+	 * Method to activate the given control or subcontrol based on the given UUID with the given message  
+	 * @param uuid uuidAction of the control or subcontrol
+	 * @param msg actual payload message for the control
+	 */
+	control(uuid: string, msg: string): void {
 		console.info('[DEMO] Control:', uuid, msg);
 		let parentControl;
 		let control: Control | undefined = controlStore.controls.get(uuid);
@@ -106,7 +115,13 @@ export class Demo {
 		}
 	}
 
-	action(control: Control, msg: string, parentControl: Control | undefined) {
+	/**
+	 * Method to initiate the action for the control
+	 * @param control Object containing all control meta-data, such as type, icon, states, etc
+	 * @param msg actual payload message for the control
+	 * @param parentControl In case of a subcontrol, pass the parent control
+	 */
+	private action(control: Control, msg: string, parentControl: Control | undefined): void {
 		switch (control.type) {
 			case 'Switch' : this.switch(control, msg, parentControl); break;
 			case 'TimedSwitch': this.timedSwitch(control, msg); break;
@@ -127,13 +142,19 @@ export class Demo {
 			case 'Daytimer': this.daytimer(control, msg); break;
 			case 'IRCDaytimer': this.daytimer(control, msg); break; /* reuse DayTimer */
 			case 'IRCV2Daytimer': this.daytimer(control, msg); break; /* reuse DayTimer */
-			case 'Meter': this.meter(control, msg); break;
+			case 'Meter': this.meter(control); break;
 			case 'Pushbutton': break; /* no action */
 			default: console.error('[DEMO] Control', control.name, 'of type', control.type, 'not found.');
 		}
 	}
 
-	switch(control: Control, msg: string, parentControl: Control | undefined) {
+	/**
+	 * Method implementing the action for the Switch control
+	 * @param control Control meta-data
+	 * @param msg Control payload as string, e.g. 'on', 'off', '1' or '0' 
+	 * @param parentControl Meta-data of parent control if any
+	 */
+	private switch(control: Control, msg: string, parentControl: Control | undefined): void {
 		const activeId = control.states.active;
 		let val;
 		if (msg == 'on') val = '1';
@@ -144,21 +165,36 @@ export class Demo {
 		}
 	}
 
-	meter(control: Control, msg: string) {
-		const states = ['total', 'totalNeg', 'storage', 'totalDay', 'totalWeek', 'totalMonth', 'totalYear',
+	/**
+	 * Method implementing the action for the Meter control
+	 * @param control Control meta-data
+	 */
+	private meter(control: Control): void {
+		const stateList = ['total', 'totalNeg', 'storage', 'totalDay', 'totalWeek', 'totalMonth', 'totalYear',
 		 'totalNegDay', 'totalNegWeek', 'totalNegMonth', 'totalNegYear'];
 		const defaultValue = '1';
-		const s = control.states;
-		states.forEach(key => controlStore.setState(s[key], defaultValue));
+		const states = control.states;
+		stateList.forEach((key) => controlStore.setState(states[key], defaultValue));
 	}
 
-	radio(control: Control, msg: string) {
+	/**
+	 * Method implementing the action for the Radio control
+	 * @param control Control meta-data
+	 * @param msg Control payload as string, e.g. 'reset'
+	 */
+	private radio(control: Control, msg: string): void {
 		const activeOutputId = control.states.activeOutput;
 		const val = msg =='reset' ? 0 : msg;
 		controlStore.setState(activeOutputId, val);
 	}
 
-	dimmer(control: Control, msg: string, parentControl: Control | undefined) {
+	/**
+	 * Method implementing the action for the Dimmer control
+	 * @param control Control meta-data
+	 * @param msg Control payload as string, e.g. 'on', 'off' or dimmer level as string
+	 * @param parentControl Meta-data of parent control if any
+	*/
+	private dimmer(control: Control, msg: string, parentControl: Control | undefined): void {
 		const positionId = control.states.position;
 		if (Number(msg) > 0) {
 			this.dimmerLastValue[control.uuidAction] = msg; // store last value;
@@ -172,7 +208,13 @@ export class Demo {
 		}
 	}
 
-	colorPickerV2(control: Control, msg: string, parentControl: Control | undefined) {
+	/**
+	 * Method implementing the action for the ColorPickerV2 control
+	 * @param control Control meta-data
+	 * @param msg Control payload as string
+ 	 * @param parentControl Meta-data of parent control if any
+	 */
+	private colorPickerV2(control: Control, msg: string, parentControl: Control | undefined): void {
 		const colorId = control.states.color;
 		controlStore.setState(colorId, msg);
 		if (parentControl && parentControl.type === 'LightControllerV2') {
@@ -180,22 +222,42 @@ export class Demo {
 		}
 	}
 
-	valueSelector(control: Control, msg: string) {
+	/**
+	 * Method implementing the action for the ValueSelector control
+	 * @param control Control meta-data
+	 * @param msg Control payload as string
+	 */
+	private valueSelector(control: Control, msg: string): void {
 		const valueId = control.states.value;
 		controlStore.setState(valueId, msg);
 	}
 
-	slider(control: Control, msg: string) {
+	/**
+	 * Method implementing the action for the Slider control
+	 * @param control Control meta-data
+	 * @param msg Control payload as string
+	 */
+	private slider(control: Control, msg: string): void {
 		const valueId = control.states.value;
 		controlStore.setState(valueId, msg);
 	}
 
-	infoOnlyDigital(control: Control, msg: string) {
+	/**
+	 * Method implementing the action for the InfoOnlyDigital control
+	 * @param control Control meta-data
+	 * @param msg Control payload as string
+	 */
+	private infoOnlyDigital(control: Control, msg: string): void {
 		const activeId = control.states.active;
 		controlStore.setState(activeId, msg);
 	}
 
-	lightControllerV2(control: Control, msg: string) {
+	/**
+	 * Method implementing the action for the LightControllerV2 control
+	 * @param control Control meta-data
+	 * @param msg Control payload as string
+	 */
+	private lightControllerV2(control: Control, msg: string): void {
 		const stateId = control.states.activeMoodsNum;
 		const lights = Object.values(control.subControls);
 		const val = msg.split('/');
@@ -245,7 +307,12 @@ export class Demo {
 		controlStore.setState(stateId, val[1]);
 	}
 
-	gate(control: Control, msg: string) { 
+	/**
+	 * Method implementing the action for the Gate control
+	 * @param control Control meta-data
+	 * @param msg Control payload as string
+	 */
+	private gate(control: Control, msg: string): void { 
 		switch (msg) {
 		 	case 'open': this.moveGate(control, 1); break;// 1 = open and 0 = closed
 			case 'stop': clearInterval(this.gateIntervalMap[control.uuidAction]); break;
@@ -255,7 +322,12 @@ export class Demo {
 		}
 	}
 
-	moveGate(control: Control, endState: number) {
+	/**
+	 * Method implementing the subaction for the Gate control
+	 * @param control Control meta-data
+	 * @param endState Define the end state of the gate
+	 */
+	private moveGate(control: Control, endState: number): void {
 		if (this.gateIntervalMap[control.uuidAction]) {
 			clearInterval(this.gateIntervalMap[control.uuidAction]);
 		}
@@ -275,7 +347,12 @@ export class Demo {
 		}, 1000);
 	}
 
-	jalousie(control: Control, msg: string) {
+	/**
+	 * Method implementing the action for the Jalousie control
+	 * @param control Control meta-data
+	 * @param msg Control payload as string
+	 */
+	private jalousie(control: Control, msg: string): void {
 		switch (msg) {
 			case 'down': this.startJalousie(control, 1); break;
 			case 'DownOff': clearInterval(this.jalousieIntervalMap[control.uuidAction]); break;
@@ -287,7 +364,12 @@ export class Demo {
 		}
 	}
 
-	startJalousie(control: Control, direction: number) {
+	/**
+	 * Method implementing the subaction for the Jalousie control
+	 * @param control Control meta-data
+	 * @param direction Direction of the jalousie, 1=down, -1=up
+	 */
+	private startJalousie(control: Control, direction: number): void {
 		if (this.jalousieIntervalMap[control.uuidAction]) {
 			clearInterval(this.jalousieIntervalMap[control.uuidAction]);
 		}
@@ -305,7 +387,12 @@ export class Demo {
 		}, 1000);
 	}
 
-	timedSwitch(control: Control, msg: string) {
+	/**
+	 * Method implementing the action for the TimedSwitch control
+	 * @param control Control meta-data
+	 * @param msg Control payload as string
+	 */
+	private timedSwitch(control: Control, msg: string): void {
 		const deactivationDelayId= control.states.deactivationDelay;
 		let val: number = 0;
 		switch (msg) {
@@ -316,7 +403,11 @@ export class Demo {
 		}
 	}
 
-	startTimedSwitch(control: Control) {
+	/**
+	 * Method implementing the action to start the TimedSwitch control
+	 * @param control Control meta-data
+	 */
+	private startTimedSwitch(control: Control): void {
 		let deactivationDelayTotalId = controlStore.getState(control.states.deactivationDelayTotal);
 		const stateId = control.states.deactivationDelay;
 		clearInterval(this.timedSwitchIntervalMap[control.uuidAction]);
@@ -328,7 +419,12 @@ export class Demo {
 		}, 1000);
 	}
 
-	alarm(control: Control, msg: string) {
+	/**
+	 * Method implementing the action for the Alarm control
+	 * @param control Control meta-data
+	 * @param msg Control payload as string
+	 */
+	private alarm(control: Control, msg: string): void {
 		const msgItems = msg.split('/');
 		if (msg.includes('dismv/')) {
 			switch (msgItems[1]) {
@@ -361,7 +457,12 @@ export class Demo {
 		console.error('[DEMO] Command', msg, 'not found for Control', control.uuidAction, control.type);
 	}
 
-	alarmClock(control: Control, msg: string) {
+	/**
+	 * Method implementing the action for the AlarmClock control
+	 * @param control Control meta-data
+	 * @param msg Control payload as string
+	 */
+	private alarmClock(control: Control, msg: string): void {
 		const entryListId = control.states.entryList;
 		const nextEntryTimeId = control.states.nextEntryTime;
 		const entryList = controlStore.getState(entryListId) as AlarmClockEntries; // note: proxy object!
@@ -406,7 +507,12 @@ export class Demo {
 		console.error('[DEMO] Command', msg, 'not found for Control', control.uuidAction, control.type);
 	}
 
-	smokeAlarm(control: Control, msg: string) {
+	/**
+	 * Method implementing the action for the SmokeAlarm control
+	 * @param control Control meta-data
+	 * @param msg Control payload as string
+	 */
+	private smokeAlarm(control: Control, msg: string): void {
 		const msgItems = msg.split('/');
 		if (msg.includes('servicemode/')) {
 			this.smokeAlarmServiceMode(control, msgItems);
@@ -414,7 +520,12 @@ export class Demo {
 		}
 	}
 
-	smokeAlarmServiceMode(control: Control, msgItems: string[]) {
+	/**
+	 * Method implementing the subaction for the SmokeAlarm control to put it in service mode
+	 * @param control Control meta-data
+	 * @param msgItems List containing the time for service mode
+	 */
+	private smokeAlarmServiceMode(control: Control, msgItems: string[]): void {
 		let time = Number(msgItems[1]); // Override time given in seconds
 		const timeServiceModeId = control.states.timeServiceMode;
 		const levelId = control.states.level;
@@ -438,7 +549,12 @@ export class Demo {
 		}, 1000);
 	}
 
-	ircv1(control: Control, msg: string) {
+	/**
+	 * Method implementing the action for the Intelligent Room Control (IRC) Version 1
+	 * @param control Control meta-data
+	 * @param msg Control payload as string
+	 */
+	private ircv1(control: Control, msg: string): void {
 		const msgItems = msg.split('/');
 		const overrideId = control.states.override;
 		const ircDaytimer = Object.values(control.subControls);
@@ -453,7 +569,12 @@ export class Demo {
 		}
 	}
 
-	startIRCV1Timer(control: Control, msgItems: string[]) {
+	/**
+	 * Method implementing the subaction for the IRCv1 to start the timer
+	 * @param control Control meta-data
+	 * @param msg List containing the time
+	 */
+	private startIRCV1Timer(control: Control, msgItems: string[]): void {
 		const modeId = controlStore.getState(control.states.mode);
 		const isCooling = (modeId == 2 || modeId == 4 || modeId == 6);
 		let time = Number(msgItems[2])*60; // Override time given in minutes
@@ -478,7 +599,12 @@ export class Demo {
 		}, 1000);
 	}
 
-	ircv2(control: Control, msg: string) {
+	/**
+	 * Method implementing the action for the Intelligent Room Control (IRC) Version 2
+	 * @param control Control meta-data
+	 * @param msg Control payload as string
+	 */
+	private ircv2(control: Control, msg: string): void {
 		const msgItems = msg.split('/');
 		if (msg.includes('override/')) {
 			this.startIRCV2Timer(control, msgItems);
@@ -490,7 +616,12 @@ export class Demo {
 		}
 	}
 
-	startIRCV2Timer(control: Control, msgItems: string[]) {
+	/**
+	 * Method implementing the subaction for the IRCv2 to start the timer
+	 * @param control Control meta-data
+	 * @param msgItems List containing the time
+	 */
+	private startIRCV2Timer(control: Control, msgItems: string[]): void {
 		const selectedMode = Number(msgItems[1]);
 		const currentMode = Number(controlStore.getState(control.states.currentMode));
 		const isHeating = (currentMode == 1) || (currentMode == 4);
@@ -527,7 +658,11 @@ export class Demo {
 		}, 1000);
 	}
 
-	stopIRCV2Timer(control: Control) {
+	/**
+	 * Method implementing the subaction for the IRCv2 to stop the timer
+	 * @param control Control meta-data
+	 */
+	private stopIRCV2Timer(control: Control): void {
 		const overrideOff = [{ 
 			start: String(Math.round((Date.now() - utils.loxTimeRef)/1000)),
 			end: String(Math.round((Date.now() - utils.loxTimeRef)/1000)),
@@ -540,7 +675,12 @@ export class Demo {
 		clearInterval(this.ircTimerIntervalMap[control.uuidAction]);
 	}
 
-	daytimer(control: Control, msg: string) {
+	/**
+	 * Method implementing the action for the DayTimer control
+	 * @param control Control meta-data
+	 * @param msg Control payload as string
+	 */
+	private daytimer(control: Control, msg: string): void {
 		const valueId = control.states.value;
 		const overrideId = control.states.override;
 		const msgItems = msg.split('/');
@@ -569,7 +709,12 @@ export class Demo {
 		}
 	}
 
-	startDaytimer(control: Control, msgItems: string[]) {
+	/**
+	 * Method implementing the subaction for the DayTimer control to start timer
+	 * @param control Control meta-data
+	 * @param msgItems List containing the time
+	 */
+	private startDaytimer(control: Control, msgItems: string[]): void {
 		let time = Number(msgItems[2]);
 		const overrideId = control.states.override;
 		this.daytimerOldValue = controlStore.getState(control.states.value);
@@ -587,7 +732,12 @@ export class Demo {
 		}, 1000);
 	}
 
-	setDayTimer(control: Control, msgItems: string[]) {
+	/**
+	 * Method implementing the subaction for the DayTimer control to set/update the timer
+	 * @param control Control meta-data
+	 * @param msgItems List containing the entries
+	 */
+	private setDayTimer(control: Control, msgItems: string[]): void {
 		const entriesAndDefaultValueId = control.states.entriesAndDefaultValue;
 		let entries = '{defValue: 0, entries: ' + msgItems[1] + ', entry: [\n';
 		const modeList: string[] = [];
@@ -606,7 +756,12 @@ export class Demo {
 		controlStore.setState(entriesAndDefaultValueId, entries);
 	}
 
-	setDayTimerModes(control: Control, modeList: string[]) {
+	/**
+	 * Method implementing the subaction for the DayTimer control to set/update the timer modes
+	 * @param control Control meta-data
+	 * @param modeList List containing the modes
+	 */
+	private setDayTimerModes(control: Control, modeList: string[]): void {
 		const modeListId = control.states.modeList;
 		const opModes = controlStore.operatingModes;
 		const list = modeList.map((i) => Number(i));
@@ -624,9 +779,11 @@ export class Demo {
 	}
 
 	/**
-	 * Dummy fetch in demo mode
+	 * Method to fetch dummy info in demo mode
+	 * @param url string containing the url
+	 * @returns Response payload
 	 */
-	fetch(url: string): Promise<Response>  {
+	fetch(url: string): Promise<Response> {
 		console.info('[DEMO] fetch URL:', url);
 		if (url.includes('jdev/sps/io/__uuid_messageCenter/getEntries/2')) {
 			 return this.createPromise(JSON.stringify(messageCenter)); // original miniserver response is a string, not an object
@@ -643,7 +800,12 @@ export class Demo {
 		return this.createPromise(JSON.stringify({text: 'default reponse'}));
 	}
 
-	createStatisticInfo(url: string) {
+	/**
+	 * Method to create statistic response
+	 * @param url given url
+	 * @returns Response payload
+	 */
+	private createStatisticInfo(url: string): Promise<Response> {
 		const match = url.match(/getStatisticInfo\/([^/]+)/);
 		const controlUuid = match?.[1];
 		const groups = controlUuid ? (controlStore.controls.get(controlUuid)?.statisticV2?.groups ?? []) : [];
@@ -651,7 +813,12 @@ export class Demo {
 		return this.createPromise(JSON.stringify(info));
 	}
 
-	createStatistics(url: string) {
+	/**
+	 * Method to create dummy statistics for Meter control
+	 * @param url given url
+	 * @returns Response payload containing binary statisticV2 data
+	 */
+	private createStatistics(url: string): Promise<Response> {
 		// jdev/sps/getStatistic/{uuid}/{diff}/{from}/{until}/{unit}/{id}/
 		const match = url.match(/jdev[/]sps[/]getStatistic[/]([^/]+)[/](\w+)[/](\d+)[/](\d+)[/](\w+)[/](\d+)[/]/);
 		if (!match) return this.createPromise(new ArrayBuffer(0));
@@ -708,29 +875,32 @@ export class Demo {
 	/**
 	 * disconnect demo mode
 	 */
-	disconnect() {
+	disconnect(): void {
 		controlStore.clearStructure();
 	}
 
 	/**
-	 * Helper function to get file in demo mode
+	 * Helper method to get file in demo mode
+	 * @param url url to file
 	 */
-	getFile(url: string) {
+	getFile(url: string): void {
 		console.info('[DEMO] getFile not yet implemented in demo mode.');
 	}
 
 	/**
 	 * Store user settings (e.g. sorting/order of controls)
+	 * @param settings Object containing user settings
 	 */
-	setUserSettings(settings: string) {
+	setUserSettings(settings: string): void {
 		console.info('[DEMO] setUserSettings not implemented in demo mode.');
 	}
 
 	/**
-	 * Helper function to create response promise
+	 * Helper method to create response promise
+	 * @param msg message for the response
+	 * @returns Response
 	 */
-	 // Programatically create a Response
-	private createPromise(msg: any): Promise<Response> {
+	private createPromise(msg: string | ArrayBuffer): Promise<Response> {
     const headers = { 
 			'status': 200,
 			'statusText': 'text'
@@ -743,9 +913,11 @@ export class Demo {
 	}
 
 	/**
-	 * Helper function to extract HSV colors from string
+	 * Helper method to extract HSV colors from string
+	 * @param color Color in HSV format
+	 * @returns string list with HSV elements
 	 */
-	private getHsv(color: string) {
+	private getHsv(color: string): string[] {
 		const regex = new RegExp('hsv\\(([0-9]+),([0-9]+),([0-9]+)\\)');
 		const found = color.match(regex);
 		return found ? [found[1], found[2], found[3]] : []

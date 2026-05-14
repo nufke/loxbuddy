@@ -21,7 +21,26 @@
 	let temperatureIdsList = $derived(getTemperatureList(isHeatPeriod, false));
 	let tempActual = $derived(fmt.sprintf('%.1f', Number(controlStore.getState(control.states.tempActual))));
 
-	function updateTemperatures(tempList: string[]) {
+	let dialog: DialogView = $state({
+		action: (state: boolean) => {dialog.state = state},
+		state: false
+	});
+
+	let controlView: ControlView = $derived({
+		...DEFAULT_CONTROLVIEW,
+		control: control,
+		isFavorite: controlOptions.isFavorite,
+		iconName: '', // no icon, render temperature as text
+		iconText: tempActual,
+		iconColor: 'fill-surface-950 dark:fill-surface-50', // note: fill for svg text in IRC
+		textName: getTextName(),
+		statusName: temperatureIdsList && temperatureIdsList[value] ? $_(temperatureIdsList[value].name) : '',
+		statusColor: temperatureIdsList && temperatureIdsList[value] && temperatureIdsList[value].id > 0 ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700', // TODO other colors for temperatures
+		list: temperatureIdsList,
+		dialog: dialog
+	});
+
+	function updateTemperatures(tempList: string[]): number[] {
 		let temp: number[] = [];
 		tempList.forEach( (uuid: string) => {
 			let t = Number(controlStore.getState(uuid));
@@ -30,7 +49,7 @@
 		return temp;
 	}
 
-	function getTemperatureList(isHeatPeriod: boolean, isManual: boolean) {
+	function getTemperatureList(isHeatPeriod: boolean, isManual: boolean): ListItem[] {
 		let Idlist: ListItem[] = [
 			{ id: 0, name: 'Economy', value: 0, isAbsolute: false, correctionHeating: -1, correctionCooling: 1,  visible: true },
 			{ id: 1, name: 'Comfort heating', value: 0, isAbsolute: false, correctionHeating: 1, correctionCooling: 1, visible: true },
@@ -61,30 +80,11 @@
 		return Idlist;
 	}
 
-	function getTextName() {
+	function getTextName(): string {
 		const origNameFound = $_('IRoomController').includes(control.name);
 		const room = controlStore.rooms.get(control.room);
 		return (origNameFound && room) ? room.name : control.name;
 	}
-
-	let dialog: DialogView = $state({
-		action: (state: boolean) => {dialog.state = state},
-		state: false
-	});
-
-	let controlView: ControlView = $derived({
-		...DEFAULT_CONTROLVIEW,
-		control: control,
-		isFavorite: controlOptions.isFavorite,
-		iconName: '', // no icon, render temperature as text
-		iconText: tempActual,
-		iconColor: 'fill-surface-950 dark:fill-surface-50', // note: fill for svg text in IRC
-		textName: getTextName(),
-		statusName: temperatureIdsList && temperatureIdsList[value] ? $_(temperatureIdsList[value].name) : '',
-		statusColor: temperatureIdsList && temperatureIdsList[value] && temperatureIdsList[value].id > 0 ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700', // TODO other colors for temperatures
-		list: temperatureIdsList,
-		dialog: dialog
-	});
 </script>
 
 <div>

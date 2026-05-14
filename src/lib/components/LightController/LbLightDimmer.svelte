@@ -17,7 +17,16 @@
 	let {rgbColor, brightness} = $derived(getColor(color));
 	let position = $derived ( (control.type === 'ColorPickerV2') ? brightness : Math.round(nPosition));
 
-	function getColor(color: string) {
+	let controlView: ControlView = $derived({
+		...DEFAULT_CONTROLVIEW,
+		control: control,
+		isSubControl: controlOptions.isSubControl,
+		isFavorite: controlOptions.isFavorite,
+		textName: control.name,
+		statusName: position + ' %'
+	});
+
+	function getColor(color: string): {rgbColor: number[] | undefined, brightness: number | undefined} {
 		let hsv = color.match(/hsv\(([0-9]*),([0-9]*),([0-9]*)\)/);
 		let temp = color.match(/temp\(([0-9]*),([0-9]*)\)/);
 		let rgb, brightness;
@@ -30,7 +39,7 @@
 		return {rgbColor: rgb, brightness: brightness};
 	}
 
-	function trackColor() {
+	function trackColor(): string {
 		const rgb = rgbColor;
 		if (rgb) {
 			return String('background-image: linear-gradient(to right, rgba('+ rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ',0.1), rgba(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ',1)');
@@ -39,7 +48,7 @@
 		}
 	}
 
-	function updatePosition(e: any) {
+	function updatePosition(e: any): void {
 		let newPosition = Math.round(e);
 		if (newPosition == position) return; // same position, do not update
 
@@ -55,15 +64,6 @@
 			}
 		}
 	}
-
-	let controlView: ControlView = $derived({
-		...DEFAULT_CONTROLVIEW,
-		control: control,
-		isSubControl: controlOptions.isSubControl,
-		isFavorite: controlOptions.isFavorite,
-		textName: control.name,
-		statusName: position + ' %'
-	});
 </script>
 
 <div role="button" tabindex="0" onkeydown={()=>{}} aria-label="card" onclick={() => {controlOptions.action ? controlOptions.action() : controlView.dialog.state = true}}

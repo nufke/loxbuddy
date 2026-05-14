@@ -1,5 +1,7 @@
 import { SvelteMap } from 'svelte/reactivity';
-import type { WeatherCurrentConditions, WeatherDailyForecast, WeatherHourlyForecast, WeatherCodes, SolarRadiationClass } from '$lib/types/weather';
+import type { WeatherCurrentConditions, WeatherDailyForecast, WeatherHourlyForecast, 
+	WeatherCodes, SolarRadiationClass } from '$lib/types/weather';
+import { EMPTY_CURRENT_CONDITIONS } from '$lib/types/weather';
 import * as SunCalc from 'suncalc';
 import { utils } from '$lib/helpers/Utils';
 
@@ -54,12 +56,12 @@ const solarRadiationClass: SolarRadiationClass = {
 class LbWeatherStore {
 	weatherUrl = $state(''); // e.g. http://loxberry.local:6066/forecast/
 	observations = new SvelteMap<string, string>();
-	current: WeatherCurrentConditions = $derived({});
+	current: WeatherCurrentConditions = $state(EMPTY_CURRENT_CONDITIONS);
 	daily: WeatherDailyForecast[] = $derived([]);
 	hourly: WeatherHourlyForecast[] = $derived([]);
 	days = $state(0);
-	intervalTimer: NodeJS.Timeout;
-	
+	intervalTimer: NodeJS.Timeout | undefined;
+
 	id: string = '';
 	name: string = '';
 	longitude: string = '';
@@ -75,23 +77,22 @@ class LbWeatherStore {
 		this.weatherUrl = localStorage.getItem('weatherUrl') || '';
 	}
 
-	clearAll() {
+	clearAll(): void {
 		this.observations.clear();
-		this.current = {};
 		this.daily  = [];
 		this.hourly = [];
 	}
 
-	getObservation(id: string) {
-		return this.observations.get(id);
+	getObservation(id: string): string {
+		return this.observations.get(id) ?? '';
 	}
 
-	setObservation(key: string, data: string) {
+	setObservation(key: string, data: string): void {
 		const item = $state(data);
 		this.observations.set(key, item);
 	}
 
-	startWeatherForecast() {
+	startWeatherForecast(): void {
 		clearInterval(this.intervalTimer);
 		this.clearAll();
 		if (!this.weatherUrl.length) {
@@ -104,14 +105,14 @@ class LbWeatherStore {
 		}, 1000 * 60 * 5); // fetch weather forecast every 5 minutes
 	}
 
-	fetchWeatherForecast(url: string) {
+	fetchWeatherForecast(url: string): void {
 		console.info(`[LbWeatherStore] Fetch weather forecast from ${url}`);
 		fetch(url)
 		.then((response) => response.text())
 		.then((data) => this.grabWeatherData(data));
 	}
 
-	grabWeatherData(data: string) {
+	grabWeatherData(data: string): void {
 		const regex = new RegExp('<station>(.*)</station>', 's');
 		const found = data.match(regex);
 		let list: string[];
@@ -123,7 +124,7 @@ class LbWeatherStore {
 		}
 	}
 
-	processCurrent(list: string[]) {
+	processCurrent(list: string[]): void {
 		const station = list[1].replace(/\t/g,'').split(';');
 		const current = list[2].replace(/\t/g,'').split(';');
 		this.id = station[0];
@@ -160,7 +161,7 @@ class LbWeatherStore {
 		//console.debug('[LbWeatherStore] current observation', this.current);
 	}
 
-	calcSolarRadiationClass(radiation: number) {
+	calcSolarRadiationClass(radiation: number): string {
 		const percent100 = 1376; // 100% = 1376 W/m2
 		if (radiation < percent100/5) return solarRadiationClass[0]; 
 		if (radiation < (percent100/5)*2) return solarRadiationClass[1];
@@ -168,7 +169,7 @@ class LbWeatherStore {
 		return solarRadiationClass[4];
 	}
 
-	processHourly(list: string[]) {
+	processHourly(list: string[]): void {
 		const temp: WeatherHourlyForecast[] = [];
 		let dayCount = 0;
 		let prevDay = '';
@@ -199,7 +200,7 @@ class LbWeatherStore {
 		//console.debug('[LbWeatherStore] hourly forecast', this.hourly, dayCount)
 	}
 
-	processDaily() {
+	processDaily(): void {
 		const temp: WeatherDailyForecast[] = []; 
 		const startDate = this.hourly[0].date;
 		for(let i = 1; i <= this.days; i++) {

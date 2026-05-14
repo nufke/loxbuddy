@@ -62,20 +62,19 @@
 		dialog: dialog
 	});
 
-
-	function parseScroll(height: number, view: any = undefined) {
+	function parseScroll(height: number, view: any = undefined): void {
 		if (!view) return;
 		hasScroll = view.scrollHeight > view.clientHeight;
 		showScrollTop = height > 0 && hasScroll && (view?.scrollTop > 10);
 		showScrollBottom = height > 0 && hasScroll && (view.scrollTop + view.clientHeight < (view.scrollHeight - 10));
 	}
 
-	function updateSize() {
+	function updateSize(): void {
 		size = (windowHeight * 0.9 - viewport?.clientHeight - margin);
 		style = viewport?.clientHeight == viewport?.scrollHeight ? 'height: 100%' : 'height: ' + (viewport?.clientHeight + size) + 'px';
 	}
 
-	function newId() {
+	function newId(): number {
 		let max = entryIds.length ? Math.max(...entryIds) : 1;
 		for( let i = 1; i <= max; i++) {
 			if (!entryIds.includes(i)) return i;
@@ -83,7 +82,7 @@
 		return max + 1; // new ID
 	}
 
-	function publishEntry(entry: AlarmClockEntry, i: number = -1) {
+	function publishEntry(entry: AlarmClockEntry, i: number = -1): void {
 		let id = (i == -1) ? newId() : entryIds[i]; /* -1 is new entry */
 		let extName = (i == -1) ? ' ' + String(id) : ''; /* extend name for new entries */
 		let setting = entry.nightLight ? (entry.daily ? '1' : '0') : entry.modes?.map((s) => s.toString());
@@ -94,25 +93,25 @@
 		controlStore.setControl(control.uuidAction, cmd);
 	}
 
-	function updateName(i: number, e: any) {
+	function updateName(i: number, e: any): void {
 		const entryId = entryIds[i];
 		entryObj[entryId].name = e.value;
 		publishEntry(entryObj[entryId], i);
 	}
 
-	function updateAlarmTime(e: any) {
+	function updateAlarmTime(e: any): void {
 		let time = utils.hours2sec(utils.epoch2TimeStr(e.value.valueOf()/1000));
 		entryList[selectedEntry].alarmTime = time;
 		publishEntry(entryList[selectedEntry], selectedEntry);
 	}
 
-	function updateIsActive(i: number, e: any) {
+	function updateIsActive(i: number, e: any): void {
 		const entryId = entryIds[i];
 		entryObj[entryId].isActive = e.checked;
 		publishEntry(entryObj[entryId], i);
 	}
 
-	function updateSettings(i: number, e: any) {
+	function updateSettings(i: number, e: any): void {
 		const entryId = entryIds[i];
 		if (entryObj[entryId].nightLight) {
 			entryObj[entryId].daily = e.value;
@@ -122,7 +121,7 @@
 		publishEntry(entryObj[entryId], i);
 	}
 
-	function addEntry() {
+	function addEntry(): void {
 		if (entryIds.length > 15) return; // limit to 16 entries
 		let day = format(new Date(), 'eeee').toLowerCase();
 		let opModes = controlStore.operatingModes;
@@ -139,23 +138,23 @@
 		publishEntry(entry, -1); /* new entry */
 	}
 
-	function deleteEntry(i: number) {
+	function deleteEntry(i: number): void {
 		let cmd = 'entryList/delete/' + entryIds[i];
 		controlStore.setControl(control.uuidAction, cmd);
 	}
 
-	function getAlarmTime() {
+	function getAlarmTime(): string {
 		let date = new Date(nextEntryTime * 1000 + utils.loxTimeRef);
 		date = utils.isDST(date) ? new Date(nextEntryTime * 1000 + utils.loxTimeRef - 3600000) : date;
 		return format(date, 'PPP p');
 	}
 
-	function getTimerDate() {
+	function getTimerDate(): Date | null  {
 		return entryList && entryList[selectedEntry] ? 
 			utils.decTime2date(entryList[selectedEntry].alarmTime) : null;
 	}
 
-	function close() {
+	function close(): void {
 		controlView.dialog.action(false);
 	}
 

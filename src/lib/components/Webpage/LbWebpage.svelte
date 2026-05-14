@@ -11,10 +11,6 @@
 	let urlHd = $derived(control.details.urlHd);
 	let httpUrl = $derived((urlHd || url).match(/^https?:\/\/(.*)/)[1]); // https prio over http
 
-	function openWebPage() {
-		window.open(url || urlHd, "_blank")
-	}
-
 	let buttons: SingleButtonView[] = $state([
 		{
 			iconName: 'square-arrow-out-up-right',
@@ -40,6 +36,10 @@
 		buttons: buttons,
 		dialog: dialog
 	});
+
+	function openWebPage(): void {
+		window.open(url || urlHd, "_blank")
+	}
 </script>
 
 <div>

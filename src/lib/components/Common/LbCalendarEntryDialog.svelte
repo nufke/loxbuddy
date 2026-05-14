@@ -33,29 +33,6 @@
 	let modes = $derived(sameEntries.length ? sameEntries.map( (m: Entry) => m.mode) : [selectedEntry?.mode]) as string[];
 	let timeValid = $derived(utils.hours2min(startTime) < utils.hours2min(endTime));
 
-	function getDayModes() {
-		return Array.from(modes, (x) => opModes.get(x)).join(', ');
-	}
-
-	function getTemperature() {
-		let entry = temperatureList.find((item) => item.id == value);
-		return entry ? (entry.name + ' (' + entry.value + '°)') : '';
-	}
-
-	function updateTime(e: any) {
-		let timeStr = utils.epoch2TimeStr(e.value.valueOf()/1000);
-		if (isStartTime) {
-			startTime= timeStr;
-		} else {
-			endTime = timeStr == '00:00' ? '24:00' : timeStr;
-		}
-	}
-
-	function updateDayModes(e: any) {
-		modes = e.modes;
-		otherEntries = [...updatedEntries];
-	}
-
 	let dateTimeView = $state({
 		isDateView: false,
 		isMinuteView: false,
@@ -83,7 +60,30 @@
 		ok: () => {}
 	});
 
-	function openTemperatureView() {
+	function getDayModes(): string {
+		return Array.from(modes, (x) => opModes.get(x)).join(', ');
+	}
+
+	function getTemperature(): string {
+		let entry = temperatureList.find((item) => item.id == value);
+		return entry ? (entry.name + ' (' + entry.value + '°)') : '';
+	}
+
+	function updateTime(e: any): void {
+		let timeStr = utils.epoch2TimeStr(e.value.valueOf()/1000);
+		if (isStartTime) {
+			startTime= timeStr;
+		} else {
+			endTime = timeStr == '00:00' ? '24:00' : timeStr;
+		}
+	}
+
+	function updateDayModes(e: any): void {
+		modes = e.modes;
+		otherEntries = [...updatedEntries];
+	}
+
+	function openTemperatureView(): void {
 		let buttons: Button[] = [];
 		for (let i = 1; i < temperatureList.length; i++) { // we skip i=0, eco mode
 			buttons.push({
@@ -98,39 +98,39 @@
 		temperatureView.openDialog = true;
 	}
 
-	function openDeleteView() {
+	function openDeleteView(): void {
 		itemDeleteView.label = (modes.length > 1) ? ($_('Delete all entries') + '?') : ($_('Delete entry') + '?');
 		itemDeleteView.ok = () => {deleteEntries()};
 		itemDeleteView.openDialog = true;
 	}
 
-	function openTimeCheckView() {
+	function openTimeCheckView(): void {
 		itemDeleteView.label = $_('End time should be later than start time');
 		itemDeleteView.cancel = () => {itemDeleteView.openDialog = false};
 		itemDeleteView.ok = () => {itemDeleteView.openDialog = false};
 		itemDeleteView.openDialog = true;
 	}
 
-	function setStartTime() {
+	function setStartTime(): void {
 		dateTime = utils.hours2date(startTime);
 		isStartTime = true;
 		dateTimeView.label = $_("Start time");
 		dateTimeView.openDialog = true;
 	}
 
-	function setEndTime() {
+	function setEndTime(): void {
 		dateTime = utils.hours2date(endTime);
 		isStartTime = false;
 		dateTimeView.label = $_("End time");
 		dateTimeView.openDialog = true;
 	}
 
-	function deleteEntries() {
+	function deleteEntries(): void {
 		updatedEntries = [...otherEntries];
 		publishEntries();
 	}
 
-	function publishEntries() {
+	function publishEntries(): void {
 		let cmd = (view.isCooling ? 'setc/' : 'set/') + updatedEntries.length;
 		updatedEntries.forEach( (entry: Entry) => { cmd += '/' + entry.mode + ';' +
 			utils.hours2min(entry.from) + ';' + 
@@ -143,11 +143,11 @@
 		close();
 	}
 
-	function close() {
+	function close(): void {
 		view.openDialog = false;
 	}
 
-	function updateEntries() {
+	function updateEntries(): void {
 		if (!timeValid) {
 			openTimeCheckView();
 			return;
@@ -178,7 +178,7 @@
 		publishEntries();
 	}
 
-	function mergeEntries(entries: Entry[] ) {
+	function mergeEntries(entries: Entry[] ): Entry[] {
 		entries.sort((a, b) => utils.hours2min(a.from) - utils.hours2min(b.from));
 		const mergedEntries = [];
 		let currentEntry = entries[0];
