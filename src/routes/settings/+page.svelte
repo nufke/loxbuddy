@@ -19,7 +19,7 @@
 	let theme = $state(localStorage.getItem('theme') || 'LoxBuddy');
 	let mode = $state(localStorage.getItem('mode') || 'dark');
 	let startPage = $state(localStorage.getItem('startPage') || '/');
-	let sorting = $state(localStorage.getItem('sorting') || '0');
+	let sortingMode = $state(localStorage.getItem('sortingMode') || '0');
  	let group = $state('room');
 	let localeSettings = $derived(appStore.locale);
 	let sortingEnabled = $derived(appStore.dnd.isEnabled);
@@ -31,14 +31,14 @@
 		nl: 'Dutch'
 	};
 
-	const sortOrder: any = {
+	const sortMap: any = {
 		0: 'Sorting using LoxConfig',
 		1: 'User-defined sorting',
 		2: 'App-specific sorting'
 	};
 
 	let lang = $derived(language[localeSettings]);
-	let sortState = $derived(sortOrder[sorting]);
+	let sortState = $derived(sortMap[sortingMode]);
 
 	appStore.nav = '/';
 
@@ -51,24 +51,28 @@
 		openDialog: false,
 		buttons: [],
 		cancel: () => {},
-		ok: (e: number) => {sorting = String(e); appStore.setSorting(sorting)}
+		ok: (e: number) => {
+			sortingMode = String(e);
+			appStore.setSortingMode(sortingMode);
+			appStore.userDefinedOrder = (e > 0)
+		}
 	});
 
 	let sortingSelectViewButtons = $derived([
 		{
 			id: 0,
-			name: sortOrder['0'],
-			selected: sorting == '0'
+			name: sortMap['0'],
+			selected: sortingMode == '0'
 		},
 		{
 			id: 1,
-			name: sortOrder['1'],
-			selected: sorting == '1'
+			name: sortMap['1'],
+			selected: sortingMode == '1'
 		},
 		{
 			id: 2,
-			name: sortOrder['2'],
-			selected: sorting == '2'
+			name: sortMap['2'],
+			selected: sortingMode == '2'
 		}
 	]);
 
@@ -204,6 +208,7 @@
 	function onSortingEnabled(event: { checked: boolean }): void {
 		sortingEnabled = event.checked;
 		appStore.dnd.isEnabled = event.checked;
+		localStorage.setItem('sorting', event.checked ? '1' : '0');
 	}
 
 	/**

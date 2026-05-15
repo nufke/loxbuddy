@@ -12,8 +12,8 @@
 <div role="button" tabindex="0" class="card m-0 flex min-h-[70px] shadow-sm items-center justify-start rounded-lg border border-white/5
 										bg-surface-100-900 px-2 py-1 hover:border-white/10 relative" onclick={() => goto(key + '/' + item.uuid)}>
 	{#if appStore.dnd.isEnabled}
-		<div class="absolute right-1 text-surface-500">
-			<LbIcon name="grip-vertical"/>
+		<div class="absolute -right-[3px] -bottom-[3px] text-surface-500" data-drag-handle>
+			<LbIcon name="clarity:drag-handle-corner-line"/>
 		</div>
 	{/if}
 	<div class="w-full flex {isFavorite ? 'flex-col mt-1' : 'flex-row'}">

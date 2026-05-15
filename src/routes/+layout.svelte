@@ -38,7 +38,7 @@
 		dragThresholdPixels: 5,
 		forceListen: false,
 		isPressHoldMode: true, // enabled to enforce waiting time
-		pressHoldDelayMS: 400,
+		pressHoldDelayMS: 200,
 		pressHoldMargin: 25,
 		pressHoldThresholdPixels: 0
 	};

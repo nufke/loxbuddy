@@ -55,7 +55,10 @@ export class Demo {
 		}, 200);
 
 		setTimeout( () => {
-			controlStore.setUserSettings(userSettings);
+			// only load user settings if not available in localStorage
+			if (!controlStore.userSettings.ts) {
+				controlStore.setUserSettings(userSettings);
+			}
 		}, 100);
 
 		// Meter
@@ -892,7 +895,7 @@ export class Demo {
 	 * @param settings Object containing user settings
 	 */
 	setUserSettings(settings: string): void {
-		console.info('[DEMO] setUserSettings not implemented in demo mode.');
+		console.info('[DEMO] setUserSettings not implemented in demo mode.', JSON.parse(settings));
 	}
 
 	/**

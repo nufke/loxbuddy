@@ -51,8 +51,8 @@
 					bg-surface-100-900 min-h-[150px] px-2 py-2 hover:border-white/10 relative">
 	<div class="flex w-full flex-col">
 		{#if appStore.dnd.isEnabled}
-			<div class="absolute right-1 text-surface-500 top-[40%]">
-				<LbIcon name="grip-vertical"/>
+			<div class="absolute -right-[3px] -bottom-[3px] text-surface-500" data-drag-handle>
+				<LbIcon name="clarity:drag-handle-corner-line"/>
 			</div>
 		{/if}
 		<div class="flex w-full justify-between">
@@ -88,7 +88,7 @@
 							<div class="ml-2"></div>
 						{/if}
 						{#if button.type === 'button' && button.iconName}
-							<button type="button" class="btn-icon w-[18px] h-[18px] p-3 dark:bg-surface-950 bg-surface-50 rounded-lg border border-white/15 hover:border-white/50	active:bg-primary-500" 
+							<button type="button" disabled={locked} class="btn-icon w-[18px] h-[18px] p-3 dark:bg-surface-950 bg-surface-50 rounded-lg border border-white/15 hover:border-white/50 {locked ? '' : 'active:bg-primary-500'}" 
 											onclick={(e) => { e.stopPropagation(); e.preventDefault(); button.click(e)}}>
 								<LbIcon class={button.iconColor} name={button.iconName}/>
 							</button>
@@ -123,8 +123,8 @@
 						( controlOptions.isLink ? 'bg-surface-200-800 h-[70px]' : 'bg-surface-100-900 h-[70px]') }  px-2 py-2 hover:border-white/10">
 	<div class="flex w-full justify-between">
 		{#if appStore.dnd.isEnabled}
-			<div class="absolute right-1 text-surface-500 top-[35%]">
-				<LbIcon name="grip-vertical"/>
+			<div class="absolute -right-[3px] -bottom-[3px] text-surface-500" data-drag-handle>
+				<LbIcon name="clarity:drag-handle-corner-line"/>
 			</div>
 		{/if}
 		<div class="relative flex items-center truncate">
@@ -158,7 +158,7 @@
 				{/if}
 			</div>
 		</div>
-		<div class="flex flex-row items-center justify-center {appStore.dnd.isEnabled ? 'pr-5' : 'pr-0'}">
+		<div class="flex flex-row items-center justify-center {appStore.dnd.isEnabled ? 'pr-[3px]' : 'pr-0'}">
 			{#if controlView.buttons.length}
 				{#each controlView.buttons as button, index}
 					{#if index > 0}

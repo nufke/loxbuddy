@@ -16,6 +16,7 @@
 	let userSettings = $derived(controlStore.userSettings);
 	let userDefaultStructure = $derived(userSettings.userDefaultStructure) as UserDefaultStructure;
 	let dragGroup = $state('');
+	let dragHandlePressed = false;
 	let draggingItem: any;
 	let animatingItems = new Set();
 
@@ -23,6 +24,7 @@
 
 	let controlOptions: ControlOptions = $derived(DEFAULT_CONTROLOPTIONS);
 	let userDefinedOrder = $derived(appStore.userDefinedOrder);
+	let page: Category | undefined = $derived(controlStore.categories.get(data.uuid));
 
 	let filteredControls: Control[] = $derived(
 		controlStore.controlList.filter((control) => (control.cat === data.uuid) && ((control.restrictions & 1) != 1))
@@ -34,10 +36,6 @@
 		controlStore.roomList.filter((item) => filteredControls.map((control) => control.room)
 			.indexOf(item.uuid) > -1)
 			.sort((a, b) => a.name.localeCompare(b.name, appStore.locale))
-	);
-
-	let pageTitle: Category | undefined = $derived(
-		controlStore.categoryList.find((item) => filteredControls[0].cat == item.uuid)
 	);
 
 	let favorites: Control[] = $derived(
@@ -76,11 +74,15 @@
 		newList[itemB] = draggingItem;
 		return [...newList]; // update list (triggers effect)
 	}
+
+	function onDragHandlePointerDown(event: PointerEvent): void {
+		dragHandlePressed = !!(event.target as Element).closest('[data-drag-handle]');
+	}
 </script>
 
 <div class="container mx-auto max-w-[1280px] p-3 lb-page-center">
 	<div>
-		<p class="ml-2 mb-2 h5">{pageTitle?.name}</p>
+		<p class="ml-2 mb-2 h5">{page?.name}</p>
 	</div>
 	{#if favorites.length}
 		<div class="mt-2 mb-2 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 lg:flex-wrap">
@@ -88,8 +90,9 @@
 				{@const Component = lbControl.getControl(control.type)}
 				<div animate:flip={{ duration: appStore.dnd.duration }}
 					draggable={appStore.dnd.isEnabled}
-					ondragstart={() => {draggingItem = control; dragGroup = room}}
-					ondragend={() => {draggingItem = undefined; dragGroup = ''; controlStore.updateSortingOrder(favorites, key)}}
+					onpointerdown={onDragHandlePointerDown}
+					ondragstart={(e) => { if (!dragHandlePressed) { e.preventDefault(); return; } draggingItem = control; dragGroup = room; }}
+					ondragend={() => {draggingItem = undefined; dragGroup = ''; dragHandlePressed = false; controlStore.updateSortingOrder(favorites, key)}}
 					ondragenter={() => { favorites = swapItems(favorites, control, room)}}
 					ondragover={(event) => {event.preventDefault(); if (event && event.dataTransfer) event.dataTransfer.dropEffect = 'move';}}>
 						<Component control={control} controlOptions={{...controlOptions, isFavorite: true}}/>
@@ -106,9 +109,10 @@
 					{@const Component = lbControl.getControl(control.type)}
 					<div animate:flip={{ duration: appStore.dnd.duration }}
 						draggable={appStore.dnd.isEnabled}
-						ondragstart={() => {draggingItem = control; dragGroup = label.name}}
-						ondragend={() => {draggingItem = undefined; dragGroup = ''; controlStore.updateSortingOrder(selectedControls, 'category/' + label.uuid)}}
-						ondragenter={() => { filteredControls = swapItems(selectedControls, control, label.name)}}
+						onpointerdown={onDragHandlePointerDown}
+						ondragstart={(e) => { if (!dragHandlePressed) { e.preventDefault(); return; } draggingItem = control; dragGroup = label.name; }}
+						ondragend={() => {draggingItem = undefined; dragGroup = ''; dragHandlePressed = false; controlStore.updateSortingOrder(selectedControls, 'category/' + label.uuid)}}
+						ondragenter={() => { filteredControls = swapItems(filteredControls, control, label.name)}}
 						ondragover={(event) => {event.preventDefault(); if (event && event.dataTransfer) event.dataTransfer.dropEffect = 'move';}}>
 						<Component control={control} {controlOptions}/>
 					</div>

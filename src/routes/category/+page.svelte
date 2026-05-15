@@ -9,6 +9,7 @@
 	const key = 'category';
 	const fav = 'favorites';
 	let dragGroup = '';
+	let dragHandlePressed = false;
 	let draggingItem: any;
 	let animatingItems = new Set();
 
@@ -58,6 +59,10 @@
 		newList[itemB] = draggingItem;
 		return [...newList]; // update list (triggers effect)
 	}
+
+	function onDragHandlePointerDown(event: PointerEvent): void {
+		dragHandlePressed = !!(event.target as Element).closest('[data-drag-handle]');
+	}
 </script>
 
 <div class="container p-3 mx-auto max-w-[640px] lg:max-w-[960px] lb-page-center">
@@ -67,9 +72,9 @@
 			{#each favorites as item (item)}
 			<div animate:flip={{ duration: appStore.dnd.duration }}
 				draggable={appStore.dnd.isEnabled}
-				class=""
-				ondragstart={() => {draggingItem = item; dragGroup = fav}}
-				ondragend={() => {draggingItem = undefined; dragGroup = ''; controlStore.updateSortingOrder(favorites, fav)}}
+				onpointerdown={onDragHandlePointerDown}
+				ondragstart={(e) => { if (!dragHandlePressed) { e.preventDefault(); return; } draggingItem = item; dragGroup = fav; }}
+				ondragend={() => {draggingItem = undefined; dragGroup = ''; dragHandlePressed = false; controlStore.updateSortingOrder(favorites, fav)}}
 				ondragenter={() => { favorites = swapItems(favorites, item, fav)}}
 				ondragover={(event) => {event.preventDefault(); if (event && event.dataTransfer) event.dataTransfer.dropEffect = 'move';}}>
 				<LbCard {key} {item} isFavorite={true}/>
@@ -82,8 +87,9 @@
 		{#each items as item (item)}
 			<div animate:flip={{ duration: appStore.dnd.duration }}
 				draggable={appStore.dnd.isEnabled}
-				ondragstart={() => {draggingItem = item; dragGroup = key}}
-				ondragend={() => {draggingItem = undefined; dragGroup = ''; controlStore.updateSortingOrder(items, key)}}
+				onpointerdown={onDragHandlePointerDown}
+				ondragstart={(e) => { if (!dragHandlePressed) { e.preventDefault(); return; } draggingItem = item; dragGroup = key; }}
+				ondragend={() => {draggingItem = undefined; dragGroup = ''; dragHandlePressed = false; controlStore.updateSortingOrder(items, key)}}
 				ondragenter={() => { items = swapItems(items, item, key)}}
 				ondragover={(event) => {event.preventDefault(); if (event && event.dataTransfer) event.dataTransfer.dropEffect = 'move';}}>
 				<LbCard {key} {item} isFavorite={false}/>

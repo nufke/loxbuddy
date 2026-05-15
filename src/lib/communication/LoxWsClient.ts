@@ -190,7 +190,7 @@ export class LoxWsClient {
 	 * Store user settings (e.g. sorting/order of controls)
 	 */
 	setUserSettings(settings: string): void {
-		console.info('[LoxWsClient] setUserSettings not implemented');
+		console.info('[LoxWsClient] setUserSettings not implemented', JSON.parse(settings));
 	}
 
 	/**

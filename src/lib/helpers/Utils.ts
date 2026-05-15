@@ -70,7 +70,7 @@ class Utils {
 			b = (parseInt(found[3], 16) * scale).toString(16);
 		}
 		const rgb = `#${r}${g}${b}`;
-		console.log('rgb', found, rgb);
+		//console.log('rgb', found, rgb);
 		return rgb;
 	}
 

@@ -22,8 +22,9 @@ class LbAppStore {
 	showStatus: boolean = $state(true);
 	showWeather: boolean = $state(true);
 	startPage: string = $state('/');
-	sorting: string = $state('0'); // default sorting
-	userDefinedOrder: boolean = $derived(this.sorting != '0');
+	sorting: string = $state('0'); // sorting disabled
+	sortingMode: string = $state('0');// default sorting (config based)
+	userDefinedOrder: boolean = $state(false);
 	locale: string = $state('en'); // default English
 	credentials: Credentials = $state(NO_CREDENTIALS);
 	dnd = $state({isEnabled: false, duration: 300});
@@ -62,6 +63,9 @@ class LbAppStore {
 		this.locale = localStorage.getItem('locale') || 'en';
 		this.credentials = utils.deserialize(localStorage.getItem('credentials')) as Credentials;
 		this.sorting = localStorage.getItem('sorting') || '0';
+		this.sortingMode = localStorage.getItem('sortingMode') || '0';
+		this.dnd.isEnabled = this.sorting == '1';
+		this.userDefinedOrder = this.sortingMode != '0';
 	}
 
 	storeCredentials(credentials: Credentials): void {
@@ -88,9 +92,9 @@ class LbAppStore {
 		console.info('[LbAppStore] Locale set to', appStore.locale);
 	}
 
-	setSorting(s: string): void {
-		this.sorting = s ?? '0';
-		localStorage.setItem('sorting', s);
+	setSortingMode(mode: string): void {
+		this.sorting = mode ?? '0';
+		localStorage.setItem('sortingMode', mode);
 	}
 
 	resetLockScreenDialogTimeout(): void {

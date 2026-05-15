@@ -32,7 +32,15 @@
 	));
 
 	let screensClosed = $derived(
-		screenControls.filter((control: Control) => Number(controlStore.getState(control.states.position)) * 100 > 1)
+		screenControls.filter((control: Control) => (Number(controlStore.getState(control.states.position)) * 100 > 1) && Number(controlStore.getState(control.states.locked)) == 0)
+	);
+
+	let screensOpen = $derived(
+		screenControls.filter((control: Control) => (Number(controlStore.getState(control.states.position)) * 100 < 1) && Number(controlStore.getState(control.states.locked)) == 0)
+	);
+
+	let screensLocked = $derived(
+		screenControls.filter((control: Control) => Number(controlStore.getState(control.states.locked)) == 1)
 	);
 
 	let selectedScreenCount = $derived(screenList.filter((item) => item.selected == true).length);
@@ -70,7 +78,7 @@
 		iconColor: screensClosed.length ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700',
 		textName: control.name,
 		statusName: getActiveScreens(),
-		statusColor: screensClosed.length ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700',
+		statusColor: screensClosed.length + screensLocked.length ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700',
 		buttons: buttons,
 		dialog: dialog
 	});
@@ -84,13 +92,9 @@
 
 	function getActiveScreens(): string {
 		let status = '';
-		switch (screensClosed.length) {
-			case 0:
-				status = $_('All open');
-				break;
-			default:
-				status = String(screensClosed.length) + ' ' + $_('Closed').toLowerCase();
-		}
+		status += screensClosed.length ? String(screensClosed.length) + ' ' + $_('Closed').toLowerCase() : '';
+		status += screensOpen.length ? String(screensOpen.length) + ' ' + $_('Open').toLowerCase() : '';
+		status += screensLocked.length ? String(screensLocked.length) + ' ' + $_('Locked').toLowerCase() : '';
 		return status;
 	}
 

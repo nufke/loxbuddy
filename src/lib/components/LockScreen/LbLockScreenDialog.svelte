@@ -14,9 +14,9 @@
 	let showWeather = $derived(appStore.showWeather);
 
 	function getCurrentIcon(current: WeatherCurrentConditions): string {
-		let sunRise = utils.time2epoch(current.time, cur.sunRise);
-		let sunSet = utils.time2epoch(current.time, cur.sunSet);
-		let dayOrNight = (cur.time > sunRise) && (current.time < sunSet) ? '-day.svg' : '-night.svg';
+		let sunRise = utils.time2epoch(current.time, current.sunRise);
+		let sunSet = utils.time2epoch(current.time, current.sunSet);
+		let dayOrNight = (current.time > sunRise) && (current.time < sunSet) ? '-day.svg' : '-night.svg';
 		return '../../meteocons/svg/' + current.icon + dayOrNight;
 	}
 </script>

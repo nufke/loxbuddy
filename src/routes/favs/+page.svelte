@@ -9,6 +9,7 @@
 
 	let fav = 'favorites';
 	let dragGroup = $state('');
+	let dragHandlePressed = false;
 	let draggingItem: any;
 	let animatingItems = new Set();
 
@@ -52,6 +53,10 @@
 		newList[itemB] = draggingItem;
 		return [...newList]; // update list (triggers effect)
 	}
+
+	function onDragHandlePointerDown(event: PointerEvent): void {
+		dragHandlePressed = !!(event.target as Element).closest('[data-drag-handle]');
+	}
 </script>
 
 <div class="container mx-auto max-w-[800px] lg:max-w-[1280px] p-3">
@@ -61,8 +66,9 @@
 			{@const Component = lbControl.getControl(control.type)}
 			<div animate:flip={{ duration: appStore.dnd.duration }}
 				draggable={appStore.dnd.isEnabled}
-				ondragstart={() => {draggingItem = control; dragGroup = fav}}
-				ondragend={() => {draggingItem = undefined; dragGroup = ''; controlStore.updateSortingOrder(favoriteControls, fav)}}
+				onpointerdown={onDragHandlePointerDown}
+				ondragstart={(e) => { if (!dragHandlePressed) { e.preventDefault(); return; } draggingItem = control; dragGroup = fav; }}
+				ondragend={() => {draggingItem = undefined; dragGroup = ''; dragHandlePressed = false; controlStore.updateSortingOrder(favoriteControls, fav)}}
 				ondragenter={() => { favoriteControls = swapItems(favoriteControls, control, fav)}}
 				ondragover={(event) => {event.preventDefault(); if (event && event.dataTransfer) event.dataTransfer.dropEffect = 'move';}}>
 					<Component {control} controlOptions={{...controlOptions, isFavorite: true}}/>

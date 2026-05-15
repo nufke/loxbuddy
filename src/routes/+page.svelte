@@ -14,6 +14,7 @@
 	let dragGroup = $state('');
 	let draggingItem: any;
 	let animatingItems = new Set();
+	let dragHandlePressed = false;
 
 	let userSettings = $derived(controlStore.userSettings);
 	let userDefinedOrder = $derived(appStore.userDefinedOrder);
@@ -86,6 +87,10 @@
 		openPopup = false;
 		appStore.loginDialog.state = true; // goto login 
 	}
+
+	function onDragHandlePointerDown(event: PointerEvent): void {
+		dragHandlePressed = !!(event.target as Element).closest('[data-drag-handle]');
+	}
 </script>
 
 <div class="container mx-auto max-w-[800px] lg:max-w-[1280px] p-3">
@@ -99,8 +104,9 @@
 						{@const Component = lbControl.getControl(control.type)}
 						<div animate:flip={{ duration: appStore.dnd.duration }}
 							draggable={appStore.dnd.isEnabled}
-							ondragstart={() => {draggingItem = control; dragGroup = centralRoom.name}}
-							ondragend={() => {draggingItem = undefined; dragGroup = ''; controlStore.updateSortingOrder(selectedControls, key);}}
+							onpointerdown={onDragHandlePointerDown}
+							ondragstart={(e) => { if (!dragHandlePressed) { e.preventDefault(); return; } draggingItem = control; dragGroup = centralRoom.name; }}
+							ondragend={() => {draggingItem = undefined; dragGroup = ''; dragHandlePressed = false; controlStore.updateSortingOrder(selectedControls, key);}}
 							ondragenter={() => { centralControls = swapItems(centralControls, control, centralRoom.name)}}
 							ondragover={(event) => {event.preventDefault(); if (event && event.dataTransfer) event.dataTransfer.dropEffect = 'move';}}>
 							<Component {control} controlOptions={{...controlOptions, isFavorite: true}}/>

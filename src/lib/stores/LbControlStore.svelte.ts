@@ -171,21 +171,25 @@ class LbControlStore {
 	}
 
 	updateUserSettings(settings: UserSettings, uuid: string): void {
-		const sorting = Number(localStorage.getItem('sorting') || '0');
-		const client = this.controlClient.get(uuid) || demo;
-		switch (sorting) {
-			case 1: client.setUserSettings(JSON.stringify(this.userSettings));  break; /* user-defined sorting */
-			case 2: localStorage.setItem('userSettings', utils.serialize(settings)); break; /* app-specific sorting */
+		const sortingMode = Number(localStorage.getItem('sortingMode') || '0');
+		switch (sortingMode) {
+			case 1: { /* user-defined sorting */
+				const client = this.controlClient.get(uuid) || demo;
+				client.setUserSettings(JSON.stringify(settings)); break; /* cannot set in Demo, show setting */
+			}
+			case 2: { /* app-specific sorting */
+				localStorage.setItem('userSettings', utils.serialize(settings)); break;  /* store in localStorage */
+			}
 			default: /* none */
 		}
 	}
 
 	setUserSettings(settings: UserSettings): void {
-		const sorting = Number(localStorage.getItem('sorting') || '0');
-		const userSettings = utils.deserialize(localStorage.getItem('userSettings')) as UserSettings || DEFAULT_USERSETTINGS;
-		switch (sorting) {
+		const sortingMode = Number(localStorage.getItem('sortingMode') || '0');
+		const userSettings = utils.deserialize(localStorage.getItem('userSettings')) as UserSettings;
+		switch (sortingMode) {
 			case 1: this.userSettings = settings; break; /* user-defined sorting */
-			case 2: this.userSettings = userSettings || settings; break; /* app-specific sorting */
+			case 2: this.userSettings = userSettings ?? settings; break; /* app-specific sorting */
 			default: /* none */
 		}
 	}
