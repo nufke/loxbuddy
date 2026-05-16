@@ -56,8 +56,9 @@ export class Demo {
 
 		setTimeout( () => {
 			// only load user settings if not available in localStorage
+			console.info('[Demo] Get user settings...');
 			if (!controlStore.userSettings.ts) {
-				controlStore.setUserSettings(userSettings);
+				this.getUserSettings();
 			}
 		}, 100);
 
@@ -896,6 +897,13 @@ export class Demo {
 	 */
 	setUserSettings(settings: string): void {
 		console.info('[DEMO] setUserSettings not implemented in demo mode.', JSON.parse(settings));
+	}
+
+	/**
+	 * Retrieve user settings (e.g. sorting/order of controls)
+	 */
+	getUserSettings(): void {
+		controlStore.setUserSettings(userSettings);
 	}
 
 	/**

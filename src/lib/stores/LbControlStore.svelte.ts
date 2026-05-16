@@ -188,10 +188,24 @@ class LbControlStore {
 		const sortingMode = Number(localStorage.getItem('sortingMode') || '0');
 		const userSettings = utils.deserialize(localStorage.getItem('userSettings')) as UserSettings;
 		switch (sortingMode) {
-			case 1: this.userSettings = settings; break; /* user-defined sorting */
-			case 2: this.userSettings = userSettings ?? settings; break; /* app-specific sorting */
-			default: /* none */
+			case 1: { /* user-defined sorting */
+				console.info('[ControlStore] Use user-defined sorting');
+				this.userSettings = settings; break; 
+			}
+			case 2: {/* app-specific sorting */
+				console.info('[ControlStore] Use app-specific sorting');
+				this.userSettings = userSettings ?? settings; break; 
+			}
+			default: { /* other */
+				console.info('[ControlStore] Use config-based sorting');
+				this.userSettings = DEFAULT_USERSETTINGS; // flush sorting list
+			}
 		}
+	}
+
+	getUserSettings(uuid: string): void {
+		const client = this.controlClient.get(uuid) || demo;
+		client.getUserSettings();
 	}
 
 	/**

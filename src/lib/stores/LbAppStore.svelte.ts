@@ -62,9 +62,9 @@ class LbAppStore {
 		this.showWeather = localStorage.getItem('showWeather') == '1';
 		this.locale = localStorage.getItem('locale') || 'en';
 		this.credentials = utils.deserialize(localStorage.getItem('credentials')) as Credentials;
-		this.sorting = localStorage.getItem('sorting') || '0';
+		this.sorting = localStorage.getItem('sorting') || '0'; /* sorting enabled */
 		this.sortingMode = localStorage.getItem('sortingMode') || '0';
-		this.dnd.isEnabled = this.sorting == '1';
+		this.dnd.isEnabled = (this.sorting == '1');
 		this.userDefinedOrder = this.sortingMode != '0';
 	}
 
@@ -93,8 +93,10 @@ class LbAppStore {
 	}
 
 	setSortingMode(mode: string): void {
-		this.sorting = mode ?? '0';
+		this.sortingMode = mode;
 		localStorage.setItem('sortingMode', mode);
+		this.userDefinedOrder = (this.sortingMode != '0');
+		localStorage.setItem('userDefinedOrder', this.userDefinedOrder ? '1' : '0');
 	}
 
 	resetLockScreenDialogTimeout(): void {

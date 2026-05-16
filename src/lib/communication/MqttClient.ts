@@ -230,7 +230,14 @@ export class MqttClient {
 	 * Dummy placeholder to store user settings (e.g. sorting/order of controls)
 	 */
 	setUserSettings(settings: string): void {
-		console.info('[MqttClient] setUserSettings not implemented');
+		console.info('[MqttClient] setUserSettings not yet implemented');
+	}
+
+	/**
+	 * Dummy placeholder to retrieve user settings (e.g. sorting/order of controls)
+	 */
+	getUserSettings(): void {
+		console.info('[MqttClient] getUserSettings not yet implemented');
 	}
 
 	/**

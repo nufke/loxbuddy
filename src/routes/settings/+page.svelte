@@ -54,7 +54,7 @@
 		ok: (e: number) => {
 			sortingMode = String(e);
 			appStore.setSortingMode(sortingMode);
-			appStore.userDefinedOrder = (e > 0)
+			controlStore.getUserSettings(controlStore.msInfo.serialNr);
 		}
 	});
 

@@ -92,7 +92,7 @@ export class LoxWsClient {
 
 		// get UserSettings for sorting and favorites
 		console.info('[LoxWsClient] Get user settings...');
-		this.fetchUserSettings();
+		this.getUserSettings();
 
 		// get System status
 		console.info('[LoxWsClient] Get system status...');
@@ -196,7 +196,7 @@ export class LoxWsClient {
 	/**
 	 * Retrieve user settings (e.g. sorting/order of controls)
 	 */
-	fetchUserSettings(): void {
+	getUserSettings(): void {
 		fetch(`${this.hostName}/jdev/sps/getusersettings?autht=${appStore.credentials.token}&user=${this.userName}`)
 		.then((response) => {
 			if (response.ok) {
