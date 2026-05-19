@@ -18,7 +18,7 @@
 
 	let userSettings = $derived(controlStore.userSettings);
 	let userDefinedOrder = $derived(appStore.userDefinedOrder);
-	let userDefaultStructure = $derived(userSettings.userDefaultStructure) as UserDefaultStructure;
+	let userDefaultStructure = $derived(userSettings?.userDefaultStructure) as UserDefaultStructure;
 	let centralRooms = $derived(controlStore.roomList.filter((room) => room.name.includes($_('General')) || room.name.includes($_('Central'))));
 	let centralRoomsUuids = $derived(centralRooms.map((room) => room.uuid));
 	let controlOptions: ControlOptions = $derived(DEFAULT_CONTROLOPTIONS);
@@ -27,10 +27,10 @@
 		controlStore.controlList.filter((control) => centralRoomsUuids.includes(control.room))
 		.filter((item) => isFavorite(userDefaultStructure, item, key))
 		.sort((a, b) => a.name.localeCompare(b.name, appStore.locale))
-		.sort((a, b) => getPosition(userDefaultStructure, b, key) - getPosition(userDefaultStructure, a, key))
+		.sort((a, b) => getPosition(userDefaultStructure, a, key) - getPosition(userDefaultStructure, b, key))
 	);
 
-	let openPopup = $derived(centralControls.length == 0 && appStore.loginDialog.state == false);
+	let openPopup = $derived(controlStore.controlList.length == 0 && appStore.loginDialog.state == false);
 
 	/**
 	 * Check if given control is set as favorite control
@@ -56,7 +56,7 @@
 		if (obj && obj[control.uuidAction] && obj[control.uuidAction][key] && userDefinedOrder) { 
 			return obj[control.uuidAction][key].position ?? 0;
 		} else {
-			return control.defaultRating;
+			return control.defaultRating * -1;
 		}
 	}
 

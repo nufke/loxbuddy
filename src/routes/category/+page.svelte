@@ -13,21 +13,21 @@
 	let draggingItem: any;
 	let animatingItems = new Set();
 
-	let userSettings = $derived(controlStore.userSettings);
 	let userDefinedOrder = $derived(appStore.userDefinedOrder);
-	let userDefaultStructure = $derived(userSettings.userDefaultStructure) as UserDefaultStructure;
+	let userSettings = $derived(controlStore.userSettings);
+	let userDefaultStructure = $derived(userSettings?.userDefaultStructure) as UserDefaultStructure;
 
 	let items: Category[] = $derived(
 		controlStore.categoryList.filter((item) => controlStore.controlList.map((control) => control.cat)
 		.indexOf(item.uuid) > -1)
 		.sort((a, b) => a.name.localeCompare(b.name, appStore.locale))
-		.sort((a, b) => getPosition(userDefaultStructure, b, key) - getPosition(userDefaultStructure, a, key))
+		.sort((a, b) => getPosition(userDefaultStructure, a, key) - getPosition(userDefaultStructure, b, key))
 	);
 
 	let favorites: Category[] = $derived(
 		items.filter((item) => isFavorite(userDefaultStructure, item, fav))
 		.sort((a, b) => a.name.localeCompare(b.name, appStore.locale))
-		.sort((a, b) => getPosition(userDefaultStructure, b, fav) - getPosition(userDefaultStructure, a, fav))
+		.sort((a, b) => getPosition(userDefaultStructure, a, fav) - getPosition(userDefaultStructure, b, fav))
 	);
 
 	function isFavorite(obj: UserDefaultStructure, cat: Category, key: string): boolean {
@@ -42,7 +42,7 @@
 		if (obj && obj[cat.uuid] && obj[cat.uuid][key] && userDefinedOrder) {
 			return obj[cat.uuid][key].position ?? 0;
 		} else {
-			return cat.defaultRating;
+			return 0; /* no position enforced, fall-back to alphabatic oder */
 		}
 	}
 

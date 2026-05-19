@@ -15,19 +15,19 @@
 
 	let userSettings = $derived(controlStore.userSettings);
 	let userDefinedOrder = $derived(appStore.userDefinedOrder);
-	let userDefaultStructure = $derived(userSettings.userDefaultStructure) as UserDefaultStructure;
+	let userDefaultStructure = $derived(userSettings?.userDefaultStructure) as UserDefaultStructure;
 
 	let items: Room[] = $derived(
 		controlStore.roomList.filter((item) => controlStore.controlList.map((control) => control.room)
 		.indexOf(item.uuid) > -1)
 		.sort((a, b) => a.name.localeCompare(b.name, appStore.locale))
-		.sort((a, b) => getPosition(userDefaultStructure, b, key) - getPosition(userDefaultStructure, a, key))
+		.sort((a, b) => getPosition(userDefaultStructure, a, key) - getPosition(userDefaultStructure, b, key))
 	);
 
 	let favorites: Room[] = $derived(
 		items.filter((item) => isFavorite(userDefaultStructure, item, fav))
 		.sort((a, b) => a.name.localeCompare(b.name, appStore.locale))
-		.sort((a, b) => getPosition(userDefaultStructure, b, fav) - getPosition(userDefaultStructure, a, fav))
+		.sort((a, b) => getPosition(userDefaultStructure, a, fav) - getPosition(userDefaultStructure, b, fav))
 	);
 
 	/**
@@ -54,7 +54,7 @@
 		if (obj && obj[room.uuid] && obj[room.uuid][key] && userDefinedOrder) {
 			return obj[room.uuid][key].position ?? 0;
 		} else {
-			return room.defaultRating;
+			return 0; /* no position enforced, fall-back to alphabatic oder */
 		}
 	}
 

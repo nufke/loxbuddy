@@ -22,20 +22,20 @@
 	let controlOptions: ControlOptions = $derived(DEFAULT_CONTROLOPTIONS);
 	let userDefinedOrder = $derived(appStore.userDefinedOrder);
 	let userSettings = $derived(controlStore.userSettings);
-	let userDefaultStructure = $derived(userSettings.userDefaultStructure) as UserDefaultStructure;
+	let userDefaultStructure = $derived(userSettings?.userDefaultStructure) as UserDefaultStructure;
 	let page: Room | undefined = $derived(controlStore.rooms.get(data.uuid));
 
 	let filteredControls: Control[] = $derived(
 		controlStore.controlList.filter((control) => (control.room === data.uuid) && ((control.restrictions & 1) != 1))
 		.sort((a, b) => a.name.localeCompare(b.name, appStore.locale))
-		.sort((a, b) => getPosition(userDefaultStructure, b, key + '/' + b.cat) - getPosition(userDefaultStructure, a, key + '/' + a.cat))
+		.sort((a, b) => getPosition(userDefaultStructure, a, key + '/' + a.cat) - getPosition(userDefaultStructure, b, key + '/' + b.cat))
 	);
 
 	let favorites: Control[] = $derived(
 		controlStore.controlList.filter((control) => (control.room === data.uuid) && ((control.restrictions & 1) != 1))
 		.filter((control) => isFavorite(userDefaultStructure, control, key))
 		.sort((a, b) => a.name.localeCompare(b.name, appStore.locale))
-		.sort((a, b) => getPosition(userDefaultStructure, b, key) - getPosition(userDefaultStructure, a, key))
+		.sort((a, b) => getPosition(userDefaultStructure, a, key) - getPosition(userDefaultStructure, b, key))
 	);
 
 	let labels: Category[] = $derived(
@@ -68,7 +68,7 @@
 		if (obj && obj[control.uuidAction] && obj[control.uuidAction][key] && userDefinedOrder) {
 			return obj[control.uuidAction][key].position ?? 0;
 		} else {
-			return control.defaultRating;
+			return 0; /* no position enforced, fall-back to alphabatic oder */
 		}
 	}
 

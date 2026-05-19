@@ -14,14 +14,14 @@
 	let animatingItems = new Set();
 
 	let userSettings = $derived(controlStore.userSettings);
-	let userDefaultStructure = $derived(userSettings.userDefaultStructure) as UserDefaultStructure;
+	let userDefaultStructure = $derived(userSettings?.userDefaultStructure) as UserDefaultStructure;
 	let controlOptions: ControlOptions = $derived(DEFAULT_CONTROLOPTIONS);
 	let userDefinedOrder = $derived(appStore.userDefinedOrder);
 
 	let favoriteControls = $derived(
 		controlStore.controlList.filter((control) => isFavorite(userDefaultStructure, control, fav))
 		.sort((a, b) => a.name.localeCompare(b.name, appStore.locale))
-		.sort((a, b) => getPosition(userDefaultStructure, b, fav) - getPosition(userDefaultStructure, a, fav))
+		.sort((a, b) => getPosition(userDefaultStructure, a, fav) - getPosition(userDefaultStructure, b, fav))
 	);
 
 	function isFavorite(obj: UserDefaultStructure, control: Control, key: string): boolean {
@@ -36,7 +36,7 @@
 		if (obj && obj[control.uuidAction] && obj[control.uuidAction][key] && userDefinedOrder) { 
 			return obj[control.uuidAction][key].position ?? 0;
 		} else {
-			return control.defaultRating;
+			return control.defaultRating * -1;
 		}
 	}
 

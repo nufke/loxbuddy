@@ -659,14 +659,48 @@ export type UserDefaultStructure = {
 	}
 }
 
+export type AudioServerMenu = {
+	rating: number;
+	enabled: boolean;
+	key: string;
+	automatic: boolean;
+}
+
+export type AudioserverCustomization = {
+	[key: string]: {
+		start: {
+			"start-favs": AudioServerMenu;
+			"start-history": AudioServerMenu;
+			"start-spotify_playlists": AudioServerMenu;
+		},
+		menu: {
+			"menu-playlists": AudioServerMenu;
+			"menu-radio": AudioServerMenu;
+			"menu-spotify": AudioServerMenu;
+			"menu-lib": AudioServerMenu;
+			"menu-announcement": AudioServerMenu;
+			"menu-lineIn-linein:504F94F04C80#1000001": AudioServerMenu;
+			"menu-lineIn": AudioServerMenu;
+		}
+	}
+}
+
 export type UserSettings = {
-	ts?: number;
-	userDefaultStructure: UserDefaultStructure
+	ts: number;
+	userDefaultStructure: UserDefaultStructure;
+	"audioserverCustomization_11.2.2": AudioserverCustomization;
+	currentSpotifyAccUid: any;
+  searchHistory: any;
+  "lastPlayedItems_11.2.2": any;
 }
 
 export const DEFAULT_USERSETTINGS: UserSettings = {
 	ts: 0,
-	userDefaultStructure: {}
+	userDefaultStructure: {},
+	"audioserverCustomization_11.2.2": {},
+	currentSpotifyAccUid: {},
+	searchHistory: {},
+	"lastPlayedItems_11.2.2": {}
 }
 
 export type Credentials = {

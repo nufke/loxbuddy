@@ -11,18 +11,7 @@
 	import LbIcon from '$lib/components/Common/LbIcon.svelte';
 	import LbGeneralDialog from '$lib/components/Common/LbGeneralDialog.svelte';
 
-	let openThemeDialog = $state(false);
-	let openStartpageDialog = $state(false);
-	let showStatus = $state(localStorage.getItem('showStatus') || '0');
-	let showWeather = $state(localStorage.getItem('showWeather') || '0');
-	let weatherUrl = $state(localStorage.getItem('weatherUrl') || '');
-	let theme = $state(localStorage.getItem('theme') || 'LoxBuddy');
-	let mode = $state(localStorage.getItem('mode') || 'dark');
-	let startPage = $state(localStorage.getItem('startPage') || '/');
-	let sortingMode = $state(localStorage.getItem('sortingMode') || '0');
- 	let group = $state('room');
-	let localeSettings = $derived(appStore.locale);
-	let sortingEnabled = $derived(appStore.dnd.isEnabled);
+	appStore.nav = '/';
 
 	const loc = ['en', 'de', 'nl'];
 	const language: any = {
@@ -37,14 +26,27 @@
 		2: 'App-specific sorting'
 	};
 
-	let lang = $derived(language[localeSettings]);
-	let sortState = $derived(sortMap[sortingMode]);
-
-	appStore.nav = '/';
-
-	let other = [
+	const other = [
 		{ name: 'Home', uuid: '/'}
 	];
+
+	let openThemeDialog = $state(false);
+	let openStartpageDialog = $state(false);
+	let showStatus = $state(localStorage.getItem('showStatus') || '0');
+	let showWeather = $state(localStorage.getItem('showWeather') || '0');
+	let weatherUrl = $state(localStorage.getItem('weatherUrl') || '');
+	let theme = $state(localStorage.getItem('theme') || 'LoxBuddy');
+	let mode = $state(localStorage.getItem('mode') || 'dark');
+	let startPage = $state(localStorage.getItem('startPage') || '/');
+	let sortingMode = $state(localStorage.getItem('sortingMode') || '0');
+ 	let group = $state('room');
+	let localeSettings = $derived(appStore.locale);
+	let sortingEnabled = $derived(appStore.dnd.isEnabled);
+	let sortingButtonDisabled = $derived(Number(sortingMode) == 0);
+	let lang = $derived(language[localeSettings]);
+	let sortingText = $derived(sortMap[sortingMode]);
+
+
 
 	let sortingSelectView: GeneralView = $state({
 		label: $_('Sorting order'),
@@ -54,7 +56,10 @@
 		ok: (e: number) => {
 			sortingMode = String(e);
 			appStore.setSortingMode(sortingMode);
-			controlStore.getUserSettings(controlStore.msInfo.serialNr);
+			controlStore.getUserSettings();
+			if (e == 0) { /* when config selected, disable sorting */
+				onSortingEnabled({ checked: false });
+			}
 		}
 	});
 
@@ -266,8 +271,8 @@
 	</div>
 	<button aria-current="true" type="button" class="w-full border-b dark:border-surface-900 border-surface-200 p-3 pr-5 pl-5 text-left text-lg">
 		<div class="flex w-full justify-between">
-			<p>{$_("Sorting enabled")}</p>
-			<Switch checked={sortingEnabled} onCheckedChange={onSortingEnabled}>
+			<p class={sortingButtonDisabled ? 'dark:text-surface-600 text-surface-300' : 'text-surface-950-50'}>{$_("Sorting enabled")}</p>
+			<Switch disabled={sortingButtonDisabled} checked={sortingEnabled} onCheckedChange={onSortingEnabled}>
 				<Switch.Control class="w-12 h-8 mr-1 data-[state=checked]:preset-filled-primary-500">
 					<Switch.Thumb />
 				</Switch.Control>
@@ -278,7 +283,7 @@
 	<button aria-current="true" type="button" class="flex w-full justify-between border-b dark:border-surface-900 border-surface-200 p-3 pr-5 pl-5 text-left text-lg"
 					onclick={openUserDefinedSorting}>
 		<p>{$_("Sorting option")}</p>
-		<p>{$_(sortState)}</p>
+		<p>{$_(sortingText)}</p>
 	</button>
 	<button aria-current="true" type="button" class="flex w-full justify-between border-b dark:border-surface-900 border-surface-200 p-3 pr-5 pl-5 text-left text-lg"
 					onclick={() => {openThemeDialog = true;}}>

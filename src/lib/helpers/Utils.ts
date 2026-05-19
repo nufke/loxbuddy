@@ -1,5 +1,6 @@
 import { format } from 'date-fns';
 import fmt from 'sprintf-js';
+import { SvelteMap } from 'svelte/reactivity';
 import type { EntriesAndDefaultValue } from '$lib/types/models';
  
 class Utils {
@@ -176,6 +177,11 @@ class Utils {
 
 	deserialize(item: string | null): any {
 		return item ? JSON.parse(item) : null;
+	}
+
+	deserializeMap<K extends string, V>(item: string | null): SvelteMap<K, V> | null {
+		const plain: Record<string, V> | null = item ? JSON.parse(item) : null;
+		return plain ? new SvelteMap<K, V>(Object.entries(plain) as [K, V][]) : null;
 	}
 	
 	extractEntries(s: string): EntriesAndDefaultValue {

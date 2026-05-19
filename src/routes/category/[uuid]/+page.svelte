@@ -13,15 +13,14 @@
 
 	let key = 'category';
 	let room = 'room';
-	let userSettings = $derived(controlStore.userSettings);
-	let userDefaultStructure = $derived(userSettings.userDefaultStructure) as UserDefaultStructure;
-	let dragGroup = $state('');
 	let dragHandlePressed = false;
 	let draggingItem: any;
 	let animatingItems = new Set();
-
 	appStore.nav = '/category';
 
+	let dragGroup = $state('');
+	let userSettings = $derived(controlStore.userSettings);
+	let userDefaultStructure = $derived(userSettings?.userDefaultStructure) as UserDefaultStructure;
 	let controlOptions: ControlOptions = $derived(DEFAULT_CONTROLOPTIONS);
 	let userDefinedOrder = $derived(appStore.userDefinedOrder);
 	let page: Category | undefined = $derived(controlStore.categories.get(data.uuid));
@@ -29,7 +28,7 @@
 	let filteredControls: Control[] = $derived(
 		controlStore.controlList.filter((control) => (control.cat === data.uuid) && ((control.restrictions & 1) != 1))
 		.sort((a, b) => a.name.localeCompare(b.name, appStore.locale))
-		.sort((a, b) => getPosition(userDefaultStructure, b, key + '/' + b.room) - getPosition(userDefaultStructure, a, key + '/' + a.room))
+		.sort((a, b) => getPosition(userDefaultStructure, a, key + '/' + a.room) - getPosition(userDefaultStructure, b, key + '/' + b.room))
 	);
 
 	let labels: Room[] = $derived(
@@ -42,7 +41,7 @@
 		controlStore.controlList.filter((control) => (control.cat === data.uuid) && ((control.restrictions & 1) != 1))
 		.filter((control) => isFavorite(userDefaultStructure, control, room))
 		.sort((a, b) => a.name.localeCompare(b.name, appStore.locale))
-		.sort((a, b) => getPosition(userDefaultStructure, b, room) - getPosition(userDefaultStructure, a, room))
+		.sort((a, b) => getPosition(userDefaultStructure, a, room) - getPosition(userDefaultStructure, b, room))
 	);
 
 	function isFavorite(obj: UserDefaultStructure, control: Control, key: string): boolean {
@@ -57,7 +56,7 @@
 		if (obj && obj[control.uuidAction] && obj[control.uuidAction][key] && userDefinedOrder) {
 			return obj[control.uuidAction][key].position ?? 0;
 		} else {
-			return control.defaultRating;
+			return 0; /* no position enforced, fall-back to alphabatic oder */
 		}
 	}
 

@@ -57,7 +57,7 @@ export class Demo {
 		setTimeout( () => {
 			// only load user settings if not available in localStorage
 			console.info('[Demo] Get user settings...');
-			if (!controlStore.userSettings.ts) {
+			if (!controlStore.userSettings.userDefaultStructure.length) {
 				this.getUserSettings();
 			}
 		}, 100);
