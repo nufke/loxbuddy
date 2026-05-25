@@ -58,7 +58,7 @@
 			"readAt": 1761519463,
 			"isVisuLocked": false,
 			"actions": [],
-			"desc": "Your miniserver was restarted because there was not enough free memory available! This could have been caused by programming too much. If the problem occurs more often, contact your Loxone Partner.<br><br>Further details can be found under the following link.",
+			"desc": "Your Miniserver was restarted because there was not enough free memory available! This could have been caused by programming too much. If the problem occurs more often, contact your Loxone Partner.<br><br>Further details can be found under the following link.",
 			"helpLink": "https://www.loxone.com/help/low-memory#Reboot"
 		},
 		{
@@ -78,7 +78,7 @@
 			"readAt": 1762005360,
 			"isVisuLocked": false,
 			"actions": [],
-			"desc": "Your miniserver was restarted because there was not enough free memory available! This could have been caused by programming too much. If the problem occurs more often, contact your Loxone Partner.<br><br>Further details can be found under the following link.",
+			"desc": "Your Miniserver was restarted because there was not enough free memory available! This could have been caused by programming too much. If the problem occurs more often, contact your Loxone Partner.<br><br>Further details can be found under the following link.",
 			"helpLink": "https://www.loxone.com/help/low-memory#Reboot"
 		},
 		{

@@ -790,7 +790,7 @@ export class Demo {
 	fetch(url: string): Promise<Response> {
 		console.info('[DEMO] fetch URL:', url);
 		if (url.includes('jdev/sps/io/__uuid_messageCenter/getEntries/2')) {
-			 return this.createPromise(JSON.stringify(messageCenter)); // original miniserver response is a string, not an object
+			 return this.createPromise(JSON.stringify(messageCenter)); // original Miniserver response is a string, not an object
 		}
 		if (url.includes('jdev/sps/io/__uuid__controls_intercom/securedDetails')) {
 			return this.createPromise(states.__uuid__controls_intercom_securedDetails);

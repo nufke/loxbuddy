@@ -36,26 +36,6 @@ Visit the [Status page](https://github.com/nufke/loxbuddy/wiki/Status) for the l
 
 Interested to see the LoxBuddy App in action? Visit [loxbuddy.nl](https://loxbuddy.nl) and click <b><span style="color:#45e14b">Start Demo</span></b> on the Login page.
 
-## Development environment
-
-To help in the development of this App, you need a Node.js installation on your desktop. Requirement is Node.js &ge; v22.20.0 (LTS). The LoxBuddy application is based on [Svelte](https://svelte.dev/), [SvelteKit](https://kit.svelte.dev/) and [Skeleton](https://www.skeleton.dev/). 
-
-```bash
-# install
-git clone https://github.com/nufke/loxbuddy.git
-cd loxbuddy
-npm install
-
-# update environment variables (MQTT settings)
-cp .env.example .env.local
-code .env.local
-
-# launch development server
-npm run dev
-```
-
-You can access LoxBuddy by navigating to <http://localhost:5173> in a web browser.
-
 ## Deployment using Docker (recommended)
 
 To deploy LoxBuddy in a Docker container, make sure you have [Docker Desktop](https://www.docker.com/) installed on your system, and execute the following commands:
@@ -91,6 +71,26 @@ npm run pm2:status      # show status of all pm2 processes
 ```
 
 After (re)starting, you can access the LoxBuddy App by navigating to <http://localhost:4004> in a web browser.
+
+## Development environment
+
+To help in the development of this App, you need a Node.js installation on your desktop. Requirement is Node.js &ge; v22.20.0 (LTS). The LoxBuddy application is based on [Svelte](https://svelte.dev/), [SvelteKit](https://kit.svelte.dev/) and [Skeleton](https://www.skeleton.dev/). 
+
+```bash
+# install
+git clone https://github.com/nufke/loxbuddy.git
+cd loxbuddy
+npm install
+
+# update environment variables (MQTT settings)
+cp .env.example .env.local
+code .env.local
+
+# launch development server
+npm run dev
+```
+
+You can access LoxBuddy by navigating to <http://localhost:5173> in a web browser.
 
 ## Issues and requests
 

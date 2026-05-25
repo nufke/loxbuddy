@@ -1,9 +1,9 @@
 import LoxClient from 'svelte-lox-client';
+import { miniserverClient } from '$lib/communication/MiniserverClient';
 import type FileMessage from 'svelte-lox-client/dist/WebSocketMessages/FileMessage';
 import { controlStore } from '$lib/stores/LbControlStore.svelte';
 import { appStore } from '$lib/stores/LbAppStore.svelte';
 import { utils } from '$lib/helpers/Utils';
-import { demo } from '$lib/demo/Demo';
 
 /**
  * Class to connect to Miniserver using WebSocket
@@ -41,7 +41,7 @@ export class LoxWsClient {
 
 	/**
 	 * Establish connection to Miniserver
-	 * @param token (optional) active token for the connection 
+	 * @param token (optional) active token for the connection
 	 */
 	async connect(token?: string): Promise<void> {
 		try {
@@ -61,7 +61,7 @@ export class LoxWsClient {
 			console.error('[LoxWsClient] Unable to connect and authenticate!');
 			return;
 		}
-		this.getSettings();
+		await this.getSettings();
 	}
 
 	/**
@@ -72,14 +72,14 @@ export class LoxWsClient {
 
 		// get structure file
 		console.info('[LoxWsClient] Get structure file...');
-		
+
 		try {
 			const structure = await this.client.getStructureFile();
 			// add msName to credentials
 			appStore.storeCredentials({...appStore.credentials, msName: structure.msInfo.msName});
 			// store structure as app state
 			controlStore.initStructure(structure, this);
-			// we need to parse the structure in the client, 
+			// we need to parse the structure in the client,
 			// otherwise the control messages are not understood by LoxClient
 			this.client.parseStructureFile();
 		}	catch {
@@ -89,27 +89,12 @@ export class LoxWsClient {
 
 		// initiates streaming of all events
 		await this.client.enableUpdates();
-
-		// get UserSettings for sorting and favorites
-		console.info('[LoxWsClient] Get user settings...');
-		this.getUserSettings();
-
-		// get System status
-		console.info('[LoxWsClient] Get system status...');
-		this.getSystemStatus();
-
-		// get icon list
-		console.info('[LoxWsClient] Get icons...');
-		this.getIconList();
-
-		// update locale based on structure language
-		appStore.setLocale(controlStore.msInfo.languageCode.toLowerCase().slice(0, 2));
 	}
 
 	/**
 	 * Listen to Miniserver events, such as connection status, text and value events, etc.
 	 */
-	registerEvents(): void {
+	private registerEvents(): void {
 		this.client.on('connected', () => {
 			console.info(`[LoxWsClient] Connection to Miniserver established`);
 		});
@@ -123,6 +108,7 @@ export class LoxWsClient {
 		this.client.on('disconnected', () => {
 			console.info('[LoxWsClient] Disconnected from Miniserver');
 			appStore.loxStatus = 0;
+			miniserverClient.disconnect();
 		});
 
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -179,141 +165,35 @@ export class LoxWsClient {
 	}
 
 	/**
-	 * Disconnect Miniserver and preserve token
+	 * Disconnect Miniserver
+	 * @param preserveToken preserve Token
 	 */
-	async disconnect(): Promise<void> {
-		await this.client.disconnect(true);
+	async disconnect(preserveToken: boolean = true): Promise<void> {
+		await this.client.disconnect(preserveToken);
+		miniserverClient.disconnect();
 		appStore.loxStatus = 0;
 	}
 
 	/**
 	 * Store user settings (e.g. sorting/order of controls)
+	 * @param settings in string/strigify format 
 	 */
 	setUserSettings(settings: string): void {
 		console.info('[LoxWsClient] setUserSettings not implemented', JSON.parse(settings));
 	}
-
+	
 	/**
 	 * Retrieve user settings (e.g. sorting/order of controls)
 	 */
 	getUserSettings(): void {
-		fetch(`${this.hostName}/jdev/sps/getusersettings?autht=${appStore.credentials.token}&user=${this.userName}`)
-		.then((response) => {
-			if (response.ok) {
-				return response.json();
-			} else {
-				throw new Error('getusersettings failed');
-			}
-		})
-		.then((data) => {
-			controlStore.setUserSettings(data);
-		})
-		.catch((error) => console.error('[LoxWsClient] getUserSettings fetch error: ', error));
+		miniserverClient.getUserSettings();
 	}
-
+	
 	/**
-	 * Retrieve Miniserver system status
-	 */
-	getSystemStatus(): void {
-		fetch(`${this.hostName}/jdev/sps/io/${controlStore.messageCenterList[0].uuidAction}/getEntries/2?autht=${appStore.credentials.token}&user=${this.userName}`)
-		.then((response) => {
-			if (response.ok) {
-				return response.json();
-			}
-		})
-		.then((data) => {
-			controlStore.systemStatus = JSON.parse(data.LL.value);
-		})
-		.catch((error) => console.error('[LoxWsClient] getSystemStatus fetch error: ', error));
-	}
-
-	/**
-	 * Retrieve Miniserver icon list
-	 */
-	getIconList(): void {
-		fetch(`${this.hostName}/jdev/sps/geticonlist?autht=${appStore.credentials.token}&user=${this.userName}`)
-		.then((response) => response.json())
-		.then((data) => {
-			controlStore.iconList = data;
-		})
-		.catch((error) => console.error('[LoxWsClient] getIconList fetch error: ', error));
-	}
-
-	/**
-	 * Generic webservice command using Miniserver user credentials
-	 * @param url webservices endpoint (e.g., /jdev/sps/io/...)
+	 * Generic fetch delegated to Miniserver
+	 * @param url endpoint (e.g., /jdev/sps/io/...)
 	*/
 	async fetch(url: string): Promise<Response> {
-		const request = new Request(`${this.hostName}/${url}?autht=${appStore.credentials.token}&user=${this.userName}`);
-		return fetch(request);
+		return miniserverClient.fetch(url);
 	}
-}
-
-/**
- * Establish connection with Miniserver if credentials are available
- * If Demo was runnig before, reload Demo instead
- */
-export const startLoxWsClient = async (): Promise<void> => {
-	const cred = utils.deserialize(localStorage.getItem('credentials'));
-	const appId = localStorage.getItem('appId') || undefined;
-
-	if (appStore.isDemo) {
-		demo.start();
-		appStore.clearCredentials();
-		appStore.setLocale('en'); // switch to en locale for demo
-		appStore.loginDialog.state = false;
-		return;
-	}
-
-	if (cred && cred.hostName && cred.userName && cred.token && appId) {
-		if (await checkTokenValidity(cred.hostName, cred.userName, cred.token)) {
-			const loxClient = new LoxWsClient(cred.hostName, cred.userName, '', appId, 0);
-			await loxClient.connect(cred.token);
-			return;
-		}
-	}
-
-	console.error('[LoxWsClient] Unable to connect and authenticate');
-	appStore.loginDialog.state = true;
-	}
-
-/**
- * Check credentials using HTTP webservice with username and password (no login)
- * NOTE: no catch implemented in this fetch, this should be handled in the caller
- */
-export const checkCredentials = (url: string, userName: string, password: string): void => {
-	fetch(`${url}/jdev/sps/getusersettings`, {
-		method: 'GET',
-		headers: {
-			'Content-Type': 'application/json',
-			'Authorization': 'Basic ' + btoa(userName + ':' + password)
-		}
-	})
-	.then((response) => {
-		if (response.status != 200) {
-			throw new Error('[checkCredentials]: Credentials failed');
-		};
-	});
-}
-
-/**
- * Check validity of token.
- * Returns true if the token is valid. Returns false if token is invalid or server is not responsive
- * NOTE: exception handling is implemented here in case server is not responsive
- */
-export const checkTokenValidity = async (url: string, userName: string, token: string): Promise<boolean> => {
-	return fetch(`${url}/jdev/sys/checktoken/${token}/${userName}?autht=${token}&user=${userName}`, {cache: "no-store"})
-	.then((response) => {
-  	if (response.ok) {
-    	return response.json();
-  	}
-  	throw new Error(`Something went wrong. Response status: ${response.status}`);
-	})
-	.then(() => {
-  	return true;
-	})
-	.catch(() => {
-		console.error('[LoxWsClient] Miniserver not responding. Unable to check token');
-		return false;
-	});
 }

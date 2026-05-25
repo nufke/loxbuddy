@@ -72,7 +72,7 @@ export type MsInfo = {
 	projectName: string;					// project name as defined in Loxone Config
 	localUrl: string;							// local IP address and port
 	remoteUrl: string;						// internet IP address and port
-	hostname: string;							// miniserver hostname (when using DHCP)
+	hostname: string;							// Miniserver hostname (when using DHCP)
 	tempUnit: number;							// temperature unit: 0 = C, 1 = F
 	currency: string;							// currency symbol
 	squareMeasure: string;				// unit of area
@@ -87,7 +87,7 @@ export type MsInfo = {
 	coolPeriodEnd: string;				// month and day when the cooling period ends (DEPRECATED)
 	catTitle: string;							// locale name of categories
 	roomTitle: string;						// locale name of rooms
-	miniserverType: number;				// miniserver type (0:Gen1, 1:GoGen1, 2:Gen2, 3:GoGen2, 4:Compact)
+	miniserverType: number;				// Miniserver type (0:Gen1, 1:GoGen1, 2:Gen2, 3:GoGen2, 4:Compact)
 	deviceMonitor: string;
 	currentUser: {
 		name: string;								// current user name

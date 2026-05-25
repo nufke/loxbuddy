@@ -92,9 +92,9 @@
 
 	function getActiveScreens(): string {
 		let status = '';
-		status += screensClosed.length ? String(screensClosed.length) + ' ' + $_('Closed').toLowerCase() : '';
-		status += screensOpen.length ? String(screensOpen.length) + ' ' + $_('Open').toLowerCase() : '';
-		status += screensLocked.length ? String(screensLocked.length) + ' ' + $_('Locked').toLowerCase() : '';
+		status += screensClosed.length > 0 ? String(screensClosed.length) + ' ' + $_('Closed').toLowerCase() : '';
+		status += screensOpen.length > 0 ? ' ' + String(screensOpen.length) + ' ' + $_('Open').toLowerCase() : '';
+		status += screensLocked.length > 0 ? ' ' + String(screensLocked.length) + ' ' + $_('Locked').toLowerCase() : '';
 		return status;
 	}
 

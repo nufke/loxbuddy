@@ -240,20 +240,18 @@
 									{#if showScrollBottom}
 										<div class="absolute z-10 left-[50%] lb-center -bottom-[19px] text-surface-500" transition:fade={{ duration: 300 }}><LbIcon name="chevron-down"height="30" width="30"/></div>
 									{/if}
-									<div class="grid gap-2 overflow-y-auto" {style} bind:this={viewport}>
+									<div class="overflow-y-auto" {style} bind:this={viewport}>
 										{#each controlView.dialog.details.loadManager.loads as load,i}
-											<button class="w-full flex h-[60px] items-center justify-start rounded-lg border border-white/15 hover:border-white/50
-																		dark:bg-surface-950 bg-surface-50 px-2 py-2">
-												<div class="relative flex truncate w-full">
-													<div class="mt-0 ml-2 mr-2 flex flex-row w-full justify-between truncate items-center h-[60px]">
-														<div class="flex flex-col">
-															<p class="leading-6 truncate text-lg text-left">{load.name}</p>
-															<p class="truncate text-left text-xs dark:text-surface-300 text-surface-700">{getPowerLevel(load.power)}</p>
-														</div>
-														{#if load.hasStatus}
-															<p class="text-left text-lg {getPowerStatus(i).color}">{getPowerStatus(i).name}</p>
-														{/if}
+											<button class="pl-2 mt-2 w-full flex items-center justify-start rounded-lg border border-white/15 hover:border-white/50
+																		dark:bg-surface-950 bg-surface-50">
+												<div class="mt-0 ml-2 mr-2 flex flex-row w-full justify-between  items-center h-[60px]">
+													<div class="flex flex-col truncate">
+														<p class="truncate text-lg text-left">{load.name}</p>
+														<p class=" text-left text-xs dark:text-surface-300 text-surface-700">{getPowerLevel(load.power)}</p>
 													</div>
+													{#if load.hasStatus}
+														<p class="text-left text-lg {getPowerStatus(i).color}">{getPowerStatus(i).name}</p>
+													{/if}
 												</div>
 											</button>
 										{/each}

@@ -16,7 +16,7 @@
 	import LbWeatherDialog from '$lib/components/Weather/LbWeatherDialog.svelte';
 	import LbLoginDialog from '$lib/components/Login/LbLoginDialog.svelte';
 	import LbLockScreenDialog from '$lib/components/LockScreen/LbLockScreenDialog.svelte';
-	import { startLoxWsClient} from '$lib/communication/LoxWsClient';
+	import { miniserverClient } from '$lib/communication/MiniserverClient';
 	import { format } from 'date-fns';
 	import { goto } from '$app/navigation';
 	import { Logger } from '$lib/helpers/Logger';
@@ -189,10 +189,10 @@
 	});
 
 	/**
-	 * When starting the app the first time, try to establish websocket communication
-	 * If not successfull, e.g. when credentials are not avaialble, show the login screen
+	 * When starting the app the first time, try to establish a connection
+	 * If not successfull, e.g. when credentials are not available, show the login screen
 	*/
-	startLoxWsClient();
+	miniserverClient.connect();
 
 	// TODO add configuration
 	// connect to MQTT server (if environment settings are available)
