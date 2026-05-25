@@ -1,7 +1,7 @@
 import { SvelteMap } from 'svelte/reactivity';
 import { MqttClient } from '$lib/communication/MqttClient';
-import { DEFAULT_USERSETTINGS, EMPTY_SYSTEM_STATUS, DEFAULT_GLOBALSTATES, DEFAULT_MSINFO } from '$lib/types/models';
-import type { Structure, MsInfo, Control, Category, Room, NotificationMap, NotificationList, UserSettings, UserSettingsMap, UserDefaultStructure, SystemStatus,
+import { DEFAULT_USERSETTINGS, EMPTY_SYSTEM_STATUS, DEFAULT_GLOBALSTATES, DEFAULT_MSINFO, EMPTY_ICON_AND_COLOR } from '$lib/types/models';
+import type { Structure, MsInfo, Control, Category, Room, NotificationMap, NotificationList, UserSettings, UserDefaultStructure, IconAndColor, SystemStatus,
 							GlobalStates, MessageCenter, NotificationMessage, Icon } from '$lib/types/models';
 import { utils } from '$lib/helpers/Utils';
 import { lbControl } from '$lib/helpers/LbControl';
@@ -25,16 +25,22 @@ class LbControlStore {
 	controlList: Control[] = $derived(Array.from(this.controls.values()));
 	categoryList: Category[] = $derived(Array.from(this.categories.values()));
 	roomList: Room[] = $derived(Array.from(this.rooms.values()));
-	localSettingsMap: SvelteMap<string, UserSettings> = new SvelteMap();
 	userSettings = $state(DEFAULT_USERSETTINGS);
+	sortingMap: SvelteMap<string, UserDefaultStructure> = new SvelteMap();
 	systemStatus: SystemStatus = $state(EMPTY_SYSTEM_STATUS);
 	notifications: NotificationMessage | NotificationList = $derived(this.getState(this.globalStates.notifications));
 	notificationsMap: NotificationMap = $derived(this.updateNotificationMap(this.notifications));
 	msStatus: number = $derived(this.systemStatus.entries ? Math.max(...this.systemStatus.entries.filter((item) => item.isHistoric == false).map((item) => item.severity)) : 0);
 	iconList: Icon[] | undefined = $state();
+	sorting: boolean = $state(false); // sorting and drag-and-drop disabled
+	sortingMode: number = $state(0);// default sorting (config based)
+	customSorting = $derived(((this.sortingMode == 1) ? this.userSettings.userDefaultStructure : this.sortingMap.get(this.msInfo.serialNr)) ?? {}) as UserDefaultStructure;
 
 	constructor() {
 		this.notificationsMap = utils.deserialize(localStorage.getItem('notifications')) as NotificationMap || {};
+		this.sorting = (localStorage.getItem('sorting') == '1'); /* sorting enabled */
+		this.sortingMode = Number(localStorage.getItem('sortingMode')) || 0;
+		this.sortingMap = utils.deserializeMap(localStorage.getItem('sortingMap'));
 	}
 
 	setControl(uuid: string, cmd: string): void {
@@ -115,15 +121,18 @@ class LbControlStore {
 		this.messageCenter.clear();
 	}
 
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	getState(uuid: string): any {
 		return this.controlState.get(uuid);
 	}
 
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	setState(uuid: string, data: any): void {
 		const item = $state(data);
 		this.controlState.set(uuid, item);
 	}
 
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	setInitialStates(data: any) {
 		Object.keys(data).forEach( (key) => {
 			const item = $state(data[key]);
@@ -132,8 +141,8 @@ class LbControlStore {
 		});
 	}
 
-	getIcon(control: Control, isSubControl: boolean | undefined, textState: any = null): string {
-		if (textState && textState.icon && textState.icon.length) return textState.icon; /* used for TextState icon */
+	getIcon(control: Control, isSubControl: boolean | undefined, iconAndColor: IconAndColor = EMPTY_ICON_AND_COLOR): string {
+		if (iconAndColor && iconAndColor.icon && iconAndColor.icon.length) return iconAndColor.icon; /* used for TextState icon */
 		if (control.defaultIcon) return control.defaultIcon;
 		if (!isSubControl) { 
 			const icon = lbControl.getDefaultIcon(control.type);
@@ -147,6 +156,7 @@ class LbControlStore {
 		return ''; // no icon found / used (TODO: keep empty?)
 	}
 
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	async getFile(uuid: string, url: string): Promise<any> {
 		const client = this.controlClient.get(uuid);
 		return await client?.getFile(url);
@@ -157,30 +167,30 @@ class LbControlStore {
 		return client.fetch(url);
 	}
 
+	setSortingMode(mode: number): void {
+		this.sortingMode = mode;
+		localStorage.setItem('sortingMode', String(mode));
+	}
+
 	updateSortingOrder(list: Control[] | Room[] | Category[], key: string): void {
-		const sortingMap = this.userSettings.userDefaultStructure;
 		list.forEach((item, index) => {
 			const uuid = (item as Control).uuidAction ?? (item as Room | Category).uuid;
-			sortingMap[uuid] ??= {}; /* create if not exists */
-			sortingMap[uuid][key] = {
-				...(sortingMap[uuid][key] ?? { isFav: true }),
+			this.customSorting[uuid] ??= {}; /* create if not exists */
+			this.customSorting[uuid][key] = {
+				...(this.customSorting[uuid][key] ?? { isFav: true }),
 				position: index
 			};
 		});
-		this.updateUserSettings(this.userSettings)
-	}
 
-	updateUserSettings(settings: UserSettings): void {
-		const sortingMode = Number(localStorage.getItem('sortingMode') || '0');
-		switch (sortingMode) {
+		switch (this.sortingMode) {
 			case 1: { /* user-defined sorting */
 				const client = this.controlClient.get(this.msInfo.serialNr) || demo;
-				client.setUserSettings(JSON.stringify(settings));
-				break; /* cannot update user-defined sorting in Demo, show sorting list in devTools*/
+				client.setUserSettings(JSON.stringify({...this.userSettings, userDefaultStructure: this.customSorting}));
+				break;
 			}
 			case 2: { /* app-specific sorting */
-				this.localSettingsMap.set(this.msInfo.serialNr, settings);
-				localStorage.setItem('localSettingsMap', utils.serialize(Object.fromEntries(this.localSettingsMap))); /* store in localStorage */
+				this.sortingMap.set(this.msInfo.serialNr, this.customSorting);
+				localStorage.setItem('sortingMap', utils.serialize(Object.fromEntries(this.sortingMap))); /* store sorting in localStorage */
 				break;
 			}
 			default: /* none */
@@ -188,27 +198,14 @@ class LbControlStore {
 	}
 
 	setUserSettings(settings: UserSettings): void {
-		const sortingMode = Number(localStorage.getItem('sortingMode') || '0');
-		switch (sortingMode) {
-			case 1: { /* user-defined sorting */
-				console.info('[ControlStore] Use user-defined sorting', settings);
-				this.userSettings = settings;
-				break; 
-			}
-			case 2: {/* app-specific sorting */
-				console.info('[ControlStore] Use app-specific sorting', settings);
-				const localSettingsMap = utils.deserializeMap<string, UserSettings>(localStorage.getItem('localSettingsMap'));
-				let localSettings;
-				if (localSettingsMap) {
-					localSettings = localSettingsMap.get(this.msInfo.serialNr);
-				}
-				this.userSettings = localSettings ?? settings;
-				break; 
-			}
-			default: { /* other */
-				console.info('[ControlStore] Use config-based sorting', settings);
-				this.userSettings = DEFAULT_USERSETTINGS; // flush sorting list
-			}
+		this.userSettings = settings;
+		localStorage.setItem('userSettings', utils.serialize(this.userSettings)); /* store user settings in localStorage */
+
+		/* store app-specific sorting if not available */
+		const sorting = this.sortingMap.get(this.msInfo.serialNr) || {};
+		if ((this.sortingMode == 2) && !Object.keys(sorting).length && this.userSettings.userDefaultStructure) {
+			this.sortingMap.set(this.msInfo.serialNr, this.userSettings.userDefaultStructure);
+			localStorage.setItem('sortingMap', utils.serialize(Object.fromEntries(this.sortingMap))); /* store sorting in localStorage */
 		}
 	}
 

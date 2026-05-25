@@ -50,7 +50,7 @@
 	class="card m-0 flex justify-start rounded-lg shadow-sm border border-white/5
 					bg-surface-100-900 min-h-[150px] px-2 py-2 hover:border-white/10 relative">
 	<div class="flex w-full flex-col">
-		{#if appStore.dnd.isEnabled}
+		{#if controlStore.sorting}
 			<div class="absolute -right-[3px] -bottom-[3px] text-surface-500" data-drag-handle>
 				<LbIcon name="clarity:drag-handle-corner-line"/>
 			</div>
@@ -122,7 +122,7 @@
 						{ controlView.isSubControl ? 'bg-surface-200-800 min-h-[64px]' :
 						( controlOptions.isLink ? 'bg-surface-200-800 h-[70px]' : 'bg-surface-100-900 h-[70px]') }  px-2 py-2 hover:border-white/10">
 	<div class="flex w-full justify-between">
-		{#if appStore.dnd.isEnabled}
+		{#if controlStore.sorting}
 			<div class="absolute -right-[3px] -bottom-[3px] text-surface-500" data-drag-handle>
 				<LbIcon name="clarity:drag-handle-corner-line"/>
 			</div>
@@ -158,7 +158,7 @@
 				{/if}
 			</div>
 		</div>
-		<div class="flex flex-row items-center justify-center {appStore.dnd.isEnabled ? 'pr-[3px]' : 'pr-0'}">
+		<div class="flex flex-row items-center justify-center {controlStore.sorting ? 'pr-[3px]' : 'pr-0'}">
 			{#if controlView.buttons.length}
 				{#each controlView.buttons as button, index}
 					{#if index > 0}

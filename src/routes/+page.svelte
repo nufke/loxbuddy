@@ -16,18 +16,17 @@
 	let animatingItems = new Set();
 	let dragHandlePressed = false;
 
-	let userSettings = $derived(controlStore.userSettings);
-	let userDefinedOrder = $derived(appStore.userDefinedOrder);
-	let userDefaultStructure = $derived(userSettings?.userDefaultStructure) as UserDefaultStructure;
+	let isCustomSorting = $derived(controlStore.sortingMode > 0);
+	let customSorting = $derived(controlStore.customSorting);
 	let centralRooms = $derived(controlStore.roomList.filter((room) => room.name.includes($_('General')) || room.name.includes($_('Central'))));
 	let centralRoomsUuids = $derived(centralRooms.map((room) => room.uuid));
 	let controlOptions: ControlOptions = $derived(DEFAULT_CONTROLOPTIONS);
 
 	let centralControls = $derived(
 		controlStore.controlList.filter((control) => centralRoomsUuids.includes(control.room))
-		.filter((item) => isFavorite(userDefaultStructure, item, key))
+		.filter((item) => isFavorite(customSorting, item, key))
 		.sort((a, b) => a.name.localeCompare(b.name, appStore.locale))
-		.sort((a, b) => getPosition(userDefaultStructure, a, key) - getPosition(userDefaultStructure, b, key))
+		.sort((a, b) => getPosition(customSorting, a, key) - getPosition(customSorting, b, key))
 	);
 
 	let openPopup = $derived(controlStore.controlList.length == 0 && appStore.loginDialog.state == false);
@@ -39,7 +38,7 @@
 	 * @param key Filter based on given key
 	 */
 	function isFavorite(obj: UserDefaultStructure, control: Control, key: string): boolean {
-		if (obj && obj[control.uuidAction] && obj[control.uuidAction][key] && userDefinedOrder) { 
+		if (obj && obj[control.uuidAction] && obj[control.uuidAction][key] && isCustomSorting) { 
 			return obj[control.uuidAction][key].isFav ?? false;
 		} else {
 			return control.defaultRating > 0;
@@ -53,7 +52,7 @@
 	 * @param key Filter based on given key
 	 */
 	function getPosition(obj: UserDefaultStructure, control: Control, key: string): number {
-		if (obj && obj[control.uuidAction] && obj[control.uuidAction][key] && userDefinedOrder) { 
+		if (obj && obj[control.uuidAction] && obj[control.uuidAction][key] && isCustomSorting) { 
 			return obj[control.uuidAction][key].position ?? 0;
 		} else {
 			return control.defaultRating * -1;
@@ -72,7 +71,7 @@
 			return list;
 		}
 		animatingItems.add(item);
-		setTimeout(() => animatingItems.delete(item), appStore.dnd.duration);
+		setTimeout(() => animatingItems.delete(item), 300);
 		const itemA = list.indexOf(draggingItem);
 		const itemB = list.indexOf(item);
 		newList[itemA] = item;
@@ -102,8 +101,8 @@
 				<div class="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 lg:flex-wrap">
 					{#each selectedControls as control (control)}
 						{@const Component = lbControl.getControl(control.type)}
-						<div animate:flip={{ duration: appStore.dnd.duration }}
-							draggable={appStore.dnd.isEnabled}
+						<div animate:flip={{ duration: 300 }}
+							draggable={controlStore.sorting}
 							onpointerdown={onDragHandlePointerDown}
 							ondragstart={(e) => { if (!dragHandlePressed) { e.preventDefault(); return; } draggingItem = control; dragGroup = centralRoom.name; }}
 							ondragend={() => {draggingItem = undefined; dragGroup = ''; dragHandlePressed = false; controlStore.updateSortingOrder(selectedControls, key);}}

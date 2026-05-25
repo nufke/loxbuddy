@@ -19,16 +19,15 @@
 	appStore.nav = '/category';
 
 	let dragGroup = $state('');
-	let userSettings = $derived(controlStore.userSettings);
-	let userDefaultStructure = $derived(userSettings?.userDefaultStructure) as UserDefaultStructure;
 	let controlOptions: ControlOptions = $derived(DEFAULT_CONTROLOPTIONS);
-	let userDefinedOrder = $derived(appStore.userDefinedOrder);
+	let isCustomSorting = $derived(controlStore.sortingMode > 0);
+	let customSorting = $derived(controlStore.customSorting);	
 	let page: Category | undefined = $derived(controlStore.categories.get(data.uuid));
 
 	let filteredControls: Control[] = $derived(
 		controlStore.controlList.filter((control) => (control.cat === data.uuid) && ((control.restrictions & 1) != 1))
 		.sort((a, b) => a.name.localeCompare(b.name, appStore.locale))
-		.sort((a, b) => getPosition(userDefaultStructure, a, key + '/' + a.room) - getPosition(userDefaultStructure, b, key + '/' + b.room))
+		.sort((a, b) => getPosition(customSorting, a, key + '/' + a.room) - getPosition(customSorting, b, key + '/' + b.room))
 	);
 
 	let labels: Room[] = $derived(
@@ -39,13 +38,13 @@
 
 	let favorites: Control[] = $derived(
 		controlStore.controlList.filter((control) => (control.cat === data.uuid) && ((control.restrictions & 1) != 1))
-		.filter((control) => isFavorite(userDefaultStructure, control, room))
+		.filter((control) => isFavorite(customSorting, control, room))
 		.sort((a, b) => a.name.localeCompare(b.name, appStore.locale))
-		.sort((a, b) => getPosition(userDefaultStructure, a, room) - getPosition(userDefaultStructure, b, room))
+		.sort((a, b) => getPosition(customSorting, a, room) - getPosition(customSorting, b, room))
 	);
 
 	function isFavorite(obj: UserDefaultStructure, control: Control, key: string): boolean {
-		if (obj && obj[control.uuidAction] && obj[control.uuidAction][key] && userDefinedOrder) {
+		if (obj && obj[control.uuidAction] && obj[control.uuidAction][key] && isCustomSorting) {
 			return obj[control.uuidAction][key].isFav ?? false;
 		} else {
 			return control.defaultRating > 0;
@@ -53,7 +52,7 @@
 	}
 
 	function getPosition(obj: UserDefaultStructure, control: Control, key: string): number {
-		if (obj && obj[control.uuidAction] && obj[control.uuidAction][key] && userDefinedOrder) {
+		if (obj && obj[control.uuidAction] && obj[control.uuidAction][key] && isCustomSorting) {
 			return obj[control.uuidAction][key].position ?? 0;
 		} else {
 			return 0; /* no position enforced, fall-back to alphabatic oder */
@@ -66,7 +65,7 @@
 			return list;
 		}
 		animatingItems.add(item);
-		setTimeout(() => animatingItems.delete(item), appStore.dnd.duration);
+		setTimeout(() => animatingItems.delete(item), 300);
 		const itemA = list.indexOf(draggingItem);
 		const itemB = list.indexOf(item);
 		newList[itemA] = item;
@@ -87,8 +86,8 @@
 		<div class="mt-2 mb-2 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 lg:flex-wrap">
 			{#each favorites as control (control)}
 				{@const Component = lbControl.getControl(control.type)}
-				<div animate:flip={{ duration: appStore.dnd.duration }}
-					draggable={appStore.dnd.isEnabled}
+				<div animate:flip={{ duration: 300 }}
+					draggable={controlStore.sorting}
 					onpointerdown={onDragHandlePointerDown}
 					ondragstart={(e) => { if (!dragHandlePressed) { e.preventDefault(); return; } draggingItem = control; dragGroup = room; }}
 					ondragend={() => {draggingItem = undefined; dragGroup = ''; dragHandlePressed = false; controlStore.updateSortingOrder(favorites, key)}}
@@ -106,8 +105,8 @@
 			<div class="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 lg:flex-wrap">
 				{#each filteredControls.filter((item) => item.room == label.uuid) as control (control)}
 					{@const Component = lbControl.getControl(control.type)}
-					<div animate:flip={{ duration: appStore.dnd.duration }}
-						draggable={appStore.dnd.isEnabled}
+					<div animate:flip={{ duration: 300 }}
+						draggable={controlStore.sorting}
 						onpointerdown={onDragHandlePointerDown}
 						ondragstart={(e) => { if (!dragHandlePressed) { e.preventDefault(); return; } draggingItem = control; dragGroup = label.name; }}
 						ondragend={() => {draggingItem = undefined; dragGroup = ''; dragHandlePressed = false; controlStore.updateSortingOrder(selectedControls, 'category/' + label.uuid)}}

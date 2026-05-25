@@ -13,21 +13,20 @@
 	let animatingItems = new Set();
 	let dragHandlePressed = false;
 
-	let userSettings = $derived(controlStore.userSettings);
-	let userDefinedOrder = $derived(appStore.userDefinedOrder);
-	let userDefaultStructure = $derived(userSettings?.userDefaultStructure) as UserDefaultStructure;
+	let isCustomSorting = $derived(controlStore.sortingMode > 0);
+	let customSorting = $derived(controlStore.customSorting);
 
 	let items: Room[] = $derived(
 		controlStore.roomList.filter((item) => controlStore.controlList.map((control) => control.room)
 		.indexOf(item.uuid) > -1)
 		.sort((a, b) => a.name.localeCompare(b.name, appStore.locale))
-		.sort((a, b) => getPosition(userDefaultStructure, a, key) - getPosition(userDefaultStructure, b, key))
+		.sort((a, b) => getPosition(customSorting, a, key) - getPosition(customSorting, b, key))
 	);
 
 	let favorites: Room[] = $derived(
-		items.filter((item) => isFavorite(userDefaultStructure, item, fav))
+		items.filter((item) => isFavorite(customSorting, item, fav))
 		.sort((a, b) => a.name.localeCompare(b.name, appStore.locale))
-		.sort((a, b) => getPosition(userDefaultStructure, a, fav) - getPosition(userDefaultStructure, b, fav))
+		.sort((a, b) => getPosition(customSorting, a, fav) - getPosition(customSorting, b, fav))
 	);
 
 	/**
@@ -37,7 +36,7 @@
 	 * @param key Filter based on given key
 	 */
 	function isFavorite(obj: UserDefaultStructure, room: Room, key: string): boolean {
-		if (obj && obj[room.uuid] && obj[room.uuid][key] && userDefinedOrder) { 
+		if (obj && obj[room.uuid] && obj[room.uuid][key] && isCustomSorting) { 
 			return obj[room.uuid][key].isFav ?? false;
 		} else {
 			return room.isFavorite;
@@ -51,7 +50,7 @@
 	 * @param key Filter based on given key
 	 */
 	function getPosition(obj: UserDefaultStructure, room: Room, key: string): number {
-		if (obj && obj[room.uuid] && obj[room.uuid][key] && userDefinedOrder) {
+		if (obj && obj[room.uuid] && obj[room.uuid][key] && isCustomSorting) {
 			return obj[room.uuid][key].position ?? 0;
 		} else {
 			return 0; /* no position enforced, fall-back to alphabatic oder */
@@ -70,7 +69,7 @@
 			return list;
 		}
 		animatingItems.add(item);
-		setTimeout(() => animatingItems.delete(item), appStore.dnd.duration);
+		setTimeout(() => animatingItems.delete(item), 300);
 		const itemA = list.indexOf(draggingItem);
 		const itemB = list.indexOf(item);
 		newList[itemA] = item;
@@ -88,8 +87,8 @@
 	{#if favorites.length}
 		<div class="mt-2 mb-2 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 lg:flex-wrap">
 			{#each favorites as item (item)}
-			<div animate:flip={{ duration: appStore.dnd.duration }}
-				draggable={appStore.dnd.isEnabled}
+			<div animate:flip={{ duration: 300 }}
+				draggable={controlStore.sorting}
 				onpointerdown={onDragHandlePointerDown}
 				ondragstart={(e) => { if (!dragHandlePressed) { e.preventDefault(); return; } draggingItem = item; dragGroup = fav; }}
 				ondragend={() => {draggingItem = undefined; dragGroup = ''; dragHandlePressed = false; controlStore.updateSortingOrder(favorites, fav);}}
@@ -103,8 +102,8 @@
 	<p class="pl-2 h6">{$_('All')}</p>
 	<div class="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3 lg:flex-wrap">
 		{#each items as item (item)}
-			<div animate:flip={{ duration: appStore.dnd.duration  }}
-				draggable={appStore.dnd.isEnabled}
+			<div animate:flip={{ duration: 300 }}
+				draggable={controlStore.sorting}
 				onpointerdown={onDragHandlePointerDown}
 				ondragstart={(e) => {if (!dragHandlePressed) { e.preventDefault(); return; } draggingItem = item; dragGroup = key}}
 				ondragend={() => {draggingItem = undefined; dragGroup = ''; dragHandlePressed = false; controlStore.updateSortingOrder(items, key)}}

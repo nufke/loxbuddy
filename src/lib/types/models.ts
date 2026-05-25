@@ -413,6 +413,16 @@ export type NotificationMap = {
 	}
 }
 
+export type IconAndColor = {
+	icon: string;
+	color: string;
+}
+
+export const EMPTY_ICON_AND_COLOR: IconAndColor = {
+	icon: '',
+	color: ''
+}
+
 export type SingleButtonView = {
 	name?: string;
 	iconName?: string;
@@ -687,20 +697,15 @@ export type AudioserverCustomization = {
 
 export type UserSettings = {
 	ts: number;
-	userDefaultStructure: UserDefaultStructure;
-	"audioserverCustomization_11.2.2": AudioserverCustomization;
-	currentSpotifyAccUid: any;
-  searchHistory: any;
-  "lastPlayedItems_11.2.2": any;
+	userDefaultStructure?: UserDefaultStructure;
+	"audioserverCustomization_11.2.2"?: AudioserverCustomization;
+	currentSpotifyAccUid?: any;
+  searchHistory?: any;
+  "lastPlayedItems_11.2.2"?: any;
 }
 
 export const DEFAULT_USERSETTINGS: UserSettings = {
-	ts: 0,
-	userDefaultStructure: {},
-	"audioserverCustomization_11.2.2": {},
-	currentSpotifyAccUid: {},
-	searchHistory: {},
-	"lastPlayedItems_11.2.2": {}
+	ts: 0
 }
 
 export type Credentials = {

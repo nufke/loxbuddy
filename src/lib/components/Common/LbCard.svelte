@@ -2,7 +2,7 @@
 	import type { Room, Category } from '$lib/types/models';
 	import LbIcon from '$lib/components/Common/LbIcon.svelte';
 	import { goto } from "$app/navigation";
-	import { appStore } from '$lib/stores/LbAppStore.svelte';
+	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 
 	let { key, item, isFavorite } : { key: string, item: Room | Category, isFavorite: boolean } = $props();
 
@@ -11,7 +11,7 @@
 
 <div role="button" tabindex="0" class="card m-0 flex min-h-[70px] shadow-sm items-center justify-start rounded-lg border border-white/5
 										bg-surface-100-900 px-2 py-1 hover:border-white/10 relative" onclick={() => goto(key + '/' + item.uuid)}>
-	{#if appStore.dnd.isEnabled}
+	{#if controlStore.sorting}
 		<div class="absolute -right-[3px] -bottom-[3px] text-surface-500" data-drag-handle>
 			<LbIcon name="clarity:drag-handle-corner-line"/>
 		</div>

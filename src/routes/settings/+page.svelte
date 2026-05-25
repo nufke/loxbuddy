@@ -38,26 +38,23 @@
 	let theme = $state(localStorage.getItem('theme') || 'LoxBuddy');
 	let mode = $state(localStorage.getItem('mode') || 'dark');
 	let startPage = $state(localStorage.getItem('startPage') || '/');
-	let sortingMode = $state(localStorage.getItem('sortingMode') || '0');
+	let sortingMode = $state(Number(localStorage.getItem('sortingMode')) || 0);
  	let group = $state('room');
 	let localeSettings = $derived(appStore.locale);
-	let sortingEnabled = $derived(appStore.dnd.isEnabled);
 	let sortingButtonDisabled = $derived(Number(sortingMode) == 0);
 	let lang = $derived(language[localeSettings]);
 	let sortingText = $derived(sortMap[sortingMode]);
-
-
 
 	let sortingSelectView: GeneralView = $state({
 		label: $_('Sorting order'),
 		openDialog: false,
 		buttons: [],
 		cancel: () => {},
-		ok: (e: number) => {
-			sortingMode = String(e);
-			appStore.setSortingMode(sortingMode);
+		ok: (sortMode: number) => {
+			sortingMode = sortMode;
+			controlStore.setSortingMode(sortMode);
 			controlStore.getUserSettings();
-			if (e == 0) { /* when config selected, disable sorting */
+			if (sortMode == 0) { /* when config selected, disable sorting */
 				onSortingEnabled({ checked: false });
 			}
 		}
@@ -67,17 +64,17 @@
 		{
 			id: 0,
 			name: sortMap['0'],
-			selected: sortingMode == '0'
+			selected: sortingMode == 0
 		},
 		{
 			id: 1,
 			name: sortMap['1'],
-			selected: sortingMode == '1'
+			selected: sortingMode == 1
 		},
 		{
 			id: 2,
 			name: sortMap['2'],
-			selected: sortingMode == '2'
+			selected: sortingMode == 2
 		}
 	]);
 
@@ -211,8 +208,7 @@
 	 * @param event switch event state
 	 */
 	function onSortingEnabled(event: { checked: boolean }): void {
-		sortingEnabled = event.checked;
-		appStore.dnd.isEnabled = event.checked;
+		controlStore.sorting = event.checked;
 		localStorage.setItem('sorting', event.checked ? '1' : '0');
 	}
 
@@ -272,7 +268,7 @@
 	<button aria-current="true" type="button" class="w-full border-b dark:border-surface-900 border-surface-200 p-3 pr-5 pl-5 text-left text-lg">
 		<div class="flex w-full justify-between">
 			<p class={sortingButtonDisabled ? 'dark:text-surface-600 text-surface-300' : 'text-surface-950-50'}>{$_("Sorting enabled")}</p>
-			<Switch disabled={sortingButtonDisabled} checked={sortingEnabled} onCheckedChange={onSortingEnabled}>
+			<Switch disabled={sortingButtonDisabled} checked={controlStore.sorting} onCheckedChange={onSortingEnabled}>
 				<Switch.Control class="w-12 h-8 mr-1 data-[state=checked]:preset-filled-primary-500">
 					<Switch.Thumb />
 				</Switch.Control>

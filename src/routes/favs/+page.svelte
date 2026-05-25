@@ -13,19 +13,18 @@
 	let draggingItem: any;
 	let animatingItems = new Set();
 
-	let userSettings = $derived(controlStore.userSettings);
-	let userDefaultStructure = $derived(userSettings?.userDefaultStructure) as UserDefaultStructure;
 	let controlOptions: ControlOptions = $derived(DEFAULT_CONTROLOPTIONS);
-	let userDefinedOrder = $derived(appStore.userDefinedOrder);
+	let isCustomSorting = $derived(controlStore.sortingMode > 0);
+	let customSorting = $derived(controlStore.customSorting);	
 
 	let favoriteControls = $derived(
-		controlStore.controlList.filter((control) => isFavorite(userDefaultStructure, control, fav))
+		controlStore.controlList.filter((control) => isFavorite(customSorting, control, fav))
 		.sort((a, b) => a.name.localeCompare(b.name, appStore.locale))
-		.sort((a, b) => getPosition(userDefaultStructure, a, fav) - getPosition(userDefaultStructure, b, fav))
+		.sort((a, b) => getPosition(customSorting, a, fav) - getPosition(customSorting, b, fav))
 	);
 
 	function isFavorite(obj: UserDefaultStructure, control: Control, key: string): boolean {
-		if (obj && obj[control.uuidAction] && obj[control.uuidAction][key] && userDefinedOrder) { 
+		if (obj && obj[control.uuidAction] && obj[control.uuidAction][key] && isCustomSorting) { 
 			return obj[control.uuidAction][key].isFav ?? false;
 		} else {
 			return control.isFavorite;
@@ -33,7 +32,7 @@
 	}
 
 	function getPosition(obj: UserDefaultStructure, control: Control, key: string): number {
-		if (obj && obj[control.uuidAction] && obj[control.uuidAction][key] && userDefinedOrder) { 
+		if (obj && obj[control.uuidAction] && obj[control.uuidAction][key] && isCustomSorting) { 
 			return obj[control.uuidAction][key].position ?? 0;
 		} else {
 			return control.defaultRating * -1;
@@ -46,7 +45,7 @@
 			return list;
 		}
 		animatingItems.add(item);
-		setTimeout(() => animatingItems.delete(item), appStore.dnd.duration);
+		setTimeout(() => animatingItems.delete(item), 300);
 		const itemA = list.indexOf(draggingItem);
 		const itemB = list.indexOf(item);
 		newList[itemA] = item;
@@ -64,8 +63,8 @@
 	<div class="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 lg:flex-wrap">
 		{#each favoriteControls as control (control)}
 			{@const Component = lbControl.getControl(control.type)}
-			<div animate:flip={{ duration: appStore.dnd.duration }}
-				draggable={appStore.dnd.isEnabled}
+			<div animate:flip={{ duration: 300 }}
+				draggable={controlStore.sorting}
 				onpointerdown={onDragHandlePointerDown}
 				ondragstart={(e) => { if (!dragHandlePressed) { e.preventDefault(); return; } draggingItem = control; dragGroup = fav; }}
 				ondragend={() => {draggingItem = undefined; dragGroup = ''; dragHandlePressed = false; controlStore.updateSortingOrder(favoriteControls, fav)}}

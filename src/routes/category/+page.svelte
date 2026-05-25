@@ -13,25 +13,24 @@
 	let draggingItem: any;
 	let animatingItems = new Set();
 
-	let userDefinedOrder = $derived(appStore.userDefinedOrder);
-	let userSettings = $derived(controlStore.userSettings);
-	let userDefaultStructure = $derived(userSettings?.userDefaultStructure) as UserDefaultStructure;
+	let isCustomSorting = $derived(controlStore.sortingMode > 0);
+	let customSorting = $derived(controlStore.customSorting);	
 
 	let items: Category[] = $derived(
 		controlStore.categoryList.filter((item) => controlStore.controlList.map((control) => control.cat)
 		.indexOf(item.uuid) > -1)
 		.sort((a, b) => a.name.localeCompare(b.name, appStore.locale))
-		.sort((a, b) => getPosition(userDefaultStructure, a, key) - getPosition(userDefaultStructure, b, key))
+		.sort((a, b) => getPosition(customSorting, a, key) - getPosition(customSorting, b, key))
 	);
 
 	let favorites: Category[] = $derived(
-		items.filter((item) => isFavorite(userDefaultStructure, item, fav))
+		items.filter((item) => isFavorite(customSorting, item, fav))
 		.sort((a, b) => a.name.localeCompare(b.name, appStore.locale))
-		.sort((a, b) => getPosition(userDefaultStructure, a, fav) - getPosition(userDefaultStructure, b, fav))
+		.sort((a, b) => getPosition(customSorting, a, fav) - getPosition(customSorting, b, fav))
 	);
 
 	function isFavorite(obj: UserDefaultStructure, cat: Category, key: string): boolean {
-		if (obj && obj[cat.uuid] && obj[cat.uuid][key] && userDefinedOrder) {
+		if (obj && obj[cat.uuid] && obj[cat.uuid][key] && isCustomSorting) {
 			return obj[cat.uuid][key].isFav ?? false;
 		} else {
 			return cat.isFavorite;
@@ -39,7 +38,7 @@
 	}
 
 	function getPosition(obj: UserDefaultStructure, cat: Category, key: string): number {
-		if (obj && obj[cat.uuid] && obj[cat.uuid][key] && userDefinedOrder) {
+		if (obj && obj[cat.uuid] && obj[cat.uuid][key] && isCustomSorting) {
 			return obj[cat.uuid][key].position ?? 0;
 		} else {
 			return 0; /* no position enforced, fall-back to alphabatic oder */
@@ -52,7 +51,7 @@
 			return list;
 		}
 		animatingItems.add(item);
-		setTimeout(() => animatingItems.delete(item), appStore.dnd.duration);
+		setTimeout(() => animatingItems.delete(item), 300);
 		const itemA = list.indexOf(draggingItem);
 		const itemB = list.indexOf(item);
 		newList[itemA] = item;
@@ -70,8 +69,8 @@
 	{#if favorites.length}
 		<div class="mt-2 mb-2 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 lg:flex-wrap">
 			{#each favorites as item (item)}
-			<div animate:flip={{ duration: appStore.dnd.duration }}
-				draggable={appStore.dnd.isEnabled}
+			<div animate:flip={{ duration: 300 }}
+				draggable={controlStore.sorting}
 				onpointerdown={onDragHandlePointerDown}
 				ondragstart={(e) => { if (!dragHandlePressed) { e.preventDefault(); return; } draggingItem = item; dragGroup = fav; }}
 				ondragend={() => {draggingItem = undefined; dragGroup = ''; dragHandlePressed = false; controlStore.updateSortingOrder(favorites, fav)}}
@@ -85,8 +84,8 @@
 	<p class="pl-2 h6">{$_('All')}</p>
 	<div class="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3 lg:flex-wrap">
 		{#each items as item (item)}
-			<div animate:flip={{ duration: appStore.dnd.duration }}
-				draggable={appStore.dnd.isEnabled}
+			<div animate:flip={{ duration: 300 }}
+				draggable={controlStore.sorting}
 				onpointerdown={onDragHandlePointerDown}
 				ondragstart={(e) => { if (!dragHandlePressed) { e.preventDefault(); return; } draggingItem = item; dragGroup = key; }}
 				ondragend={() => {draggingItem = undefined; dragGroup = ''; dragHandlePressed = false; controlStore.updateSortingOrder(items, key)}}

@@ -179,9 +179,9 @@ class Utils {
 		return item ? JSON.parse(item) : null;
 	}
 
-	deserializeMap<K extends string, V>(item: string | null): SvelteMap<K, V> | null {
+	deserializeMap<K extends string, V>(item: string | null): SvelteMap<K, V> {
 		const plain: Record<string, V> | null = item ? JSON.parse(item) : null;
-		return plain ? new SvelteMap<K, V>(Object.entries(plain) as [K, V][]) : null;
+		return plain ? new SvelteMap<K, V>(Object.entries(plain) as [K, V][]) : new SvelteMap<K, V>();
 	}
 	
 	extractEntries(s: string): EntriesAndDefaultValue {
