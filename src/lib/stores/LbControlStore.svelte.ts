@@ -6,14 +6,14 @@ import type { Structure, MsInfo, Control, Category, Room, NotificationMap, Notif
 import { utils } from '$lib/helpers/Utils';
 import { lbControl } from '$lib/helpers/LbControl';
 import { Demo, demo } from '$lib/demo/Demo';
-import { LoxWsClient} from '$lib/communication/LoxWsClient';
+import { MiniserverClient} from '$lib/communication/MiniserverClient';
 
 /**
  * ControlStore to maintain control states
  */
 class LbControlStore {
 	controlState: SvelteMap<string, any> = new SvelteMap();
-	controlClient: SvelteMap<string, Demo | LoxWsClient | MqttClient> = new SvelteMap();
+	controlClient: SvelteMap<string, Demo | MiniserverClient | MqttClient> = new SvelteMap();
 	msInfo: MsInfo = $state(DEFAULT_MSINFO);
 	globalStates: GlobalStates = $state(DEFAULT_GLOBALSTATES);
 	operatingModes: SvelteMap<string, string> = new SvelteMap();
@@ -65,7 +65,7 @@ class LbControlStore {
 		return map;
 	}
 
-	initStructure(data: Structure, client: Demo | LoxWsClient | MqttClient ): void {
+	initStructure(data: Structure, client: Demo | MiniserverClient | MqttClient ): void {
 		// Store reference to client using device serial nr 
 		this.controlClient.set(data.msInfo.serialNr, client);
 		// fill maps

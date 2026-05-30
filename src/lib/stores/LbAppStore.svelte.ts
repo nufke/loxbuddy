@@ -1,5 +1,4 @@
 import type { DialogView, Credentials } from '$lib/types/models';
-import { NO_CREDENTIALS } from '$lib/types/models';
 import { utils } from '$lib/helpers/Utils';
 import { nl, enGB, de } from 'date-fns/locale'
 import { locale } from 'svelte-i18n';
@@ -23,7 +22,7 @@ class LbAppStore {
 	showWeather: boolean = $state(true);
 	startPage: string = $state('/');
 	locale: string = $state('en'); // default English
-	credentials: Credentials = $state(NO_CREDENTIALS);
+	credentials: Credentials | null= $state(null);
 
 	weatherDialog: DialogView = $state({
 		action: () => {},
@@ -66,8 +65,8 @@ class LbAppStore {
 	}
 
 	clearCredentials(): void {
-		this.credentials = NO_CREDENTIALS;
-		localStorage.setItem('credentials', utils.serialize(NO_CREDENTIALS));
+		this.credentials = null;
+		localStorage.setItem('credentials', utils.serialize(0));
 	}
 
 	setDemo(state: number): void {

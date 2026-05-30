@@ -51,31 +51,31 @@
 	async function validate(): Promise<void> {
 		const hostUrl = hostName.match(/^http/) ? hostName.replace(/\/$/, '') : 'http://' + hostName.replace(/\/$/, '');
 		if (hostName.length && userName.length && password.length) {
-			// 1. Check if all fields are filled
+			// Check if all fields are filled
 			showConnectDialog('Connecting to Miniserver...');
 			appStore.setDemo(0); // clear demo mode
-			// 2. Check if MiniServer is reachable via hostname
+			// Check if MiniServer is reachable via hostname
 			try {
 				await fetch(hostUrl + '/jdev/cfg/apiKey');
 			} catch (error) {
 				showMessageDialog('Miniserver not found!');
 				return;
 			}
-			// 3. Check username/password combination via http call (no login yet)
+			// Check username/password combination via http call (no login yet)
 			try {
 				miniserverClient.checkCredentials(hostUrl, userName, password);
 			} catch (error) {
 				showMessageDialog('Login credentials invalid!');
 				return;
 			}
-			// 4. Establish WebSocket connection using stored token if available, otherwise with password
+			// Establish WebSocket connection using stored token if available, otherwise with password
 			try {
 				await miniserverClient.connect(hostUrl, userName, password);
 			} catch (error) {
 				showMessageDialog('Unable to connect to Miniserver');
 				return;
 			}
-			// 6. Close popup and login dialog, navigate to home page
+			// Close popup and login dialog, navigate to home page
 			goto('/');
 			openPopup = false;
 			appStore.loginDialog.state = false;

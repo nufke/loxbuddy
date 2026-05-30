@@ -715,13 +715,6 @@ export type Credentials = {
 	msName: string;
 }
 
-export const NO_CREDENTIALS: Credentials = {
-	hostName: '',
-	userName: '',
-	token: '',
-	msName: ''
-}
-
 export type Icon = {
 	id: string;
 	name: string;

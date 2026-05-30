@@ -118,10 +118,10 @@
 						</div>
 					</header>
 					<Dialog.Description>
-						<div class="mt-3">
+						<div class="mt-2">
 							<div class="flex flex-col items-center justify-center">
 								{#if !controlView.dialog.disableIcon}
-								<div class="relative inline-flex h-18 w-18 items-center justify-center overflow-hidden rounded-full border border-white/10 dark:bg-surface-950 bg-surface-50">
+								<div class="mb-2 relative inline-flex h-18 w-18 items-center justify-center overflow-hidden rounded-full border border-white/10 dark:bg-surface-950 bg-surface-50">
 									<LbIcon class={controlView.iconColor} name={controlView.iconName} width="36" height="36"
 													style={getIconColorHex(controlView.iconColor)}/>
 									{#if controlView.badgeIconName?.length}
@@ -132,9 +132,9 @@
 									{/if}
 								</div>
 								{/if}
-								<div class="flex flex-col justify-center items-center m-2 truncate">
+								<div class="w-full flex flex-col justify-center items-center truncate">
 									{#if controlView.statusName && !controlView.dialog.details?.tracker} <!-- remove status when we show a tracker -->
-										<p class="text-lg truncate {controlView.statusColor}" style={getStatusColorHex(controlView.statusColor)}>{$_(controlView.statusName)}</p>
+										<p class="w-full text-center mb-3 text-lg truncate {controlView.statusColor}" style={getStatusColorHex(controlView.statusColor)}>{$_(controlView.statusName)}</p>
 									{/if}
 								</div>
 							</div>
@@ -228,7 +228,7 @@
 							</div>
 							{/if}
 							{#if controlView.dialog && controlView.dialog.details && controlView.dialog.details.loadManager}
-								<div class="w-full mb-2 dark:bg-surface-950 bg-surface-50 rounded-lg border border-white/15 hover:border-white/50">
+								<div class="w-full dark:bg-surface-950 bg-surface-50 rounded-lg border border-white/15 hover:border-white/50">
 									<LbStatusBar maxPower={controlView.dialog.details.loadManager.maxPower}
 																currentPower={controlView.dialog.details.loadManager.currentPower}
 																mode={controlView.dialog.details.loadManager.mode} />
@@ -242,12 +242,12 @@
 									{/if}
 									<div class="overflow-y-auto" {style} bind:this={viewport}>
 										{#each controlView.dialog.details.loadManager.loads as load,i}
-											<button class="pl-2 mt-2 w-full flex items-center justify-start rounded-lg border border-white/15 hover:border-white/50
+											<button class="mt-2 w-full flex items-center justify-start rounded-lg border border-white/15 hover:border-white/50
 																		dark:bg-surface-950 bg-surface-50">
-												<div class="mt-0 ml-2 mr-2 flex flex-row w-full justify-between  items-center h-[60px]">
+												<div class="p-3 flex flex-row w-full justify-between  items-center h-[60px]">
 													<div class="flex flex-col truncate">
 														<p class="truncate text-lg text-left">{load.name}</p>
-														<p class=" text-left text-xs dark:text-surface-300 text-surface-700">{getPowerLevel(load.power)}</p>
+														<p class="truncate text-left text-xs dark:text-surface-300 text-surface-700">{getPowerLevel(load.power)}</p>
 													</div>
 													{#if load.hasStatus}
 														<p class="text-left text-lg {getPowerStatus(i).color}">{getPowerStatus(i).name}</p>
