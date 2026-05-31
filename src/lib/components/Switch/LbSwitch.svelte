@@ -1,21 +1,30 @@
 <script lang="ts">
 	import LbControl from '$lib/components/Common/LbControl.svelte';
-	import type { Control, ControlOptions, ControlView, SingleButtonView, DialogView } from '$lib/types/models';
+	import type { Control, ControlOptions, ControlView, SingleButtonView, DialogView, GeneralView } from '$lib/types/models';
 	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import LbDialog from '$lib/components/Common/LbDialog.svelte';
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 	import { _ } from 'svelte-i18n';
+	import LbGeneralDialog from '$lib/components/Common/LbGeneralDialog.svelte';
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
 	let buttonActive = $derived(Number(controlStore.getState(control.states.active)) == 1);
+	let pendingCmd = $state('');
+	let resetSwitch = $state(false); // fix: reset switch state in case cancel is pressed
 
 	let buttons: SingleButtonView[] = $derived([
 		{
 			name: buttonActive ? 'Switch off' : 'Switch on',
 			type: 'switch',
 			click: (e: any) => {
-				controlStore.setControl(control.uuidAction, e.checked ? 'on' : 'off');
+				const cmd = e.checked ? 'on' : 'off';
+				if (control.isSecured) {
+					pendingCmd = cmd;
+					passwordView.openDialog = true;
+				} else {
+					controlStore.setControl(control.uuidAction, cmd);
+				}
 			}
 		}
 	]);
@@ -39,11 +48,27 @@
 		buttons: buttons,
 		dialog: dialog,
 	});
+
+	let passwordView: GeneralView = $state({
+		label: $_('Secure control'),
+		openDialog: false,
+		buttons: [],
+		input: true,
+		cancel: () => { resetSwitch = !resetSwitch; },
+		ok: (visuPw: string) => {
+			if (visuPw.length) {
+				controlStore.setControl(control.uuidAction, pendingCmd, visuPw);
+			}
+		}
+	});
 </script>
 
 <div>
-	<LbControl bind:controlView {controlOptions}/>
+	{#key resetSwitch}
+		<LbControl bind:controlView {controlOptions}/>
+	{/key}
 	{#if !controlOptions.action} <!-- TODO disable dialog popup for controls with action -->
 		<LbDialog bind:controlView={controlView}/>
 	{/if}
+	<LbGeneralDialog bind:view={passwordView}/>
 </div>

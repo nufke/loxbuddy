@@ -29,6 +29,12 @@
 		.sort((a, b) => getPosition(customSorting, a, fav) - getPosition(customSorting, b, fav))
 	);
 
+	/**
+	 * Check if given control is set as favorite
+	 * @param obj Object containing the sorting
+	 * @param control Actual category
+	 * @param key Filter based on given key
+	 */
 	function isFavorite(obj: UserDefaultStructure, cat: Category, key: string): boolean {
 		if (obj && obj[cat.uuid] && obj[cat.uuid][key] && isCustomSorting) {
 			return obj[cat.uuid][key].isFav ?? false;
@@ -37,6 +43,12 @@
 		}
 	}
 
+	/**
+	 * Get the position of the given Category. This defines the order in the sorting
+	 * @param obj Object containing the sorting
+	 * @param control Actual category
+	 * @param key Filter based on given key
+	 */
 	function getPosition(obj: UserDefaultStructure, cat: Category, key: string): number {
 		if (obj && obj[cat.uuid] && obj[cat.uuid][key] && isCustomSorting) {
 			return obj[cat.uuid][key].position ?? 0;
@@ -45,6 +57,12 @@
 		}
 	}
 
+	/**
+	 * Helper function to swap categories when sorting is enabled
+	 * @param list List of categories
+	 * @param item The selected category being moved
+	 * @param group Filter based on the given key
+	 */
 	function swapItems(list: Category[], item: Category, group: string): Category[] {
 		let newList = list;
 		if (draggingItem === item || animatingItems.has(item) || group !== dragGroup) {
@@ -59,6 +77,10 @@
 		return [...newList]; // update list (triggers effect)
 	}
 
+	/**
+	 * Helper function to detect if the drag-handle icon is selected
+	 * @param event PointerEvent of the drag pointer
+	 */
 	function onDragHandlePointerDown(event: PointerEvent): void {
 		dragHandlePressed = !!(event.target as Element).closest('[data-drag-handle]');
 	}

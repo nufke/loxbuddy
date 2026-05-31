@@ -45,7 +45,7 @@
 
 	/**
 	 * Check if given control is set as favorite
-	 * @param obj Object containing the usersettings
+	 * @param obj Object containing the sorting
 	 * @param control Actual control
 	 * @param key Filter based on given key
 	 */
@@ -59,7 +59,7 @@
 
 	/**
 	 * Get the position of the given control. This defines the order in the sorting
-	 * @param obj Object containing the usersettings
+	 * @param obj Object containing the sorting
 	 * @param control Actual control
 	 * @param key Filter based on given key
 	 */
@@ -91,6 +91,10 @@
 		return [...newList]; // update list (triggers effect)
 	}
 
+	/**
+	 * Helper function to detect if the drag-handle icon is selected
+	 * @param event PointerEvent of the drag pointer
+	 */
 	function onDragHandlePointerDown(event: PointerEvent | DragEvent): void {
 		dragHandlePressed = !!(event.target as Element).closest('[data-drag-handle]');
 	}

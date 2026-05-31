@@ -31,7 +31,7 @@
 
 	/**
 	 * Check if given room is set as favorite
-	 * @param obj Object containing the usersettings
+	 * @param obj Object containing the sorting
 	 * @param control Actual room
 	 * @param key Filter based on given key
 	 */
@@ -45,7 +45,7 @@
 
 	/**
 	 * Get the position of the given room. This defines the order in the sorting
-	 * @param obj Object containing the usersettings
+	 * @param obj Object containing the sorting
 	 * @param control Actual room
 	 * @param key Filter based on given key
 	 */
@@ -77,6 +77,10 @@
 		return [...newList]; // update list (triggers effect)
 	}
 
+	/**
+	 * Helper function to detect if the drag-handle icon is selected
+	 * @param event PointerEvent of the drag pointer
+	 */
 	function onDragHandlePointerDown(event: PointerEvent): void {
 		dragHandlePressed = !!(event.target as Element).closest('[data-drag-handle]');
 	}

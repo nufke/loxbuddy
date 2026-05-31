@@ -5,7 +5,7 @@ import type { Structure, MsInfo, Control, Category, Room, NotificationMap, Notif
 							GlobalStates, MessageCenter, NotificationMessage, Icon } from '$lib/types/models';
 import { utils } from '$lib/helpers/Utils';
 import { lbControl } from '$lib/helpers/LbControl';
-import { Demo, demo } from '$lib/demo/Demo';
+import { DemoClient, demo } from '$lib/demo/DemoClient';
 import { MiniserverClient} from '$lib/communication/MiniserverClient';
 
 /**
@@ -13,7 +13,7 @@ import { MiniserverClient} from '$lib/communication/MiniserverClient';
  */
 class LbControlStore {
 	controlState: SvelteMap<string, any> = new SvelteMap();
-	controlClient: SvelteMap<string, Demo | MiniserverClient | MqttClient> = new SvelteMap();
+	controlClient: SvelteMap<string, DemoClient | MiniserverClient | MqttClient> = new SvelteMap();
 	msInfo: MsInfo = $state(DEFAULT_MSINFO);
 	globalStates: GlobalStates = $state(DEFAULT_GLOBALSTATES);
 	operatingModes: SvelteMap<string, string> = new SvelteMap();
@@ -36,6 +36,9 @@ class LbControlStore {
 	sortingMode: number = $state(0);// default sorting (config based)
 	customSorting = $derived(((this.sortingMode == 1) ? this.userSettings.userDefaultStructure : this.sortingMap.get(this.msInfo.serialNr)) ?? {}) as UserDefaultStructure;
 
+	/** 
+	 * Initiatie states for notificationsMap, sorting, sortingMode and sortingMap.
+	 */
 	constructor() {
 		this.notificationsMap = utils.deserialize(localStorage.getItem('notifications')) as NotificationMap || {};
 		this.sorting = (localStorage.getItem('sorting') == '1'); /* sorting enabled */
@@ -43,11 +46,24 @@ class LbControlStore {
 		this.sortingMap = utils.deserializeMap(localStorage.getItem('sortingMap'));
 	}
 
-	setControl(uuid: string, cmd: string): void {
+	/**
+	 * Send the control command to the Miniserver. THe visualization password
+	 * should be given for secure controls.
+	 * @param uuid UUID of control
+	 * @param cmd command to be sent to Miniserver
+	 * @param visuPw (optional) visualization password for secured controls
+	 */
+	setControl(uuid: string, cmd: string, visuPw?: string): void {
 		const client = this.controlClient.get(uuid);
-		client?.control(uuid, cmd);
+		client?.control(uuid, cmd, visuPw);
 	}
 
+	/**
+	 * Update notifications map containing messages and system states.
+	 * @param notifications notification message or notification list
+	 * @param statusOverride (optional) enable override (default 0)
+	 * @returns update notifications map
+	 */
 	updateNotificationMap(notifications: NotificationMessage | NotificationList, statusOverride: number = 0 ): NotificationMap {
 		const map: NotificationMap = utils.deserialize(localStorage.getItem('notifications')) || {};
 		const msg = notifications as NotificationMessage;
@@ -65,7 +81,13 @@ class LbControlStore {
 		return map;
 	}
 
-	initStructure(data: Structure, client: Demo | MiniserverClient | MqttClient ): void {
+	/**
+	 * Parse the Miniserver structure file. For each Miniserver and control we register the clients instance,
+	 * such that we can send control states to the associated client.
+	 * @param data structure object
+	 * @param client any of the available clients (DemoClient, MiniserverClient, MqttClient)
+	 */
+	initStructure(data: Structure, client: DemoClient | MiniserverClient | MqttClient ): void {
 		// Store reference to client using device serial nr 
 		this.controlClient.set(data.msInfo.serialNr, client);
 		// fill maps
@@ -111,6 +133,9 @@ class LbControlStore {
 		this.controlClient.set(messageCenter[0].uuidAction, client);
 	}
 
+	/**
+	 * Clean and clear structure.
+	 */
 	clearStructure(): void {
 		this.msInfo = DEFAULT_MSINFO;
 		this.globalStates = DEFAULT_GLOBALSTATES;
@@ -121,17 +146,31 @@ class LbControlStore {
 		this.messageCenter.clear();
 	}
 
+	/**
+	 * Retrieves the control state.
+	 * @param uuid UUID of the control
+	 * @returns value of the control (note: could be an object)
+	 */
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	getState(uuid: string): any {
 		return this.controlState.get(uuid);
 	}
 
+	/**
+	 * Sets the control state.
+	 * @param uuid UUID of the control
+	 * @param data value/data of the control
+	 */
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	setState(uuid: string, data: any): void {
 		const item = $state(data);
 		this.controlState.set(uuid, item);
 	}
 
+	/**
+	 * Set initial states. Used to load all states at once for DemoClient
+	 * @param data map containing all states  
+	 */
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	setInitialStates(data: any) {
 		Object.keys(data).forEach( (key) => {
@@ -141,6 +180,17 @@ class LbControlStore {
 		});
 	}
 
+	/**
+	 * Select the icon for a given control:
+	 * - If the control has a state for the IconAndColor, then returns the icon specified by the IconAndColor state.
+	 * - If the control has a defaultIcon, return it.
+	 * - If the control has no default icon, use the category icon
+	 * - If nothing works, returns a empty string (aka no icon)
+	 * @param control Control object
+	 * @param isSubControl (optional) specify if Control is a subControl
+	 * @param iconAndColor object containing the icon and color
+	 * @returns name of the icon or empty of no icon is available
+	 */
 	getIcon(control: Control, isSubControl: boolean | undefined, iconAndColor: IconAndColor = EMPTY_ICON_AND_COLOR): string {
 		if (iconAndColor && iconAndColor.icon && iconAndColor.icon.length) return iconAndColor.icon; /* used for TextState icon */
 		if (control.defaultIcon) return control.defaultIcon;
@@ -156,22 +206,42 @@ class LbControlStore {
 		return ''; // no icon found / used (TODO: keep empty?)
 	}
 
+	/**
+	 * Retrieve file from Miniserver (e.g. camera images of intercom)
+	 * @param uuid UUID of the control, to look-up the associated client
+	 * @param url url of the hostName
+	 * @returns returns the file contents as a FileMessage
+	 */
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	async getFile(uuid: string, url: string): Promise<any> {
 		const client = this.controlClient.get(uuid);
 		return await client?.getFile(url);
 	}
 
+	/**
+	 * Generic fetch command using Miniserver user credentials
+	 * @param uuid UUID of the control, to look-up the associated client
+	 * @param url endpoint (e.g., /jdev/sps/io/...)
+	*/
 	fetchUrl(uuid: string, url: string): Promise<Response> {
 		const client = this.controlClient.get(uuid) || demo;
 		return client.fetch(url);
 	}
 
+	/**
+	 * Set control sorting
+	 * @param mode mode 0=LoxConfig, 1=user-defined, 2=app-specific
+	 */
 	setSortingMode(mode: number): void {
 		this.sortingMode = mode;
 		localStorage.setItem('sortingMode', String(mode));
 	}
 
+	/**
+	 * Update control sorting map
+	 * @param list updated list of controls, rooms or categories
+	 * @param key key indicating if this is a favorite, room, or category
+	 */
 	updateSortingOrder(list: Control[] | Room[] | Category[], key: string): void {
 		list.forEach((item, index) => {
 			const uuid = (item as Control).uuidAction ?? (item as Room | Category).uuid;
@@ -197,6 +267,10 @@ class LbControlStore {
 		}
 	}
 
+	/**
+	 * Set and store user settings
+	 * @param settings userSettings
+	 */
 	setUserSettings(settings: UserSettings): void {
 		this.userSettings = settings;
 		localStorage.setItem('userSettings', utils.serialize(this.userSettings)); /* store user settings in localStorage */
@@ -209,6 +283,9 @@ class LbControlStore {
 		}
 	}
 
+	/**
+	 * Retrieve user settings
+	 */
 	getUserSettings(): void {
 		const client = this.controlClient.get(this.msInfo.serialNr) || demo;
 		client.getUserSettings();

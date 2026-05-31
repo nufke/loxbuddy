@@ -205,8 +205,9 @@ export class MqttClient {
 	 * Send control state over MQTT
 	 * @param uuid universally unique ID of the control
 	 * @param value value of the control
+	 * @param visuPw (optional) visualization password for secured controls
 	 */
-	async control(uuid: string, value: string): Promise<void> {
+	async control(uuid: string, value: string, visuPw?: string): Promise<void> {
 		console.info('[MqttClient] Send / publish control:', uuid, value);
 		this.client.publish(uuid, value);
 	}

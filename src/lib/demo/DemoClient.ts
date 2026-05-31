@@ -18,7 +18,7 @@ type IntervalMap = {
  * This demo mimics a Smart Home and the controls. There is 
  * no Miniserver required to test the functionalities
 */
-export class Demo {
+export class DemoClient {
 	private timedSwitchIntervalMap: IntervalMap = {};
 	private jalousieIntervalMap: IntervalMap = {};
 	private dimmerLastValue: {[key: string]: string} = {};
@@ -97,11 +97,12 @@ export class Demo {
 	}
 
 	/**
-	 * Method to activate the given control or subcontrol based on the given UUID with the given message  
+	 * Method to activate the given control or subcontrol based on the given UUID with the given message
 	 * @param uuid uuidAction of the control or subcontrol
 	 * @param msg actual payload message for the control
+	 * @param visuPw (optional) visualization password for secured controls
 	 */
-	control(uuid: string, msg: string): void {
+	control(uuid: string, msg: string, visuPw?: string): void {
 		console.info('[DEMO] Control:', uuid, msg);
 		let parentControl;
 		let control: Control | undefined = controlStore.controls.get(uuid);
@@ -935,4 +936,4 @@ export class Demo {
 	}
 }
 
-export const demo = new Demo();
+export const demo = new DemoClient();

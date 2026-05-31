@@ -613,8 +613,9 @@ export type Button = {
 
 export type GeneralView = {
 	label: string;
-	openDialog: boolean
+	openDialog: boolean;
 	buttons: Button[];
+	input: boolean;
 	cancel: any;
 	ok: any;
 }

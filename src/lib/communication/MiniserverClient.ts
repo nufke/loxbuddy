@@ -3,7 +3,7 @@ import type FileMessage from 'svelte-lox-client/dist/WebSocketMessages/FileMessa
 import { appStore } from '$lib/stores/LbAppStore.svelte';
 import { controlStore } from '$lib/stores/LbControlStore.svelte';
 import { utils } from '$lib/helpers/Utils';
-import { demo } from '$lib/demo/Demo';
+import { demo } from '$lib/demo/DemoClient';
 
 /**
  * Singleton that manages the Miniserver connection.
@@ -144,10 +144,11 @@ export class MiniserverClient {
 	 * Send control state to Miniserver
 	 * @param uuid universally unique ID of the control
 	 * @param value value of the control
+	 * @param visuPw (optional) visualization password for secured controls
 	 */
-	async control(uuid: string, value: string): Promise<void> {
-		console.info('[MiniserverClient] Send control:', uuid, value);
-		await this.client?.control(uuid, value);
+	async control(uuid: string, value: string, visuPw?: string): Promise<void> {
+		console.info(`[MiniserverClient] Send ${visuPw ? 'secure ' : ''}control:`, uuid, value);
+		await this.client?.control(uuid, value, visuPw);
 	}
 
 	/**
