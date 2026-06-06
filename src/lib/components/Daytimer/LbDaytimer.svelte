@@ -79,19 +79,19 @@
 	function setControl(cmd: string): void {
 		const cachedVisuPw = appStore.getVisuPw(control.uuidAction);
 		if (control.isSecured && cachedVisuPw) {
-			controlStore.setControl(control.uuidAction, cmd, cachedVisuPw);
+			controlStore.setControl(control, cmd, cachedVisuPw);
 			return;
 		}
 		if (control.isSecured) {
 			passwordView.label = $_('Secured control');
 			passwordView.ok = (visuPw: string) => {
-				controlStore.setControl(control.uuidAction, cmd, visuPw);
+				controlStore.setControl(control, cmd, visuPw);
 				appStore.setVisuPw(control.uuidAction, visuPw);
 			};
 			passwordView.openDialog = true;
 			return;
 		}
-		controlStore.setControl(control.uuidAction, cmd);
+		controlStore.setControl(control, cmd);
 	}
 
 	function getDuration(): string {

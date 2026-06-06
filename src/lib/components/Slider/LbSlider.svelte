@@ -56,7 +56,7 @@
 		} else { // is slider
 			newPosition = e.sliderPosition;
 		}
-		controlStore.setControl(control.uuidAction, String(newPosition), visuPw);
+		controlStore.setControl(control, String(newPosition), visuPw);
 	}
 </script>
 

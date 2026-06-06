@@ -255,7 +255,7 @@
 			"cat": "__uuid__cats_lighting",
 			"defaultRating": 0,
 			"isFavorite": true,
-			"isSecured": false,
+			"isSecured": true,
 			"defaultIcon": null,
 			"restrictions": 0,
 			"details": {

@@ -19,7 +19,7 @@
 			type: 'button',
 			color: '',
 			click: (e: any, visuPw?: string) => {
-				controlStore.setControl(control.uuidAction, 'pulse', visuPw);
+				controlStore.setControl(control, 'pulse', visuPw);
 			}
 		}
 	]);

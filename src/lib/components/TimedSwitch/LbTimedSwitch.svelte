@@ -22,7 +22,7 @@
 			type: 'button',
 			color: '',
 			click: (e: any, visuPw?: string) => {
-				controlStore.setControl(control.uuidAction, (deactivationDelay == 0) ? 'on' : ( (deactivationDelay == -1) ? 'off' : 'on' ), visuPw);
+				controlStore.setControl(control, (deactivationDelay == 0) ? 'on' : ( (deactivationDelay == -1) ? 'off' : 'on' ), visuPw);
 			}
 		}
 	);
@@ -33,7 +33,7 @@
 			type: 'button',
 			color: '',
 			click: (e: any, visuPw?: string) => {
-				controlStore.setControl(control.uuidAction, (deactivationDelay == 0) ? 'pulse' : 'off', visuPw);
+				controlStore.setControl(control, (deactivationDelay == 0) ? 'pulse' : 'off', visuPw);
 			}
 		}
 	);
@@ -44,7 +44,7 @@
 			type: 'button',
 			color: '',
 			click: (e: any, visuPw?: string) => {
-				controlStore.setControl(control.uuidAction, 'pulse', visuPw);
+				controlStore.setControl(control, 'pulse', visuPw);
 			}
 		}
 	);
@@ -55,7 +55,7 @@
 			type: 'button',
 			iconColor: 'dark:text-surface-50 text-surface-950',
 			click: (e: any, visuPw?: string) => {
-				controlStore.setControl(control.uuidAction, 'pulse', visuPw);
+				controlStore.setControl(control, 'pulse', visuPw);
 			}
 		}
 	]);

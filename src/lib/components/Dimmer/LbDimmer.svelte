@@ -42,7 +42,7 @@
 			type: 'button',
 			class: 'col-span-2',
 			click: (e: any, visuPw?: string) => {
-				controlStore.setControl(control.uuidAction, (position == 0) ? 'on' : 'off', visuPw);
+				controlStore.setControl(control, (position == 0) ? 'on' : 'off', visuPw);
 			}
 		}
 	);
@@ -82,7 +82,7 @@
 		} else { // is slider
 			newPosition = e.sliderPosition;
 		}
-		controlStore.setControl(control.uuidAction, String(newPosition), visuPw);
+		controlStore.setControl(control, String(newPosition), visuPw);
 	}
 </script>
 

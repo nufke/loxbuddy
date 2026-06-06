@@ -31,13 +31,13 @@
 			iconName: 'chevron-down',
 			type: 'button',
 			color: '',
-			click: (e: any, visuPw?: string) => controlStore.setControl(control.uuidAction, 'FullDown', visuPw)
+			click: (e: any, visuPw?: string) => controlStore.setControl(control, 'FullDown', visuPw)
 		},
 		{
 			iconName: 'chevron-up',
 			type: 'button',
 			color: '',
-			click: (e: any, visuPw?: string) => controlStore.setControl(control.uuidAction, 'FullUp', visuPw)
+			click: (e: any, visuPw?: string) => controlStore.setControl(control, 'FullUp', visuPw)
 		}
 	]);
 
@@ -50,22 +50,22 @@
 				type: 'button',
 				color: '',
 				click: () => {},  // do nothing
-				mousedown: () => { controlStore.setControl(control.uuidAction, 'down')},
-				mouseup: () => { controlStore.setControl(control.uuidAction, 'DownOff')}
+				mousedown: () => { controlStore.setControl(control, 'down')},
+				mouseup: () => { controlStore.setControl(control, 'DownOff')}
 			},
 			{
 				iconName: 'chevron-up',
 				type: 'button',
 				color: '',
 				click: () => {}, // do nothing
-				mousedown: () => controlStore.setControl(control.uuidAction, 'up'),
-				mouseup: () => controlStore.setControl(control.uuidAction, 'UpOff')
+				mousedown: () => controlStore.setControl(control, 'up'),
+				mouseup: () => controlStore.setControl(control, 'UpOff')
 			},
 			{
 				iconName: 'arrow-down-to-line',
 				type: 'button',
 				color: '',
-				click: (e: any, visuPw?: string) => controlStore.setControl(control.uuidAction, 'FullDown', visuPw),
+				click: (e: any, visuPw?: string) => controlStore.setControl(control, 'FullDown', visuPw),
 				mousedown: () => {}, // do nothing
 				mouseup: () => {} // do nothing
 			},
@@ -73,7 +73,7 @@
 				iconName: 'arrow-up-to-line',
 				type: 'button',
 				color: '',
-				click: (e: any, visuPw?: string) => controlStore.setControl(control.uuidAction, 'FullUp', visuPw),
+				click: (e: any, visuPw?: string) => controlStore.setControl(control, 'FullUp', visuPw),
 				mousedown: () => {}, // do nothing
 				mouseup: () => {} // do nothing
 			},
@@ -82,7 +82,7 @@
 				type: 'button',
 				color: '',
 				class: 'col-span-2',
-				click: (e: any, visuPw?: string) => controlStore.setControl(control.uuidAction, 'shade', visuPw),
+				click: (e: any, visuPw?: string) => controlStore.setControl(control, 'shade', visuPw),
 				mousedown: () => {}, // do nothing
 				mouseup: () => {} // do nothing
 			}

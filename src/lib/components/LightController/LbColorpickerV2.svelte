@@ -133,7 +133,7 @@
 		const timeElapsed = currentTimestamp - lastRequestTimestamp;
 
 		if (timeElapsed > desiredPublishInterval) {
-			controlStore.setControl(control.uuidAction, data);
+			controlStore.setControl(control, data);
 			lastRequestTimestamp = Date.now();
  	 }
 	}

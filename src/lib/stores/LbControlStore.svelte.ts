@@ -53,9 +53,10 @@ class LbControlStore {
 	 * @param cmd command to be sent to Miniserver
 	 * @param visuPw (optional) visualization password for secured controls
 	 */
-	setControl(uuid: string, cmd: string, visuPw?: string): void {
-		const client = this.controlClient.get(uuid);
-		client?.control(uuid, cmd, visuPw);
+	setControl(control: Control, cmd: string, visuPw?: string): void {
+		if (control.isSecured && (!visuPw || !visuPw?.length)) return; // secured control, but no password given, so return
+		const client = this.controlClient.get(control.uuidAction);
+		client?.control(control.uuidAction, cmd, visuPw);
 	}
 
 	/**

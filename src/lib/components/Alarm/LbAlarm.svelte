@@ -62,12 +62,12 @@
 	function setUnsetAlarm(delay: boolean, visuPw?: string): void {
 		let cmd = armed ? 'off' : (delay ? 'delayedon/' : 'on/');
 		cmd += armed ? '' : (disabledMove ? '0' : '1');
-		controlStore.setControl(control.uuidAction, cmd, visuPw);
+		controlStore.setControl(control, cmd, visuPw);
 	}
 
 	function setUnsetMmovement(e: any, visuPw?: string): void {
 		let cmd = 'dismv/' + (e.checked ? '0' : '1');
-		controlStore.setControl(control.uuidAction, cmd, visuPw);
+		controlStore.setControl(control, cmd, visuPw);
 	}
 
 	function getStatus(): string {

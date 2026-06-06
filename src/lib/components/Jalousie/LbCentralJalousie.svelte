@@ -64,13 +64,13 @@
 			iconName: 'chevron-down',
 			type: 'button',
 			color: '',
-			click: (e: any, visuPw?: string) => controlStore.setControl(control.uuidAction, 'FullDown', visuPw)
+			click: (e: any, visuPw?: string) => controlStore.setControl(control, 'FullDown', visuPw)
 		},
 		{
 			iconName: 'chevron-up',
 			type: 'button',
 			color: '',
-			click: (e: any, visuPw?: string) => controlStore.setControl(control.uuidAction, 'FullUp', visuPw)
+			click: (e: any, visuPw?: string) => controlStore.setControl(control, 'FullUp', visuPw)
 		}
 	]);
 

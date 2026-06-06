@@ -52,7 +52,7 @@
 		} else {
 			moodIndex = e.checked;
 		}
-		controlStore.setControl(control.uuidAction, 'changeTo/' + String(moodList[moodIndex].id), visuPw);
+		controlStore.setControl(control, 'changeTo/' + String(moodList[moodIndex].id), visuPw);
 	}
 
 	function getTextName(): string {

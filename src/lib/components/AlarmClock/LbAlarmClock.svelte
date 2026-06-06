@@ -69,16 +69,16 @@
 	function setControl(cmd: string) {
 		const cachedVisuPw = appStore.getVisuPw(controlView.control.uuidAction);
 		if (controlView.control.isSecured && cachedVisuPw) {
-			controlStore.setControl(control.uuidAction, cmd, cachedVisuPw);
+			controlStore.setControl(control, cmd, cachedVisuPw);
 			return;
 		}
 		if (controlView.control.isSecured) {
 			passwordView.label = $_('Secured control');
-			passwordView.ok = (visuPw: string) => { controlStore.setControl(control.uuidAction, cmd, visuPw); appStore.setVisuPw(controlView.control.uuidAction, visuPw);}
+			passwordView.ok = (visuPw: string) => { controlStore.setControl(control, cmd, visuPw); appStore.setVisuPw(controlView.control.uuidAction, visuPw);}
 			passwordView.openDialog = true;
 			return;
 		}
-		controlStore.setControl(control.uuidAction, cmd);
+		controlStore.setControl(control, cmd);
 	}
 
 	function parseScroll(height: number, view: any = undefined): void {

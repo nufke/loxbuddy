@@ -15,7 +15,7 @@
 			name: buttonActive ? 'Switch off' : 'Switch on',
 			type: 'switch',
 			click: (e: any, visuPw?: string) => {
-				controlStore.setControl(control.uuidAction, e.checked ? 'on' : 'off', visuPw);
+				controlStore.setControl(control, e.checked ? 'on' : 'off', visuPw);
 			}
 		}
 	]);

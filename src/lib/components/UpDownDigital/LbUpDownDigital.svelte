@@ -12,13 +12,13 @@
 			iconName: 'chevron-down',
 			type: 'button',
 			color: '',
-			click: (e: any, visuPw?: string) => controlStore.setControl(control.uuidAction, 'PulseDown', visuPw)
+			click: (e: any, visuPw?: string) => controlStore.setControl(control, 'PulseDown', visuPw)
 		},
 		{
 			iconName: 'chevron-up',
 			type: 'button',
 			color: '',
-			click: (e: any, visuPw?: string) => controlStore.setControl(control.uuidAction, 'PulseUp', visuPw)
+			click: (e: any, visuPw?: string) => controlStore.setControl(control, 'PulseUp', visuPw)
 		}
 	]);
 

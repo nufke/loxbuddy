@@ -44,13 +44,13 @@
 			iconName: buttonMapLeft[type],
 			type: 'button',
 			color: '',
-			click: (e: any, visuPw?: string) => controlStore.setControl(control.uuidAction, 'close', visuPw)
+			click: (e: any, visuPw?: string) => controlStore.setControl(control, 'close', visuPw)
 		},
 		{
 			iconName: buttonMapRight[type],
 			type: 'button',
 			color: '',
-			click: (e: any, visuPw?: string) => controlStore.setControl(control.uuidAction, 'open', visuPw)
+			click: (e: any, visuPw?: string) => controlStore.setControl(control, 'open', visuPw)
 		}
 	]);
 
@@ -63,20 +63,20 @@
 				name: $_('Close'),
 				type: 'button',
 				color: '',
-				click: (e: any, visuPw?: string) => controlStore.setControl(control.uuidAction, 'close', visuPw),
+				click: (e: any, visuPw?: string) => controlStore.setControl(control, 'close', visuPw),
 			},
 			{
 				name: $_('Open'),
 				type: 'button',
 				color: '',
-				click: (e: any, visuPw?: string) => controlStore.setControl(control.uuidAction, 'open', visuPw),
+				click: (e: any, visuPw?: string) => controlStore.setControl(control, 'open', visuPw),
 			},
 			{
 				name: $_('Open partially'),
 				type: 'button',
 				color: '',
 				class: 'col-span-2',
-				click: (e: any, visuPw?: string) => controlStore.setControl(control.uuidAction, 'partiallyOpen', visuPw),
+				click: (e: any, visuPw?: string) => controlStore.setControl(control, 'partiallyOpen', visuPw),
 			}
 		]
 	});

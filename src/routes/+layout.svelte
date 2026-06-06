@@ -86,7 +86,6 @@
 		return '../../meteocons/svg/' + current.icon + dayOrNight;
 	}
 
-
 	/**
 	 * Helper function to check if the menu items is active based on the current page
 	 * @param href URL as string

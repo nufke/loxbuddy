@@ -30,7 +30,7 @@
 
 		let msg = String(radioList[idx].id);
 		if (msg === '0') msg = 'reset'; // off requires text "reset" instead of id 0
-		controlStore.setControl(control.uuidAction, msg, visuPw);
+		controlStore.setControl(control, msg, visuPw);
 	}
 
 	let radioList = $derived(

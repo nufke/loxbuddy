@@ -57,7 +57,7 @@
 		if (newValue > max) newValue = max;
 		if (newValue < min) newValue = min;
 		if (newValue != value) {
-			controlStore.setControl(control.uuidAction, String(newValue), visuPw);
+			controlStore.setControl(control, String(newValue), visuPw);
 		}
 	}
 </script>

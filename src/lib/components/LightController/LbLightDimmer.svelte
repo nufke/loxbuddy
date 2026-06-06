@@ -53,14 +53,14 @@
 		if (newPosition == position) return; // same position, do not update
 
 		if (control.type === 'Dimmer') {
-			controlStore.setControl(control.uuidAction, String(e));
+			controlStore.setControl(control, String(e));
 		}
 
 		if (control.type === 'ColorPickerV2') {
 			let hsv = color.match(/hsv\(([0-9]*),([0-9]*),([0-9]*)\)/);
 			if (hsv) {
 				let newColor = 'hsv(' + hsv[1] + ',' + hsv[2] + ',' + String(e) + ')';
-				controlStore.setControl(control.uuidAction, newColor);
+				controlStore.setControl(control, newColor);
 			}
 		}
 	}

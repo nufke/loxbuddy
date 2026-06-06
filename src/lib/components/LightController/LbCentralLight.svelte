@@ -139,7 +139,7 @@
 					default: /* none */
 				}
 				if (control && moodList && moodCmd) {
-					controlStore.setControl(control.uuidAction, 'changeTo/' + moodCmd);
+					controlStore.setControl(control, 'changeTo/' + moodCmd);
 				}
 			}
 		});
