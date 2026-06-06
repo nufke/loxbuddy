@@ -19,7 +19,7 @@
 			iconName: 'minus',
 			type: 'button',
 			color: '',
-			click: () => {updateValue(-1)}
+			click: (e: any, visuPw?: string) => {updateValue(-1, visuPw)}
 		}
 	]);
 
@@ -28,7 +28,7 @@
 			iconName: 'plus',
 			type: 'button',
 			color: '',
-			click: () => {updateValue(1)}
+			click: (e: any, visuPw?: string) => {updateValue(1, visuPw)}
 		}
 	]);
 
@@ -52,12 +52,12 @@
 		dialog: dialog
 	});
 
-	function updateValue(isUp: number): void {
+	function updateValue(isUp: number, visuPw?: string): void {
 		let newValue = value + step * isUp;
 		if (newValue > max) newValue = max;
 		if (newValue < min) newValue = min;
 		if (newValue != value) {
-			controlStore.setControl(control.uuidAction, String(newValue));
+			controlStore.setControl(control.uuidAction, String(newValue), visuPw);
 		}
 	}
 </script>

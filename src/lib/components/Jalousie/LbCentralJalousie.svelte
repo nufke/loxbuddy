@@ -4,9 +4,11 @@
 	import LbIcon from '$lib/components/Common/LbIcon.svelte';
 	import LbJalousieIcon from '$lib/components/Jalousie/LbJalousieIcon.svelte';
 	import { fadeInOut } from '$lib/helpers/styles';
-	import type { Control, ControlOptions, ControlView, DialogView, ScreenItem, SingleButtonView } from '$lib/types/models';
-	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
+	import type { Control, ControlOptions, ControlView, DialogView, ScreenItem, SingleButtonView, GeneralView } from '$lib/types/models';
+	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS, DEFAULT_GENERALVIEW } from '$lib/types/models';
+	import LbGeneralDialog from '$lib/components/Common/LbGeneralDialog.svelte';
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
+	import { appStore } from '$lib/stores/LbAppStore.svelte';
 	import { Dialog, Portal } from '@skeletonlabs/skeleton-svelte';
 	import { _ } from 'svelte-i18n';
 	import { fade } from 'svelte/transition';
@@ -55,18 +57,20 @@
 		state: false
 	});
 
+	let passwordView: GeneralView = $state(DEFAULT_GENERALVIEW);
+
 	let buttons: SingleButtonView[] = $state([
 		{
 			iconName: 'chevron-down',
 			type: 'button',
 			color: '',
-			click: () => controlStore.setControl(control.uuidAction, 'FullDown')
+			click: (e: any, visuPw?: string) => controlStore.setControl(control.uuidAction, 'FullDown', visuPw)
 		},
 		{
 			iconName: 'chevron-up',
 			type: 'button',
 			color: '',
-			click: () => controlStore.setControl(control.uuidAction, 'FullUp')
+			click: (e: any, visuPw?: string) => controlStore.setControl(control.uuidAction, 'FullUp', visuPw)
 		}
 	]);
 
@@ -143,11 +147,21 @@
 	}
 
 	function screenAction(action: string): void {
-		screenList.forEach((screen) => { 
-			if (screen.selected) {
-				controlStore.setControl(screen.uuid, action);
-			}
-		});
+		const cachedVisuPw = appStore.getVisuPw(control.uuidAction);
+		if (control.isSecured && cachedVisuPw) {
+			screenList.forEach((screen) => { if (screen.selected) controlStore.setControl(screen.uuid, action, cachedVisuPw); });
+			return;
+		}
+		if (control.isSecured) {
+			passwordView.label = $_('Secured control');
+			passwordView.ok = (visuPw: string) => {
+				screenList.forEach((screen) => { if (screen.selected) controlStore.setControl(screen.uuid, action, visuPw); });
+				appStore.setVisuPw(control.uuidAction, visuPw);
+			};
+			passwordView.openDialog = true;
+			return;
+		}
+		screenList.forEach((screen) => { if (screen.selected) controlStore.setControl(screen.uuid, action); });
 	}
 
 	function getControlName(control: Control): string {
@@ -260,6 +274,7 @@
 			<LbJalousie control={selectedControl} controlOptions={selectedControlOptions}/>
 		{/key}
 	{/if}
+	<LbGeneralDialog bind:view={passwordView}/>
 </div>
 
 <style>

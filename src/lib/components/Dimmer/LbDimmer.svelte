@@ -26,13 +26,13 @@
 			iconName: 'minus',
 			type: 'button',
 			color: '',
-			click: (e: any) => {updatePosition(e, -1)}
+			click: (e: any, visuPw?: string) => {updatePosition(e, -1, visuPw)}
 		},
 		{
 			iconName: 'plus',
 			type: 'button',
 			color: '',
-			click: (e: any) => {updatePosition(e, 1)}
+			click: (e: any, visuPw?: string) => {updatePosition(e, 1, visuPw)}
 		}
 	]);
 
@@ -41,8 +41,8 @@
 			name: (position > 0) ? 'Switch off' : 'Switch on',
 			type: 'button',
 			class: 'col-span-2',
-			click: (e: any) => {
-				controlStore.setControl(control.uuidAction, (position == 0) ? 'on' : 'off');
+			click: (e: any, visuPw?: string) => {
+				controlStore.setControl(control.uuidAction, (position == 0) ? 'on' : 'off', visuPw);
 			}
 		}
 	);
@@ -73,7 +73,7 @@
 		}
 	});
 
-	function updatePosition(e: any, isUp: number): void {
+	function updatePosition(e: any, isUp: number, visuPw?: string): void {
 		let newPosition;
 		if (e && e.sliderPosition == undefined && sliderBar.position >= min && sliderBar.position <= max ) { // no sliderPosition, is button
 			newPosition = sliderBar.position + sliderBar.step * isUp;
@@ -82,7 +82,7 @@
 		} else { // is slider
 			newPosition = e.sliderPosition;
 		}
-		controlStore.setControl(control.uuidAction, String(newPosition));
+		controlStore.setControl(control.uuidAction, String(newPosition), visuPw);
 	}
 </script>
 

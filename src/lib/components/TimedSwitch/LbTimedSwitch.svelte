@@ -21,8 +21,8 @@
 			name: (deactivationDelay == 0) ? $_('Turn on') : ((deactivationDelay == -1) ? $_('Turn off') : $_('Switch on permanently')),
 			type: 'button',
 			color: '',
-			click: (e: any) => {
-				controlStore.setControl(control.uuidAction, (deactivationDelay == 0) ? 'on' : ( (deactivationDelay == -1) ? 'off' : 'on' ));
+			click: (e: any, visuPw?: string) => {
+				controlStore.setControl(control.uuidAction, (deactivationDelay == 0) ? 'on' : ( (deactivationDelay == -1) ? 'off' : 'on' ), visuPw);
 			}
 		}
 	);
@@ -32,8 +32,8 @@
 			name: (deactivationDelay == 0) ? $_('Start timer') : $_('Turn off'),
 			type: 'button',
 			color: '',
-			click: () => {
-				controlStore.setControl(control.uuidAction, (deactivationDelay == 0) ? 'pulse' : 'off');
+			click: (e: any, visuPw?: string) => {
+				controlStore.setControl(control.uuidAction, (deactivationDelay == 0) ? 'pulse' : 'off', visuPw);
 			}
 		}
 	);
@@ -43,8 +43,8 @@
 			name: $_('Restart timer'),
 			type: 'button',
 			color: '',
-			click: () => {
-				controlStore.setControl(control.uuidAction, 'pulse');
+			click: (e: any, visuPw?: string) => {
+				controlStore.setControl(control.uuidAction, 'pulse', visuPw);
 			}
 		}
 	);
@@ -54,8 +54,8 @@
 			iconName: 'timer-2',
 			type: 'button',
 			iconColor: 'dark:text-surface-50 text-surface-950',
-			click: () => {
-				controlStore.setControl(control.uuidAction, 'pulse');
+			click: (e: any, visuPw?: string) => {
+				controlStore.setControl(control.uuidAction, 'pulse', visuPw);
 			}
 		}
 	]);

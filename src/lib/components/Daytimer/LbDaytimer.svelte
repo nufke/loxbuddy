@@ -4,8 +4,9 @@
 	import { SvelteDate } from 'svelte/reactivity';
 	import { Toast, createToaster } from '@skeletonlabs/skeleton-svelte';
 	import { fadeInOut } from '$lib/helpers/styles';
-	import type { Control, ControlOptions, ControlView, DialogView, EntriesAndDefaultValue, WeekDays } from '$lib/types/models';
-	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
+	import type { Control, ControlOptions, ControlView, DialogView, EntriesAndDefaultValue, WeekDays, GeneralView } from '$lib/types/models';
+	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS, DEFAULT_GENERALVIEW } from '$lib/types/models';
+	import LbGeneralDialog from '$lib/components/Common/LbGeneralDialog.svelte';
 	import LbTimeGrid from '$lib/components/Common/LbTimeGrid.svelte';
 	import LbDateTimePickerDialog from '$lib/components/Common/LbDateTimePickerDialog.svelte';
 	import LbCalendarDialog from '$lib/components/Common/LbCalendarDialog.svelte';
@@ -27,6 +28,7 @@
 
 	const toaster = createToaster({duration: 1500});
 
+	let passwordView: GeneralView = $state(DEFAULT_GENERALVIEW);
 	let dayOfTheWeek = $derived(format(appStore.date, 'eeee'));
 	let isAnalog = $derived(Boolean(control.details.analog));
 	let value = $derived(Number(controlStore.getState(control.states.value)));
@@ -73,6 +75,24 @@
 		statusColor: (value > 0 ) ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700',
 		dialog: dialog
 	});
+
+	function setControl(cmd: string): void {
+		const cachedVisuPw = appStore.getVisuPw(control.uuidAction);
+		if (control.isSecured && cachedVisuPw) {
+			controlStore.setControl(control.uuidAction, cmd, cachedVisuPw);
+			return;
+		}
+		if (control.isSecured) {
+			passwordView.label = $_('Secured control');
+			passwordView.ok = (visuPw: string) => {
+				controlStore.setControl(control.uuidAction, cmd, visuPw);
+				appStore.setVisuPw(control.uuidAction, visuPw);
+			};
+			passwordView.openDialog = true;
+			return;
+		}
+		controlStore.setControl(control.uuidAction, cmd);
+	}
 
 	function getDuration(): string {
 		let statusExt = '';
@@ -122,7 +142,7 @@
 
 	function startStopTimer(): void {
 		if (override > 0) { // Timer active, so deactivate
-			controlStore.setControl(control.uuidAction, 'stopOverride');
+			setControl('stopOverride');
 			return;
 		}
 		overrideDate.start = new SvelteDate(); // save start time for visualization
@@ -132,8 +152,7 @@
 		let overrideValue = outputActive ? '1' : '0'; // TODO analog values
 
 		if (overrideTimeSec > 60) {// TODO define minimum time of 1 minute
-			let cmd = 'startOverride/' + String(overrideValue) + '/' + String(overrideTimeSec);
-			controlStore.setControl(control.uuidAction, cmd);
+			setControl('startOverride/' + String(overrideValue) + '/' + String(overrideTimeSec));
 		} else {
 			console.error('[LbDaytimer] Daytimer override timeperiod to low:', overrideTimeSec);
 			toaster.info({ title: 'Timer period invalid!'});
@@ -221,6 +240,7 @@
 	{/if}
 	<LbDateTimePickerDialog date={overrideDate.end} bind:view={dateTimeView} onValueChange={(e:any)=>{ updateTimer(e)}}/>
 	<LbCalendarDialog bind:view={calendarView} {mode} {dayModes} {entries}/>
+	<LbGeneralDialog bind:view={passwordView}/>
 	<Toast.Group {toaster}>
 		{#snippet children(toast)}
 			<Toast {toast}>

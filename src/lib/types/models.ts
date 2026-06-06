@@ -620,6 +620,15 @@ export type GeneralView = {
 	ok: any;
 }
 
+export const DEFAULT_GENERALVIEW: GeneralView = {
+	label: '',
+	openDialog: false,
+	buttons: [],
+	input: true,
+	cancel: () => {},
+	ok: () => {}
+}
+
 export type CalendarListItem = {
 	name: string[];
 	to: string;

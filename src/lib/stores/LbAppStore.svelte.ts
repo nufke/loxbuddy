@@ -1,3 +1,4 @@
+import { SvelteMap } from 'svelte/reactivity';
 import type { DialogView, Credentials } from '$lib/types/models';
 import { utils } from '$lib/helpers/Utils';
 import { nl, enGB, de } from 'date-fns/locale'
@@ -11,7 +12,6 @@ import { type DateFnsLocale } from '$lib/types/models';
 class LbAppStore {
 	appId: string = $state('');
 	isDemo: boolean = $state(false);
-	token: string | undefined = $state();
 	nav: string = $state(''); // default is main menu (hamburger symbol)
 	date: Date = $state(new Date());
 	mode: string = $state('dark');
@@ -23,7 +23,7 @@ class LbAppStore {
 	startPage: string = $state('/');
 	locale: string = $state('en'); // default English
 	credentials: Credentials | null= $state(null);
-
+	visuPw: SvelteMap<string, string> = new SvelteMap();
 	weatherDialog: DialogView = $state({
 		action: () => {},
 		state: false,
@@ -45,7 +45,7 @@ class LbAppStore {
 	constructor() {
 		setInterval(() => {
 			this.date = new Date();
-		}, 1000);
+		}, 1000); // update date every second
 
 		this.appId = localStorage.getItem('appId') || utils.generateUuid();
 		localStorage.setItem('appId', this.appId);
@@ -62,6 +62,17 @@ class LbAppStore {
 	storeCredentials(credentials: Credentials): void {
 		this.credentials = credentials;
 		localStorage.setItem('credentials', utils.serialize(credentials));
+	}
+
+	getVisuPw(controlUuid: string) {
+		return this.visuPw.get(controlUuid);
+	}
+
+	setVisuPw(controlUuid: string, visuPw: string) {
+		this.visuPw.set(controlUuid, visuPw);
+		setTimeout(() => {
+			this.visuPw.delete(controlUuid);
+		}, 10000); // delete visuPw after 10 sec
 	}
 
 	clearCredentials(): void {

@@ -7,7 +7,7 @@
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS } : {control: Control, controlOptions: ControlOptions } = $props();
 
-	function clickRadio(e: any, step: number) {
+	function clickRadio(e: any, step: number, visuPw?: string) {
 		let min: number = 0;
 		let max: number = radioList.length - 1;
 		let idx: number = radioList.findIndex((item) => {
@@ -30,7 +30,7 @@
 
 		let msg = String(radioList[idx].id);
 		if (msg === '0') msg = 'reset'; // off requires text "reset" instead of id 0
-		controlStore.setControl(control.uuidAction, msg);
+		controlStore.setControl(control.uuidAction, msg, visuPw);
 	}
 
 	let radioList = $derived(
@@ -53,13 +53,13 @@
 			iconName: 'minus',
 			type: 'button',
 			color: '',
-			click: (e: any) => clickRadio(e, -1)
+			click: (e: any, visuPw?: string) => clickRadio(e, -1, visuPw)
 		},
 		{
 			iconName: 'plus',
 			type: 'button',
 			color: '',
-			click: (e: any) => clickRadio(e, 1)
+			click: (e: any, visuPw?: string) => clickRadio(e, 1, visuPw)
 		}
 	]);
 

@@ -18,8 +18,8 @@
 			iconName: 'circle',
 			type: 'button',
 			color: '',
-			click: () => {
-				controlStore.setControl(control.uuidAction, 'pulse');
+			click: (e: any, visuPw?: string) => {
+				controlStore.setControl(control.uuidAction, 'pulse', visuPw);
 			}
 		}
 	]);

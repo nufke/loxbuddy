@@ -31,13 +31,13 @@
 			iconName: 'chevron-down',
 			type: 'button',
 			color: '',
-			click: () => controlStore.setControl(control.uuidAction, 'FullDown')
+			click: (e: any, visuPw?: string) => controlStore.setControl(control.uuidAction, 'FullDown', visuPw)
 		},
 		{
 			iconName: 'chevron-up',
 			type: 'button',
 			color: '',
-			click: () => controlStore.setControl(control.uuidAction, 'FullUp')
+			click: (e: any, visuPw?: string) => controlStore.setControl(control.uuidAction, 'FullUp', visuPw)
 		}
 	]);
 
@@ -65,7 +65,7 @@
 				iconName: 'arrow-down-to-line',
 				type: 'button',
 				color: '',
-				click: () => controlStore.setControl(control.uuidAction, 'FullDown'),
+				click: (e: any, visuPw?: string) => controlStore.setControl(control.uuidAction, 'FullDown', visuPw),
 				mousedown: () => {}, // do nothing
 				mouseup: () => {} // do nothing
 			},
@@ -73,7 +73,7 @@
 				iconName: 'arrow-up-to-line',
 				type: 'button',
 				color: '',
-				click: () => controlStore.setControl(control.uuidAction, 'FullUp'),
+				click: (e: any, visuPw?: string) => controlStore.setControl(control.uuidAction, 'FullUp', visuPw),
 				mousedown: () => {}, // do nothing
 				mouseup: () => {} // do nothing
 			},
@@ -82,7 +82,7 @@
 				type: 'button',
 				color: '',
 				class: 'col-span-2',
-				click: () => controlStore.setControl(control.uuidAction, 'shade'),
+				click: (e: any, visuPw?: string) => controlStore.setControl(control.uuidAction, 'shade', visuPw),
 				mousedown: () => {}, // do nothing
 				mouseup: () => {} // do nothing
 			}

@@ -1,11 +1,13 @@
 <script lang="ts">
 	import { tick } from 'svelte';
-	import type { Control, ControlOptions, ControlView, DialogView, AlarmClockEntries, AlarmClockEntry } from '$lib/types/models';
-	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
+	import type { Control, ControlOptions, ControlView, DialogView, AlarmClockEntries, AlarmClockEntry, GeneralView } from '$lib/types/models';
+	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS, DEFAULT_GENERALVIEW } from '$lib/types/models';
 	import LbControl from '$lib/components/Common/LbControl.svelte';
+	import LbGeneralDialog from '$lib/components/Common/LbGeneralDialog.svelte';
 	import { Switch } from '@skeletonlabs/skeleton-svelte';
 	import LbIcon from '$lib/components/Common/LbIcon.svelte';
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
+	import { appStore } from '$lib/stores/LbAppStore.svelte';
 	import { _ } from 'svelte-i18n';
 	import { fadeInOut } from '$lib/helpers/styles';
 	import { format } from 'date-fns';
@@ -19,6 +21,8 @@
 	import { slide, fade } from 'svelte/transition';
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
+
+	let passwordView: GeneralView = $state(DEFAULT_GENERALVIEW);
 
 	let viewport: any = $state(); // TODO make HTMLDivElement
 	let hasScroll = $state(true);
@@ -62,6 +66,21 @@
 		dialog: dialog
 	});
 
+	function setControl(cmd: string) {
+		const cachedVisuPw = appStore.getVisuPw(controlView.control.uuidAction);
+		if (controlView.control.isSecured && cachedVisuPw) {
+			controlStore.setControl(control.uuidAction, cmd, cachedVisuPw);
+			return;
+		}
+		if (controlView.control.isSecured) {
+			passwordView.label = $_('Secured control');
+			passwordView.ok = (visuPw: string) => { controlStore.setControl(control.uuidAction, cmd, visuPw); appStore.setVisuPw(controlView.control.uuidAction, visuPw);}
+			passwordView.openDialog = true;
+			return;
+		}
+		controlStore.setControl(control.uuidAction, cmd);
+	}
+
 	function parseScroll(height: number, view: any = undefined): void {
 		if (!view) return;
 		hasScroll = view.scrollHeight > view.clientHeight;
@@ -87,10 +106,10 @@
 		let extName = (i == -1) ? ' ' + String(id) : ''; /* extend name for new entries */
 		let setting = entry.nightLight ? (entry.daily ? '1' : '0') : entry.modes?.map((s) => s.toString());
 		let cmd = 'entryList/put/' + String(id) + '/' +
-			entry.name + extName + '/' + entry.alarmTime + '/' + 
+			entry.name + extName + '/' + entry.alarmTime + '/' +
 			(entry.isActive ? '1' : '0') + '/' + setting;
 		//console.debug('[LbAlarmClock] cmd', cmd, id, entryListIds);
-		controlStore.setControl(control.uuidAction, cmd);
+		setControl(cmd);
 	}
 
 	function updateName(i: number, e: any): void {
@@ -140,7 +159,7 @@
 
 	function deleteEntry(i: number): void {
 		let cmd = 'entryList/delete/' + entryIds[i];
-		controlStore.setControl(control.uuidAction, cmd);
+		setControl(cmd);
 	}
 
 	function getAlarmTime(): string {
@@ -246,4 +265,5 @@
 		</Dialog>
 	{/if}
 	<LbDateTimePickerDialog date={getTimerDate()} bind:view={dateTimeView} onValueChange={(e:any)=>{ updateAlarmTime(e)}}/>
+	<LbGeneralDialog bind:view={passwordView}/>
 </div>

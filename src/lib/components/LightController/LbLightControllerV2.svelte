@@ -16,7 +16,7 @@
 			iconName: 'plus',
 			type: 'button',
 			color: '',
-			click: (e:any) => selectMood(e)
+			click: (e:any, visuPw?: string) => selectMood(e, visuPw)
 		}
 	]);
 
@@ -41,7 +41,7 @@
 		dialog: dialog
 	});
 
-	function selectMood(e:any): void {
+	function selectMood(e:any, visuPw?: string): void {
 		let moodIndex: number;
 		if (e && e.checked == undefined) { // no mood given, select next mood
 			moodIndex = moodList.findIndex((item:any) => { return item.id == activeMoodsNum });
@@ -52,7 +52,7 @@
 		} else {
 			moodIndex = e.checked;
 		}
-		controlStore.setControl(control.uuidAction, 'changeTo/' + String(moodList[moodIndex].id));
+		controlStore.setControl(control.uuidAction, 'changeTo/' + String(moodList[moodIndex].id), visuPw);
 	}
 
 	function getTextName(): string {

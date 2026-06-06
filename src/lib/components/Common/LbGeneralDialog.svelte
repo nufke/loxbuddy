@@ -36,6 +36,7 @@
 	}
 
 	function ok(): void {
+ 		if (view.input && !password.length) return; // ignore if no password is given
 		if (view.input) {
 			returnObj = password;
 		}

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Control, ControlView, ControlOptions } from '$lib/types/models';
+	import type { Control, ControlView, ControlOptions, GeneralView } from '$lib/types/models';
 	import LbIcon from '$lib/components/Common/LbIcon.svelte';
 	import LbSimpleSlider from '$lib/components/Common/LbSimpleSlider.svelte';
 	import LbStatusBar from '$lib/components/Common/LbStatusBar.svelte';
@@ -7,7 +7,7 @@
 	import { appStore } from '$lib/stores/LbAppStore.svelte';
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 	import { lbControl } from '$lib/helpers/LbControl';
-	import { DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
+	import { DEFAULT_CONTROLOPTIONS, DEFAULT_GENERALVIEW } from '$lib/types/models';
 	import { Switch } from '@skeletonlabs/skeleton-svelte';
 	import { Dialog, Portal } from '@skeletonlabs/skeleton-svelte';
 	import { Slider } from '@skeletonlabs/skeleton-svelte';
@@ -16,6 +16,7 @@
 	import LbInfo from '$lib/components/Common/LbInfo.svelte';
 	import { format } from 'date-fns';
 	import { innerHeight } from 'svelte/reactivity/window';
+	import LbGeneralDialog from '$lib/components/Common/LbGeneralDialog.svelte';
 
 	let { controlView = $bindable() }: { controlView: ControlView } = $props();
 
@@ -23,6 +24,8 @@
 	let hasScroll = $state(true);
 	let showScrollTop = $state(false);
 	let showScrollBottom = $state(true);
+	let passwordView: GeneralView = $state(DEFAULT_GENERALVIEW);
+
 	let value = $derived(controlView.slider && controlView.slider.position? [controlView.slider.position] : [0]);
 	let min = $derived(controlView.slider ? controlView.slider.min : 0);
 	let max = $derived(controlView.slider ? controlView.slider.max : 100);
@@ -91,6 +94,21 @@
 		controlView.dialog.action(false);
 	}
 
+	function handleButtonClick(button: any, e: any) {
+		const cachedVisuPw = appStore.getVisuPw(controlView.control.uuidAction);
+		if (controlView.control.isSecured && cachedVisuPw) {
+			button.click(e, cachedVisuPw);
+			return 
+		}
+		if (controlView.control.isSecured) {
+			passwordView.label = $_('Secured control');
+			passwordView.ok = (visuPw: string) => { button.click(e, visuPw); appStore.setVisuPw(controlView.control.uuidAction, visuPw);}
+			passwordView.openDialog = true;
+			return;
+		}
+		button.click(e);
+	}
+
 	$effect( () => { // check scroll status and window change and viewwport construction
 		parseScroll(windowHeight, viewport);
 	});
@@ -143,7 +161,7 @@
 								{#each controlView.buttons as button}
 									{#if button.type === 'button' && button.click}
 										<button type="button" class="w-full btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50 active:bg-primary-500 active:bg-primary-500"
-												onclick={(e) => {e.stopPropagation(); e.preventDefault(); button.click();}}>
+												onclick={(e) => {e.stopPropagation(); e.preventDefault(); handleButtonClick(button, null);}}>
 												{#if button.name}
 													<span>{$_(button.name)}</span>
 												{:else}
@@ -155,7 +173,7 @@
 									{/if}
 									{#if button.type == 'switch' && button.name }
 										<button type="button" class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50" 
-												onclick={(e) => {e.stopPropagation(); e.preventDefault(); button.click({checked: !controlView.buttonState})}}>
+												onclick={(e) => {e.stopPropagation(); e.preventDefault(); handleButtonClick(button, {checked: !controlView.buttonState});}}>
 											<span style="font-size:18px">{$_(button.name)}</span>
 										</button>
 									{/if}
@@ -189,7 +207,7 @@
 								{#each controlView.dialog.buttons as button}
 									{#if button.type === 'button' && button.click}
 										<button type="button" class="w-full {button.class} btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50 active:bg-primary-500"
-												onclick={button.click}>
+												onclick={(e) => handleButtonClick(button, e)}>
 												{#if button.name}
 													<span class="text-lg">{$_(button.name)}</span>
 												{:else}
@@ -201,7 +219,7 @@
 										<button class="btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50" onclick={(e) => { e.stopPropagation()}}> <!-- workaround wrapper to stop propagation for switch -->
 											<div class="flex w-full justify-between">
 												<h1 class="truncate text-lg">{$_(button.name)}</h1>
-												<Switch checked={controlView.buttonState} onCheckedChange={button.click}>
+												<Switch checked={controlView.buttonState} onCheckedChange={(e) => handleButtonClick(button, e)}>
 													<Switch.Control class="w-12 h-8 data-[state=checked]:preset-filled-primary-500">
 														<Switch.Thumb />
 													</Switch.Control>
@@ -284,6 +302,8 @@
 		</Portal>
 	</Dialog>
 {/if}
+
+<LbGeneralDialog bind:view={passwordView}/>
 
 <style>
 	.lb-center {

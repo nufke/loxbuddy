@@ -16,24 +16,24 @@
 			name: armed ? 'Disarm alarm' : 'Arm alarm',
 			type: 'button',
 			color: '',
-			click: () => {
-				setUnsetAlarm();
+			click: (e: any, visuPw?: string) => {
+				setUnsetAlarm(false, visuPw);
 			}
 		},
 		{
 			name: 'Arming delayed',
 			type: armed ? '' : 'button',
 			color: '',
-			click: () => {
-				setUnsetAlarm(true); // with delay
+			click: (e: any, visuPw?: string) => {
+				setUnsetAlarm(true, visuPw); // with delay
 			}
 		},
 		{
 			name: 'Presence detection',
 			type: 'switch',
 			color: '',
-			click: (e: any) => {
-				setUnsetMmovement(e);
+			click: (e: any, visuPw?: string) => {
+				setUnsetMmovement(e, visuPw);
 			}
 		}
 	]);
@@ -59,15 +59,15 @@
 		}
 	});
 
-	function setUnsetAlarm(delay: boolean = false): void {
+	function setUnsetAlarm(delay: boolean, visuPw?: string): void {
 		let cmd = armed ? 'off' : (delay ? 'delayedon/' : 'on/');
 		cmd += armed ? '' : (disabledMove ? '0' : '1');
-		controlStore.setControl(control.uuidAction, cmd);
+		controlStore.setControl(control.uuidAction, cmd, visuPw);
 	}
 
-	function setUnsetMmovement(e: any): void {
+	function setUnsetMmovement(e: any, visuPw?: string): void {
 		let cmd = 'dismv/' + (e.checked ? '0' : '1');
-		controlStore.setControl(control.uuidAction, cmd);
+		controlStore.setControl(control.uuidAction, cmd, visuPw);
 	}
 
 	function getStatus(): string {

@@ -1,9 +1,11 @@
 <script lang="ts">
 	import { Dialog, Portal } from '@skeletonlabs/skeleton-svelte';
-	import type { Control, ControlOptions, ControlView, DialogView, SingleButtonView } from '$lib/types/models';
-	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
+	import type { Control, ControlOptions, ControlView, DialogView, SingleButtonView, GeneralView } from '$lib/types/models';
+	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS, DEFAULT_GENERALVIEW } from '$lib/types/models';
 	import LbControl from '$lib/components/Common/LbControl.svelte';
+	import LbGeneralDialog from '$lib/components/Common/LbGeneralDialog.svelte';
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
+	import { appStore } from '$lib/stores/LbAppStore.svelte';
 	import { _ } from 'svelte-i18n';
 	import { fadeInOut } from '$lib/helpers/styles';
 	import LbIcon from '$lib/components/Common/LbIcon.svelte';
@@ -12,9 +14,10 @@
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS}: { control: Control, controlOptions: ControlOptions } = $props();
 
+
 	let timeServiceMode = $derived(Number(controlStore.getState(control.states.timeServiceMode)));
 	let level = $derived((timeServiceMode > 0) ? 99 : Number(controlStore.getState(control.states.level)));
-
+	let passwordView: GeneralView = $state(DEFAULT_GENERALVIEW);
 	let statusName = $state('');
 	let statusColor = $state('');
 	let selectedTab = $state(1);
@@ -51,6 +54,24 @@
 		dialog: dialog
 	});
 
+	function setControl(cmd: string): void {
+		const cachedVisuPw = appStore.getVisuPw(control.uuidAction);
+		if (control.isSecured && cachedVisuPw) {
+			controlStore.setControl(control.uuidAction, cmd, cachedVisuPw);
+			return;
+		}
+		if (control.isSecured) {
+			passwordView.label = $_('Secured control');
+			passwordView.ok = (visuPw: string) => {
+				controlStore.setControl(control.uuidAction, cmd, visuPw);
+				appStore.setVisuPw(control.uuidAction, visuPw);
+			};
+			passwordView.openDialog = true;
+			return;
+		}
+		controlStore.setControl(control.uuidAction, cmd);
+	}
+
 	function updateStatus(level: number): void {
 		switch (level) {
 			case 0: 
@@ -80,15 +101,14 @@
 
 	function stopService(): void {
 		if (timeServiceMode > 0) { // only stop if servicemode is running
-			controlStore.setControl(control.uuidAction, 'servicemode/0');
+			setControl('servicemode/0');
 		}
 		duration = '';
 	}
 
 	function startService(): void {
 		if (serviceTime > 0) { // TODO minimal time for service
-			let cmd = 'servicemode/' + String(serviceTime);
-			controlStore.setControl(control.uuidAction, cmd);
+			setControl('servicemode/' + String(serviceTime));
 		}
 	}
 
@@ -189,4 +209,5 @@
 			</Portal>
 		</Dialog>
 	{/if}
+	<LbGeneralDialog bind:view={passwordView}/>
 </div>

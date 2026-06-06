@@ -1,13 +1,16 @@
 <script lang="ts">
 	import LbIcon from '$lib/components/Common/LbIcon.svelte';
-	import { Dialog, Portal  } from '@skeletonlabs/skeleton-svelte';
-	import type { Control, ControlView, ListItem } from '$lib/types/models';
+	import { Dialog, Portal } from '@skeletonlabs/skeleton-svelte';
+	import type { Control, ControlView, ListItem, GeneralView } from '$lib/types/models';
+	import { DEFAULT_GENERALVIEW } from '$lib/types/models';
 	import { fade } from 'svelte/transition';
 	import { fadeInOut } from '$lib/helpers/styles';
 	import LbSwitch from '$lib/components/Switch/LbSwitch.svelte';
 	import LbLightDimmer from '$lib/components/LightController/LbLightDimmer.svelte';
+	import LbGeneralDialog from '$lib/components/Common/LbGeneralDialog.svelte';
 	import LbColorPickerV2 from '$lib/components/LightController/LbColorpickerV2.svelte';
 	import { _ } from 'svelte-i18n';
+	import { appStore } from '$lib/stores/LbAppStore.svelte';
 	import LbInfo from '$lib/components/Common/LbInfo.svelte';
 	import { innerHeight } from 'svelte/reactivity/window';
 	import { tick } from 'svelte';
@@ -19,6 +22,8 @@
 	let hasScroll = $state(true);
 	let showScrollTop = $state(false);
 	let showScrollBottom = $state(false);
+	let passwordView: GeneralView = $state(DEFAULT_GENERALVIEW);
+
 	let selectedItem = $derived(controlView.list ? controlView.list.findIndex((item: ListItem) => { return item.name === controlView.statusName }) : 0);
 	let subControls = $derived(controlView.control && controlView.control.subControls ? Object.values(controlView.control.subControls) : []);
 	let subControlsColorPicker = $derived(subControls.filter((control) => control.type === 'ColorPickerV2'));
@@ -30,9 +35,20 @@
 	let style = $derived(size > 0 && viewport?.clientHeight == viewport?.scrollHeight ? 'height: 100%' : 'height: ' + (viewport?.clientHeight + size) + 'px');
 
 	function setItem(i: number): void {
-		if (controlView && controlView.buttons && controlView.buttons[0]) {
-			controlView.buttons[0].click({checked: i});
+		const cachedVisuPw = appStore.getVisuPw(controlView.control.uuidAction);
+		if (controlView.control.isSecured && cachedVisuPw) {
+			controlView?.buttons[0].click({checked: i}, cachedVisuPw);
+			return 
 		}
+		if (controlView.control.isSecured) {
+			passwordView.label = $_('Secured control');
+			passwordView.ok = (visuPw: string) => { 
+				controlView?.buttons[0].click({checked: i}, visuPw);
+				appStore.setVisuPw(controlView.control.uuidAction, visuPw);}
+			passwordView.openDialog = true;
+			return;
+		}
+		controlView?.buttons[0].click({checked: i});
 	}
 
 	function getMargin(control: Control, tab: number): number {
@@ -179,6 +195,7 @@
 		</Portal>
 	</Dialog>
 {/if}
+<LbGeneralDialog bind:view={passwordView}/>
 
 <style>
 	.lb-center {

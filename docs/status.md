@@ -119,6 +119,8 @@ or submit a [pull request](https://github.com/nufke/loxbuddy/pulls).
 | WindowMonitor            | Available         |                                       |
 | Universal                | Not started       |                                       |
 
+\* LoxBuddy specific controls
+
 ## Feature list
 
 | Feature                      | Status                     |

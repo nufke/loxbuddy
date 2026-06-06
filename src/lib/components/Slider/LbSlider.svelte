@@ -20,13 +20,13 @@
 			iconName: 'minus',
 			type: 'button',
 			color: '',
-			click: (e: any) => {updatePosition(e, -1)}
+			click: (e: any, visuPw?: string) => {updatePosition(e, -1, visuPw)}
 		},
 		{
 			iconName: 'plus',
 			type: 'button',
 			color: '',
-			click: (e: any) => {updatePosition(e, 1)}
+			click: (e: any, visuPw?: string) => {updatePosition(e, 1, visuPw)}
 		}
 	]);
 
@@ -47,7 +47,7 @@
 		dialog: dialog
 	});
 
-	function updatePosition(e: any, isUp: number): void {
+	function updatePosition(e: any, isUp: number, visuPw?: string): void {
 		let newPosition;
 		if (e && e.sliderPosition == undefined && sliderBar.position >= sliderBar.min && sliderBar.position <= sliderBar.max) { // no sliderPosition, is button
 			newPosition = sliderBar.position + sliderBar.step * isUp;
@@ -56,7 +56,7 @@
 		} else { // is slider
 			newPosition = e.sliderPosition;
 		}
-		controlStore.setControl(control.uuidAction, String(newPosition));
+		controlStore.setControl(control.uuidAction, String(newPosition), visuPw);
 	}
 </script>
 

@@ -1,17 +1,21 @@
 <script lang="ts">
 	import { Switch } from '@skeletonlabs/skeleton-svelte';
-	import type { ControlView, Control, ControlOptions, Category, Room } from '$lib/types/models';
-	import { DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
+	import type { ControlView, Control, ControlOptions, Category, Room, GeneralView } from '$lib/types/models';
+	import { DEFAULT_CONTROLOPTIONS, DEFAULT_GENERALVIEW } from '$lib/types/models';
 	import LbIcon from '$lib/components/Common/LbIcon.svelte';
 	import LbJalousieIcon from '$lib/components/Jalousie/LbJalousieIcon.svelte';
 	import { appStore } from '$lib/stores/LbAppStore.svelte';
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 	import { _ } from 'svelte-i18n';
 	import { page } from '$app/state';
+	import LbGeneralDialog from '$lib/components/Common/LbGeneralDialog.svelte';
 
 	let { controlView = $bindable(), controlOptions = DEFAULT_CONTROLOPTIONS } : { controlView: ControlView, controlOptions: ControlOptions } = $props();
 	let isCategory = page.url.pathname.includes('/category');
 	let locked = controlView.dialog?.details?.locked;
+
+	let passwordView: GeneralView = $state(DEFAULT_GENERALVIEW);
+	let resetSwitch = $state(false); // fix: reset switch state in case cancel is pressed
 
 	function getT(): {num: string, frac: string} {
 		let temp = controlView.iconText?.split('.') || '';
@@ -42,6 +46,22 @@
 			label = controlStore.categoryList.find((cat) => cat.uuid === control.cat);
 		}
 		return label?.name ?? '';
+	}
+
+	function handleButtonClick(button: any, e: any) {
+		const cachedVisuPw = appStore.getVisuPw(controlView.control.uuidAction);
+		if (controlView.control.isSecured && cachedVisuPw) {
+			button.click(e, cachedVisuPw);
+			return 
+		}
+		if (controlView.control.isSecured) {
+			passwordView.label = $_('Secured control');
+			passwordView.cancel = () => {resetSwitch = !resetSwitch};
+			passwordView.ok = (visuPw: string) => { button.click(e, visuPw); appStore.setVisuPw(controlView.control.uuidAction, visuPw);}
+			passwordView.openDialog = true;
+			return;
+		}
+		button.click(e);
 	}
 </script>
 
@@ -89,19 +109,21 @@
 						{/if}
 						{#if button.type === 'button' && button.iconName}
 							<button type="button" disabled={locked} class="btn-icon w-[18px] h-[18px] p-3 dark:bg-surface-950 bg-surface-50 rounded-lg border border-white/15 hover:border-white/50 {locked ? '' : 'active:bg-primary-500'}" 
-											onclick={(e) => { e.stopPropagation(); e.preventDefault(); button.click(e)}}>
+											onclick={(e) => { e.stopPropagation(); e.preventDefault(); handleButtonClick(button, e);}}>
 								<LbIcon class={button.iconColor} name={button.iconName}/>
 							</button>
 						{/if}
 						{#if button.type == 'switch'}
-							<button onclick={(e) => { e.stopPropagation()}}> <!-- workaround wrapper to stop propagation for switch -->
-								<Switch checked={controlView.buttonState} onCheckedChange={button.click}>
-									<Switch.Control class="w-12 h-8 mr-1 data-[state=checked]:preset-filled-primary-500">
-										<Switch.Thumb />
-									</Switch.Control>
-									<Switch.HiddenInput />
-								</Switch>
-							</button>
+							{#key resetSwitch}
+								<button onclick={(e) => { e.stopPropagation()}}> <!-- workaround wrapper to stop propagation for switch -->
+									<Switch checked={controlView.buttonState} onCheckedChange={(e) => handleButtonClick(button, e)}>
+										<Switch.Control class="w-12 h-8 mr-1 data-[state=checked]:preset-filled-primary-500">
+											<Switch.Thumb />
+										</Switch.Control>
+										<Switch.HiddenInput />
+									</Switch>
+								</button>
+							{/key}
 						{/if}
 					{/each}
 				{/if}
@@ -166,21 +188,23 @@
 					{/if}
 					{#if button.type === 'button' && button.iconName}
 						<button type="button" disabled={locked} class="btn-icon w-[18px] h-[18px] p-3 dark:bg-surface-950 bg-surface-50 rounded-lg border border-white/15 hover:border-white/50 {locked ? '' : 'active:bg-primary-500'}"
-										onclick={(e) => { e.stopPropagation(); e.preventDefault(); button.click(e)}}>
+										onclick={(e) => { e.stopPropagation(); e.preventDefault(); handleButtonClick(button, e);}}>
 							<span style="font-size:26px">
 								<LbIcon class={button.iconColor} name={button.iconName} />
 							</span>
 						</button>
 					{/if}
 					{#if button.type == 'switch'}
-						<button class="mt-1" onclick={(e) => { e.stopPropagation()}}> <!-- workaround wrapper to stop propagation for switch -->
-							<Switch checked={controlView.buttonState} onCheckedChange={button.click}>
-								<Switch.Control class="w-12 h-8 mr-1 preset-filled-surface-400-600 data-[state=checked]:preset-filled-primary-500">
-									<Switch.Thumb />
-								</Switch.Control>
-								<Switch.HiddenInput />
-							</Switch>
-						</button>
+						{#key resetSwitch}
+							<button class="mt-1" onclick={(e) => { e.stopPropagation()}}> <!-- workaround wrapper to stop propagation for switch -->
+								<Switch checked={controlView.buttonState} onCheckedChange={(e) => handleButtonClick(button, e)}>
+									<Switch.Control class="w-12 h-8 mr-1 preset-filled-surface-400-600 data-[state=checked]:preset-filled-primary-500">
+										<Switch.Thumb />
+									</Switch.Control>
+									<Switch.HiddenInput />
+								</Switch>
+							</button>
+						{/key}
 					{/if}
 				{/each}
 			{/if}
@@ -188,3 +212,5 @@
 	</div>
 </div>
 {/if}
+
+<LbGeneralDialog bind:view={passwordView}/>
