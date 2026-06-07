@@ -5,7 +5,7 @@ import type { EntriesAndDefaultValue } from '$lib/types/models';
  
 class Utils {
 
-	loxTimeRef = 1230764400000; // correction to epoch, Loxone calculates from 1-1-2009
+	loxTimeRef = 1230764400000; // epoch (Amsterdam time, UTC+1)
 
 	// input: h in [0,360] and s,v in [0-100] - output: r,g,b in [0-255,0-255,0-255]
 	hsv2rgb(h_: number, s_: number, v_: number): number[] {

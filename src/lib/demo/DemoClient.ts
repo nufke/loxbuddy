@@ -642,9 +642,10 @@ export class DemoClient {
 			case 3: /* manual */ temp = 22.2; break;
 			case 4: /* off */ temp = frostProtectTemperature; break;
 		}
-		let time = Math.round((Number(msgItems[2])*1000 + utils.loxTimeRef - Date.now())/1000);
-		const overrideEntries = [{ 
-			start: String(Math.round((Date.now() - utils.loxTimeRef)/1000)),
+		const date = new Date(Number(msgItems[2]) * 1000 + utils.loxTimeRef);
+		let time = Math.round((date.valueOf() - Date.now() + (utils.isDST(date) ? 3600000 : 0)) / 1000);
+		const overrideEntries = [{
+			start: String(Math.round((Date.now() - utils.loxTimeRef) / 1000)),
 			end: msgItems[2],
 			reason: '0', /* TODO, now None */
 			source: null,
@@ -669,8 +670,8 @@ export class DemoClient {
 	 */
 	private stopIRCV2Timer(control: Control): void {
 		const overrideOff = [{ 
-			start: String(Math.round((Date.now() - utils.loxTimeRef)/1000)),
-			end: String(Math.round((Date.now() - utils.loxTimeRef)/1000)),
+			start: String(Math.round((Date.now() - utils.loxTimeRef) / 1000)),
+			end: String(Math.round((Date.now() - utils.loxTimeRef) / 1000)),
 			reason: '0', /* None */
 			source: null,
 			isTimer: false

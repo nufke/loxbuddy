@@ -180,13 +180,13 @@
 	function setTempManual(): void {
 		let cmd = isCooling ? 'setComfortTemperatureCool/' : 'setComfortTemperature/';
 		cmd += tempTarget;
-		controlStore.setControl(controlView.control.uuidAction, cmd);
+		controlStore.setControl(controlView.control, cmd);
 	}
 
 	function setTimerOverride(item: ListItem): void {
 		let coeff = 1000 * 60; // round to minute
-		let overrideTimeSec = Math.round((date.getTime() - Date.now())/coeff)*coeff/1000;
-		
+		let overrideTimeSec = Math.round((date.getTime() - Date.now())/coeff)*coeff/1000; // note: UTC reference
+
 		if (overrideTimeSec > 60 && controlView.control) {// TODO define minimum time of 1 minute
 			overrideDate = {
 				start: Date.now(),
@@ -198,7 +198,7 @@
 			overrideTimeSec += (!isV1 && utils.isDST(date) ? -3600 : 0); // DST correction for V2
 			overrideTimeSec = (isV1 ? Math.round(overrideTimeSec/60) : overrideTimeSec); // V1 in minutes!!
 			cmd += String(item.id) + '/' + String(overrideTimeSec);
-			controlStore.setControl(controlView.control.uuidAction, cmd);
+			controlStore.setControl(controlView.control, cmd);
 		} else {
 			console.error('[LbIrcDialog]: timer period to low:', overrideTimeSec);
 			toaster.info({ title: 'Timer period invalid!'});
@@ -207,7 +207,7 @@
 
 	function cancelOverride(): void {
 		if (controlView.control) {
-			controlStore.setControl(controlView.control.uuidAction, isV1 ? 'stoptimer' : 'stopOverride');
+			controlStore.setControl(controlView.control, isV1 ? 'stoptimer' : 'stopOverride');
 		}
 		override = 0;
 	}
