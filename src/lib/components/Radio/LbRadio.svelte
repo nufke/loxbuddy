@@ -34,12 +34,12 @@
 	}
 
 	let radioList = $derived(
-		Object.entries(control.details.outputs).map((entry) => ({
+		Object.entries(control.details?.outputs).map((entry) => ({
 			id: Number(entry[0]),
 			name: String(entry[1])
-		})).concat([{ id: 0, name: control.details.allOff }]));
+		})).concat([{ id: 0, name: control.details?.allOff }]));
 
-	let selectedRadio = $derived(Number(controlStore.getState(control.states.activeOutput)));
+	let selectedRadio = $derived(Number(controlStore.getState(control.states?.activeOutput)));
 
 	let radioIndex = $derived(radioList.find((item) => item.id == selectedRadio));
 

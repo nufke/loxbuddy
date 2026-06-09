@@ -162,7 +162,7 @@ export class DemoClient {
 	 * @param parentControl Meta-data of parent control if any
 	 */
 	private switch(control: Control, msg: string, parentControl: Control | undefined): void {
-		const activeId = control.states.active;
+		const activeId = control.states?.active;
 		let val;
 		if (msg == 'on') val = '1';
 		if (msg == 'off') val = '0';
@@ -190,7 +190,7 @@ export class DemoClient {
 	 * @param msg Control payload as string, e.g. 'reset'
 	 */
 	private radio(control: Control, msg: string): void {
-		const activeOutputId = control.states.activeOutput;
+		const activeOutputId = control.states?.activeOutput;
 		const val = msg =='reset' ? 0 : msg;
 		controlStore.setState(activeOutputId, val);
 	}
@@ -202,7 +202,7 @@ export class DemoClient {
 	 * @param parentControl Meta-data of parent control if any
 	*/
 	private dimmer(control: Control, msg: string, parentControl: Control | undefined): void {
-		const positionId = control.states.position;
+		const positionId = control.states?.position;
 		if (Number(msg) > 0) {
 			this.dimmerLastValue[control.uuidAction] = msg; // store last value;
 		}
@@ -222,7 +222,7 @@ export class DemoClient {
  	 * @param parentControl Meta-data of parent control if any
 	 */
 	private colorPickerV2(control: Control, msg: string, parentControl: Control | undefined): void {
-		const colorId = control.states.color;
+		const colorId = control.states?.color;
 		controlStore.setState(colorId, msg);
 		if (parentControl && parentControl.type === 'LightControllerV2') {
 			controlStore.setState(parentControl.states.activeMoodsNum, '-1'); // manual
@@ -235,7 +235,7 @@ export class DemoClient {
 	 * @param msg Control payload as string
 	 */
 	private valueSelector(control: Control, msg: string): void {
-		const valueId = control.states.value;
+		const valueId = control.states?.value;
 		controlStore.setState(valueId, msg);
 	}
 
@@ -245,7 +245,7 @@ export class DemoClient {
 	 * @param msg Control payload as string
 	 */
 	private slider(control: Control, msg: string): void {
-		const valueId = control.states.value;
+		const valueId = control.states?.value;
 		controlStore.setState(valueId, msg);
 	}
 
@@ -255,7 +255,7 @@ export class DemoClient {
 	 * @param msg Control payload as string
 	 */
 	private infoOnlyDigital(control: Control, msg: string): void {
-		const activeId = control.states.active;
+		const activeId = control.states?.active;
 		controlStore.setState(activeId, msg);
 	}
 
@@ -265,7 +265,7 @@ export class DemoClient {
 	 * @param msg Control payload as string
 	 */
 	private lightControllerV2(control: Control, msg: string): void {
-		const stateId = control.states.activeMoodsNum;
+		const stateId = control.states?.activeMoodsNum;
 		const lights = Object.values(control.subControls);
 		const val = msg.split('/');
 		switch (val[1]) {
@@ -338,7 +338,7 @@ export class DemoClient {
 		if (this.gateIntervalMap[control.uuidAction]) {
 			clearInterval(this.gateIntervalMap[control.uuidAction]);
 		}
-		const posId = control.states.position;
+		const posId = control.states?.position;
 		let pos: number = Number(controlStore.getState(posId));
 		const direction = Math.sign(endState-pos);
 		this.gateIntervalMap[control.uuidAction] = setInterval(() => {
@@ -380,7 +380,7 @@ export class DemoClient {
 		if (this.jalousieIntervalMap[control.uuidAction]) {
 			clearInterval(this.jalousieIntervalMap[control.uuidAction]);
 		}
-		const positionId = control.states.position;
+		const positionId = control.states?.position;
 		let pos: number = Number(controlStore.getState(positionId));
 		this.jalousieIntervalMap[control.uuidAction] = setInterval(() => {
 			if (pos <= 1 && pos >= 0 ) {
@@ -400,7 +400,7 @@ export class DemoClient {
 	 * @param msg Control payload as string
 	 */
 	private timedSwitch(control: Control, msg: string): void {
-		const deactivationDelayId= control.states.deactivationDelay;
+		const deactivationDelayId= control.states?.deactivationDelay;
 		let val: number = 0;
 		switch (msg) {
 			case 'on': clearInterval(this.timedSwitchIntervalMap[control.uuidAction]); val = -1; controlStore.setState(deactivationDelayId, String(val)); break;
@@ -415,8 +415,8 @@ export class DemoClient {
 	 * @param control Control meta-data
 	 */
 	private startTimedSwitch(control: Control): void {
-		let deactivationDelayTotalId = controlStore.getState(control.states.deactivationDelayTotal);
-		const stateId = control.states.deactivationDelay;
+		let deactivationDelayTotalId = controlStore.getState(control.states?.deactivationDelayTotal);
+		const stateId = control.states?.deactivationDelay;
 		clearInterval(this.timedSwitchIntervalMap[control.uuidAction]);
 		this.timedSwitchIntervalMap[control.uuidAction] = setInterval(() => {
 			if (deactivationDelayTotalId > 0) {
@@ -435,17 +435,17 @@ export class DemoClient {
 		const msgItems = msg.split('/');
 		if (msg.includes('dismv/')) {
 			switch (msgItems[1]) {
-				case '0' : controlStore.setState(control.states.disabledMove, '0'); break;
-				case '1' : controlStore.setState(control.states.disabledMove, '1'); break;
+				case '0' : controlStore.setState(control.states?.disabledMove, '0'); break;
+				case '1' : controlStore.setState(control.states?.disabledMove, '1'); break;
 			}
 			return;
 		}
 		if (msg == 'on') {
-			controlStore.setState(control.states.armed, '1');
+			controlStore.setState(control.states?.armed, '1');
 			return;
 		}
 		if (msg == 'off') {
-			controlStore.setState(control.states.armed, '0');
+			controlStore.setState(control.states?.armed, '0');
 			return;
 		}
 		if (msg.includes('delayedon/')) {
@@ -456,8 +456,8 @@ export class DemoClient {
 		}
 		if (msg.includes('on/')) {
 			switch (msgItems[1]) {
-				case '0' : controlStore.setState(control.states.armed, '1'); controlStore.setState(control.states.disabledMove, '1'); break;
-				case '1' : controlStore.setState(control.states.armed, '1'); controlStore.setState(control.states.disabledMove, '0'); break;
+				case '0' : controlStore.setState(control.states?.armed, '1'); controlStore.setState(control.states?.disabledMove, '1'); break;
+				case '1' : controlStore.setState(control.states?.armed, '1'); controlStore.setState(control.states?.disabledMove, '0'); break;
 			}
 			return;
 		}
@@ -470,8 +470,8 @@ export class DemoClient {
 	 * @param msg Control payload as string
 	 */
 	private alarmClock(control: Control, msg: string): void {
-		const entryListId = control.states.entryList;
-		const nextEntryTimeId = control.states.nextEntryTime;
+		const entryListId = control.states?.entryList;
+		const nextEntryTimeId = control.states?.nextEntryTime;
 		const entryList = controlStore.getState(entryListId) as AlarmClockEntries; // note: proxy object!
 		const msgItems = msg.split('/');
 		if (msg.includes('entryList/put')) {
@@ -534,8 +534,8 @@ export class DemoClient {
 	 */
 	private smokeAlarmServiceMode(control: Control, msgItems: string[]): void {
 		let time = Number(msgItems[1]); // Override time given in seconds
-		const timeServiceModeId = control.states.timeServiceMode;
-		const levelId = control.states.level;
+		const timeServiceModeId = control.states?.timeServiceMode;
+		const levelId = control.states?.level;
 		if (!time) {
 			clearInterval(this.smokeAlarmIntervalMap[control.uuidAction]);
 			controlStore.setState(levelId, '0'); // 0 = no alarm
@@ -563,7 +563,7 @@ export class DemoClient {
 	 */
 	private ircv1(control: Control, msg: string): void {
 		const msgItems = msg.split('/');
-		const overrideId = control.states.override;
+		const overrideId = control.states?.override;
 		const ircDaytimer = Object.values(control.subControls);
 		const valueId = ircDaytimer[0].states.value; // TODO select relevant DayTimer
 		if (msg.includes('starttimer/')) {
@@ -582,15 +582,15 @@ export class DemoClient {
 	 * @param msg List containing the time
 	 */
 	private startIRCV1Timer(control: Control, msgItems: string[]): void {
-		const modeId = controlStore.getState(control.states.mode);
+		const modeId = controlStore.getState(control.states?.mode);
 		const isCooling = (modeId == 2 || modeId == 4 || modeId == 6);
 		let time = Number(msgItems[2])*60; // Override time given in minutes
-		const overrideId = control.states.override;
-		this.daytimerOldValue = controlStore.getState(control.states.value);
+		const overrideId = control.states?.override;
+		this.daytimerOldValue = controlStore.getState(control.states?.value);
 		const ircDaytimer = Object.values(control.subControls);
 		const ircDaytimerSelected = ircDaytimer.find( item => item.name == (isCooling ? 'Cooling' : 'Heating'));
 		const valueId = ircDaytimerSelected?.states.value;
-		const tempTargetId = control.states.tempTargetId;
+		const tempTargetId = control.states?.tempTargetId;
 		clearInterval(this.ircTimerIntervalMap[control.uuidAction]); /* stop time if still running */
 		this.ircTimerIntervalMap[control.uuidAction] = setInterval(() => {
 			if (time > 0) {
@@ -630,12 +630,12 @@ export class DemoClient {
 	 */
 	private startIRCV2Timer(control: Control, msgItems: string[]): void {
 		const selectedMode = Number(msgItems[1]);
-		const currentMode = Number(controlStore.getState(control.states.currentMode));
+		const currentMode = Number(controlStore.getState(control.states?.currentMode));
 		const isHeating = (currentMode == 1) || (currentMode == 4);
-		const comfortTemperature = Number(controlStore.getState(control.states.comfortTemperature));
-		const frostProtectTemperature = Number(controlStore.getState(control.states.frostProtectTemperature))
-		const comfortTemperatureCool = Number(controlStore.getState(control.states.comfortTemperatureCool));
-		const absentMaxOffset = Number(controlStore.getState(control.states.absentMaxOffset));
+		const comfortTemperature = Number(controlStore.getState(control.states?.comfortTemperature));
+		const frostProtectTemperature = Number(controlStore.getState(control.states?.frostProtectTemperature))
+		const comfortTemperatureCool = Number(controlStore.getState(control.states?.comfortTemperatureCool));
+		const absentMaxOffset = Number(controlStore.getState(control.states?.absentMaxOffset));
 		let temp: number;
 		switch (selectedMode) { /* mode */
 			case 0: /* eco */ temp = (isHeating ? comfortTemperature : comfortTemperatureCool) - absentMaxOffset; break;
@@ -657,9 +657,9 @@ export class DemoClient {
 		this.ircTimerIntervalMap[control.uuidAction] = setInterval(() => {
 			if (time > 0) {
 				time--;
-				controlStore.setState(control.states.overrideEntries, overrideEntries);
-				controlStore.setState(control.states.activeMode, msgItems[1]);
-				controlStore.setState(control.states.tempTarget, String(temp)); // TODO check via schedule
+				controlStore.setState(control.states?.overrideEntries, overrideEntries);
+				controlStore.setState(control.states?.activeMode, msgItems[1]);
+				controlStore.setState(control.states?.tempTarget, String(temp)); // TODO check via schedule
 			} else {
 				this.stopIRCV2Timer(control);
 			}
@@ -678,8 +678,8 @@ export class DemoClient {
 			source: null,
 			isTimer: false
 		}];
-		controlStore.setState(control.states.overrideEntries, overrideOff); // TODO check schedule
-		controlStore.setState(control.states.tempTarget, '21.0'); // TODO check schedule
+		controlStore.setState(control.states?.overrideEntries, overrideOff); // TODO check schedule
+		controlStore.setState(control.states?.tempTarget, '21.0'); // TODO check schedule
 		clearInterval(this.ircTimerIntervalMap[control.uuidAction]);
 	}
 
@@ -689,8 +689,8 @@ export class DemoClient {
 	 * @param msg Control payload as string
 	 */
 	private daytimer(control: Control, msg: string): void {
-		const valueId = control.states.value;
-		const overrideId = control.states.override;
+		const valueId = control.states?.value;
+		const overrideId = control.states?.override;
 		const msgItems = msg.split('/');
 		if (msg.includes('startOverride/')) {
 			this.startDaytimer(control, msgItems);
@@ -724,9 +724,9 @@ export class DemoClient {
 	 */
 	private startDaytimer(control: Control, msgItems: string[]): void {
 		let time = Number(msgItems[2]);
-		const overrideId = control.states.override;
-		this.daytimerOldValue = controlStore.getState(control.states.value);
-		const valueId = control.states.value;
+		const overrideId = control.states?.override;
+		this.daytimerOldValue = controlStore.getState(control.states?.value);
+		const valueId = control.states?.value;
 		clearInterval(this.daytimerIntervalMap[control.uuidAction]);
 		this.daytimerIntervalMap[control.uuidAction] = setInterval(() => {
 			if (time > 0) {
@@ -746,7 +746,7 @@ export class DemoClient {
 	 * @param msgItems List containing the entries
 	 */
 	private setDayTimer(control: Control, msgItems: string[]): void {
-		const entriesAndDefaultValueId = control.states.entriesAndDefaultValue;
+		const entriesAndDefaultValueId = control.states?.entriesAndDefaultValue;
 		let entries = '{defValue: 0, entries: ' + msgItems[1] + ', entry: [\n';
 		const modeList: string[] = [];
 		for( let i = 0; i < Number(msgItems[1]); i++) {
@@ -770,7 +770,7 @@ export class DemoClient {
 	 * @param modeList List containing the modes
 	 */
 	private setDayTimerModes(control: Control, modeList: string[]): void {
-		const modeListId = control.states.modeList;
+		const modeListId = control.states?.modeList;
 		const opModes = controlStore.operatingModes;
 		const list = modeList.map((i) => Number(i));
 		const modes = list.filter((item, index) => list.indexOf(item) === index).sort();

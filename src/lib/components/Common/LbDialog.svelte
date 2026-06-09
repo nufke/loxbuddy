@@ -138,7 +138,7 @@
 						<div class="mt-2">
 							<div class="flex flex-col items-center justify-center">
 								{#if !controlView.dialog.disableIcon}
-								<div class="mb-2 relative inline-flex h-18 w-18 items-center justify-center overflow-hidden rounded-full border border-white/10 dark:bg-surface-950 bg-surface-50">
+								<div class="mb-2 relative inline-flex h-18 w-18 items-center justify-center overflow-hidden rounded-full border border-white/10 bg-surface-50-950">
 									<LbIcon class={controlView.iconColor} name={controlView.iconName} width="36" height="36"
 													style={getIconColorHex(controlView.iconColor)}/>
 									{#if controlView.badgeIconName?.length}
@@ -159,7 +159,7 @@
 							<div class="w-full grid grid-cols-1 {controlView.dialog.class} gap-2 overflow-y-auto" {style} bind:this={viewport} >
 								{#each controlView.buttons as button}
 									{#if button.type === 'button' && button.click}
-										<button type="button" class="w-full btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50 active:bg-primary-500 active:bg-primary-500"
+										<button type="button" class="w-full btn btn-lg h-[48px] bg-surface-50-950 shadow-sm rounded-lg border border-white/15 hover:border-white/50 active:bg-primary-500 active:bg-primary-500"
 												onclick={(e) => {e.stopPropagation(); e.preventDefault(); handleButtonClick(button, null);}}>
 												{#if button.name}
 													<span>{$_(button.name)}</span>
@@ -171,7 +171,7 @@
 										</button>
 									{/if}
 									{#if button.type == 'switch' && button.name }
-										<button type="button" class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50" 
+										<button type="button" class="w-full btn btn-lg bg-surface-50-950 shadow-sm rounded-lg border border-white/15 hover:border-white/50" 
 												onclick={(e) => {e.stopPropagation(); e.preventDefault(); handleButtonClick(button, {checked: !controlView.buttonState});}}>
 											<span style="font-size:18px">{$_(button.name)}</span>
 										</button>
@@ -205,7 +205,7 @@
 							<div class="container grid grid-cols-1 {controlView.dialog.class} gap-2 overflow-y-auto" {style} bind:this={viewport}>
 								{#each controlView.dialog.buttons as button}
 									{#if button.type === 'button' && button.click}
-										<button type="button" class="w-full {button.class} btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50 active:bg-primary-500"
+										<button type="button" class="w-full {button.class} btn btn-lg h-[48px] bg-surface-50-950 shadow-sm rounded-lg border border-white/15 hover:border-white/50 active:bg-primary-500"
 												onclick={(e) => handleButtonClick(button, e)}>
 												{#if button.name}
 													<span class="text-lg">{$_(button.name)}</span>
@@ -215,7 +215,7 @@
 										</button>
 									{/if}
 									{#if button.type == 'switch' && button.name}
-										<button class="btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50" onclick={(e) => { e.stopPropagation()}}> <!-- workaround wrapper to stop propagation for switch -->
+										<button class="btn btn-lg bg-surface-50-950 shadow-sm rounded-lg border border-white/15 hover:border-white/50" onclick={(e) => { e.stopPropagation()}}> <!-- workaround wrapper to stop propagation for switch -->
 											<div class="flex w-full justify-between">
 												<h1 class="truncate text-lg">{$_(button.name)}</h1>
 												<Switch checked={controlView.buttonState} onCheckedChange={(e) => handleButtonClick(button, e)}>
@@ -245,7 +245,7 @@
 							</div>
 							{/if}
 							{#if controlView.dialog && controlView.dialog.details && controlView.dialog.details.loadManager}
-								<div class="w-full dark:bg-surface-950 bg-surface-50 rounded-lg border border-white/15 hover:border-white/50">
+								<div class="w-full bg-surface-50-950 rounded-lg border border-white/15 hover:border-white/50">
 									<LbStatusBar maxPower={controlView.dialog.details.loadManager.maxPower}
 																currentPower={controlView.dialog.details.loadManager.currentPower}
 																mode={controlView.dialog.details.loadManager.mode} />
@@ -260,7 +260,7 @@
 									<div class="overflow-y-auto" {style} bind:this={viewport}>
 										{#each controlView.dialog.details.loadManager.loads as load,i}
 											<button class="mt-2 w-full flex items-center justify-start rounded-lg border border-white/15 hover:border-white/50
-																		dark:bg-surface-950 bg-surface-50">
+																		bg-surface-50-950">
 												<div class="p-3 flex flex-row w-full justify-between  items-center h-[60px]">
 													<div class="flex flex-col truncate">
 														<p class="truncate text-lg text-left">{load.name}</p>

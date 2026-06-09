@@ -9,16 +9,16 @@
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS}: { control: Control, controlOptions: ControlOptions } = $props();
 
-	let tempActual = $derived(fmt.sprintf('%.1f', Number(controlStore.getState(control.states.tempActual))));
-	let activeMode = $derived(Number(controlStore.getState(control.states.activeMode)));
-	let operatingMode = $derived(Number(controlStore.getState(control.states.operatingMode)));
-	let currentMode = $derived(Number(controlStore.getState(control.states.currentMode)));
-	let comfortTemperature = $derived(Number(controlStore.getState(control.states.comfortTemperature))); // Heating
-	let comfortTemperatureCool = $derived(Number(controlStore.getState(control.states.comfortTemperatureCool)));
-	let frostProtectTemperature = $derived(Number(controlStore.getState(control.states.frostProtectTemperature)));
-	let heatProtectTemperature = $derived(Number(controlStore.getState(control.states.heatProtectTemperature)));
-	let absentMaxOffset = $derived(Number(controlStore.getState(control.states.absentMaxOffset))); // max temp offset for eco mode
-	let absentMinOffset = $derived(Number(controlStore.getState(control.states.absentMinOffset))); // min temp offset for eco mode
+	let tempActual = $derived(fmt.sprintf('%.1f', Number(controlStore.getState(control.states?.tempActual))));
+	let activeMode = $derived(Number(controlStore.getState(control.states?.activeMode)));
+	let operatingMode = $derived(Number(controlStore.getState(control.states?.operatingMode)));
+	let currentMode = $derived(Number(controlStore.getState(control.states?.currentMode)));
+	let comfortTemperature = $derived(Number(controlStore.getState(control.states?.comfortTemperature))); // Heating
+	let comfortTemperatureCool = $derived(Number(controlStore.getState(control.states?.comfortTemperatureCool)));
+	let frostProtectTemperature = $derived(Number(controlStore.getState(control.states?.frostProtectTemperature)));
+	let heatProtectTemperature = $derived(Number(controlStore.getState(control.states?.heatProtectTemperature)));
+	let absentMaxOffset = $derived(Number(controlStore.getState(control.states?.absentMaxOffset))); // max temp offset for eco mode
+	let absentMinOffset = $derived(Number(controlStore.getState(control.states?.absentMinOffset))); // min temp offset for eco mode
 	let isHeating = $derived((currentMode == 1) || (currentMode == 4));
 	let temperatureList = $derived(getTemperatureList(isHeating, false));
 	let mode = $derived((activeMode == 2) ? 4 : activeMode); // remapping

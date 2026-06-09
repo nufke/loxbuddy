@@ -4,6 +4,7 @@ import LbCentralJalousie from '$lib/components/Jalousie/LbCentralJalousie.svelte
 import LbCentralLight from '$lib/components/LightController/LbCentralLight.svelte';
 import LbDaytimer from '$lib/components/Daytimer/LbDaytimer.svelte';
 import LbDimmer from '$lib/components/Dimmer/LbDimmer.svelte';
+import LbEnergyFlowMonitor from '$lib/components/EnergyFlowMonitor/LbEnergyFlowMonitor.svelte';
 import LbFronius from '$lib/components/Fronius/LbFronius.svelte';
 import LbGate from '$lib/components/Gate/LbGate.svelte';
 import LbInfoOnlyAnalog from '$lib/components/Info/LbInfoOnlyAnalog.svelte';
@@ -39,6 +40,8 @@ class LbControl {
 		{ type: 'CentralLightController', control: LbCentralLight, defaultIcon: '' },
 		{ type: 'Daytimer', control: LbDaytimer, defaultIcon: 'calendar-days' },
 		{ type: 'Dimmer', control: LbDimmer, defaultIcon: '' },
+		{ type: 'EFM', control: LbEnergyFlowMonitor, defaultIcon: '' },
+		{ type: 'EnergyFlowMonitor', control: LbEnergyFlowMonitor, defaultIcon: '' },
 		{ type: 'Fronius', control: LbFronius, defaultIcon: '' },
 		{ type: 'Gate', control: LbGate, defaultIcon: '' },
 		{ type: 'InfoOnlyAnalog', control: LbInfoOnlyAnalog, defaultIcon: '' },

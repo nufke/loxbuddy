@@ -26,7 +26,7 @@
 		open={appStore.lockScreenDialog.state}
 		onInteractOutside={() => {appStore.resetLockScreenDialogTimeout()}}>
 		<Portal>
-			<Dialog.Backdrop class="fixed top-0 left-0 right-0 bottom-0 z-2000 dark:bg-surface-950 bg-surface-50 {fadeInOut}"/>
+			<Dialog.Backdrop class="fixed top-0 left-0 right-0 bottom-0 z-2000 bg-surface-50-950 {fadeInOut}"/>
 			<Dialog.Positioner class="fixed top-0 left-0 w-full h-full z-2001">
 				<Dialog.Content class="card p-2 space-y-4 shadow-xl {fadeInOut}">
 					<header class="flex justify-between items-center">

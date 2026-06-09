@@ -22,8 +22,8 @@
 	let selectedControl: Control | undefined= $state();
 	let selectedControlOptions: ControlOptions | undefined = $state();
 	let screenSelected = $state(false);
-	let screenList = $derived(control.details.controls) as ScreenItem[];
-	let screenUuid = $derived(control.details.controls.map((item: ScreenItem) => item.uuid));
+	let screenList = $derived(control.details?.controls) as ScreenItem[];
+	let screenUuid = $derived(control.details?.controls.map((item: ScreenItem) => item.uuid));
 	let viewport: any = $state(); // TODO make HTMLDivElement
 	let hasScroll = $state(true);
 	let showScrollTop = $state(false);
@@ -34,15 +34,15 @@
 	));
 
 	let screensClosed = $derived(
-		screenControls.filter((control: Control) => (Number(controlStore.getState(control.states.position)) * 100 > 1) && Number(controlStore.getState(control.states.locked)) == 0)
+		screenControls.filter((control: Control) => (Number(controlStore.getState(control.states?.position)) * 100 > 1) && Number(controlStore.getState(control.states?.locked)) == 0)
 	);
 
 	let screensOpen = $derived(
-		screenControls.filter((control: Control) => (Number(controlStore.getState(control.states.position)) * 100 < 1) && Number(controlStore.getState(control.states.locked)) == 0)
+		screenControls.filter((control: Control) => (Number(controlStore.getState(control.states?.position)) * 100 < 1) && Number(controlStore.getState(control.states?.locked)) == 0)
 	);
 
 	let screensLocked = $derived(
-		screenControls.filter((control: Control) => Number(controlStore.getState(control.states.locked)) == 1)
+		screenControls.filter((control: Control) => Number(controlStore.getState(control.states?.locked)) == 1)
 	);
 
 	let selectedScreenCount = $derived(screenList.filter((item) => item.selected == true).length);
@@ -126,15 +126,15 @@
 	}
 
 	function isAutoActive(control: Control): number {
-		return Number(controlStore.getState(control.states.autoActive));
+		return Number(controlStore.getState(control.states?.autoActive));
 	}
 
 	function isLocked(control: Control): number {
-		return Number(controlStore.getState(control.states.locked));
+		return Number(controlStore.getState(control.states?.locked));
 	}
 
 	function getStatusColor(control: Control): string {
-		let position = Math.round(Number(controlStore.getState(control.states.position)) * 100);
+		let position = Math.round(Number(controlStore.getState(control.states?.position)) * 100);
 		return position > 1 ? 'dark:text-primary-500 text-primary-700' : 'text-surface-950 dark:text-surface-50';
 	}
 
@@ -213,19 +213,19 @@
 								<p class="mt-2 mb-4 text-lg text-center {screensClosed.length ? 'dark:text-primary-500 text-primary-700' :
 												'dark:text-surface-300 text-surface-700'}">{getActiveScreens()}</p>
 								<div class="container grid grid-cols-5 gap-2 mb-2">
-									<button type="button" class="btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50 shadow-sm text-surface-950-50
+									<button type="button" class="btn btn-lg h-[48px] bg-surface-50-950 shadow-sm text-surface-950-50
 																				rounded-lg border border-white/10 hover:border-white/50 active:bg-primary-500" onclick={() => screenAction("FullDown")}>
 																				<span class="w-[32px] flex justify-center items-center"><LbIcon name="chevron-down"/></span></button> <!-- to span to avoid scaling of icons -->
-									<button type="button" class="btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50 shadow-sm text-surface-950-50
+									<button type="button" class="btn btn-lg h-[48px] bg-surface-50-950 shadow-sm text-surface-950-50
 																				rounded-lg border border-white/10 hover:border-white/50 active:bg-primary-500" onclick={() => screenAction("FullUp")}>
 																				<span class="w-[32px] flex justify-center items-center"><LbIcon name="chevron-up"/></span></button>
-									<button type="button" class="btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50 shadow-sm text-surface-950-50
+									<button type="button" class="btn btn-lg h-[48px] bg-surface-50-950 shadow-sm text-surface-950-50
 																				rounded-lg border border-white/10 hover:border-white/50 active:bg-primary-500" onclick={() => screenAction("shade")}>
 																				<span class="w-[32px] flex justify-center items-center"><LbIcon name="blinds"/></span></button>
-									<button type="button" class="btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50 shadow-sm text-surface-950-50
+									<button type="button" class="btn btn-lg h-[48px] bg-surface-50-950 shadow-sm text-surface-950-50
 																				rounded-lg border border-white/10 hover:border-white/50 active:bg-primary-500" onclick={() => screenAction("stop")}>
 																				<span class="w-[32px] flex justify-center items-center"><LbIcon name="octagon-minus"/></span></button>
-									<button type="button" class="btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50 shadow-sm {screenSelected ? 'text-surface-800-200 active:bg-primary-500' : 'text-surface-200-800'}
+									<button type="button" class="btn btn-lg h-[48px] bg-surface-50-950 shadow-sm {screenSelected ? 'text-surface-800-200 active:bg-primary-500' : 'text-surface-200-800'}
 																				rounded-lg border border-white/10 hover:border-white/50" onclick={() => selectScreenOptions()}>
 																				<span class="w-[32px] flex justify-center items-center"><LbIcon name="settings"/></span></button>
 								</div>
@@ -249,7 +249,7 @@
 														</div>
 														<div class="relative inline-flex h-12 p-0 justify-self-end">
 															<LbJalousieIcon {control} width="32" height="32"/>
-															{#if control.details.isAutomatic || isLocked(control)}
+															{#if control.details?.isAutomatic || isLocked(control)}
 																<div class="absolute -right-[2px] inline-flex items-center justify-center w-[20px] h-[20px] rounded-full {isSelected(control) ? 'bg-surface-200-800' : 'bg-surface-50-950'}">
 																	<LbIcon class={isLocked(control)? 'text-warning-500' : isAutoActive(control) ? 'dark:text-primary-500 text-primary-700' : 'text-surface-500'}
 																	  name={isLocked(control) ? 'lucide:lock-keyhole' : 'bold_loxbuddy:letter-a'} height="12" width="12"/>

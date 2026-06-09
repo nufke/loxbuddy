@@ -25,14 +25,14 @@
 
 	let controlUuid = controlView.control.uuidAction; // not updated
 	let statisticV2 = controlView.control.statisticV2;
-	let type = controlView.control.details.type
-	let totalFormat = controlView.control.details.totalFormat;
-	let actualFormat = controlView.control.details.actualFormat;
-	let powerName = String(controlView.control.details.powerName);
+	let type = controlView.control.details?.type
+	let totalFormat = controlView.control.details?.totalFormat;
+	let actualFormat = controlView.control.details?.actualFormat;
+	let powerName = String(controlView.control.details?.powerName);
 
-	let storageFormat = $derived(controlView.control.details.storageFormat);
-	let actual = $derived(Number(controlStore.getState(controlView.control.states.actual))); 
-	let storageValue = $derived(Number(controlStore.getState(controlView.control.states.storage))); 
+	let storageFormat = $derived(controlView.control.details?.storageFormat);
+	let actual = $derived(Number(controlStore.getState(controlView.control.states?.actual))); 
+	let storageValue = $derived(Number(controlStore.getState(controlView.control.states?.storage))); 
 
 	let statisticsInfo = $state({}) as StatisticsInfo;
 	let statisticsDiff = $state({}) as StatisticsDiff;

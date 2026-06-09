@@ -9,11 +9,11 @@
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
-	let min = $derived(control.states.min ? Number(controlStore.getState(control.states.min)) : 0 );
-	let max = $derived(control.states.max ? Number(controlStore.getState(control.states.max)) : 100);
-	let step = $derived(control.states.step ? Number(controlStore.getState(control.states.step)) : 1);
-	let nPosition = $derived(Number(controlStore.getState(control.states.position)));
-	let color = $derived(String(controlStore.getState(control.states.color)));
+	let min = $derived(control.states?.min ? Number(controlStore.getState(control.states?.min)) : 0 );
+	let max = $derived(control.states?.max ? Number(controlStore.getState(control.states?.max)) : 100);
+	let step = $derived(control.states?.step ? Number(controlStore.getState(control.states?.step)) : 1);
+	let nPosition = $derived(Number(controlStore.getState(control.states?.position)));
+	let color = $derived(String(controlStore.getState(control.states?.color)));
 	let {rgbColor, brightness} = $derived(getColor(color));
 	let position = $derived ( (control.type === 'ColorPickerV2') ? brightness : Math.round(nPosition));
 

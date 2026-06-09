@@ -157,7 +157,7 @@
 						</div>
 					{/if}
 					<div class="mt-2">
-						<button class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
+						<button class="w-full btn btn-lg bg-surface-50-950 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
 							onclick={popupButtonAction}>
 							<span class="text-lg">{popupButtonText}</span>
 						</button>

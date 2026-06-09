@@ -26,15 +26,15 @@
 	let showScrollTop = $state(false);
 	let showScrollBottom = $state(false);
 
-	let windowStates = $derived(String(controlStore.getState(control.states.windowStates)));
+	let windowStates = $derived(String(controlStore.getState(control.states?.windowStates)));
 	let windowStatesList = $derived(getSortedWindowList(windowStates.split(',')));
-	let windowList: WindowListItem[] = $derived(control.details.windows);
-	let numOpen = $derived(Number(controlStore.getState(control.states.numOpen)));
-	let numClosed = $derived(Number(controlStore.getState(control.states.numClosed))); // TODO
-	let numTilted = $derived(Number(controlStore.getState(control.states.numTilted)));
-	let numOffline = $derived(Number(controlStore.getState(control.states.numOffline))); // TODO
-	let numLocked = $derived(Number(controlStore.getState(control.states.numLocked))); // TODO
-	let numUnlocked = $derived(Number(controlStore.getState(control.states.numUnlocked)));
+	let windowList: WindowListItem[] = $derived(control.details?.windows);
+	let numOpen = $derived(Number(controlStore.getState(control.states?.numOpen)));
+	let numClosed = $derived(Number(controlStore.getState(control.states?.numClosed))); // TODO
+	let numTilted = $derived(Number(controlStore.getState(control.states?.numTilted)));
+	let numOffline = $derived(Number(controlStore.getState(control.states?.numOffline))); // TODO
+	let numLocked = $derived(Number(controlStore.getState(control.states?.numLocked))); // TODO
+	let numUnlocked = $derived(Number(controlStore.getState(control.states?.numUnlocked)));
 	let allClosed = $derived((numOpen + numTilted + numUnlocked) == 0);
 	let windowHeight = $derived(innerHeight.current || 0);
 	let summary = $derived(getSummary(numOpen, numTilted, numUnlocked));
@@ -195,7 +195,7 @@
 									<div class="flex flex-col space-y-2 overflow-y-auto w-full mt-2" {style} bind:this={viewport} onscroll={() => parseScroll(windowHeight, viewport)}>
 										{#each windowStatesList as window, index}
 											<div class="w-full flex h-[60px] items-center justify-start rounded-lg border border-white/15 hover:border-white/50
-																		dark:bg-surface-950 bg-surface-50 px-2 py-2">
+																		bg-surface-50-950 px-2 py-2">
 												<div class="flex items-center truncate w-full">
 													<div class="mt-0 ml-2 mr-2 grid grid-cols-2 w-fit w-full justify-between truncate items-center">
 														<div>

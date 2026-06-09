@@ -17,7 +17,7 @@
 	let img: any = $state();
 	let resource = $state();
 
-	let events = $derived(String(controlStore.getState(controlView.control.states.lastBellEvents)));
+	let events = $derived(String(controlStore.getState(controlView.control.states?.lastBellEvents)));
 	let lastBellEvents = $derived((events.includes('|') ? events.split('|').reverse(): []));
 	let selectedTab = $state(1);
 	let lastEvent = $derived(lastBellEvents[0]); // select latest (first) event

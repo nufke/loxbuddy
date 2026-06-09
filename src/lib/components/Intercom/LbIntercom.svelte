@@ -21,7 +21,7 @@
 		isFavorite: controlOptions.isFavorite,
 		iconName: controlStore.getIcon(control, controlOptions.isSubControl),
 		textName: control.name,
-		statusName: fmt.sprintf(control.details.format, controlStore.getState(control.states.text)),
+		statusName: fmt.sprintf(control.details?.format, controlStore.getState(control.states?.text)),
 		dialog: dialog,
 	});
 </script>

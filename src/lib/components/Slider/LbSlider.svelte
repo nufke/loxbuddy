@@ -9,10 +9,10 @@
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
 	let sliderBar: SliderBar = $derived({
-		min: Number(control.details.min),
-		max: Number(control.details.max),
-		step: Number(control.details.step),
-		position: Number(controlStore.getState(control.states.value))
+		min: Number(control.details?.min),
+		max: Number(control.details?.max),
+		step: Number(control.details?.step),
+		position: Number(controlStore.getState(control.states?.value))
 	});
 
 	let buttons: SingleButtonView[] = $state([
@@ -41,7 +41,7 @@
 		isFavorite: controlOptions.isFavorite,
 		iconName: controlStore.getIcon(control, controlOptions.isSubControl),
 		textName: control.name,
-		statusName: fmt.sprintf(control.details.format, sliderBar.position),
+		statusName: fmt.sprintf(control.details?.format, sliderBar.position),
 		buttons: buttons,
 		slider: sliderBar,
 		dialog: dialog

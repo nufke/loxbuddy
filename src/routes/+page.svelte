@@ -147,7 +147,7 @@
 					</div>
 				</Dialog.Description>
 				<div class="flex justify-center pt-4">
-					<button class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
+					<button class="w-full btn btn-lg bg-surface-50-950 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
 									onclick={cancelConnect}>
 						<span class="flex justify-center items-center truncate text-lg">{$_("Cancel")}</span>
 					</button>

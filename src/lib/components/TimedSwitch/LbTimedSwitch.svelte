@@ -14,7 +14,7 @@
 		-1: output permanently on
 		other: count down from deactivationDelayTotal
 	*/
-	let deactivationDelay = $derived(Number(controlStore.getState(control.states.deactivationDelay)) || 0);
+	let deactivationDelay = $derived(Number(controlStore.getState(control.states?.deactivationDelay)) || 0);
 
 	let dialogButton1: SingleButtonView = $derived(
 		{

@@ -8,8 +8,8 @@
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
-	let moodList = $derived(controlStore.getState(control.states.moodList)) as MoodList[];
-	let activeMoodsNum = $derived(Number(controlStore.getState(control.states.activeMoodsNum)));
+	let moodList = $derived(controlStore.getState(control.states?.moodList)) as MoodList[];
+	let activeMoodsNum = $derived(Number(controlStore.getState(control.states?.activeMoodsNum)));
 
 	let buttons: SingleButtonView[] = $state([
 		{

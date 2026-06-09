@@ -11,8 +11,8 @@
 
 	const prod = $_('Production');
 	const cons = $_('Consumption');
-	let prodCurr = $derived(Number(controlStore.getState(control.states.prodCurr)));
-	let consCurr = $derived(Number(controlStore.getState(control.states.consCurr)));
+	let prodCurr = $derived(Number(controlStore.getState(control.states?.prodCurr)));
+	let consCurr = $derived(Number(controlStore.getState(control.states?.consCurr)));
 
 	let dialog: DialogView = $state({
 		action: (state: boolean) => {dialog.state = state},

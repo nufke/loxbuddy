@@ -15,8 +15,8 @@
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS}: { control: Control, controlOptions: ControlOptions } = $props();
 
 
-	let timeServiceMode = $derived(Number(controlStore.getState(control.states.timeServiceMode)));
-	let level = $derived((timeServiceMode > 0) ? 99 : Number(controlStore.getState(control.states.level)));
+	let timeServiceMode = $derived(Number(controlStore.getState(control.states?.timeServiceMode)));
+	let level = $derived((timeServiceMode > 0) ? 99 : Number(controlStore.getState(control.states?.level)));
 	let passwordView: GeneralView = $state(DEFAULT_GENERALVIEW);
 	let statusName = $state('');
 	let statusColor = $state('');
@@ -169,19 +169,19 @@
 							</div>
 							<div class="w-[100px] m-auto justify-center text-center">
 								<div class="grid grid-cols-3">
-									<div class="-mb-1"><button class="btn-icon p-1 dark:bg-surface-950 bg-surface-50 rounded-lg border border-black hover:border-white/50" type="button" onclick={() => setTimer(1,0)}><LbIcon name="chevron-up"/></button></div>
+									<div class="-mb-1"><button class="btn-icon p-1 bg-surface-50-950 rounded-lg border border-black hover:border-white/50" type="button" onclick={() => setTimer(1,0)}><LbIcon name="chevron-up"/></button></div>
 									<div class="-mb-1"></div>
-									<div class="-mb-1"><button class="btn-icon p-1 dark:bg-surface-950 bg-surface-50 rounded-lg border border-black hover:border-white/50" type="button" onclick={() => setTimer(0,1)}><LbIcon name="chevron-up"/></button></div>
+									<div class="-mb-1"><button class="btn-icon p-1 bg-surface-50-950 rounded-lg border border-black hover:border-white/50" type="button" onclick={() => setTimer(0,1)}><LbIcon name="chevron-up"/></button></div>
 									<div>{hours}</div>
 									<div>:</div>
 									<div>{minutes}</div>
-									<div><button type="button" class="btn-icon p-1 dark:bg-surface-950 bg-surface-50 rounded-lg border border-black hover:border-white/50" onclick={() => setTimer(-1,0)}><LbIcon name="chevron-down"/></button></div>
+									<div><button type="button" class="btn-icon p-1 bg-surface-50-950 rounded-lg border border-black hover:border-white/50" onclick={() => setTimer(-1,0)}><LbIcon name="chevron-down"/></button></div>
 									<div></div>
-									<div><button type="button" class="btn-icon p-1 dark:bg-surface-950 bg-surface-50 rounded-lg border border-black hover:border-white/50" onclick={() => setTimer(0,-1)}><LbIcon name="chevron-down"/></button></div>
+									<div><button type="button" class="btn-icon p-1 bg-surface-50-950 rounded-lg border border-black hover:border-white/50" onclick={() => setTimer(0,-1)}><LbIcon name="chevron-down"/></button></div>
 								</div>
 							</div>
 							<div class="m-3">
-								<button type="button" class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50" 
+								<button type="button" class="w-full btn btn-lg bg-surface-50-950 shadow-sm rounded-lg border border-white/15 hover:border-white/50" 
 												onclick={(e) => {e.stopPropagation(); e.preventDefault(); serviceButton.click();}}>
 									{#if serviceButton.name}
 										<span class="text-lg">{$_(serviceButton.name)}</span>

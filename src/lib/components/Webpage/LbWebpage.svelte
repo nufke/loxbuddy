@@ -9,8 +9,8 @@
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
-	let url = $derived(control.details.url);
-	let urlHd = $derived(control.details.urlHd);
+	let url = $derived(control.details?.url);
+	let urlHd = $derived(control.details?.urlHd);
 	let httpUrl = $derived((urlHd || url).match(/^https?:\/\/(.*)/)[1]); // https prio over http
 	let passwordView: GeneralView = $state(DEFAULT_GENERALVIEW);
 

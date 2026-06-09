@@ -121,7 +121,7 @@
 										{#if controlView.list}
 											<div class="grid gap-2">
 												{#each controlView.list as listItem, index}
-												<button type="button" class="w-full gap-2 btn btn-lg {(index==selectedItem) ? 'dark:bg-surface-800 bg-surface-200' : 'dark:bg-surface-950 bg-surface-50' }
+												<button type="button" class="w-full gap-2 btn btn-lg {(index==selectedItem) ? 'bg-surface-200-800' : 'bg-surface-50-950' }
 															shadow-sm rounded-lg border border-white/15 hover:border-white/50"
 																onclick={(e) => { e.stopPropagation(); e.preventDefault(); setItem(index)}}>
 															<span class="text-lg">{$_(listItem.name)}</span>

@@ -9,8 +9,8 @@
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
-	let position = $derived(Number(controlStore.getState(control.states.position)) * 100);
-	let type = Number(control.details.animation);
+	let position = $derived(Number(controlStore.getState(control.states?.position)) * 100);
+	let type = Number(control.details?.animation);
 
 	/* Gate types (based on animation detail)
 		0 = Garage Door

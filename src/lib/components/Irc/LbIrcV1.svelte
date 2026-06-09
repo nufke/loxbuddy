@@ -9,17 +9,17 @@
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS}: { control: Control, controlOptions: ControlOptions } = $props();
 
-	let temperatureDetails = $derived(control.details.temperatures);
+	let temperatureDetails = $derived(control.details?.temperatures);
 
 	let subControls = $derived(Object.values(control.subControls))
 	let selectedDayTimer = $derived(subControls.find( subControl => subControl.name == (isHeatPeriod ? 'Heating' : 'Cooling')) || subControls[0] );
 	let value = $derived(Number(controlStore.getState(selectedDayTimer.states.value))); // mode via IRCDayTimer
-	let mode = $derived(Number(controlStore.getState(control.states.mode)));
+	let mode = $derived(Number(controlStore.getState(control.states?.mode)));
 	let isHeatPeriod = $derived(((mode == 1) || (mode == 3) || (mode == 5)));
-	let temperatureList = $derived(control.states.temperatures);
+	let temperatureList = $derived(control.states?.temperatures);
 	let temperatures = $derived(updateTemperatures(temperatureList));
 	let temperatureIdsList = $derived(getTemperatureList(isHeatPeriod, false));
-	let tempActual = $derived(fmt.sprintf('%.1f', Number(controlStore.getState(control.states.tempActual))));
+	let tempActual = $derived(fmt.sprintf('%.1f', Number(controlStore.getState(control.states?.tempActual))));
 
 	let dialog: DialogView = $state({
 		action: (state: boolean) => {dialog.state = state},

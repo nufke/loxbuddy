@@ -18,7 +18,7 @@
 		[key: string]: Entry[];
 	}
 
-	let entries = $derived(controlStore.getState(control.states.entries)) as String;
+	let entries = $derived(controlStore.getState(control.states?.entries)) as String;
 	let entryList = $derived(entries ? entries.split('|') : []);
 	let entryMap = $derived(updateEntries(entryList));
 	let lastEntryDate = $derived(Object.keys(entryMap)[0]);

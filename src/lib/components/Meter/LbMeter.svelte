@@ -11,11 +11,11 @@
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
-	let actualFormat = $derived(control.details.actualFormat);
-	let type = $derived(control.details.type);
-	let storageFormat = $derived(control.details.storageFormat);
-	let actual = $derived(Number(controlStore.getState(control.states.actual))); 
-	let storageValue = $derived(Number(controlStore.getState(control.states.storage))); 
+	let actualFormat = $derived(control.details?.actualFormat);
+	let type = $derived(control.details?.type);
+	let storageFormat = $derived(control.details?.storageFormat);
+	let actual = $derived(Number(controlStore.getState(control.states?.actual))); 
+	let storageValue = $derived(Number(controlStore.getState(control.states?.storage))); 
 
 	let dialog: DialogView = $state({
 		action: (state: boolean) => {dialog.state = state},

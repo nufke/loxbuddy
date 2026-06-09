@@ -6,7 +6,7 @@
 	import { tick } from 'svelte';
 	import LbIcon from '$lib/components/Common/LbIcon.svelte';
 
-	let { entry, onValueChange, label } = $props();
+	let { entry, onValueChange, label, disabled } = $props();
 
 	// use temprary entry object till OK is pressed
 	let setEntry = $state({
@@ -43,7 +43,7 @@
 	}
 </script>
 
-<button onclick={() => (openDialog = true)}>
+<button disabled={disabled} onclick={() => (openDialog = true)}>
 	<div class="flex flex-row gap-1">
 		{#if entry.nightLight}
 			<div class="text-sm {entry.isActive ? 'dark:text-surface-50 text-surface-950' : 'dark:text-surface-700 text-surface-300'}">
@@ -109,12 +109,12 @@
 					</div>
 					<div class="mt-6 flex grid grid-cols-2 gap-2">
 						<button type="button"
-							class="btn btn-lg dark:bg-surface-950 bg-surface-50 w-full rounded-lg border border-white/15 shadow-sm hover:border-white/50"
+							class="btn btn-lg bg-surface-50-950 w-full rounded-lg border border-white/15 shadow-sm hover:border-white/50"
 							onclick={close}>
 							<span class="text-lg">{$_('Cancel')}</span>
 						</button>
 						<button type="button"
-							class="btn btn-lg dark:bg-surface-950 bg-surface-50 w-full rounded-lg border border-white/15 shadow-sm hover:border-white/50"
+							class="btn btn-lg bg-surface-50-950 w-full rounded-lg border border-white/15 shadow-sm hover:border-white/50"
 							onclick={() => {onValueChange({value: entry.nightLight ? setEntry.daily : setEntry.modes}); close();}}>
 							<span class="text-lg">{$_('OK')}</span>
 						</button>

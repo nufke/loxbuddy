@@ -78,7 +78,7 @@
 		<div class="flex w-full justify-between">
 			<div class="relative flex items-center truncate">
 				{#if controlView.iconName.length}
-					<div class="relative mr-1 flex items-center justify-center w-12 h-12 min-w-12 overflow-hidden rounded-full border border-white/10 dark:bg-surface-950 bg-surface-50">
+					<div class="relative mr-1 flex items-center justify-center w-12 h-12 min-w-12 overflow-hidden rounded-full border border-white/10 bg-surface-50-950">
 						{#if controlView.control.type =='Jalousie'}
 							<LbJalousieIcon control={controlView.control} width="28" height="28"/>
 						{:else}
@@ -93,7 +93,7 @@
 					</div>
 				{/if}
 				{#if controlView.iconText?.length} 
-					<div class="relative mr-1 inline-flex items-center justify-center w-12 h-12 min-w-12 overflow-hidden rounded-full border border-white/10 dark:bg-surface-950 bg-surface-50">
+					<div class="relative mr-1 inline-flex items-center justify-center w-12 h-12 min-w-12 overflow-hidden rounded-full border border-white/10 bg-surface-50-950">
 						<svg width="32" height="32">
 							<text class={controlView.iconColor} text-anchor="middle" x="16" y="22" font-size="18">{getT().num}<tspan font-size="14">{getT().frac}</tspan>
 							</text>
@@ -108,7 +108,7 @@
 							<div class="ml-2"></div>
 						{/if}
 						{#if button.type === 'button' && button.iconName}
-							<button type="button" disabled={locked} class="btn-icon w-[18px] h-[18px] p-3 dark:bg-surface-950 bg-surface-50 rounded-lg border border-white/15 hover:border-white/50 {locked ? '' : 'active:bg-primary-500'}" 
+							<button type="button" disabled={locked} class="btn-icon w-[18px] h-[18px] p-3 bg-surface-50-950 rounded-lg border border-white/15 hover:border-white/50 {locked ? '' : 'active:bg-primary-500'}" 
 											onclick={(e) => { e.stopPropagation(); e.preventDefault(); handleButtonClick(button, e);}}>
 								<LbIcon class={button.iconColor} name={button.iconName}/>
 							</button>
@@ -151,7 +151,7 @@
 		{/if}
 		<div class="relative flex items-center truncate">
 			{#if controlView.iconName.length && !controlView.isSubControl} <!-- only show icon if name is given -->
-				<div class="relative mr-1 inline-flex items-center justify-center w-12 h-12 min-w-12 overflow-hidden rounded-full border border-white/10 dark:bg-surface-950 bg-surface-50">
+				<div class="relative mr-1 inline-flex items-center justify-center w-12 h-12 min-w-12 overflow-hidden rounded-full border border-white/10 bg-surface-50-950">
 					{#if controlView.control.type =='Jalousie'}
 						<LbJalousieIcon control={controlView.control} width="28" height="28"/>
 					{:else}
@@ -166,7 +166,7 @@
 				</div>
 			{/if}
 			{#if controlView.iconText?.length} <!-- IRC -->
-				<div class="relative mr-1 inline-flex items-center justify-center w-12 h-12 min-w-12 overflow-hidden rounded-full border border-white/10 dark:bg-surface-950 bg-surface-50">
+				<div class="relative mr-1 inline-flex items-center justify-center w-12 h-12 min-w-12 overflow-hidden rounded-full border border-white/10 bg-surface-50-950">
 					<svg width="32" height="32">
 						<text class={controlView.iconColor} text-anchor="middle" x="16" y="22" font-size="18">{getT().num}<tspan font-size="14">{getT().frac}</tspan>
 						</text>
@@ -187,7 +187,7 @@
 						<div class="ml-2"></div>
 					{/if}
 					{#if button.type === 'button' && button.iconName}
-						<button type="button" disabled={locked} class="btn-icon w-[18px] h-[18px] p-3 dark:bg-surface-950 bg-surface-50 rounded-lg border border-white/15 hover:border-white/50 {locked ? '' : 'active:bg-primary-500'}"
+						<button type="button" disabled={locked} class="btn-icon w-[18px] h-[18px] p-3 bg-surface-50-950 rounded-lg border border-white/15 hover:border-white/50 {locked ? '' : 'active:bg-primary-500'}"
 										onclick={(e) => { e.stopPropagation(); e.preventDefault(); handleButtonClick(button, e);}}>
 							<span style="font-size:26px">
 								<LbIcon class={button.iconColor} name={button.iconName} />

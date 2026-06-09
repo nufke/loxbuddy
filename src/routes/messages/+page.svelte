@@ -149,7 +149,7 @@
 							{#if selectedEntry?.confirmedAt || selectedEntry?.setHistoricAt}
 								<p class="mt-5 text-md text-center dark:text-surface-300 text-surface-700 truncate">{$_(selectedEntry?.isHistoric ? "Solved at" : "Confirmed at")} {format(new Date(Number(selectedEntry?.isHistoric ? selectedEntry?.setHistoricAt : selectedEntry?.confirmedAt)*1000), "PPP p")}</p>
 							{:else}
-								<button type="button" class="mt-5 w-full btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50" 
+								<button type="button" class="mt-5 w-full btn btn-lg bg-surface-50-950 shadow-sm rounded-lg border border-white/15 hover:border-white/50" 
 										onclick={confirmEntry}>
 									<p class="text-lg">{$_("Confirm")}</p>
 								</button>

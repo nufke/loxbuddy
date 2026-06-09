@@ -7,8 +7,8 @@
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
-	let textAndIcon = $derived(String(controlStore.getState(control.states.textAndIcon)));
-	let iconAndColor = $derived(controlStore.getState(control.states.iconAndColor));
+	let textAndIcon = $derived(String(controlStore.getState(control.states?.textAndIcon)));
+	let iconAndColor = $derived(controlStore.getState(control.states?.iconAndColor));
 
 	let dialog: DialogView = $state({
 		action: (state: boolean) => {dialog.state = state},

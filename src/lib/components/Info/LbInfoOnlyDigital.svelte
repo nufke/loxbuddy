@@ -7,7 +7,7 @@
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS}: { control: Control, controlOptions: ControlOptions } = $props();
 
-	let controlState = $derived(Number(controlStore.getState(control.states.active)) ? 'on' : 'off');
+	let controlState = $derived(Number(controlStore.getState(control.states?.active)) ? 'on' : 'off');
 
 	let dialog: DialogView = $state({
 		action: (state: boolean) => {dialog.state = state},
@@ -20,8 +20,8 @@
 		isFavorite: controlOptions.isFavorite,
 		iconName: controlStore.getIcon(control, controlOptions.isSubControl),
 		textName: control.name,
-		statusName: control.details.text[controlState],
-		statusColor: control.details.color[controlState],
+		statusName: control.details?.text[controlState],
+		statusColor: control.details?.color[controlState],
 		dialog: dialog
 	});
 </script>

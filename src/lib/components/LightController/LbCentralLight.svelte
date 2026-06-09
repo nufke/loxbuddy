@@ -17,8 +17,8 @@
 
 	let selectedControl: Control | undefined= $state();
 	let selectedControlOptions: ControlOptions | undefined = $state();
-	let lightList = $derived(control.details.controls) as LightItem[];
-	let lightsUuid = $derived(control.details.controls.map((item: LightItem) => item.uuid));
+	let lightList = $derived(control.details?.controls) as LightItem[];
+	let lightsUuid = $derived(control.details?.controls.map((item: LightItem) => item.uuid));
 
 	let scenesEnabled = $state(false);
 	let viewport: any = $state(); // TODO make HTMLDivElement
@@ -31,7 +31,7 @@
 	));
 
 	let lightsOff = $derived(
-		lightControls.filter((control: Control) => controlStore.getState(control.states.activeMoodsNum) == 778)
+		lightControls.filter((control: Control) => controlStore.getState(control.states?.activeMoodsNum) == 778)
 	);
 
 	let lightsOn = $derived(lightList.length - lightsOff.length);
@@ -103,14 +103,14 @@
 	}
 
 	function getStatusName(control: Control): string {
-		let moodList = controlStore.getState(control.states.moodList) as MoodList[];
-		let activeMoodsNum = Number(controlStore.getState(control.states.activeMoodsNum));
+		let moodList = controlStore.getState(control.states?.moodList) as MoodList[];
+		let activeMoodsNum = Number(controlStore.getState(control.states?.activeMoodsNum));
 		return (activeMoodsNum < 0) ? $_('Manual') : 
 			moodList?.find((item:MoodList) => item.id == activeMoodsNum)?.name ?? '';
 	}
 
 	function getStatusColor(control: Control): string {
-		let activeMoodsNum = Number(controlStore.getState(control.states.activeMoodsNum));
+		let activeMoodsNum = Number(controlStore.getState(control.states?.activeMoodsNum));
 		return activeMoodsNum == 778 ? 'text-surface-950 dark:text-surface-50' : 'dark:text-primary-500 text-primary-700';
 	}
 
@@ -190,11 +190,11 @@
 							</div>
 							<p class="text-lg text-center {lightsOn ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700'}">{getActiveLights()}</p>
 							<div class="grid grid-cols-3 gap-2 mt-2 mb-2">
-								<button type="button" class="w-full btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50 shadow-sm text-surface-950-50
+								<button type="button" class="w-full btn btn-lg h-[48px] bg-surface-50-950 shadow-sm text-surface-950-50
 																			rounded-lg border border-white/15 hover:border-white/50 active:bg-primary-500" onclick={() => changeLight('On')}>{$_('On')}</button>
-								<button type="button" class="w-full btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50 shadow-sm text-surface-950-50
+								<button type="button" class="w-full btn btn-lg h-[48px] bg-surface-50-950 shadow-sm text-surface-950-50
 																			rounded-lg border border-white/15 hover:border-white/50 active:bg-primary-500" onclick={() => changeLight('Off')}>{$_('Off')}</button>
-								<button type="button" class="w-full btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50 shadow-sm {scenesEnabled ? 'text-surface-800-200 active:bg-primary-500' : 'text-surface-200-800'}
+								<button type="button" class="w-full btn btn-lg h-[48px] bg-surface-50-950 shadow-sm {scenesEnabled ? 'text-surface-800-200 active:bg-primary-500' : 'text-surface-200-800'}
 																			rounded-lg border border-white/15 hover:border-white/50" onclick={() => selectScenes()}>{$_('Scenes')}</button>
 							</div>
 						</header>
@@ -210,15 +210,15 @@
 									<div class="flex flex-col space-y-2 overflow-y-auto h-[50%]" {style} bind:this={viewport} onscroll={() => parseScroll(windowHeight, viewport)}>
 										{#each lightControls as control}
 											<button class="w-full flex h-[60px] items-center justify-start rounded-lg border border-white/15 hover:border-white/50
-														{isSelected(control) ? 'dark:bg-surface-800 bg-surface-200' : 'dark:bg-surface-950 bg-surface-50'} px-2 py-2"
-														onclick={() => selectLight(control)}>
-													<div class="p-2 grid grid-cols-2 w-fit w-full items-center h-[60px]">
-														<div class="text-left">
-															<p class="truncate leading-6 text-base {getStatusColor(control)}">{getControlName(control)}</p>
-															<p class="truncate bg-transparent text-xs dark:text-surface-300 text-surface-700">{getRoomName(control)}</p>
-														</div>
-														<p class="truncate text-right text-base {getStatusColor(control)}">{getStatusName(control)}</p>
+													{isSelected(control) ? 'bg-surface-200-800' : 'bg-surface-50-950'} px-2 py-2"
+													onclick={() => selectLight(control)}>
+												<div class="p-2 grid grid-cols-2 w-fit w-full items-center h-[60px]">
+													<div class="text-left">
+														<p class="truncate leading-6 text-base {getStatusColor(control)}">{getControlName(control)}</p>
+														<p class="truncate bg-transparent text-xs dark:text-surface-300 text-surface-700">{getRoomName(control)}</p>
 													</div>
+													<p class="truncate text-right text-base {getStatusColor(control)}">{getStatusName(control)}</p>
+												</div>
 											</button>
 										{/each}
 									</div>

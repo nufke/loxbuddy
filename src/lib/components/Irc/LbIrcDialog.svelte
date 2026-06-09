@@ -47,23 +47,23 @@
 	let tempTarget = $derived(Number(controlStore.getState(controlView.control?.states.tempTarget)));
 	let date: SvelteDate = $state(new SvelteDate(Date.now() + 3600000));
 
-	let overrideV1 = $derived(Number(controlStore.getState(controlView.control.states.override)));
-	let overrideEntriesV2 = $derived(controlStore.getState(controlView.control.states.overrideEntries));
+	let overrideV1 = $derived(Number(controlStore.getState(controlView.control.states?.override)));
+	let overrideEntriesV2 = $derived(controlStore.getState(controlView.control.states?.overrideEntries));
 	let overrideV2 = $derived(overrideEntriesV2 && overrideEntriesV2[0] ? (overrideEntriesV2[0].isTimer ? 1: 0 ) : 0); // TODO, we might have more entries
 
-	let modeV1 = $derived(Number(controlStore.getState(controlView.control.states.mode)));
+	let modeV1 = $derived(Number(controlStore.getState(controlView.control.states?.mode)));
 	let modeIdV1 = $derived(temperatureModeList && temperatureModeList[modeV1] ? temperatureModeList[modeV1].id : 0);
 	let isAutomaticV1 = $derived(modeIdV1<5);
 	let isHeatingV1 = $derived(modeIdV1==1 || modeIdV1==3 || modeIdV1==5);
 	let isCoolingV1 = $derived(modeIdV1==2 || modeIdV1==4 || modeIdV1==6);
 	let isEcoV1 = $derived(selectedItem?.id == 0);
 
-	let operatingModeV2 = $derived(Number(controlStore.getState(controlView.control.states.operatingMode)));
-	let currentModeV2 = $derived(Number(controlStore.getState(controlView.control.states.currentMode)));
+	let operatingModeV2 = $derived(Number(controlStore.getState(controlView.control.states?.operatingMode)));
+	let currentModeV2 = $derived(Number(controlStore.getState(controlView.control.states?.currentMode)));
 	let isAutomaticV2 = $derived(operatingModeV2<3);
 	let isHeatingV2 = $derived(currentModeV2==1 || currentModeV2 == 4);
 	let isCoolingV2 = $derived(currentModeV2==2 || currentModeV2 == 5);
-	let isEcoV2 = $derived(Number(controlStore.getState(controlView.control.states.activeMode))==0);
+	let isEcoV2 = $derived(Number(controlStore.getState(controlView.control.states?.activeMode))==0);
 
 	let override = $derived(isV1 ? overrideV1 : overrideV2);
 	let isAutomatic = $derived(isV1 ? isAutomaticV1 : isAutomaticV2);
@@ -314,7 +314,7 @@
 					<Dialog.Description>
 						<div class="flex flex-col items-center justify-center h-full">
 							{#if selectedTab==1}
-								<div class="w-full mt-4 m-2 p-2 dark:bg-surface-950 bg-surface-50 rounded-lg border border-white/15 hover:border-white/50">
+								<div class="w-full mt-4 m-2 p-2 bg-surface-50-950 rounded-lg border border-white/15 hover:border-white/50">
 									<div class="flex flex-row items-center justify-between">
 										<div>
 											<p class="pl-2 text-base text-left truncate {controlView.statusColor}">{$_(controlView?.statusName)} ({tempFormat(selectedItem?.value)})</p>
@@ -342,7 +342,7 @@
 										<div class="text-md dark:text-surface-50 text-surface-950">{$_("Actual")}: {tempFormat(tempActual)}</div>
 									</div>
 								</div>
-									<div class="w-full dark:bg-surface-950 bg-surface-50 rounded-lg border border-white/15 hover:border-white/50"
+									<div class="w-full bg-surface-50-950 rounded-lg border border-white/15 hover:border-white/50"
 											onclick={(e) => { e.stopPropagation(); e.preventDefault(); openCalendarView();}}>
 										<div>
 											<LbTimeGrid {mode} {entries} {overrideDate} {override}/>
@@ -352,7 +352,7 @@
 								<div class="text-center">
 									{#if override > 0}
 										<p class="mt-2 mb-2 text-lg">{$_("Duration")} { isV1 ? format(timerEndsV1, 'PPP p') : format(timerEndsV2, 'PPP p')} </p>
-										<button type="button" class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
+										<button type="button" class="w-full btn btn-lg bg-surface-50-950 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
 											onclick={cancelOverride}>
 											<p class="text-lg">{$_("Cancel timer")}</p>
 										</button>
@@ -362,7 +362,7 @@
 							{#if selectedTab==2}
 								<div class="container mt-2 overflow-y-auto grid gap-2" {style} bind:this={viewport} onscroll={() => parseScroll(windowHeight, viewport)}>
 									{#each temperatureList as listItem}
-										<button type="button" class="w-full pr-4 btn btn-lg {(listItem.id == selectedItem?.id) ? 'dark:bg-surface-800 bg-surface-200' : 'dark:bg-surface-950 bg-surface-50' }
+										<button type="button" class="w-full pr-4 btn btn-lg {(listItem.id == selectedItem?.id) ? 'bg-surface-200-800' : 'bg-surface-50-950' }
 													shadow-sm rounded-lg border border-white/15 hover:border-white/50" 
 													onclick={(e) => { e.stopPropagation(); e.preventDefault(); setTemperature(listItem)}}>
 											<div class="w-full flex items-center truncate">
@@ -375,7 +375,7 @@
 									{/each}
 								</div>
 								<button class="w-full m-0 mt-4 flex min-h-[50px] items-center justify-start rounded-lg border border-white/15 hover:border-white/50
-												dark:bg-surface-950 bg-surface-50 px-2 py-2"
+												bg-surface-50-950 px-2 py-2"
 												onclick={() => {dateTimeView.openDialog=true}}>
 									<div class="w-full flex items-center truncate">
 										<div class="mt-0 ml-3 mr-2 flex w-full justify-between truncate">
@@ -389,7 +389,7 @@
 								<div class="container mt-2 mb-3 overflow-y-auto" {style} bind:this={viewport} onscroll={() => parseScroll(windowHeight, viewport)}>
 									<div class="flex flex-col space-y-2">
 										{#each filteredEntries() as entry}
-											<button type="button" class="w-full dark:bg-surface-950 bg-surface-50
+											<button type="button" class="w-full bg-surface-50-950
 													shadow-sm rounded-lg border border-white/15 hover:border-white/50"
 													onclick={(e) => { updateEntry(entry) }}>
 													<div class="pl-3 p-1 flex flex-col justify-center text-left">
@@ -405,11 +405,11 @@
 									</div>
 								</div>
 								<div class="container grid grid-cols-2 gap-2">
-									<button type="button" class="w-full btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50 shadow-sm text-surface-950-50
+									<button type="button" class="w-full btn btn-lg h-[48px] bg-surface-50-950 shadow-sm text-surface-950-50
 																								rounded-lg border border-white/15 hover:border-white/50 active:bg-primary-500" onclick={openCalendarView}>
 										<span class="text-base">{$_("Open calendar")}</span>
 									</button>
-									<button type="button" class="w-full btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50 shadow-sm text-surface-950-50
+									<button type="button" class="w-full btn btn-lg h-[48px] bg-surface-50-950 shadow-sm text-surface-950-50
 																								rounded-lg border border-white/15 hover:border-white/50 active:bg-primary-500" onclick={addEntry}>
 										<span class="text-base">{$_("Add entry")}</span>
 									</button>

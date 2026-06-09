@@ -8,7 +8,7 @@
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
-	let buttonActive = $derived(Number(controlStore.getState(control.states.active)) == 1);
+	let buttonActive = $derived(Number(controlStore.getState(control.states?.active)) == 1);
 
 	let buttons: SingleButtonView[] = $derived([
 		{

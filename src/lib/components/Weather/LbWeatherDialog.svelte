@@ -64,7 +64,7 @@
 <Dialog
 	open={appStore.weatherDialog.state}>
 	<Portal>
-		<Dialog.Backdrop class="fixed top-0 left-0 right-0 bottom-0 z-100 dark:bg-surface-950 bg-surface-50 {fadeInOut}"/>
+		<Dialog.Backdrop class="fixed top-0 left-0 right-0 bottom-0 z-100 bg-surface-50-950 {fadeInOut}"/>
 		<Dialog.Positioner class="fixed top-0 left-0 w-full h-full z-100">
 			<Dialog.Content class="card p-2 space-y-4 shadow-xl h-full overflow-y-auto {fadeInOut}">
 				<header class="sticky top-0 h-[40px] dark:bg-surface-950/50 bg-surface-50/50 z-1">

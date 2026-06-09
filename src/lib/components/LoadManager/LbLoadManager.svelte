@@ -9,17 +9,17 @@
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
-	let loads = $derived(control.details.loads);
-	let mode = $derived(control.details.mode);
+	let loads = $derived(control.details?.loads);
+	let mode = $derived(control.details?.mode);
 
-	let currentPower = $derived(Number(controlStore.getState(control.states.currentPower)));
-	let peakOverloadPower = $derived(Number(controlStore.getState(control.states.peakOverloadPower)));
-	let maxPower = $derived(Number(controlStore.getState(control.states.maxPower)));
-	let availablePower = $derived(Number(controlStore.getState(control.states.availablePower))); // remaining free power
-	let maxPowerExceeded = $derived(Number(controlStore.getState(control.states.maxPowerExceeded)));
-	let maxTp = $derived(Number(controlStore.getState(control.states.maxTp)));
-	let lockedLoads = $derived(Number(controlStore.getState(control.states.lockedLoads)));
-	let statusLoads = $derived(Number(controlStore.getState(control.states.statusLoads)));
+	let currentPower = $derived(Number(controlStore.getState(control.states?.currentPower)));
+	let peakOverloadPower = $derived(Number(controlStore.getState(control.states?.peakOverloadPower)));
+	let maxPower = $derived(Number(controlStore.getState(control.states?.maxPower)));
+	let availablePower = $derived(Number(controlStore.getState(control.states?.availablePower))); // remaining free power
+	let maxPowerExceeded = $derived(Number(controlStore.getState(control.states?.maxPowerExceeded)));
+	let maxTp = $derived(Number(controlStore.getState(control.states?.maxTp)));
+	let lockedLoads = $derived(Number(controlStore.getState(control.states?.lockedLoads)));
+	let statusLoads = $derived(Number(controlStore.getState(control.states?.statusLoads)));
 
 	let dialog: DialogView = $state({
 		action: (state: boolean) => {dialog.state = state},

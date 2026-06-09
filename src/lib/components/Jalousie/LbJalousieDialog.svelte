@@ -10,7 +10,7 @@
 
 	let { controlView = $bindable() }: { controlView: ControlView } = $props();
 
-	let autoActive = $derived(Number(controlStore.getState(controlView.control.states.autoActive)));
+	let autoActive = $derived(Number(controlStore.getState(controlView.control.states?.autoActive)));
 
 	function close(): void {
 		controlView.dialog.action(false);
@@ -63,7 +63,7 @@
 							{#if controlView.dialog && controlView.dialog.buttons}
 								{#each controlView.dialog.buttons as button}
 									{#if button.type === 'button'}
-										<button type="button" disabled={controlView.dialog.details.locked} class="w-full {button.class} btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50
+										<button type="button" disabled={controlView.dialog.details.locked} class="w-full {button.class} btn btn-lg h-[48px] bg-surface-50-950 shadow-sm rounded-lg border border-white/15 hover:border-white/50
 												{controlView.dialog.details.locked ? '' : 'active:bg-primary-500'}"
 												onclick={(e) => { e.stopPropagation(); e.preventDefault(); button.click()}}
 												onmousedown={(e) => { e.stopPropagation(); e.preventDefault(); button.mousedown()}}

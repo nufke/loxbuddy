@@ -21,15 +21,15 @@
 		isFavorite: controlOptions.isFavorite,
 		iconName: controlStore.getIcon(control, controlOptions.isSubControl),
 		textName: control.name,
-		statusName: getFormattedString(String(controlStore.getState(control.states.value))),
+		statusName: getFormattedString(String(controlStore.getState(control.states?.value))),
 		dialog: dialog
 	});
 
 	function getFormattedString(input: string): string {
 		let s: string = input;
 		const value = Number(s);
-		if (control.details.format) {
-			switch (control.details.format) {
+		if (control.details?.format) {
+			switch (control.details?.format) {
 				case '<v.u>': // date + time, e.g. 6 maart 2025 22:56
 					let date = new Date(value * 1000 + utils.loxTimeRef);
 					if (date && value) {
@@ -68,7 +68,7 @@
 				case '<v.3>': // float in x.yy notation
 					control.details.format = '%.3f';
 				default:
-					s = fmt.sprintf(control.details.format, value);
+					s = fmt.sprintf(control.details?.format, value);
 					break;
 			}
 		}

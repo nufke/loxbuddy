@@ -25,7 +25,7 @@
 	];
 
 	let busy = $state(false);
-	let color = $derived(String(controlStore.getState(control.states.color)));
+	let color = $derived(String(controlStore.getState(control.states?.color)));
 	let {rgbColor, tempColor, brightness, isTempColor} = $derived(getColor(color));
 
 	let temperatureLayout = $state([
@@ -34,8 +34,8 @@
 			options: {
 				sliderShape: 'circle',
 				sliderType: 'kelvin',
-				minTemperature: control.states.minKelvin,
-				maxTemperature: control.states.maxKelvin
+				minTemperature: control.states?.minKelvin,
+				maxTemperature: control.states?.maxKelvin
 			}
 		}
 	]);

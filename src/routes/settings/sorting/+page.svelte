@@ -173,7 +173,7 @@
 							<Tabs.Content value="room">
 								<div class="overflow-y-auto">
 									{#each rooms as room}
-										<button type="button" class="w-full mt-2 btn btn-lg {(room.name == getStartpageName(startPage)) ? 'dark:bg-surface-800 bg-surface-200' : 'dark:bg-surface-950 bg-surface-50' }
+										<button type="button" class="w-full mt-2 btn btn-lg {(room.name == getStartpageName(startPage)) ? 'bg-surface-200-800' : 'bg-surface-50-950' }
 													shadow-sm rounded-lg border border-white/15 hover:border-white/50"
 											onclick={(e) => { onChangeStartpage(group, room.uuid)}}>
 											<p class="text-lg">{room.name}</p>
@@ -184,7 +184,7 @@
 							<Tabs.Content value="category">
 								<div class="overflow-y-auto">
 									{#each categories as category}
-										<button type="button" class="w-full mt-2 btn btn-lg {(category.name == getStartpageName(startPage)) ? 'dark:bg-surface-800 bg-surface-200' : 'dark:bg-surface-950 bg-surface-50' }
+										<button type="button" class="w-full mt-2 btn btn-lg {(category.name == getStartpageName(startPage)) ? 'bg-surface-200-800' : 'bg-surface-50-950' }
 													shadow-sm rounded-lg border border-white/15 hover:border-white/50"
 											onclick={(e) => { onChangeStartpage(group, category.uuid)}}>
 											<p class="text-lg">{category.name}</p>
@@ -195,7 +195,7 @@
 							<Tabs.Content value="other">
 								<div class="overflow-y-auto">
 									{#each other as item}
-										<button type="button" class="w-full mt-2 btn btn-lg {(item.name == getStartpageName(startPage)) ? 'dark:bg-surface-800 bg-surface-200' : 'dark:bg-surface-950 bg-surface-50' }
+										<button type="button" class="w-full mt-2 btn btn-lg {(item.name == getStartpageName(startPage)) ? 'bg-surface-200-800' : 'bg-surface-50-950' }
 													shadow-sm rounded-lg border border-white/15 hover:border-white/50"
 											onclick={(e) => { onChangeStartpage('', item.uuid)}}>
 											<p class="text-lg">{item.name}</p>

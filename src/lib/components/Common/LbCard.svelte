@@ -19,7 +19,7 @@
 	<div class="w-full flex {isFavorite ? 'flex-col mt-1' : 'flex-row'}">
 		<div class="flex justify-center">
 			<div class="relative inline-flex items-center justify-center w-[54px] h-[54px] min-w-12 overflow-hidden 
-								rounded-full border border-white/10 dark:bg-surface-950 bg-surface-50">
+								rounded-full border border-white/10 bg-surface-50-950">
 				<LbIcon class={color} name={item.image} width="32" height="32"/>
 			</div>
 		</div>

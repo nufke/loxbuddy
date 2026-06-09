@@ -1728,7 +1728,7 @@
 					{
 						"uuid": "__uuid__controls_efm_details_node_group0",
 						"nodeType": "Group",
-						"title": "Energie Toevoer",
+						"title": "Energy supply",
 						"icon": "",
 						"actualEfmState": "__uuid__controls_efm_states_actual0",
 						"nodes": [
@@ -1758,14 +1758,14 @@
 					{
 						"uuid": "__uuid__controls_efm_details_node_group1",
 						"nodeType": "Group",
-						"title": "Algemeen",
+						"title": "Appliances",
 						"icon": "",
 						"actualEfmState": "__uuid__controls_efm_states_actual1",
 						"nodes": [
 							{
 								"uuid": "__uuid__controls_efm_details_node_group1_wash",
 								"nodeType": "Load",
-								"title": "Washing Machine",
+								"title": "Washing machine",
 								"icon": "IconsFilled/washing-machine.svg",
 								"ctrlUuid": "__uuid__controls_washing_machine"
 							},
@@ -1781,7 +1781,7 @@
 					{
 						"uuid": "__uuid__controls_efm_details_node_group2",
 						"nodeType": "Load",
-						"title": "Cooker+Oven",
+						"title": "Kitchen",
 						"icon": "IconsFilled/oven.svg",
 						"actualEfmState": "__uuid__controls_efm_states_actual2",
 						"ctrlUuid": "__uuid__controls_cooker_oven",
@@ -1813,7 +1813,7 @@
 							{
 								"uuid": "__uuid__controls_efm_details_node_group3_kitchen",
 								"nodeType": "Load",
-								"title": "Lighting Kitchen",
+								"title": "Lighting kitchen",
 								"icon": "IconsFilled/ceiling-lights.svg",
 								"ctrlUuid": "__uuid__controls_power_supply_kitchen"
 							},
@@ -1827,7 +1827,7 @@
 							{
 								"uuid": "__uuid__controls_efm_details_node_group3_living",
 								"nodeType": "Load",
-								"title": "Living Room",
+								"title": "Living room",
 								"icon": "IconsFilled/music-note.svg",
 								"ctrlUuid": "__uuid__controls_power_supply_living"
 							},
@@ -1865,7 +1865,7 @@
 								"uuid": "__uuid__controls_efm_details_node_group4_sauna",
 								"nodeType": "Load",
 								"title": "Sauna",
-								"icon": "IconsFilled/sauna-oven.svg",
+								"icon": "IconsFilled/sauna.svg",
 								"ctrlUuid": "__uuid__controls_power_supply_sauna"
 							}
 						]
@@ -1873,10 +1873,10 @@
 					{
 						"uuid": "__uuid__controls_efm_details_node_group5",
 						"nodeType": "Load",
-						"title": "Andere",
+						"title": "Other",
 						"icon": "",
 						"actualEfmState": "__uuid__controls_efm_states_actual5",
-						"ctrlUuid": "__uuid__controls_efm_subControls_andere"
+						"ctrlUuid": "__uuid__controls_efm_subControls_other"
 					}
 				]
 			},
@@ -1931,7 +1931,7 @@
 			},
 			"subControls": {
 				"__uuid__controls_efm_subControls_andere": {
-					"name": "Andere",
+					"name": "Other",
 					"type": "Meter",
 					"uuidAction": "__uuid__controls_efm_subControls_andere",
 					"room": "184b7e23-025d-3e38-ffff03d07da64ce9",
@@ -1950,18 +1950,18 @@
 						"powerName": "Power"
 					},
 					"states": {
-						"jLocked": "__uuid__controls_efm_subControls_andere_states_jLocked",
-						"actual": "__uuid__controls_efm_subControls_andere_states_actual",
-						"total": "__uuid__controls_efm_subControls_andere_states_total",
-						"totalNeg": "__uuid__controls_efm_subControls_andere_states_totalNeg",
-						"totalDay": "__uuid__controls_efm_subControls_andere_states_totalDay",
-						"totalWeek": "__uuid__controls_efm_subControls_andere_states_totalWeek",
-						"totalMonth": "__uuid__controls_efm_subControls_andere_states_totalMonth",
-						"totalYear": "__uuid__controls_efm_subControls_andere_states_totalYear",
-						"totalNegDay": "__uuid__controls_efm_subControls_andere_states_totalNegDay",
-						"totalNegWeek": "__uuid__controls_efm_subControls_andere_states_totalNegWeek",
-						"totalNegMonth": "__uuid__controls_efm_subControls_andere_states_totalNegMonth",
-						"totalNegYear": "__uuid__controls_efm_subControls_andere_states_totalNegYear"
+						"jLocked": "__uuid__controls_efm_subControls_other_states_jLocked",
+						"actual": "__uuid__controls_efm_subControls_other_states_actual",
+						"total": "__uuid__controls_efm_subControls_other_states_total",
+						"totalNeg": "__uuid__controls_efm_subControls_other_states_totalNeg",
+						"totalDay": "__uuid__controls_efm_subControls_other_states_totalDay",
+						"totalWeek": "__uuid__controls_efm_subControls_other_states_totalWeek",
+						"totalMonth": "__uuid__controls_efm_subControls_other_states_totalMonth",
+						"totalYear": "__uuid__controls_efm_subControls_other_states_totalYear",
+						"totalNegDay": "__uuid__controls_efm_subControls_other_states_totalNegDay",
+						"totalNegWeek": "__uuid__controls_efm_subControls_other_states_totalNegWeek",
+						"totalNegMonth": "__uuid__controls_efm_subControls_other_states_totalNegMonth",
+						"totalNegYear": "__uuid__controls_efm_subControls_other_states_totalNegYear"
 					},
 					"statisticV2": {
 						"groups": [

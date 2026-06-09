@@ -8,11 +8,11 @@
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
-	let min = $derived(Number(controlStore.getState(control.states.min)));
-	let max = $derived(Number(controlStore.getState(control.states.max)));
-	let step = $derived(Number(controlStore.getState(control.states.step)));
-	let value = $derived(Number(controlStore.getState(control.states.value)));
-	let increaseOnly = $derived(control.details.increaseOnly);
+	let min = $derived(Number(controlStore.getState(control.states?.min)));
+	let max = $derived(Number(controlStore.getState(control.states?.max)));
+	let step = $derived(Number(controlStore.getState(control.states?.step)));
+	let value = $derived(Number(controlStore.getState(control.states?.value)));
+	let increaseOnly = $derived(control.details?.increaseOnly);
 
 	let buttonMinus: SingleButtonView[] = $state([
 		{
@@ -47,7 +47,7 @@
 		isFavorite: controlOptions.isFavorite,
 		iconName: controlStore.getIcon(control, controlOptions.isSubControl),
 		textName: control.name,
-		statusName: fmt.sprintf(control.details.format, value),
+		statusName: fmt.sprintf(control.details?.format, value),
 		buttons: increaseOnly ? buttonPlus : [...buttonMinus, ...buttonPlus],
 		dialog: dialog
 	});

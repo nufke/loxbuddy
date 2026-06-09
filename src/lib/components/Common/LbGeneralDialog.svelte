@@ -73,7 +73,7 @@
 							<div class="w-full mt-3 mb-2 grid gap-2">
 								{#if view.buttons && view.buttons.length}
 									{#each view.buttons as button}
-									<button type="button" class="w-full h-[48px] btn btn-lg { selectedButton.id == button.id ? 'dark:bg-surface-800 bg-surface-200' : 'dark:bg-surface-950 bg-surface-50' }
+									<button type="button" class="w-full h-[48px] btn btn-lg { selectedButton.id == button.id ? 'bg-surface-200-800' : 'bg-surface-50-950' }
 												shadow-sm rounded-lg border border-white/15 hover:border-white/50"
 													onclick={(e) => { e.stopPropagation(); e.preventDefault(); buttonSelect(button.id)}}>
 												<span class="text-lg">{$_(button.name)}</span>
@@ -85,7 +85,7 @@
 									<input class="sr-only" type="text" autocomplete="username" tabindex="-1" aria-hidden="true" value="" readonly />
 									<div class="input-group grid-cols-[1fr_auto] rounded-lg">
 										<div dir="ltr">
-											<input class="input h-[48px] dark:bg-surface-950 bg-surface-50 rounded-s-lg"
+											<input class="input h-[48px] bg-surface-50-950 rounded-s-lg"
 											  type={hidePassword ? "password" : "text"} bind:value={password}
 												placeholder={$_("Password")} autocomplete="current-password" use:focusOnMount />
 										</div>
@@ -100,12 +100,12 @@
 								{/if}
 							</div>
 							<div class="flex grid grid-cols-2 gap-2 mt-4 w-full">
-								<button type="button" class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
+								<button type="button" class="w-full btn btn-lg bg-surface-50-950 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
 												onclick={cancel}>
 									<p class="truncate text-lg">{$_("Cancel")}</p>
 								</button>
 								<button type="submit" class="w-full btn btn-lg shadow-sm rounded-lg border border-white/15 hover:border-white/50
-										{password.length > 0 ? 'preset-filled-primary-500' : 'dark:bg-surface-950 bg-surface-50'}">
+										{password.length > 0 ? 'preset-filled-primary-500' : 'bg-surface-50-950'}">
 									<p class="truncate text-lg">{$_("OK")}</p>
 								</button>
 							</div>

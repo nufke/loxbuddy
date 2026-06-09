@@ -11,7 +11,7 @@
 	import { fadeInOut } from '$lib/helpers/styles';
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
-	let text = $derived(fmt.sprintf(control.details.format, controlStore.getState(control.states.text)));
+	let text = $derived(fmt.sprintf(control.details?.format, controlStore.getState(control.states?.text)));
 	let mapInfo = $derived(text.match(/openstreetmap.org\/#map=(.*)\/(.*)\/(.*)/) || []);
 
 	let dialog: DialogView = $state({

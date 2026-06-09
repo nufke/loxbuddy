@@ -42,12 +42,12 @@
 		state: false
 	});
 
-	let entryObj = $derived(controlStore.getState(control.states.entryList) as AlarmClockEntries);
+	let entryObj = $derived(controlStore.getState(control.states?.entryList) as AlarmClockEntries);
 	let entryIds = $derived(entryObj ? Object.keys(entryObj).map((n) => Number(n)) : []);
 	let entryList = $derived(entryObj ? Object.values(entryObj) : []);
 	let prevEntryListLength: number = $state(0);
 	let alarms = $derived(entryObj ? Object.values(entryObj).filter((entry) => entry.isActive) : []);
-	let nextEntryTime = $derived(Number(controlStore.getState(control.states.nextEntryTime)) || 0);
+	let nextEntryTime = $derived(Number(controlStore.getState(control.states?.nextEntryTime)) || 0);
 	let windowHeight = $derived(innerHeight.current || 0);
 
 	let margin = 200;
@@ -220,13 +220,13 @@
 						<Dialog.Description>
 							<div class="mt-2 overflow-y-auto w-full" {style} bind:this={viewport}>
 								{#each entryList as entry, i}
-									<div class="mt-2 p-4 dark:bg-surface-950 bg-surface-50 rounded-lg" transition:slide={{ duration: 200 }}>
+									<div class="mt-2 p-4 bg-surface-50-950 rounded-lg" transition:slide={{ duration: 200 }}>
 										<div class="flex w-full m-auto h-[72px] justify-between">
 											<div>
 												<h1 class="text-lg truncate">
 													<LbInPlaceEdit value={entry.name} onValueChange={(e:any)=>{updateName(i, e)}}/>
 												</h1>
-												<button class="text-3xl {entry.isActive ? 'dark:text-surface-50 text-surface-950' : 'dark:text-surface-700 text-surface-300'}"
+												<button disabled={!entry.isActive} class="text-3xl {entry.isActive ? 'dark:text-surface-50 text-surface-950' : 'dark:text-surface-700 text-surface-300'}"
 															onclick={() => {selectedEntry = i; dateTimeView.openDialog=true;}}>
 													<h1>{utils.dec2hours(entry.alarmTime)}</h1>
 											</button>
@@ -241,7 +241,7 @@
 											</div>
 										</div>
 										<div class="flex w-full m-auto justify-between">
-											<LbAlarmClockDayPickerDialog {entry} label={$_("Alarm")} onValueChange={(e:any)=>{updateSettings(i, e)}}/>
+											<LbAlarmClockDayPickerDialog disabled={!entry.isActive} {entry} label={$_("Alarm")} onValueChange={(e:any)=>{updateSettings(i, e)}}/>
 											{#if i > 0}
 											<button type="button" class="dark:text-surface-300 text-surface-700" aria-label="delete" onclick={() => { deleteEntry(i);}}>
 												<LbIcon name="trash-2"/>
@@ -252,7 +252,7 @@
 								{/each}
 							</div>
 							<footer class="mt-2 container w-full">
-								<button type="button" class="w-full btn btn-lg h-[48px] dark:bg-surface-950 bg-surface-50
+								<button type="button" class="w-full btn btn-lg h-[48px] bg-surface-50-950
 									shadow-sm rounded-lg border border-white/15 hover:border-white/50 active:bg-primary-500"
 										onclick={addEntry}>
 									<span class="text-lg {entryIds.length > 15 ? 'dark:text-surface-800 text-surface-200' : ''}">{$_("Add new alarm time")}</span>

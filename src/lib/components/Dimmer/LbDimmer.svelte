@@ -8,10 +8,10 @@
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
-	let min = $derived(Number(controlStore.getState(control.states.min)) || 0 );
-	let max = $derived(Number(controlStore.getState(control.states.max)) || 100);
-	let step = $derived(Number(controlStore.getState(control.states.step)) || 1);
-	let position = $derived(Number(controlStore.getState(control.states.position)) || 0);
+	let min = $derived(Number(controlStore.getState(control.states?.min)) || 0 );
+	let max = $derived(Number(controlStore.getState(control.states?.max)) || 100);
+	let step = $derived(Number(controlStore.getState(control.states?.step)) || 1);
+	let position = $derived(Number(controlStore.getState(control.states?.position)) || 0);
 
 	let sliderBar: SliderBar = $derived({
 		min: min,

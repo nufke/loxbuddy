@@ -8,8 +8,8 @@
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
-	let armed = $derived(Number(controlStore.getState(control.states.armed))==1);
-	let disabledMove = $derived(Number(controlStore.getState(control.states.disabledMove))==1);
+	let armed = $derived(Number(controlStore.getState(control.states?.armed))==1);
+	let disabledMove = $derived(Number(controlStore.getState(control.states?.disabledMove))==1);
 
 	let buttons: SingleButtonView[] = $derived([
 		{

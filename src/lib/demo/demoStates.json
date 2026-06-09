@@ -1,9 +1,7 @@
 {
   "__uuid__controls_switch_states_active": "1",
-
   "__uuid__controls_status": "All OK",
   "__uuid__controls_alarm_status": "All OK",
-
   "__uuid__controls_pv_meter_states_jLocked": "",
   "__uuid__controls_pv_meter_states_actual": "-0.046656",
   "__uuid__controls_pv_meter_states_total": "15395.896460099048",
@@ -11,7 +9,6 @@
   "__uuid__controls_pv_meter_states_totalWeek": "66.16646010048272",
   "__uuid__controls_pv_meter_states_totalMonth": "432.8754601004778",
   "__uuid__controls_pv_meter_states_totalYear": "3970.6304601005295",
-
   "__uuid__controls_battery_states_jLocked": "",
   "__uuid__controls_battery_states_actual": "-0.7951",
   "__uuid__controls_battery_states_total": "5421.057169277915",
@@ -25,7 +22,6 @@
   "__uuid__controls_battery_states_totalNegWeek": "23.807186477750093",
   "__uuid__controls_battery_states_totalNegMonth": "128.6241864777459",
   "__uuid__controls_battery_states_totalNegYear": "1335.6391864777568",
-
   "__uuid__controls_net_states_jLocked": "",
   "__uuid__controls_net_states_actual": "0.021",
   "__uuid__controls_net_states_total": "2007.9069857112838",
@@ -38,62 +34,48 @@
   "__uuid__controls_net_states_totalNegWeek": "23.807186477750093",
   "__uuid__controls_net_states_totalNegMonth": "9.141803032217302",
   "__uuid__controls_net_states_totalNegYear": "95.58080303219289",
-
   "__uuid__controls_stairslighting_states_deactivationDelay": "0",
   "__uuid__controls_stairslighting_states_deactivationDelayTotal": "120",
-
   "__uuid__controls_presence_detector_states_active": "1",
-  
   "__uuid__controls_sunscreen_blinds_states_position": "0.2",
   "__uuid__controls_sunscreen_blinds_states_shadePosition": "0",
   "__uuid__controls_sunscreen_blinds_states_autoActive": "1",
-
   "__uuid__controls_sunscreen_kitchen_states_position": "0.4",
   "__uuid__controls_sunscreen_kitchen_states_shadePosition": "0",
-
   "__uuid__controls_gate_1_states_position": "0",
-
   "__uuid__controls_gate_2_states_position": "0",
-
   "__uuid__controls_battery_level_states_min": "0",
   "__uuid__controls_battery_level_states_max": "100",
   "__uuid__controls_battery_level_states_step": "5",
   "__uuid__controls_battery_level_states_value": "0",
-  
-  "__uuid__controls_window_monitor_states_numOpen" : "2",
+  "__uuid__controls_window_monitor_states_numOpen": "2",
   "__uuid__controls_window_monitor_states_numClosed": "5",
   "__uuid__controls_window_monitor_states_numTilted": "0",
   "__uuid__controls_window_monitor_states_numOffline": "0",
   "__uuid__controls_window_monitor_states_numLocked": "0",
   "__uuid__controls_window_monitor_states_numUnlocked": "0",
   "__uuid__controls_window_monitor_states_windowStates": "4,1,1,1,1,4,1",
-  
   "__uuid__controls_heatingmode_states_activeOutput": "1",
-  
   "__uuid__controls_loading_states_value": "0",
-  
   "__uuid__controls_dimmer_1_states_position": "12",
   "__uuid__controls_dimmer_1_states_min": "0",
   "__uuid__controls_dimmer_1_states_max": "80",
   "__uuid__controls_dimmer_1_states_step": "2",
-  
   "__uuid__controls_heating_request_states_warmte": "0",
-
   "__uuid__controls_phase_1": "0",
-  
   "__uuid__controls_lightcontrollerv2_1_states_activeMoodsNum": "1",
   "__uuid__controls_lightcontrollerv2_1_states_moodList": [
     {
-        "name": "Default",
-        "id": 1
+      "name": "Default",
+      "id": 1
     },
     {
-        "name": "All on",
-        "id": 777
+      "name": "All on",
+      "id": 777
     },
     {
-        "name": "Off",
-        "id": 778
+      "name": "Off",
+      "id": 778
     }
   ],
   "__uuid__controls_lightcontrollerv2_1/masterValue_states_position": "20",
@@ -111,20 +93,19 @@
   "__uuid__controls_lightcontrollerv2_1/AI2_states_step": "1",
   "__uuid__controls_lightcontrollerv2_1/AI3_states_color": "hsv(144,33,82)",
   "__uuid__controls_lightcontrollerv2_1/AI4_states_color": "hsv(144,33,82)",
-
   "__uuid__controls_lightcontrollerv2_2_states_activeMoodsNum": "1",
   "__uuid__controls_lightcontrollerv2_2_states_moodList": [
     {
-        "name": "Default",
-        "id": 1
+      "name": "Default",
+      "id": 1
     },
     {
-        "name": "All on",
-        "id": 777
+      "name": "All on",
+      "id": 777
     },
     {
-        "name": "Off",
-        "id": 778
+      "name": "Off",
+      "id": 778
     }
   ],
   "__uuid__controls_lightcontrollerv2_2/masterValue_states_position": "20",
@@ -135,9 +116,7 @@
   "__uuid__controls_lightcontrollerv2_2/AI1_states_min": "0",
   "__uuid__controls_lightcontrollerv2_2/AI1_states_max": "100",
   "__uuid__controls_lightcontrollerv2_2/AI1_states_step": "1",
-  
   "__uuid__controls_tracker": "2025-07-17 21:00:00 Sunset: Sunset|2025-07-17 21:40:00 Twilight: Twilight|2025-07-18 04:58:00 Dawn: Dawn|2025-07-18 05:38:00 Sunrise: Sunrise|2025-07-18 21:00:00 Sunset: Sunset|2025-07-18 21:39:00 Twilight: Twilight|2025-07-19 04:59:00 Dawn: Dawn|2025-07-19 05:39:00 Sunrise: Sunrise|2025-07-19 20:59:00 Sunset: Sunset|2025-07-19 21:38:00 Twilight: Twilight|2025-07-20 05:00:00 Dawn: Dawn|2025-07-20 05:40:00 Sunrise: Sunrise|2025-07-20 20:58:00 Sunset: Sunset|2025-07-20 21:37:00 Twilight: Twilight|2025-07-21 05:02:00 Dawn: Dawn|2025-07-21 05:41:00 Sunrise: Sunrise|2025-07-21 20:57:00 Sunset: Sunset|2025-07-21 21:36:00 Twilight: Twilight|2025-07-22 05:03:00 Dawn: Dawn|2025-07-22 05:42:00 Sunrise: Sunrise|2025-07-22 20:56:00 Sunset: Sunset|2025-07-22 21:35:00 Twilight: Twilight|2025-07-23 05:04:00 Dawn: Dawn|2025-07-23 05:43:00 Sunrise: Sunrise|2025-07-23 20:55:00 Sunset: Sunset|2025-07-23 21:34:00 Twilight: Twilight|2025-07-24 05:05:00 Dawn: Dawn|2025-07-24 05:44:00 Sunrise: Sunrise",
-
   "__uuid__controls_irc_v1_states_tempActual": "19.8",
   "__uuid__controls_irc_v1_states_tempTarget": "21.0",
   "__uuid__controls_irc_v1_states_mode": "2",
@@ -156,11 +135,9 @@
   "__uuid__controls_irc_v1_subControls_cooling_states_mode": "3",
   "__uuid__controls_irc_v1_subControls_cooling": "{defValue: 0, entries: 12, entry: [\n{mode: -8, from: 00:00, to: 24:00, needActivate: 0, value: 2}\n{mode: -5, from: 00:00, to: 24:00, needActivate: 0, value: 6}\n{mode: -4, from: 00:00, to: 24:00, needActivate: 0, value: 5}\n{mode: -3, from: 00:00, to: 24:00, needActivate: 0, value: 3}\n{mode: 1, from: 08:00, to: 22:00, needActivate: 0, value: 2}\n{mode: 3, from: 07:00, to: 22:00, needActivate: 0, value: 2}\n{mode: 4, from: 07:00, to: 22:00, needActivate: 0, value: 2}\n{mode: 5, from: 07:00, to: 22:00, needActivate: 0, value: 2}\n{mode: 6, from: 07:00, to: 22:00, needActivate: 0, value: 2}\n{mode: 7, from: 07:00, to: 22:00, needActivate: 0, value: 2}\n{mode: 8, from: 08:00, to: 22:00, needActivate: 0, value: 2}\n{mode: 9, from: 08:00, to: 22:00, needActivate: 0, value: 2}\n], uuid: \"__uuid__unknown\"}",
   "__uuid__controls_irc_v1_subControls_cooling_states_modeList": "0:mode=-8;name=\\\"Comfort continued\\\",1:mode=-7;name=\\\"Eco\\\",2:mode=-5;name=\\\"Party\\\",3:mode=-4;name=\\\"Increased temperature\\\",4:mode=-3;name=\\\"Home in deep sleep\\\",5:mode=2;name=\\\"Day off\\\",6:mode=3;name=\\\"Monday\\\",7:mode=4;name=\\\"Tuesday\\\",8:mode=5;name=\\\"Wednesday\\\",9:mode=6;name=\\\"Thursday\\\",10:mode=7;name=\\\"Friday\\\",11:mode=8;name=\\\"Saturday\\\",12:mode=9;name=\\\"Sunday\\\"",
-
   "__uuid__controls_daytimer": "{defValue: 0, entries: 7, entry: [\n{mode: 3, from: 9:00, to: 11:00, needActivate: 0, value: 0}\n{mode: 3, from: 15:00, to: 22:00, needActivate: 0, value: 0}\n{mode: 4, from: 15:00, to: 18:00, needActivate: 0, value: 0}\n{mode: 5, from: 15:00, to: 18:00, needActivate: 0, value: 0}\n{mode: 6, from: 15:00, to: 18:00, needActivate: 0, value: 0}\n{mode: 7, from: 15:00, to: 18:00, needActivate: 0, value: 0}\n{mode: 8, from: 15:00, to: 18:00, needActivate: 0, value: 0}\n{mode: 9, from: 15:00, to: 18:00, needActivate: 0, value: 0}\n], uuid: \"__uuid__unknown\"}",
   "__uuid__controls_daytimer_states_modeList": "0:mode=3;name=\\\"Monday\\\",1:mode=4;name=\\\"Tuesday\\\",2:mode=5;name=\\\"Wednesday\\\",3:mode=6;name=\\\"Thursday\\\",4:mode=7;name=\\\"Friday\\\",5:mode=8;name=\\\"Saturday\\\",6:mode=9;name=\\\"Sunday\\\"",
   "__uuid__controls_dayimer_states_value": "0",
-  
   "__uuid__controls_alarmclock_states_entryList": {
     "1": {
       "name": "Alarm Nightlight",
@@ -174,10 +151,15 @@
       "isActive": true,
       "alarmTime": 29940,
       "nightLight": false,
-      "modes": [0,1,2,3,5]
+      "modes": [
+        0,
+        1,
+        2,
+        3,
+        5
+      ]
     }
   },
-
   "__uuid__controls_irc_v2_states_jLocked": "",
   "__uuid__controls_irc_v2_states_tempActual": "21",
   "__uuid__controls_irc_v2_states_tempTarget": "22.5",
@@ -212,20 +194,27 @@
   "__uuid__controls_irc_v2_subcontrols_heating_and_cooling_states_modeList": "0:mode=-3;name=\\\"Home in deep sleep\\\",1:mode=3;name=\\\"Monday\\\",2:mode=4;name=\\\"Tuesday\\\",3:mode=5;name=\\\"Wednesday\\\",4:mode=6;name=\\\"Thursday\\\",5:mode=7;name=\\\"Friday\\\",6:mode=8;name=\\\"Saturday\\\",7:mode=9;name=\\\"Sunday\\\"",
   "__uuid__controls_irc_v2_subcontrols_heating_and_cooling_states_value": "-1",
   "__uuid__controls_irc_v2_subcontrols_heating_and_cooling_states_needsActivation": "0",
-
   "__uuid__controls_loadmanager_states_currentPower": "11",
   "__uuid__controls_loadmanager_states_peakOverloadPower": "0",
   "__uuid__controls_loadmanager_states_maxPower": "12",
   "__uuid__controls_loadmanager_states_maxTp": "0",
   "__uuid__controls_loadmanager_states_maxPowerExceeded": "0",
-  "__uuid__controls_loadmanager_states_availablePower" : "1",
+  "__uuid__controls_loadmanager_states_availablePower": "1",
   "__uuid__controls_loadmanager_states_lockedLoads": "1",
   "__uuid__controls_loadmanager_states_statusLoads": "2",
-  
   "__uuid__controls_smoke_alarm_level": 0,
   "__uuid__controls_smoke_alarm_timeServiceMode": 0,
-  
-  "__uuid__controls_intercom_securedDetails" : "{\"videoInfo\":{\"alertImage\":\"\",\"streamUrl\":\"http://84.35.147.6/mjpg/video.mjpg?camera=1\",\"deviceUuid\":\"__uuid_device\",\"user\":\"\",\"pass\":\"\"}}",
-  
-  "__uuid__controls_location_on_map" : "https://www.openstreetmap.org/#map=19/52.373104/4.898829"
+  "__uuid__controls_intercom_securedDetails": "{\"videoInfo\":{\"alertImage\":\"\",\"streamUrl\":\"http://84.35.147.6/mjpg/video.mjpg?camera=1\",\"deviceUuid\":\"__uuid_device\",\"user\":\"\",\"pass\":\"\"}}",
+  "__uuid__controls_location_on_map": "https://www.openstreetmap.org/#map=19/52.373104/4.898829",
+  "__uuid__controls_efm_states_Ppwr": "3.5",
+  "__uuid__controls_efm_states_Gpwr": "-0.8",
+  "__uuid__controls_efm_states_Spwr": "-0.8",
+  "__uuid__controls_efm_states_actual0": "1.9",
+  "__uuid__controls_efm_states_actual1": "0.35",
+  "__uuid__controls_efm_states_actual2": "1.2",
+  "__uuid__controls_efm_states_actual3": "0.3",
+  "__uuid__controls_efm_states_actual4": "0.55",
+  "__uuid__controls_efm_states_actual5": "0.0",
+  "__uuid__controls_efm_states_selfConsumption": "3.5",
+  "__uuid__controls_efm_states_jLocked": ""
 }

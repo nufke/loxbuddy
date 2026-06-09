@@ -30,16 +30,16 @@
 
 	let passwordView: GeneralView = $state(DEFAULT_GENERALVIEW);
 	let dayOfTheWeek = $derived(format(appStore.date, 'eeee'));
-	let isAnalog = $derived(Boolean(control.details.analog));
-	let value = $derived(Number(controlStore.getState(control.states.value)));
-	let valueFormatted = $derived(fmt.sprintf(control.details.format, value));
-	let mode = $derived(Number(controlStore.getState(control.states.mode)));
-	let entries = $derived(utils.extractEntries(controlStore.getState(control.states.entriesAndDefaultValue))) as EntriesAndDefaultValue;
-	let modeList = $derived(String(controlStore.getState(control.states.modeList))); 
+	let isAnalog = $derived(Boolean(control.details?.analog));
+	let value = $derived(Number(controlStore.getState(control.states?.value)));
+	let valueFormatted = $derived(fmt.sprintf(control.details?.format, value));
+	let mode = $derived(Number(controlStore.getState(control.states?.mode)));
+	let entries = $derived(utils.extractEntries(controlStore.getState(control.states?.entriesAndDefaultValue))) as EntriesAndDefaultValue;
+	let modeList = $derived(String(controlStore.getState(control.states?.modeList))); 
 	let currentTime = $derived(appStore.date);
 	let dayModes = $derived(utils.extractDayModes(modeList)) as WeekDays;
-	let status = $derived(isAnalog ? valueFormatted : ( value ? control.details.text.on : control.details.text.off)) as string;
-	let override = $derived(Number(controlStore.getState(control.states.override)));
+	let status = $derived(isAnalog ? valueFormatted : ( value ? control.details?.text.on : control.details?.text.off)) as string;
+	let override = $derived(Number(controlStore.getState(control.states?.override)));
 	let timeslot = $derived(calcStartEndTime(entries));
 	let overrideDate = $state({start: new SvelteDate(), end: new SvelteDate(), active: false});
 	let outputActive = $derived(false);
@@ -202,14 +202,14 @@
 										<p class="ml-1 text-lg text-center dark:text-purple-400 text-purple-800">{$_("Timer is running")}</p>
 									</div>
 								{/if}
-								<div class="w-full m-2 dark:bg-surface-950 bg-surface-50 rounded-lg border border-white/15 hover:border-white/50"
+								<div class="w-full m-2 bg-surface-50-950 rounded-lg border border-white/15 hover:border-white/50"
 											onclick={(e) => { e.stopPropagation(); e.preventDefault(); calendarView.openDialog=true;}}>
 									<LbTimeGrid {mode} {entries} {overrideDate} {override}/>
 									<h2 class="m-2 text-md text-center dark:text-surface-50 text-surface-950">{dayOfTheWeek}</h2>
 								</div>
 							</div>
 							<div class="flex flex-col items-center justify-center">
-								<div class="flex w-full btn-group dark:bg-surface-950 bg-surface-50 rounded-lg grid-cols-2 p-2 flex-row border border-white/15 hover:border-white/50">
+								<div class="flex w-full btn-group bg-surface-50-950 rounded-lg grid-cols-2 p-2 flex-row border border-white/15 hover:border-white/50">
 									<button type="button" class="w-full h-9 rounded-sm {outputActive ? 'dark:bg-surface-600 bg-surface-200' : ''}" onclick={() => outputActive=true}>
 										<p class="text-lg">{$_("Active")}</p>
 									</button>
@@ -218,7 +218,7 @@
 									</button>
 								</div>
 								<button class="w-full m-0 mt-2 flex min-h-[50px] items-center justify-start rounded-lg border border-white/15 hover:border-white/50
-													dark:bg-surface-950 bg-surface-50 px-2 py-2"
+													bg-surface-50-950 px-2 py-2"
 													onclick={(e) => { e.stopPropagation(); e.preventDefault(); dateTimeView.openDialog=true;}}>
 									<div class="w-full flex items-center truncate">
 										<div class="mt-0 ml-2 mr-2 flex w-full justify-between truncate">
@@ -227,7 +227,7 @@
 										</div>
 									</div>
 								</button>
-								<button type="button" class="w-full mt-2 btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50 active:bg-primary-500" 
+								<button type="button" class="w-full mt-2 btn btn-lg bg-surface-50-950 shadow-sm rounded-lg border border-white/15 hover:border-white/50 active:bg-primary-500" 
 												onclick={(e) => {e.stopPropagation(); e.preventDefault(); startStopTimer()}}>
 									<span class="text-lg">{$_( (override > 0) ? "Stop" : "Start")} {$_("Timer").toLocaleLowerCase()}</span>
 								</button>

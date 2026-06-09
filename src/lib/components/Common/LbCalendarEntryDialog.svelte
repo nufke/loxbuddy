@@ -14,7 +14,7 @@
 
 	let { view = $bindable(), entries, selectedEntry, dayModes, temperatureList = [] } = $props();
 
-	let isAnalog = Boolean(view.control.details.analog);
+	let isAnalog = Boolean(view.control.details?.analog);
 	let opModes = $derived(controlStore.operatingModes);
 	let isStartTime = $state(false);
 	let dateTime = $state();
@@ -248,7 +248,7 @@
 				<Dialog.Description>
 					<div class="flex flex-col items-center justify-center">
 						<div class="mt-4 space-y-2 w-full">
-							<button class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
+							<button class="w-full btn btn-lg bg-surface-50-950 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
 											onclick={(e) => { e.stopPropagation(); dayModeView.openDialog=true;}}>
 								<div class="flex w-full items-center justify-between">
 									<h1 class="truncate text-lg">{$_("Day / mode")}</h1>
@@ -256,7 +256,7 @@
 								</div>
 							</button>
 							{#if view.isIRC}
-							<button class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
+							<button class="w-full btn btn-lg bg-surface-50-950 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
 											onclick={(e) => { e.stopPropagation(); openTemperatureView();}}>
 								<div class="flex w-full items-center justify-between">
 									<h1 class="truncate text-lg">{$_("Temperature")}</h1>
@@ -264,7 +264,7 @@
 								</div>
 							</button>
 							{/if}
-							<button class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
+							<button class="w-full btn btn-lg bg-surface-50-950 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
 											onclick={(e) => { e.stopPropagation()}}>
 								<div class="flex w-full items-center justify-between">
 									<h1 class="truncate text-lg">{$_("All day")}</h1>
@@ -278,14 +278,14 @@
 							</button>
 							{#if !isFullDay}
 							<div class="space-y-2" transition:slide="{{duration: 300}}">
-								<button class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
+								<button class="w-full btn btn-lg bg-surface-50-950 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
 												onclick={setStartTime}>
 									<div class="flex w-full items-center justify-between">
 										<h1 class="truncate text-lg">{$_("Start time")}</h1>
 										<h1 class="truncate text-lg {timeValid ? 'text-surface-50' : 'text-error-500'}">{utils.hours2hours(startTime)}</h1> <!-- 00:00 notation -->
 									</div>
 								</button>
-								<button class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
+								<button class="w-full btn btn-lg bg-surface-50-950 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
 												onclick={setEndTime}>
 									<div class="flex w-full items-center justify-between">
 										<h1 class="truncate text-lg">{$_("End time")}</h1>
@@ -295,7 +295,7 @@
 							</div>
 							{/if}
 							{#if !view.isIRC}
-							<button class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
+							<button class="w-full btn btn-lg bg-surface-50-950 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
 											onclick={(e) => { e.stopPropagation()}}>
 								<div class="flex w-full items-center justify-between">
 									<h1 class="truncate text-lg">{$_("Activation required")}</h1>
@@ -310,18 +310,18 @@
 							{/if}
 							<div class="flex grid {view.enableDelete ? 'grid-cols-5' : 'grid-cols-4'} gap-2 mt-2">
 							{#if view.enableDelete}
-								<button class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50 active:bg-primary-500"
+								<button class="w-full btn btn-lg bg-surface-50-950 shadow-sm rounded-lg border border-white/15 hover:border-white/50 active:bg-primary-500"
 												onclick={openDeleteView}>
 									<div class="w-[20px] items-center justify-center text-red-500 flex w-full">
 										<LbIcon name="trash-2"/>
 									</div>
 								</button>
 								{/if}
-								<button class="w-full col-span-2 btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50 active:bg-primary-500"
+								<button class="w-full col-span-2 btn btn-lg bg-surface-50-950 shadow-sm rounded-lg border border-white/15 hover:border-white/50 active:bg-primary-500"
 												onclick={close}>
 									<p class="truncate text-lg">{$_("Cancel")}</p>
 								</button>
-								<button class="w-full col-span-2 btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50 active:bg-primary-500"
+								<button class="w-full col-span-2 btn btn-lg bg-surface-50-950 shadow-sm rounded-lg border border-white/15 hover:border-white/50 active:bg-primary-500"
 												onclick={updateEntries}>
 									<p class="truncate text-lg">{$_("OK")}</p>
 								</button>

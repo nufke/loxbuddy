@@ -146,7 +146,7 @@
 <Dialog
 	open={appStore.loginDialog.state}>
 	<Portal>
-		<Dialog.Backdrop class="fixed top-0 left-0 right-0 bottom-0 z-100 dark:bg-surface-950 bg-surface-50"/>
+		<Dialog.Backdrop class="fixed top-0 left-0 right-0 bottom-0 z-100 bg-surface-50-950"/>
 		<Dialog.Positioner class="fixed top-0 left-0 w-full h-full z-100">
 			<Dialog.Content class="card p-2 space-y-4 shadow-xl h-full">
 				<Dialog.Description class="flex justify-center items-center h-screen p-3">
@@ -230,7 +230,7 @@
 					{#if popupView.list.length}
 						<div class="w-full mt-4 mb-2 grid gap-2">
 							{#each popupView.list as item}
-							<button type="button" class="w-full h-[60px] btn btn-lg dark:bg-surface-950 bg-surface-50
+							<button type="button" class="w-full h-[60px] btn btn-lg bg-surface-50-950
 								shadow-sm rounded-lg border border-white/15 hover:border-white/50"
 								onclick={(e) => { e.stopPropagation(); e.preventDefault(); select(item)}}>
 								<div class="flex flex-col justify-center items-center">
@@ -259,14 +259,14 @@
 					{/if}
 					<div class="mt-4">
 						{#if popupView.button == "search"}
-							<button class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
+							<button class="w-full btn btn-lg bg-surface-50-950 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
 											onclick={doSearch}>
 								<span class="flex justify-center items-center truncate text-lg">
 									<LbIcon name="search" height="18" width="18"/>&nbsp;{$_("Search")}
 								</span>
 							</button>
 						{:else}
-							<button class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
+							<button class="w-full btn btn-lg bg-surface-50-950 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
 											onclick={() => {openPopup=false}}>
 								<span class="flex justify-center items-center truncate text-lg">{popupView.button}</span>
 							</button>
