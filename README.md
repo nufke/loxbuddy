@@ -47,8 +47,6 @@ docker run -p 3000:3000 loxbuddy
 
 You can now access LoxBuddy by navigating to <http://localhost:3000> in a web browser.
 
-Note that the environment variables from the `env.local` are not picked up by the Docker container. You can pass environment variables to the container with the `-e` (alias `--env`) flag.
-
 ## Deployment using the Node.js process manager (pm2)
 
 Mke sure you have `pm2` installed globally on your system:
@@ -82,7 +80,7 @@ git clone https://github.com/nufke/loxbuddy.git
 cd loxbuddy
 npm install
 
-# update environment variables (MQTT settings)
+# update environment variables (for debug only)
 cp .env.example .env.local
 code .env.local
 

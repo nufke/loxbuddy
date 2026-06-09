@@ -398,7 +398,8 @@ export type NotificationMessage = {
 		mac: string;					// mac or serial ID of miniserver
 		lvl: number;					// level: 1 = Info, 2 = Error, 3 = SystemError, 0 = undefined
 		uuid: string;					// UUID of Control (or empty)
-	}
+	},
+	status?: number;					// added: status of message: 1=new, 2=unread, 3=archived, 4=deleted
 }
 
 export type NotificationList = {
@@ -407,10 +408,9 @@ export type NotificationList = {
 }
 
 export type NotificationMap = {
-	[key: string]: {				// uid of message
-		status: number;				// status of message: 1=new, 2=unread, 3=archived, 4=deleted
-		message: NotificationMessage;
-	}
+	[key: string]: {				// key = serialnr
+		[key: string]: NotificationMessage; // key = message uid
+	} 
 }
 
 export type IconAndColor = {
@@ -615,7 +615,7 @@ export type GeneralView = {
 	label: string;
 	openDialog: boolean;
 	buttons: Button[];
-	input: boolean;
+	input?: boolean;
 	cancel: any;
 	ok: any;
 }
@@ -723,6 +723,14 @@ export type Credentials = {
 	userName: string;
 	token: string;
 	msName: string;
+}
+
+export type MqttCredentials = {
+	hostName: string;
+	port: string;
+	userName: string;
+	password: string;
+	topicPrefix: string;
 }
 
 export type Icon = {

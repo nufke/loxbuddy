@@ -21,7 +21,7 @@ class LbControlStore {
 	rooms: SvelteMap<string, Room> = new SvelteMap();
 	categories: SvelteMap<string, Category> = new SvelteMap();
 	messageCenter: SvelteMap<string, MessageCenter> = new SvelteMap();
-	messageCenterList: MessageCenter[] = $derived(Array.from(this.messageCenter.values()));
+	messageCenterList: MessageCenter[] = $derived(Object.values(this.messageCenter));
 	controlList: Control[] = $derived(Array.from(this.controls.values()));
 	categoryList: Category[] = $derived(Array.from(this.categories.values()));
 	roomList: Room[] = $derived(Array.from(this.rooms.values()));
@@ -29,7 +29,8 @@ class LbControlStore {
 	sortingMap: SvelteMap<string, UserDefaultStructure> = new SvelteMap();
 	systemStatus: SystemStatus = $state(EMPTY_SYSTEM_STATUS);
 	notifications: NotificationMessage | NotificationList = $derived(this.getState(this.globalStates.notifications));
-	notificationsMap: NotificationMap = $derived(this.updateNotificationMap(this.notifications));
+	notificationsMap: NotificationMap = $derived(this.updateNotificationMap(this.notifications)); /* process incoming notifications */
+	notificationsList: NotificationMessage[] = $derived(this.listNotifications(this.notificationsMap)); /* update list of current notifications */
 	msStatus: number = $derived(this.systemStatus.entries ? Math.max(...this.systemStatus.entries.filter((item) => item.isHistoric == false).map((item) => item.severity)) : 0);
 	iconList: Icon[] | undefined = $state();
 	sorting: boolean = $state(false); // sorting and drag-and-drop disabled
@@ -63,16 +64,16 @@ class LbControlStore {
 	 * Update notifications map containing messages and system states.
 	 * @param notifications notification message or notification list
 	 * @param statusOverride (optional) enable override (default 0)
-	 * @returns update notifications map
 	 */
 	updateNotificationMap(notifications: NotificationMessage | NotificationList, statusOverride: number = 0 ): NotificationMap {
 		const map: NotificationMap = utils.deserialize(localStorage.getItem('notifications')) || {};
 		const msg = notifications as NotificationMessage;
+		map[this.msInfo.serialNr] ??= {};
 		if (msg && msg.uid) {
-			map[msg.uid] = {
-				status: statusOverride || (map[msg.uid] ? map[msg.uid].status : 1),
-				message: msg
-			};
+			map[this.msInfo.serialNr][msg.uid] ??= {
+				...msg, 
+				status: statusOverride || 1
+			}
 			localStorage.setItem('notifications', utils.serialize(map));
 		}
 		const msgList = notifications as NotificationList;
@@ -80,6 +81,15 @@ class LbControlStore {
 			msgList.uids.forEach( (uid) => console.debug('[LbControlStore] uid:', this.controlState.get(uid))); // TODO check what to do with uids
 		}
 		return map;
+	}
+
+	/**
+	 * get list of (old) notifications of current Miniserver
+	 * Sort messages based on timestamp
+	 * @returns time sorted list of notifications
+	 */
+	listNotifications(map: NotificationMap): NotificationMessage[] {
+		return map && map[this.msInfo.serialNr] ? Object.values(map[this.msInfo.serialNr]).sort((a, b) => b.ts - a.ts) : [];
 	}
 
 	/**

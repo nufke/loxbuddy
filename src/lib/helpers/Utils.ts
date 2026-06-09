@@ -179,6 +179,20 @@ class Utils {
 		return item ? JSON.parse(item) : null;
 	}
 
+	setCookie(name: string, value: string, days: number = 31): void {
+		const expires = new Date(Date.now() + days * 864e5).toUTCString();
+		document.cookie = `${name}=${encodeURIComponent(btoa(value))}; expires=${expires}; path=/; SameSite=Strict`;
+	}
+
+	getCookie(name: string): string | null {
+		const entry = document.cookie.split('; ').find((c) => c.startsWith(name + '='));
+		return entry ? atob(decodeURIComponent(entry.split('=')[1])) : null;
+	}
+
+	deleteCookie(name: string): void {
+		document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; SameSite=Strict`;
+	}
+
 	deserializeMap<K extends string, V>(item: string | null): SvelteMap<K, V> {
 		const plain: Record<string, V> | null = item ? JSON.parse(item) : null;
 		return plain ? new SvelteMap<K, V>(Object.entries(plain) as [K, V][]) : new SvelteMap<K, V>();
@@ -210,7 +224,7 @@ class Utils {
 		});
 	}
 
-	wait(delay: number): Promise<any> {
+	wait(delay: number): Promise<ReturnType<typeof setTimeout>> {
     return new Promise((resolve) => setTimeout(resolve, delay));
 	}
 

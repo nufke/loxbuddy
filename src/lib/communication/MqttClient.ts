@@ -1,7 +1,6 @@
 import mqtt from 'mqtt';
 import { appStore } from '$lib/stores/LbAppStore.svelte';
 import { controlStore } from '$lib/stores/LbControlStore.svelte';
-import { weatherStore } from '$lib/stores/LbWeatherStore.svelte';
 import { utils } from '$lib/helpers/Utils';
 
 /**
@@ -15,7 +14,7 @@ export class MqttClient {
 	private passwd: string = '';
 	private isConnected: boolean = false;
 	private topicPrefix: string = 'loxone'; 				// TODO configure prefix in GUI
-	private weatherPrefix: string = 'weather4lox'; 	// TODO configure prefix in GUI
+	private registeredTopics: string[] = [];
 
 	/** 
 	 * Constructor is empty as we initialize the MQTT server after reading the environment variables.
@@ -25,37 +24,49 @@ export class MqttClient {
 	}
 
 	/**
-	 * Establish connection to MQTT server
-	 * @param hostName IP address of MQTT server and port
-	 * @param port port of MQTT server
-	 * @param userName Name of the user
-	 * @param passwd Password of the user
+	 * Establish connection to MQTT server. If no arguments are given, then use the MqttCredentials
+	 * from localStorage
+	 * @param hostName (optional) IP address of MQTT server and port
+	 * @param port (optional) port of MQTT server
+	 * @param userName (optional) Name of the user
+	 * @param passwd (optional) Password of the user
+	 * @param topicPrefix (optional) Subscribed topic prefix
 	 */
 	async connect(
-		hostName: string,
-		port: string,
-		userName: string,
-		passwd: string,
-		topicPrefix: string
+		hostName?: string,
+		port?: string,
+		userName?: string,
+		passwd?: string,
+		topicPrefix?: string
 	): Promise<void> {
-		this.hostName = hostName;
-		this.port = Number(port) || 1883;
-		this.userName = userName;
-		this.passwd = passwd;
-		this.topicPrefix = topicPrefix;
+		const cred = appStore.mqttCredentials;
+		this.hostName = hostName ?? cred?.hostName ?? '';
+		this.port = Number(port ?? cred?.port) || 9001;
+		this.userName = userName ?? cred?.userName ?? '';
+		this.passwd = passwd ?? cred?.password ?? '';
+		this.topicPrefix = topicPrefix ?? cred?.topicPrefix ?? 'loxone';
+		this.registeredTopics = this.topicPrefix.split(',').map((item) => item + '/#');
 
-		if (!userName.length) {
-			console.error('[MqttClient] Invalid username, cannot connect to MQTT server');
+		if (!this.hostName.length) {
+			console.error('[MqttClient] Invalid hostname, cannot connect to MQTT server.');
+			return;
 		}
 
-		if (!passwd.length) {
-			console.error('[MqttClient] Invalid password, cannot connect to MQTT server');
+		if (!this.passwd.length) {
+			console.error('[MqttClient] Invalid password, cannot connect to MQTT server.');
+			return;
+		}
+
+		if (!this.passwd.length) {
+			console.error('[MqttClient] Invalid password, cannot connect to MQTT server.');
+			return;
 		}
 
 		this.client = mqtt.connect({
 			hostname: this.hostName,
 			port: Number(this.port),
 			connectTimeout: 5000,
+			reconnectPeriod: 0,
 			username: this.userName,
 			password: this.passwd
 		});
@@ -73,7 +84,7 @@ export class MqttClient {
 
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		this.client.on('error', (error: any) => {
-			console.error('[MqttClient] error ', error);
+			console.error('[MqttClient] error', error);
 			this.client.end();
 			this.isConnected = false; // throw error?
 		});
@@ -89,21 +100,17 @@ export class MqttClient {
 	 * Callback when client is connected to the MQTT server
 	 */
 	onConnect(): void {
-		console.info('[MqttClient] Connected\n');
+		console.info('[MqttClient] Connected');
 		this.isConnected = true;
 		appStore.mqttStatus = 1; // connected=green
-
-		const registerTopics = [
-			this.topicPrefix + '/#',
-			this.weatherPrefix + '/#'
-		];
+		const topics = this.registeredTopics;
 
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		this.client.subscribe(registerTopics, function (error: any) {
+		this.client.subscribe(this.registeredTopics, (error: any) => {
 			if (error) {
 				console.error('[MqttClient] subscribe error', error);
 			} else {
-				console.info(`[MqttClient] Client subscribed to topics '${registerTopics}'`);
+				console.info(`[MqttClient] Client subscribed to topics '${topics}'`);
 			}
 		});
 	}
@@ -120,7 +127,6 @@ export class MqttClient {
 		this.monitorStructure(topic, msg);
 		this.monitorInitialStates(topic, msg);
 		this.monitorStates(topic, msg);
-		this.monitorWeatherStates(topic, msg);
 	};
 
 	/**
@@ -189,19 +195,6 @@ export class MqttClient {
 	}
 
 	/**
-	 * Monitor MQTT Weather4Lox updates
-	 * @param topic Incoming topic
-	 * @param msg Incoming mesage
-	 */
-	monitorWeatherStates(topic: string, msg: string): void {
-		const regex = new RegExp(this.weatherPrefix + '/(.+)');
-		const found = topic.match(regex);
-		if (found && found[1] && /current|daily|hourly/.test(found[1]) ) {
-			weatherStore.setObservation(found[1], msg);
-		}
-	}
-
-	/**
 	 * Send control state over MQTT
 	 * @param uuid universally unique ID of the control
 	 * @param value value of the control
@@ -216,14 +209,16 @@ export class MqttClient {
 	 * Disconnect MQTT client
 	 */
 	async disconnect(): Promise<void> {
-		// TODO
+		if (this.client) {
+			await this.client.endAsync();
+		}
 	}
 
 	/**
 	 * Dummy placeholder 
 	 * @param filename filename
 	 */
-	async getFile(filename: string): Promise<void> {
+	async getFile(fileName: string): Promise<void> {
 		// TODO
 	}
 

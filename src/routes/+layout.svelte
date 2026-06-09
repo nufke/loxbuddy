@@ -21,6 +21,7 @@
 	import { goto } from '$app/navigation';
 	import { Logger } from '$lib/helpers/Logger';
 	import { enableDragDropTouch } from '$lib/helpers/drag-drop-touch';
+	import { demo } from '$lib/demo/DemoClient';
 
 	const env = page.data.env;
 	const logLevel = env && env.APP_LOGLEVEL ? Number(env.APP_LOGLEVEL) : 0;
@@ -52,7 +53,6 @@
 		{ label: 'Weather', href: '/weather', icon: 'cloud-sun', menu: true, visible: false },
 		{ label: 'Settings', href: '/settings', icon: 'settings',  menu: true, visible: true },
 		{ label: 'About', href: '/about', icon: 'info', menu: true, visible: true },
-		{ label: 'Log', href: '/log', icon: 'logs', menu: true, visible: true },
 		{ label: 'Home', href: '/', icon: 'house', menu: false, visible: true },
 		{ label: 'Favorites', href: '/favs', icon: 'favorite', menu: false, visible: true },
 		{ label: 'Rooms', href: '/room', icon: 'grid-2x2', menu: false, visible: true },
@@ -67,11 +67,12 @@
 	let hourlyForecast = $derived(weatherStore.hourly);
 	let date = $derived(appStore.date);
 	let mqttStatus = $derived(appStore.mqttStatus);
+	let autoLogin = $derived(appStore.autoLogin);
 	let loxStatus = $derived(appStore.loxStatus); // TODO use controlStore.msStatus?
 	let isDemo = $derived(appStore.isDemo);
 	let path = $derived(page.url.pathname);
 	let showWeather = $derived(appStore.showWeather && currentWeather.time > 0 && dailyForecast.length && hourlyForecast[0]);
-	let activeNotifications = $derived(Object.values(controlStore.notificationsMap).filter((items) => items.status == 1));
+	let activeNotifications = $derived(controlStore.notificationsList.filter((items) => items.status == 1));
 	let navigation = $derived(routes.filter((m) => !m.menu));
 
 	/**
@@ -123,6 +124,15 @@
 			default: /* none */
 		}
 		return str;
+	}
+
+	/**
+	 * Helper function to navigate back. It strips off the last part
+	 * of the pathname, e.g., aaa/bbb/ccc -> aaa/bbb
+	*/
+	function navigateBack(): void {
+		const url = path.replace(/\/[^/]*\/?$/, '') || '/';
+		navigate(url);
 	}
 
 	/**
@@ -188,16 +198,24 @@
 	});
 
 	/**
-	 * When starting the app the first time, try to establish a connection
-	 * If not successfull, e.g. when credentials are not available, show the login screen
+	 * Start demo if enabled, but only when autoLogin is set
 	*/
-	miniserverClient.connect();
-
-	// TODO add configuration
-	// connect to MQTT server (if environment settings are available)
-	if (env && env.MQTT_HOSTNAME && env.MQTT_PORT && env.MQTT_USERNAME && env.MQTT_PASSWORD && env.MQTT_TOPIC) {
-		mqttClient.connect(env.MQTT_HOSTNAME, env.MQTT_PORT, env.MQTT_USERNAME, env.MQTT_PASSWORD, env.MQTT_TOPIC);
+	if (appStore.isDemo) {
+		demo.start();
 	}
+
+	/**
+	 * If not in demo mode, try to establish a connection when autoLogin is enabled
+	 * If not successfull, e.g. when credentials are not available, fall back to the login screen
+	 */
+	if (appStore.autoLogin) {
+		miniserverClient.connect();
+	} else if (!appStore.isDemo) {
+		appStore.loginDialog.state = true;
+	}
+
+	// connect to MQTT if credentials are available
+	mqttClient.connect();
 
 	Logger(logLevel, true);
 	enableDragDropTouch(document, document, options);
@@ -301,7 +319,7 @@
 	<Navigation layout="bar" class="fixed top-0 z-1 h-[65px] flex justify-center items-center shadow-md w-screen">
 		<Navigation.Menu class="grid grid-cols-3 gap-2">
 			<div class="ml-2 grid grid-cols-[25%_75%] justify-left items-center gap-1">
-				<button class="" onclick={() => {menuIcon == 'menu' ? mobileMenuDialog = true : navigate(appStore.nav)}}>
+				<button class="" onclick={() => {menuIcon == 'menu' ? mobileMenuDialog = true : navigateBack()}}>
 					<LbIcon name={menuIcon}/>
 				</button>
 				{#if showWeather}

@@ -3,7 +3,6 @@ import type FileMessage from 'svelte-lox-client/dist/WebSocketMessages/FileMessa
 import { appStore } from '$lib/stores/LbAppStore.svelte';
 import { controlStore } from '$lib/stores/LbControlStore.svelte';
 import { utils } from '$lib/helpers/Utils';
-import { demo } from '$lib/demo/DemoClient';
 
 /**
  * Singleton that manages the Miniserver connection.
@@ -23,6 +22,8 @@ export class MiniserverClient {
 	 *   and connects with the supplied credentials, reusing a stored token when possible.
 	 */
 	async connect(hostName?: string, userName?: string, password?: string): Promise<void> {
+		if (appStore.isDemo) return; // do not connect if we are in demo mode
+
 		const cred = appStore.credentials;
 		const appId = appStore.appId;
 		const logLevel = 0; // TODO config
@@ -54,16 +55,6 @@ export class MiniserverClient {
 				appStore.storeCredentials({ hostName: this.hostName, userName: this.userName, token: this.token, msName: '' });
 			}
 			await this.getSettings();
-			return;
-		}
-
-		// No arguments, check if user wants to run demo
-		if (appStore.isDemo) {
-      this.disconnect(); // disconnect if there was an open connection
-			demo.start();
-			appStore.clearCredentials();
-			appStore.setLocale('en'); // switch to en locale for demo
-			appStore.loginDialog.state = false;
 			return;
 		}
 
@@ -184,6 +175,8 @@ export class MiniserverClient {
 			const structure = await this.client?.getStructureFile();
 			// add msName to credentials
 			appStore.storeCredentials({ hostName: this.hostName, userName: this.userName, token: this.token, msName: structure.msInfo.msName });
+			// empty structure first
+			controlStore.clearStructure();
 			// store structure as app state
 			controlStore.initStructure(structure, this);
 			// important: we need to parse the structure in the client,

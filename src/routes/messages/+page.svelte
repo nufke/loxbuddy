@@ -18,13 +18,12 @@
 	let activeMessages = $derived(messages && messages.entries ? messages.entries.filter((entry) => entry.isHistoric == false) : []);
 	let pastMessages = $derived(messages && messages.entries ? messages.entries.filter((entry) => entry.isHistoric == true) : []);
 	let notifications = $derived(controlStore.notifications);
-	let notificationList = $derived(Object.values(controlStore.notificationsMap).sort((a, b) => b.message.ts - a.message.ts));
-	let activeNotifications = $derived(notificationList.filter((items) => items.status < 3)); // new or read
-	let archivedNotifications = $derived(notificationList.filter((items) => items.status == 3)); // new or read
+	let activeNotifications = $derived(controlStore.notificationsList.filter((items) => (items.status ?? 0) < 3)); // new or read
+	let archivedNotifications = $derived(controlStore.notificationsList.filter((items) => items.status === 3)); // new or read
 	let selectedEntry: SystemStatusEntry | undefined = $state();
 	let openDialog = $state(false);
 
-	function didRead(notification: NotificationMessage): void {
+	function readNotification(notification: NotificationMessage): void {
 		controlStore.updateNotificationMap(notification, 2);
 	}
 
@@ -52,7 +51,7 @@
 	}
 
 	function getDate(epoch: number): string {
-		if (!epoch) return;
+		if (!epoch) return '';
 		const date = new Date(epoch * 1000);
 		return format(date, "PPP p")
 	}
@@ -78,10 +77,10 @@
 			<Tabs.Content value="notifications">
 					{#each activeNotifications as notification}
 						<div class="{notification.status == 2 ? 'pl-[13px]' : 'pl-2 border-l-5 dark:border-l-primary-500'} border-b dark:border-surface-900 border-surface-200 cursor-pointer pt-3 pb-3 pr-3"
-							onclick={()=>{didRead(notification.message)}}>
-							<p class="text-md dark:text-surface-300 text-surface-700">{getDate(notification.message.ts)}</p>
-							<p class="text-lg">{notification.message.title}</p>
-							<p class="text-md">{notification.message.message}</p>
+							onclick={()=>{readNotification(notification)}}>
+							<p class="text-md dark:text-surface-300 text-surface-700">{getDate(notification.ts)}</p>
+							<p class="text-lg">{notification.title}</p>
+							<p class="text-md">{notification.message}</p>
 						</div>
 					{/each}
 			</Tabs.Content>

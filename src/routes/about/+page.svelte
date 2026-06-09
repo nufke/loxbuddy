@@ -4,7 +4,6 @@
 	import LbIcon from '$lib/components/Common/LbIcon.svelte';
 
 	let version = __VERSION__;
-	appStore.nav = '/';
 </script>
 
 <div class="container flex justify-center items-center h-full mx-auto max-w-[1280px] p-2">

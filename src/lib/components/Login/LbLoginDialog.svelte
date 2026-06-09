@@ -8,6 +8,7 @@
 	import type { DeviceInfoMap, DeviceInfo } from '$lib/types/models';
 	import { goto } from "$app/navigation";
 	import { fadeInOut } from '$lib/helpers/styles';
+	import { demo } from '$lib/demo/DemoClient';
 
 	let openPopup = $state(false);
 	let hostName = $state('');
@@ -33,9 +34,11 @@
 
 	async function startDemo(): Promise<void> {
 		clearFormFields();
-		appStore.clearCredentials();
+		//appStore.clearCredentials();
 		appStore.setDemo(1);
-		await miniserverClient.connect();
+		appStore.setLocale('en'); // switch to en locale for demo
+		appStore.loginDialog.state = false;
+		demo.start();
 	}
 
 	async function reconnect(): Promise<void> {
@@ -125,7 +128,7 @@
 		popupView = {
 			title: '',
 			list: [],
-			button: '',
+			button: 'Cancel',
 			description: description,
 			showSpinner: true
 		};
@@ -262,11 +265,10 @@
 									<LbIcon name="search" height="18" width="18"/>&nbsp;{$_("Search")}
 								</span>
 							</button>
-						{/if}
-						{#if popupView.button == "ok"}
+						{:else}
 							<button class="w-full btn btn-lg dark:bg-surface-950 bg-surface-50 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
 											onclick={() => {openPopup=false}}>
-								<span class="flex justify-center items-center truncate text-lg">OK</span>
+								<span class="flex justify-center items-center truncate text-lg">{popupView.button}</span>
 							</button>
 						{/if}
 					</div>

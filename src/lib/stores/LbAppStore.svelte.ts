@@ -1,5 +1,5 @@
 import { SvelteMap } from 'svelte/reactivity';
-import type { DialogView, Credentials } from '$lib/types/models';
+import type { DialogView, Credentials, MqttCredentials } from '$lib/types/models';
 import { utils } from '$lib/helpers/Utils';
 import { nl, enGB, de } from 'date-fns/locale'
 import { locale } from 'svelte-i18n';
@@ -11,19 +11,21 @@ import { type DateFnsLocale } from '$lib/types/models';
  */
 class LbAppStore {
 	appId: string = $state('');
-	isDemo: boolean = $state(false);
-	nav: string = $state(''); // default is main menu (hamburger symbol)
+	autoLogin: boolean = $state(false);
+	credentials: Credentials | null = $state(null);
 	date: Date = $state(new Date());
-	mode: string = $state('dark');
-	theme: string = $state('LoxBuddy');
-	mqttStatus: number = $state(0); // 0=disconnected (grey), 1=connected/ok/info (green), 2=warning/issue (yellow), 3=error (red)
+	isDemo: boolean = $state(false);
+	locale: string = $state('en'); // default English
 	loxStatus: number = $state(0);  // 0=disconnected (grey), 1=connected/ok/info (green), 2=warning/issue (yellow), 3=error (red)
+	mode: string = $state('dark');
+	mqttCredentials: MqttCredentials | null = $state(null);
+	mqttStatus: number = $state(0); // 0=disconnected (grey), 1=connected/ok/info (green), 2=warning/issue (yellow), 3=error (red)
 	showStatus: boolean = $state(true);
 	showWeather: boolean = $state(true);
 	startPage: string = $state('/');
-	locale: string = $state('en'); // default English
-	credentials: Credentials | null= $state(null);
+	theme: string = $state('LoxBuddy');
 	visuPw: SvelteMap<string, string> = new SvelteMap();
+
 	weatherDialog: DialogView = $state({
 		action: () => {},
 		state: false,
@@ -51,17 +53,24 @@ class LbAppStore {
 		localStorage.setItem('appId', this.appId);
 
 		this.showStatus = localStorage.getItem('showStatus') == '1';
+		this.autoLogin = localStorage.getItem('autoLogin') == '1';
 		this.mode = localStorage.getItem('mode') || 'dark';
 		this.theme = localStorage.getItem('theme') || 'LoxBuddy';
 		this.isDemo = localStorage.getItem('demo') == '1';
 		this.showWeather = localStorage.getItem('showWeather') == '1';
 		this.locale = localStorage.getItem('locale') || 'en';
-		this.credentials = utils.deserialize(localStorage.getItem('credentials')) as Credentials;
+		this.credentials = utils.deserialize(utils.getCookie('credentials')) as Credentials;
+		this.mqttCredentials = utils.deserialize(utils.getCookie('mqttCredentials')) as MqttCredentials;
 	}
 
 	storeCredentials(credentials: Credentials): void {
 		this.credentials = credentials;
-		localStorage.setItem('credentials', utils.serialize(credentials));
+		utils.setCookie('credentials', utils.serialize(credentials));
+	}
+
+	storeMqttCredentials(credentials: MqttCredentials): void {
+		this.mqttCredentials = credentials;
+		utils.setCookie('mqttCredentials', utils.serialize(credentials));
 	}
 
 	getVisuPw(controlUuid: string) {
@@ -77,7 +86,7 @@ class LbAppStore {
 
 	clearCredentials(): void {
 		this.credentials = null;
-		localStorage.setItem('credentials', utils.serialize(0));
+		utils.deleteCookie('credentials');
 	}
 
 	setDemo(state: number): void {

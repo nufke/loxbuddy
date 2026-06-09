@@ -16,7 +16,6 @@
 	let draggingItem: any;
 	let animatingItems = new Set();
 	let dragHandlePressed = false;
-	appStore.nav = '/room';
 
 	let dragGroup = $state('');
 	let controlOptions: ControlOptions = $derived(DEFAULT_CONTROLOPTIONS);

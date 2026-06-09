@@ -44,6 +44,8 @@ export class DemoClient {
 		const soc = [ "100", "80", "60", "40", "20", "0"];
 		const fase = [ "0.1", "0.2", "0.3", "0.4", "-0.2", "-0.1"];
 
+		controlStore.clearStructure();
+
 		// loadding of structure and states delayed to test uninitialized variables
 		setTimeout( () => {
 			controlStore.initStructure(structure, this);
@@ -56,7 +58,7 @@ export class DemoClient {
 
 		setTimeout( () => {
 			// only load user settings if not available in localStorage
-			console.info('[Demo] Get user settings...');
+			console.info('[DEMO] Get user settings...');
 			if (!controlStore.userSettings.userDefaultStructure?.length) {
 				this.getUserSettings();
 			}
@@ -802,6 +804,9 @@ export class DemoClient {
 		}
 		if (url.includes('jdev/sps/getStatisticInfo/')) {
 			return this.createStatisticInfo(url);
+		}
+		if (url.includes('dev/fsget/log/def.log')) {
+			return this.createPromise('No log file available in DEMO mode');
 		}
 		return this.createPromise(JSON.stringify({text: 'default reponse'}));
 	}
