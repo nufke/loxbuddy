@@ -925,7 +925,7 @@ export class DemoClient {
 		};
 		return new Promise<Response>((resolve) => {
 			setTimeout(() => {
-				resolve(new Response(msg, headers));
+				resolve(new Response(msg, headers)); /* artificial delay to mimic network traffic */
 			}, 100);
 		});
 	}

@@ -54,24 +54,24 @@ const solarRadiationClass: SolarRadiationClass = {
  * It fetches weather data in Lox-specific format from a given weatherUrl.
  */
 class LbWeatherStore {
-	weatherUrl = $state(''); // e.g. http://loxberry.local:6066/forecast/
-	observations = new SvelteMap<string, string>();
-	current: WeatherCurrentConditions = $state(EMPTY_CURRENT_CONDITIONS);
-	daily: WeatherDailyForecast[] = $derived([]);
-	hourly: WeatherHourlyForecast[] = $derived([]);
-	days = $state(0);
-	intervalTimer: NodeJS.Timeout | undefined;
+	private observations = new SvelteMap<string, string>();
+	private intervalTimer: NodeJS.Timeout | undefined;
+	private id: string = '';
+	private name: string = '';
+	private longitude: string = '';
+	private latitude: string = '';
+	private height: string = '';
+	private country: string = '';
+	private timezone: string = '';
+	private utcDelta: string = '';
+	private sunrise: string = '';
+	private sunset: string = '';
 
-	id: string = '';
-	name: string = '';
-	longitude: string = '';
-	latitude: string = '';
-	height: string = '';
-	country: string = '';
-	timezone: string = '';
-	utcDelta: string = '';
-	sunrise: string = '';
-	sunset: string = '';
+	current: WeatherCurrentConditions = $state(EMPTY_CURRENT_CONDITIONS);
+	private days = $state(0);
+	daily: WeatherDailyForecast[] = $state([]);
+	hourly: WeatherHourlyForecast[] = $state([]);
+	weatherUrl = $state(''); // specified in settings e.g. http://loxberry.local:6066/forecast/
 
 	constructor() {
 		this.weatherUrl = localStorage.getItem('weatherUrl') || '';

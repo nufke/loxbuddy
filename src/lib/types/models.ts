@@ -245,6 +245,8 @@ export const DEFAULT_CONTROL: Control = {
 	subControls: {},
 }
 
+export type ControlState = any; // TODO make explicit type
+
 export type Room = {
 	uuid: string;									// unique identifier to identify the room as MQTT topic (device-uuid)
 	name: string;									// GUI name of the room
@@ -752,9 +754,9 @@ export type DeviceInfoMap = {
 	[key: string]: DeviceInfo;
 }
 
-export type StatisticsDiff = {
+export type Statistics = {
 	[key: string]: {
-		data: StatisticsDiffEntry[];
+		data: StatisticsEntry[];
 		title: string;
 		format: string;
 		fromUnixUtc: number;
@@ -766,13 +768,19 @@ export type StatisticsDiff = {
 	}
 }
 
-export type StatisticsDiffEntry = {
+export type StatisticsEntry = {
 	ts: number;		// time
 	values: number[]; // values
 }
 
-export type StatisticsInfo = {
+export type StatisticInfo = {
 	[key: string]: {
 		activeSince: number;
 	}
 }
+
+export type StatisticInfoType = {
+	id: number;
+	activeSince: number;
+}
+

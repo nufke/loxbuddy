@@ -1,8 +1,14 @@
 import { SvelteMap } from 'svelte/reactivity';
 import { MqttClient } from '$lib/communication/MqttClient';
-import { DEFAULT_USERSETTINGS, EMPTY_SYSTEM_STATUS, DEFAULT_GLOBALSTATES, DEFAULT_MSINFO, EMPTY_ICON_AND_COLOR } from '$lib/types/models';
-import type { Structure, MsInfo, Control, Category, Room, NotificationMap, NotificationList, UserSettings, UserDefaultStructure, IconAndColor, SystemStatus,
-							GlobalStates, MessageCenter, NotificationMessage, Icon } from '$lib/types/models';
+import { DEFAULT_USERSETTINGS, EMPTY_SYSTEM_STATUS, DEFAULT_GLOBALSTATES,
+				 DEFAULT_MSINFO, EMPTY_ICON_AND_COLOR } from '$lib/types/models';
+import type { Structure, MsInfo, Control, ControlState, Category, Room, NotificationMap,
+							NotificationList, UserSettings, UserDefaultStructure, IconAndColor,
+							SystemStatus, GlobalStates, MessageCenter, NotificationMessage,
+							Icon, StatisticV2, Statistics, StatisticInfo, StatisticInfoType,
+							StatisticsEntry } from '$lib/types/models';
+import { startOfDay, endOfDay, startOfISOWeek, endOfISOWeek, startOfMonth,
+				 endOfMonth, startOfYear, endOfYear, getUnixTime } from 'date-fns';
 import { utils } from '$lib/helpers/Utils';
 import { lbControl } from '$lib/helpers/LbControl';
 import { DemoClient, demo } from '$lib/demo/DemoClient';
@@ -12,30 +18,32 @@ import { MiniserverClient} from '$lib/communication/MiniserverClient';
  * ControlStore to maintain control states
  */
 class LbControlStore {
-	controlState: SvelteMap<string, any> = new SvelteMap();
-	controlClient: SvelteMap<string, DemoClient | MiniserverClient | MqttClient> = new SvelteMap();
-	msInfo: MsInfo = $state(DEFAULT_MSINFO);
-	globalStates: GlobalStates = $state(DEFAULT_GLOBALSTATES);
-	operatingModes: SvelteMap<string, string> = new SvelteMap();
-	controls: SvelteMap<string, Control> = new SvelteMap();
-	rooms: SvelteMap<string, Room> = new SvelteMap();
 	categories: SvelteMap<string, Category> = new SvelteMap();
+	controlClient: SvelteMap<string, DemoClient | MiniserverClient | MqttClient> = new SvelteMap();
+	controls: SvelteMap<string, Control> = new SvelteMap();
+	controlState: SvelteMap<string, ControlState> = new SvelteMap();
 	messageCenter: SvelteMap<string, MessageCenter> = new SvelteMap();
-	messageCenterList: MessageCenter[] = $derived(Object.values(this.messageCenter));
-	controlList: Control[] = $derived(Array.from(this.controls.values()));
-	categoryList: Category[] = $derived(Array.from(this.categories.values()));
-	roomList: Room[] = $derived(Array.from(this.rooms.values()));
-	userSettings = $state(DEFAULT_USERSETTINGS);
+	operatingModes: SvelteMap<string, string> = new SvelteMap();
+	rooms: SvelteMap<string, Room> = new SvelteMap();
 	sortingMap: SvelteMap<string, UserDefaultStructure> = new SvelteMap();
+
+	globalStates: GlobalStates = $state(DEFAULT_GLOBALSTATES);
+	iconList: Icon[] | undefined = $state();
+	msInfo: MsInfo = $state(DEFAULT_MSINFO);
+	sorting: boolean = $state(false); // sorting and drag-and-drop disabled
+	sortingMode: number = $state(0);// default sorting (config based)
 	systemStatus: SystemStatus = $state(EMPTY_SYSTEM_STATUS);
+	userSettings = $state(DEFAULT_USERSETTINGS);
+
+	categoryList: Category[] = $derived(Array.from(this.categories.values()));
+	controlList: Control[] = $derived(Array.from(this.controls.values()));
+	customSorting = $derived(((this.sortingMode == 1) ? this.userSettings.userDefaultStructure : this.sortingMap.get(this.msInfo.serialNr)) ?? {}) as UserDefaultStructure;
+	messageCenterList: MessageCenter[] = $derived(Object.values(this.messageCenter));
 	notifications: NotificationMessage | NotificationList = $derived(this.getState(this.globalStates.notifications));
 	notificationsMap: NotificationMap = $derived(this.updateNotificationMap(this.notifications)); /* process incoming notifications */
 	notificationsList: NotificationMessage[] = $derived(this.listNotifications(this.notificationsMap)); /* update list of current notifications */
 	msStatus: number = $derived(this.systemStatus.entries ? Math.max(...this.systemStatus.entries.filter((item) => item.isHistoric == false).map((item) => item.severity)) : 0);
-	iconList: Icon[] | undefined = $state();
-	sorting: boolean = $state(false); // sorting and drag-and-drop disabled
-	sortingMode: number = $state(0);// default sorting (config based)
-	customSorting = $derived(((this.sortingMode == 1) ? this.userSettings.userDefaultStructure : this.sortingMap.get(this.msInfo.serialNr)) ?? {}) as UserDefaultStructure;
+	roomList: Room[] = $derived(Array.from(this.rooms.values()));
 
 	/** 
 	 * Initiatie states for notificationsMap, sorting, sortingMode and sortingMap.
@@ -43,8 +51,8 @@ class LbControlStore {
 	constructor() {
 		this.notificationsMap = utils.deserialize(localStorage.getItem('notifications')) as NotificationMap || {};
 		this.sorting = (localStorage.getItem('sorting') == '1'); /* sorting enabled */
-		this.sortingMode = Number(localStorage.getItem('sortingMode')) || 0;
 		this.sortingMap = utils.deserializeMap(localStorage.getItem('sortingMap'));
+		this.sortingMode = Number(localStorage.getItem('sortingMode')) || 0;
 	}
 
 	/**
@@ -162,8 +170,7 @@ class LbControlStore {
 	 * @param uuid UUID of the control
 	 * @returns value of the control (note: could be an object)
 	 */
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	getState(uuid: string): any {
+	getState(uuid: string): ControlState {
 		return this.controlState.get(uuid);
 	}
 
@@ -172,8 +179,7 @@ class LbControlStore {
 	 * @param uuid UUID of the control
 	 * @param data value/data of the control
 	 */
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	setState(uuid: string, data: any): void {
+	setState(uuid: string, data: ControlState): void {
 		const item = $state(data);
 		this.controlState.set(uuid, item);
 	}
@@ -237,6 +243,82 @@ class LbControlStore {
 	fetchUrl(uuid: string, url: string): Promise<Response> {
 		const client = this.controlClient.get(uuid) || demo;
 		return client.fetch(url);
+	}
+
+	/**
+	 * Fetch statistical information, including when data is active/ valid (activeSince)
+	 * @param control The control of which the statistic al info is fetched
+	 * @returns Statistic info including when statistics are valid (activeSince)
+	*/
+	async fetchStatisticInfo(control: Control): Promise<StatisticInfo> {
+		const info: StatisticInfo = {};
+		await this.fetchUrl(control.uuidAction, `jdev/sps/getStatisticInfo/${control.uuidAction}`)
+			.then((r) => r.json())
+			.then((json) => {
+				const obj = json.LL?.value && utils.isValidJSONObject(json.LL.value) ? JSON.parse(json.LL.value) : json;
+				if (obj.length) {
+					obj.forEach((item: StatisticInfoType) => {
+						info[item.id] = { activeSince: item.activeSince };
+					});
+				}
+			});
+		return info;
+	}
+
+	/**
+	 * Fetch statistics of the given control
+	 * @param control The control of which the statistics are fetched
+	 * @returns Statistics including metadata
+	*/
+	async fetchStatistics(control: Control, statisticV2: StatisticV2, newDate: Date, selector: string,	type: string):
+		Promise<Statistics> {
+		const statistics: Statistics = {};
+		let dataPointUnit = 'hour';
+		let fromUnixUtc: number;
+		let untilUnixUtc: number;
+
+		switch (selector) {
+			case 'Day':   fromUnixUtc = getUnixTime(startOfDay(newDate));   untilUnixUtc = getUnixTime(endOfDay(newDate));   dataPointUnit = 'hour';  break;
+			case 'Week':  fromUnixUtc = getUnixTime(startOfISOWeek(newDate)); untilUnixUtc = getUnixTime(endOfISOWeek(newDate)); dataPointUnit = 'day'; break;
+			case 'Month': fromUnixUtc = getUnixTime(startOfMonth(newDate)); untilUnixUtc = getUnixTime(endOfMonth(newDate)); dataPointUnit = 'day';  break;
+			case 'Year':  fromUnixUtc = getUnixTime(startOfYear(newDate));  untilUnixUtc = getUnixTime(endOfYear(newDate));  dataPointUnit = 'month'; break;
+			case 'All':   fromUnixUtc = 1230768000; untilUnixUtc = getUnixTime(new Date()); dataPointUnit = 'year'; break;
+			default:      fromUnixUtc = getUnixTime(startOfDay(newDate));   untilUnixUtc = getUnixTime(endOfDay(newDate));   dataPointUnit = 'hour';
+		}
+
+		await Promise.all(statisticV2.groups.map(async (item) => {
+			const mode = item.accumulated ? 'diff' : 'raw';
+			await this.fetchUrl(control.uuidAction, `jdev/sps/getStatistic/${control.uuidAction}/${mode}/${fromUnixUtc}/${untilUnixUtc}/${dataPointUnit}/${item.id}/`)
+				.then((r) => r.ok ? r.arrayBuffer() : null)
+				.then((buffer) => {
+					const stats: StatisticsEntry[] = [];
+					if (buffer) {
+						const view = new DataView(buffer);
+						const size = 4 + item.dataPoints.length * 8;
+						for (let i = 0; i < Math.floor(view.byteLength / size); i++) {
+							const ts = view.getUint32(i * size, true);
+							const values: number[] = [];
+							for (let j = 0; j < item.dataPoints.length; j++) {
+								values.push(view.getFloat64(i * size + 4 + j * 8, true));
+							}
+							// we swap the array order for storage (battery) as in/out are reversed 
+							stats.push({ ts, values: type === 'storage' ? values.reverse() : values });
+						}
+					}
+					statistics[item.id] = {
+						data: stats,
+						title: item.id == '2' ? control.details?.powerName : item.dataPoints[0].title,
+						format: item.dataPoints[0].format,
+						fromUnixUtc,
+						untilUnixUtc,
+						total: stats.flatMap((s) => s.values[0]).reduce((a, b) => a + b, 0),
+						totalNeg: stats.flatMap((s) => s.values[1]).reduce((a, b) => a + b, 0) || 0, // TODO might not exist
+						selector,
+						xLabel: dataPointUnit,
+					};
+				});
+		}));
+		return statistics;
 	}
 
 	/**
