@@ -34,12 +34,18 @@
 	let selector = $state(items[0]);
 	let activeSince = $state(getUnixTime(new SvelteDate()));
 
+	let legend = $state({
+		storage: [$_('Charging'), $_('Discharging')],
+		unidirectional: [powerName],
+		bidirectional: [$_('Supply'), $_('Consume')]
+	});
+
 	let storageFormat = $derived(controlView.control.details?.storageFormat);
 	let actual = $derived(Number(controlStore.getState(controlView.control.states?.actual)));
 	let storageValue = $derived(Number(controlStore.getState(controlView.control.states?.storage)));
 	let showSVG = $derived(type === 'storage' || (type === 'bidirectional' && selector !== 'Today'));
-	let valueSVG = $derived(selector === 'Today' ? storageValue : getPercent('out'));
-	let BgColorSVG = $derived(selector !== 'Today' && getPercent('out')
+	let valueSVG = $derived(selector === 'Today' ? storageValue : getPercent('in'));
+	let BgColorSVG = $derived(selector !== 'Today' && getPercent('in')
 		? 'dark:stroke-secondary-500 stroke-secondary-700'
 		: 'dark:stroke-surface-700 stroke-surface-200');
 	
@@ -50,9 +56,9 @@
 	});
 
 	function getValue(key: string, idx: number = -1): string {
-		const d = statistics['2']; // TODO we only use ID 2
-		if (!d) return idx == -1 ? '–' : '0';
-		const val = key === 'out' ? d.total : d.totalNeg;
+		const stats = statistics['2']; // TODO we only use ID 2
+		if (!stats) return idx == -1 ? '–' : '0';
+		const val = key === 'out' || type === 'unidirectional' ? stats.total : stats.totalNeg;
 		const str = utils.formatString(val, totalFormat);
 		if (idx == -1) return `${str[0].toLocaleString(appStore.locale)} ${str[1]}`;
 		return String(val);
@@ -67,9 +73,10 @@
 	}
 
 	function getActual(): string {
-		let status = (utils.formatString(actual, actualFormat)[0]).toLocaleString(appStore.locale) + ' ' + utils.formatString(actual, actualFormat)[1];
-		if (type == 'storage') {
-			status += ' (' + ((actual > 0) ? $_('Discharging') : $_('Charging')) + ')';
+		let status = (utils.formatString(Math.abs(actual), actualFormat)[0]).toLocaleString(appStore.locale) + ' ' + utils.formatString(Math.abs(actual), actualFormat)[1];
+		switch (type) {
+			case 'storage': status += ` (${(actual < 0) ? $_('Charging') : $_('Discharging')})`; break
+			case 'bidirectional': status += ` (${(actual > 0) ? $_('Consume') : $_('Supply')})`; break;
 		}
 		return status;
 	}
@@ -139,8 +146,8 @@
 
 	function getLabel(s: string): string {
 		switch (type) {
-			case 'storage': return (s == 'out') ? $_('Charging') : $_('Discharging');
-			case 'unidirectional': return powerName;
+			case 'storage': return (s == 'in') ? $_('Charging') : $_('Discharging');
+			case 'unidirectional': return $_('Total');
 			case 'bidirectional': return (s == 'out') ? $_('Consume') : $_('Supply');
 			default: /* none */
 		}
@@ -179,7 +186,7 @@
 					<Dialog.Description class="flex-1 min-h-0 flex flex-col overflow-hidden">
 						<!-- Fixed header: selector tabs + date nav -->
 						<div class="relative w-full flex flex-col items-center shrink-0">
-							<div class="w-full mb-3 grid grid-cols-[repeat(6,auto)] bg-surface-50-950 rounded-lg h-[32px]">
+							<div class="w-full mb-2 grid grid-cols-[repeat(6,auto)] bg-surface-50-950 rounded-lg h-[32px]">
 								{#each items as item (item)}
 									<button type="button" class="px-2 py-1 text-sm btn btn-base {selector == item ? 'bg-surface-300-700' : 'bg-surface-50-950'}" onclick={() => {doSelect(date, item)}}>
 										{$_(item)}
@@ -210,16 +217,16 @@
 										</div>
 									{:else}
 										<div class="ml-1 justify-start">
-											<p class="text-surface-950-50">{getLabel('out')}</p>
-												<p class="dark:text-primary-500 text-primary-700">{getValue('out')}
+											<p class="text-surface-950-50">{getLabel('in')}</p>
+												<p class="dark:text-primary-500 text-primary-700">{getValue('in')}
 												{#if type == 'bidirectional' || type == 'storage'}  
-													({getPercent('out')}%)
+													({getPercent('in')}%)
 												{/if}
 												</p>
 												{#if type == 'bidirectional' || type == 'storage'} 
-												<p class="mt-2 text-surface-950-50">{getLabel('in')}</p>
-												<p class="dark:text-secondary-500 text-secondary-700">{getValue('in')}
-													({getPercent('in')}%)
+												<p class="mt-2 text-surface-950-50">{getLabel('out')}</p>
+												<p class="dark:text-secondary-500 text-secondary-700">{getValue('out')}
+													({getPercent('out')}%)
 												</p>
 											{/if}
 										</div>
@@ -240,16 +247,16 @@
 								<div>
 									{#if selector == 'Today'}
 										<div class="w-full">
-											<LineChart statistics={statistics[1]} storage={type == 'storage'} fixedStep={0}/>
+											<LineChart statistics={statistics[1]} legend={legend[type as keyof typeof legend] ?? []}/>
 										</div>
 										{#if type == 'storage'}
-											<div class="mt-4 mb-3 w-full">
-												<LineChart statistics={statistics[3]} storage={true} fixedStep={100}/>
+											<div class="mt-2 w-full">
+												<LineChart statistics={statistics[3]} legend={[$_("Storage level")]} fixedStep={20} ystart={0}/>
 											</div>
 										{/if}
 									{:else}
 										<div class="mt-4 w-full">
-											<BarChart statistics={statistics[2]} />
+											<BarChart statistics={statistics[2]} legend={legend[type as keyof typeof legend] ?? []}/>
 										</div>
 									{/if}
 								</div>

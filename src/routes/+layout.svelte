@@ -220,7 +220,7 @@
 	Logger(logLevel, true);
 	enableDragDropTouch(document, document, options);
 	weatherStore.startWeatherForecast();
-	
+
 	/* disable right click context menu*/
 	document.addEventListener('contextmenu', event => event.preventDefault());
 </script>

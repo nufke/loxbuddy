@@ -7,38 +7,44 @@
 	import { utils } from '$lib/helpers/Utils';
 	import { tick } from 'svelte';
 
-	let { statistics, storage, fixedStep = 0 } = $props();
+	let { statistics, legend, fixedStep = undefined, ystart = undefined } = $props();
 
-	const margin = { top: 40, right: 10, bottom: 40, left: 30 };
-	const height = 220;
-  const stopColorCss = ['var(--color-primary-500)', 'var(--color-secondary-500)']
+  const GradientColor = ['var(--color-primary-500)', 'var(--color-secondary-500)'];
+	const StrokeColor = ['dark:stroke-primary-500 stroke-primary-700', 'dark:stroke-secondary-500 stroke-secondary-700']
+
+	const margin = { top: 22, right: 10, bottom: 20, left: 32 };
+	const height = 170;
 	const range = (start: number, end: number, step: number = 1) => Array.from({ length: end }, (_, i) => start + i * step);
 	const xGrid = range(0, 25);
 	const xTicks = range(0, 25, 2);
 	const xOffset = 0;
 
-  let GradientColor = $derived( storage ? stopColorCss.reverse() : stopColorCss)
-	let viewport: any = $state();
-	let data = $derived(statistics?.data ?? []);
-	let width = $derived(viewport?.clientWidth || 450);
-	let graphWidth = $derived(width - (margin.left + margin.right));
-
-	let scale = $derived.by(() => {
-		const vals = data.map((d: any) => d.values[0]);
-		const absMax = Math.max(0, ...vals.map(Math.abs));
-		return absMax >= 500e6 ? 1e9 : absMax >= 500e3 ? 1e6 : absMax >= 500 ? 1e3 : 1;
-	});
-
-	let scaledData = $derived(data.map((d: any) => ({ ts: d.ts, value: d.values[0] / scale })));
-	let dataMax = $derived(Math.max(0, ...data.map((d: any) => Math.abs(d.values[0]))));
-	let yMin = $derived(Math.min(0, ...scaledData.map((d: any) => d.value)));
-	let yMax = $derived(Math.max(0, ...scaledData.map((d: any) => d.value)));
-	let yValues = $derived(calcYValues(yMin, yMax));
 	let hoveredIdx: number | null = $state(null);
 	let markerX = $state(0);
 	let markerY = $state(0);
 	let labelX = $state(0);
 	let textEl: SVGTextElement | null = $state(null);
+	let viewport: any = $state();
+
+	let data = $derived(statistics?.data ?? []);
+	let isUnidirectional = $derived(statistics?.type == 'unidirectional');
+	let gradientColor = $derived(isUnidirectional ? GradientColor.reverse() : GradientColor);
+	let strokeColor = $derived(isUnidirectional ? StrokeColor.reverse() : StrokeColor);
+	let width = $derived(viewport?.clientWidth || 450);
+	let graphWidth = $derived(width - (margin.left + margin.right));
+	let dataMax = $derived(Math.max(0, ...data.map((d: any) => Math.abs(d.values[0]))));
+	let scale = $derived(dataMax > 1e6 ? 1e6 : dataMax > 1e3 ? 1e3 : 1);
+
+	let displayMult = $derived.by(() => {
+		const scaledMax = dataMax / scale;
+		const fmtVal = utils.formatString(dataMax, statistics?.format ?? '')[0];
+		return (scaledMax > 0) && (fmtVal > 0) ? fmtVal / scaledMax : 1;
+	});
+
+	let scaledData = $derived(data.map((d: any) => ({ ts: d.ts, value: (d.values[0] / scale) * displayMult })));
+	let yMin = $derived(Math.min(0, ...scaledData.map((d: any) => d.value)));
+	let yMax = $derived(Math.max(0, ...scaledData.map((d: any) => d.value)));
+	let yValues = $derived(calcYValues(yMin, yMax));
 
 	let xScaleGrid = $derived(scaleLinear()
 		.domain([0, xGrid.length - 1])
@@ -76,18 +82,15 @@
 	);
 
 	function calcYValues(min: number, max: number): number[] {
-		if (min === 0 && max === 0) return [0, 1, 2, 3, 4];
-		const steps = fixedStep ? [25] : [0.25, 0.5, 1, 2, 5, 10, 20, 50, 100, 200, 500, 1000]; // overrule step for fixed 0-100% percent
+		if (min === 0 && max === 0) return [0, 1, 2, 3, 4, 5];
+		const steps = [0.25, 0.5, 1, 2, 5, 10, 20, 50, 100, 200, 500, 1000];
 		const negExt = min < 0 ? -min : 0;
 		const posExt = max > 0 ? max : 0;
-		const step = steps.find(s =>
-			(negExt > 0 ? Math.ceil(negExt / s) : 0) + (posExt > 0 ? Math.ceil(posExt / s) : 0) <= 4
+		const step = fixedStep ?? steps.find(s =>
+			(negExt > 0 ? Math.ceil(negExt / s) : 0) + (posExt > 0 ? Math.ceil(posExt / s) : 0) <= 5
 		) ?? 1000;
-		const negCount = negExt > 0 ? Math.ceil(negExt / step) : 0;
-		const posCount = posExt > 0 ? Math.ceil(posExt / step) : 0;
-		const pad = 3 - negCount - posCount;
-		const finalNeg = negCount + (max <= 0 ? pad : 0);
-		return Array.from({ length: 5 }, (_, i) => (i - finalNeg) * step);
+		const negCount = ystart ?? negExt > 0 ? Math.ceil(negExt / step) : 0;
+		return Array.from({ length: 6 }, (_, i) => (i - negCount) * step);
 	}
 
 	function getXIndex(point: any): number {
@@ -137,7 +140,7 @@
 	}
 
 	function fmtMarker(v: number): string {
-		const [val, unit] = utils.formatString(v * scale, statistics?.format ?? '');
+		const [val, unit] = utils.formatString(v * scale / displayMult, statistics?.format ?? '');
 		return unit ? `${val} ${unit}` : `${val}`;
 	}
 
@@ -147,6 +150,9 @@
 </script>
 
 <div class="chart" bind:this={viewport}>
+	<div class="w-full text-md flex items-center justify-center">
+		{statistics?.title} ({utils.formatString(dataMax, statistics?.format)[1]})
+	</div>
 	<svg {width} {height} style="touch-action: none;"
 		onpointerdown={handlePointerDown}
 		onpointermove={handlePointerMove}
@@ -154,23 +160,21 @@
 		onpointercancel={handlePointerLeave}
 		onpointerleave={handlePointerLeave}>
 		<defs>
-			<linearGradient id="lc-grad-positive" x1="0" y1={margin.top} x2="0" y2={yZero} gradientUnits="userSpaceOnUse">
-				<stop offset="0%" stop-color={GradientColor[0]} stop-opacity="1"/>
-				<stop offset="100%" stop-color={GradientColor[0]} stop-opacity="0.1"/>
+			<linearGradient id="lc-grad-secondary" x1="0" y1={margin.top} x2="0" y2={yZero} gradientUnits="userSpaceOnUse">
+				<stop offset="0%" stop-color={gradientColor[1]} stop-opacity="1"/>
+				<stop offset="100%" stop-color={gradientColor[1]} stop-opacity="0.1"/>
 			</linearGradient>
-			<linearGradient id="lc-grad-negative" x1="0" y1={yZero} x2="0" y2={height - margin.bottom} gradientUnits="userSpaceOnUse">
-				<stop offset="0%" stop-color={GradientColor[1]} stop-opacity="0.1"/>
-				<stop offset="100%" stop-color={GradientColor[1]} stop-opacity="1"/>
+			<linearGradient id="lc-grad-primary" x1="0" y1={yZero} x2="0" y2={height - margin.bottom} gradientUnits="userSpaceOnUse">
+				<stop offset="0%" stop-color={gradientColor[0]} stop-opacity="0.1"/>
+				<stop offset="100%" stop-color={gradientColor[0]} stop-opacity="1"/>
 			</linearGradient>
-			<clipPath id="lc-clip-positive">
+			<clipPath id="lc-clip-secondary">
 				<rect x={margin.left} y={margin.top} width={graphWidth} height={Math.max(0, yZero - margin.top)}/>
 			</clipPath>
-			<clipPath id="lc-clip-negative">
+			<clipPath id="lc-clip-primary">
 				<rect x={margin.left} y={yZero} width={graphWidth} height={Math.max(0, height - margin.bottom - yZero)}/>
 			</clipPath>
 		</defs>
-		<text class="d3-text text-md" style="text-anchor: middle;" x={width/2} y="12">{statistics?.title} ({utils.formatString(dataMax, statistics?.format)[1]})</text>
-		<text class="d3-text text-md" style="text-anchor: middle;" x={width/2} y={height - margin.bottom + 38}>{$_(utils.capitalize(statistics?.xLabel))}</text>
 		{#each xGrid as grid}
 			<g transform="translate({xScaleGrid(grid)}, {height})">
 				<line class="d3-line-vertical" x1="0" y1={-margin.bottom} x2="0" y2={margin.top - height}/>
@@ -193,14 +197,14 @@
 			</g>
 		{/each}
 		{#if linePath}
-			<path d={areaPath} fill="url(#lc-grad-positive)" clip-path="url(#lc-clip-positive)"/>
-			<path d={areaPath} fill="url(#lc-grad-negative)" clip-path="url(#lc-clip-negative)"/>
+			<path d={areaPath} fill="url(#lc-grad-secondary)" clip-path="url(#lc-clip-secondary)"/>
+			<path d={areaPath} fill="url(#lc-grad-primary)" clip-path="url(#lc-clip-primary)"/>
 			<path d={linePath} fill="none" stroke-width="2"
-				class={storage ? 'dark:stroke-secondary-500 secondary-primary-700' : 'dark:stroke-primary-500 stroke-primary-700'}
-				clip-path="url(#lc-clip-positive)"/>
+				class={strokeColor[1]}
+				clip-path="url(#lc-clip-secondary)"/>
 			<path d={linePath} fill="none" stroke-width="2"
-				class={storage ? 'dark:stroke-primary-500 stroke-primary-700' : 'dark:stroke-secondary-500 stroke-secondary-700'}
-				clip-path="url(#lc-clip-negative)"/>
+				class={strokeColor[0]}
+				clip-path="url(#lc-clip-primary)"/>
 		{/if}
 		{#if hoveredIdx !== null}
 			{@const pt = scaledData[hoveredIdx]}
@@ -208,10 +212,23 @@
 				x1={markerX} y1={margin.top} x2={markerX} y2={height - margin.bottom}/>
 			<circle cx={markerX} cy={markerY} r="4"
 				class="dark:fill-surface-50 fill-primary-950"/>
-			<text bind:this={textEl} class="d3-text text-xs {pt.value >= 0 ? 'dark:fill-primary-500 fill-primary-700' : 'dark:fill-secondary-500 fill-secondary-700'}"
+			<text bind:this={textEl} class="text-xs {pt.value >= 0 && legend.length > 1 ? 'd3-text-marker-secondary' : 'd3-text-marker-primary'}"
 				style="text-anchor: middle; font-weight: bold;" x={labelX} y={margin.top - 8}>
 				{fmtMarker(pt.value)}
 			</text>
 		{/if}
 	</svg>
+	{#if legend?.length}
+		<div class="ml-8 gap-4 flex flex-row text-xs">
+			{#each legend as item, i}
+				<div>
+					<span style="color: {GradientColor[i]}">&#x25CF;</span>
+					<span>{item}</span>
+				</div>
+			{/each}
+		</div>
+	{/if}
+	<div class="relative w-full text-md flex items-center justify-center">
+		{$_(utils.capitalize(statistics?.xLabel))}
+	</div>
 </div>

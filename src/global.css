@@ -63,12 +63,12 @@
 		color: var(--color-surface-50);
 	}
 
-	.d3-text-marker-0 {
+	.d3-text-marker-primary {
 		fill: var(--color-primary-500);
 		color: var(--color-primary-500);
 	}
 
-	.d3-text-marker-1 {
+	.d3-text-marker-secondary {
 		fill: var(--color-secondary-500);
 		color: var(--color-secondary-500);
 	}
@@ -95,12 +95,12 @@
 		color: var(--color-surface-950);
 	}
 
-	.d3-text-marker-0 {
+	.d3-text-marker-primary {
 		fill: var(--color-primary-700);
 		color: var(--color-primary-700);
 	}
 
-	.d3-text-marker-1 {
+	.d3-text-marker-secondary {
 		fill: var(--color-secondary-700);
 		color: var(--color-secondary-700);
 	}

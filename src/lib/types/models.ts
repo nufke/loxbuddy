@@ -759,6 +759,7 @@ export type Statistics = {
 		data: StatisticsEntry[];
 		title: string;
 		format: string;
+		type: string;
 		fromUnixUtc: number;
 		untilUnixUtc: number;
 		total: number;

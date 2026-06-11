@@ -283,7 +283,7 @@
 				"displayType": 0,
 				"actualFormat": "%.3f kW",
 				"totalFormat": "%.1f kWh",
-				"powerName": "Consumption"
+				"powerName": "Production"
 			},
 			"states": {
 				"jLocked": "__uuid__controls_pv_meter_states_jLocked",
@@ -301,7 +301,7 @@
 						"mode": 11,
 						"dataPoints": [
 							{
-								"title": "Consumption",
+								"title": "Production",
 								"format": "%.3f kW",
 								"output": "actual"
 							}

@@ -13,6 +13,7 @@
 
 	let actualFormat = $derived(control.details?.actualFormat);
 	let type = $derived(control.details?.type);
+	let powerName = $derived(control.details?.powerName);
 	let storageFormat = $derived(control.details?.storageFormat);
 	let actual = $derived(Number(controlStore.getState(control.states?.actual))); 
 	let storageValue = $derived(Number(controlStore.getState(control.states?.storage))); 
@@ -39,17 +40,18 @@
 		switch (type) {
 			case 'storage': return (val > 0) ? 'dark:text-secondary-500 text-secondary-700' : 'dark:text-primary-500 text-primary-700';
 			case 'unidirectional': return 'dark:text-primary-500 text-primary-700';
-			case 'bidirectional': return (val > 0) ? 'dark:text-primary-500 text-primary-700' : 'dark:text-secondary-500 text-secondary-700';
+			case 'bidirectional': return (val > 0) ? 'dark:text-secondary-500 text-secondary-700' : 'dark:text-primary-500 text-primary-700';
 			default: return 'dark:text-surface-50 text-surface-950';
 		}
 	}
 
 	function setStatus(): string {
-		let status = `${(utils.formatString(actual, actualFormat)[0]).toLocaleString(appStore.locale)} ${utils.formatString(actual, actualFormat)[1]} `;
+		let status: string = '';
+		let value = `${(utils.formatString(Math.abs(actual), actualFormat)[0]).toLocaleString(appStore.locale)} ${utils.formatString(Math.abs(actual), actualFormat)[1]}`;
 		switch (type) {
-			case 'storage': status += `(${(actual > 0) ? $_('Discharging') : $_('Charging')}) SoC: ${fmt.sprintf(storageFormat, storageValue)}`; break;
-			case 'bidirectional': status += `(${(actual > 0) ? $_('Consume') : $_('Supply')})`; break;
-			default: '';
+			case 'storage': status += `${fmt.sprintf(storageFormat, storageValue)} ${(actual < 0) ? $_('Charging') : $_('Discharging')}, ${value}`; break;
+			case 'bidirectional': status += `${value}, ${(actual > 0) ? $_('Consume') : $_('Supply')}`; break;
+			case 'unidirectional': status += `${value}, ${powerName}`; break;
 		}
 		return status;
 	}

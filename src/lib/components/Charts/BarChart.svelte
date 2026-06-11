@@ -6,30 +6,44 @@
 	import { utils } from '$lib/helpers/Utils';
 	import { tick } from 'svelte';
 
-	let { statistics } = $props();
+	let { statistics, legend } = $props();
 
-	const margin = { top: 40, right: 10, bottom: 60, left: 30 };
 	const yGrid = [0, 20, 40, 60, 80, 100];
-	const height = 240;
 	const months = $_('Months').split('|');
-	const range = (start: number, end:number, step:number = 1) => Array.from({length: end}, (el, i) => start + (i * step) );
+	const range = (start: number, end: number, step: number = 1) => Array.from({length: end}, (el, i) => start + (i * step) );
 
-	let viewport: any = $state(); // TODO make HTMLDivElement
-	let data = $derived(statistics?.data ?? []);
-	let selector = $derived(statistics?.selector);
-	let width = $derived(viewport?.clientWidth || 450);
-	let graphWidth = $derived(width - (margin.left + margin.right));
-	let { xGrid, xTicks, columnWidth, barWidth, xOffset } = $derived.by(() => getGraphLayout(selector, graphWidth, data.length));
-	let dataMax = $derived(Math.max(...data.flatMap((item: any) => item.values)));
-	let scale = $derived(dataMax >= 500e6 ? 1e9 : dataMax >= 500e3 ? 1e6 : dataMax >= 500 ? 1e3 : 1);
-	let scaledData = $derived(data.map((item: any) => ({ ...item, values: item.values.map((v: number) => v / scale) })));
-	let yValues = $derived(calcValues(scaledData));
+	const GradientColor = ['var(--color-primary-500)', 'var(--color-secondary-500)'];
+	const FillColor = ['dark:fill-primary-500 fill-primary-700', 'dark:fill-secondary-500 fill-secondary-700']
+
 	let hoveredIdx: number | null = $state(null);
 	let markerX: number = $state(0);
 	let label0X: number = $state(0);
 	let label1X: number = $state(0);
 	let textEl0: SVGTextElement | null = $state(null);
 	let textEl1: SVGTextElement | null = $state(null);
+	let viewport: any = $state(); // TODO make HTMLDivElement
+
+	let selector = $derived(statistics?.selector);
+	let isUnidirectional = $derived(statistics?.type == 'unidirectional');
+	let fillColor = $derived(isUnidirectional ? FillColor.reverse() : FillColor);
+	let mbCorr = $derived( selector == 'Week' ? 16 : 0);
+	let margin = $derived({ top: 22, right: 10, bottom: 20 + mbCorr, left: 32 });
+	let height = $derived( 180 + mbCorr);
+	let data = $derived(statistics?.data ?? []);
+	let width = $derived(viewport?.clientWidth || 450);
+	let graphWidth = $derived(width - (margin.left + margin.right));
+	let { xGrid, xTicks, columnWidth, barWidth, xOffset } = $derived.by(() => getGraphLayout(selector, graphWidth, data.length));
+	let dataMax = $derived(Math.max(...data.flatMap((item: any) => item.values)));
+	let scale = $derived(dataMax > 1e6 ? 1e6 : dataMax > 1e3 ? 1e3 : 1);
+
+	let displayMult = $derived.by(() => {
+		const scaledMax = dataMax / scale;
+		const fmtVal = utils.formatString(dataMax, statistics?.format ?? '')[0];
+		return scaledMax > 0 ? fmtVal / scaledMax : 1;
+	});
+
+	let scaledData = $derived(data.map((item: any) => ({ ...item, values: item.values.map((v: number) => (v / scale) * displayMult) })));
+	let yValues = $derived(calcValues(scaledData));
 
 	let xScaleGrid = $derived(scaleLinear()
 		.domain([0, xGrid.length-1])
@@ -70,7 +84,7 @@
 		let days = data[0] ? getDaysInMonth(data[0].ts*1000) : 31;
 		switch (s) {
 			case 'Day':   xGrid = range(0, 25, 1); xTicks = range(0, 25, 2); break;
-			case 'Week':  xGrid = range(0, 8, 1);  xTicks = range(1, 7, 1);  break;
+			case 'Week':  xGrid = range(0, 8, 1);  xTicks = range(1, 7, 1); break;
 			case 'Month': xGrid = range(0, days+1, 1); xTicks = range(1, days, 2); break;
 			case 'Year':  xGrid = range(0, 13, 1); xTicks = range(1, 12, 1); break;
 			case 'All':   xGrid = range(0, length+1, 1); xTicks = range(1, length, 1); break;
@@ -175,7 +189,7 @@
 	}
 
 	function fmtMarker(v: number): string {
-		const [val, unit] = utils.formatString(v * scale, statistics?.format ?? '');
+		const [val, unit] = utils.formatString(v * scale / displayMult, statistics?.format ?? '');
 		return unit ? `${val} ${unit}` : `${val}`;
 	}
 
@@ -184,14 +198,16 @@
 	});
 </script>
 
-<div class="chart" bind:this={viewport}>
+<div class="chart h-[260px]" bind:this={viewport}>
+	<div class="w-full text-md flex items-center justify-center">
+		{statistics?.title} ({utils.formatString(dataMax, statistics?.format)[1]})
+	</div>
 	<svg {width} {height} style="touch-action: none;"
 		onpointerdown={handlePointerDown}
 		onpointermove={handlePointerMove}
 		onpointerup={handlePointerUp}
 		onpointercancel={handlePointerLeave}
 		onpointerleave={handlePointerLeave}>
-		<text class="d3-text text-md" style="text-anchor: middle;" x={width/2} y="12">{statistics?.title} ({utils.formatString(dataMax, statistics?.format)[1]})</text>
 		{#each xGrid as grid}
 			<g transform="translate({xScaleGrid(grid)}, {height})">
 				<line class="d3-line-vertical" x1="0" y1={-margin.bottom} x2="0" y2={margin.top - height}/>
@@ -221,35 +237,47 @@
 		{/each}
 		{#each scaledData as point, i}
 			{#if point.values[0] > 0}
-				<rect class="dark:fill-primary-500 fill-primary-700"
+				<rect class={fillColor[1]}
 					x={xScaleValue(getXIndex(point, i)) + columnWidth/2 - barWidth/2 + barWidth/2}
 					y={yScaleValue(point.values[0])}
 					width={barWidth}
 					height={yScaleValue(0) - yScaleValue(point.values[0])}/>
 			{/if}
 			{#if point.values[1] > 0}
-				<rect class="dark:fill-secondary-500 fill-secondary-700"
+				<rect class={fillColor[0]}
 					x={xScaleValue(getXIndex(point, i)) + columnWidth/2 - barWidth/2 - barWidth/2}
 					y={yScaleValue(point.values[1])}
 					width={barWidth}
 					height={yScaleValue(0) - yScaleValue(point.values[1])}/>
 			{/if}
 		{/each}
-		<text class="d3-text text-md" style="text-anchor: middle;" x={width/2} y={selector == 'Week' ? height - margin.bottom + 53 : height - margin.bottom + 38}>{$_(utils.capitalize(statistics?.xLabel))}</text>
 		{#if hoveredIdx !== null}
 			{@const pt = scaledData[hoveredIdx]}
 			<line class="d3-line-vertical-marker" stroke-width="1" stroke-opacity="0.5"
 				x1={markerX} y1={margin.top} x2={markerX} y2={height - margin.bottom}/>
-			<text bind:this={textEl0} class="d3-text-marker-0 text-xs"
+			<text bind:this={textEl0} class="{ isUnidirectional ? 'd3-text-marker-primary' : 'd3-text-marker-secondary'} text-xs"
 				style="{(pt.values[1] != null) ? 'text-anchor: start' : 'text-anchor: middle'}; font-weight: bold;" x={label0X} y={margin.top - 8}>
 				{fmtMarker(pt.values[0])}
 			</text>
 			{#if pt.values[1] != null}
-				<text bind:this={textEl1} class="d3-text-marker-1 text-xs"
+				<text bind:this={textEl1} class="d3-text-marker-primary text-xs"
 					style="text-anchor: end; font-weight: bold;" x={label1X} y={margin.top - 8}>
 					{fmtMarker(pt.values[1])}
 				</text>
 			{/if}
 		{/if}
 	</svg>
+	{#if legend?.length}
+		<div class="ml-8 gap-4 flex flex-row text-xs">
+			{#each legend as item, i}
+				<div>
+					<span style="color: {GradientColor[i]}">&#x25CF;</span>
+					<span>{item}</span>
+				</div>
+			{/each}
+		</div>
+	{/if}
+	<div class="relative w-full text-md flex items-center justify-center">
+		{$_(utils.capitalize(statistics?.xLabel))}
+	</div>
 </div>

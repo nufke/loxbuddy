@@ -240,7 +240,7 @@ class Utils {
 	formatString(n: number, strFormat: string): [number, string] {
 		const { scale, unit } = this.getScaleUnit(strFormat);
 		const base = Math.abs(n) * scale;
-		if (base < 1e3) return [Math.round(n * scale * 10) / 10, unit];
+		if (base < 1e3) return [Math.round(n * scale), unit];
 		if (base < 1e6) return [Math.round(n * scale / 1e3 * 10) / 10, 'k' + unit];
 		if (base < 1e9) return [Math.round(n * scale / 1e6 * 100) / 100, 'M' + unit];
 		return [Math.round(n * scale / 1e9 * 100) / 100, 'G' + unit];

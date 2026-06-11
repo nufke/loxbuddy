@@ -862,8 +862,11 @@ export class DemoClient {
 		const daysInYear = isLeapYear(fromDate) ? 366 : 365;
 		const periodScale: Record<string, number> = { hour: 1, day: 24, month: getDaysInMonth(fromDate) * 24, year: daysInYear * 24 };
 		const scale = periodScale[dataPointUnit] ?? 1;
-		const valueOut = 22 * scale;
-		const valueIn = 10 * scale;
+
+		const inp = url.includes('battery') ? -0.271 : url.includes('net') ? -405 : 22;
+		const outp = url.includes('battery') ? 0.320 : url.includes('net') ? 833 : 33;
+		const valueIn = inp  * scale;
+		const valueOut = outp * scale;
 
 		const stepFn: Record<string, (d: Date, i: number) => Date> = {
 			hour:  (d, i) => addHours(d, i),
@@ -871,9 +874,10 @@ export class DemoClient {
 			month: (d, i) => addMonths(d, i),
 			year:  (d, i) => addYears(d, i),
 		};
-		const addStep = stepFn[dataPointUnit] ?? ((d: Date, i: number) => addHours(d, i));
 
-		const values = [valueOut, valueIn];
+		const addStep = stepFn[dataPointUnit] ?? ((d: Date, i: number) => addHours(d, i));
+		const values = (numDataPoints == 1) ? [valueIn] : [Math.abs(valueOut), Math.abs(valueIn)];
+
 		for (let i = 0; i < length; i++) {
 			view.setUint32(i * size, getUnixTime(addStep(fromDate, i)), true);
 			for (let j = 0; j < numDataPoints; j++) {

@@ -270,7 +270,7 @@ class LbControlStore {
 	 * @param control The control of which the statistics are fetched
 	 * @returns Statistics including metadata
 	*/
-	async fetchStatistics(control: Control, statisticV2: StatisticV2, newDate: Date, selector: string,	type: string):
+	async fetchStatistics(control: Control, statisticV2: StatisticV2, newDate: Date, selector: string, type: string):
 		Promise<Statistics> {
 		const statistics: Statistics = {};
 		let dataPointUnit = 'hour';
@@ -301,14 +301,14 @@ class LbControlStore {
 							for (let j = 0; j < item.dataPoints.length; j++) {
 								values.push(view.getFloat64(i * size + 4 + j * 8, true));
 							}
-							// we swap the array order for storage (battery) as in/out are reversed 
-							stats.push({ ts, values: type === 'storage' ? values.reverse() : values });
+							stats.push({ ts, values: values });
 						}
 					}
 					statistics[item.id] = {
 						data: stats,
-						title: item.id == '2' ? control.details?.powerName : item.dataPoints[0].title,
+						title: item.dataPoints[0].title,
 						format: item.dataPoints[0].format,
+						type: type,
 						fromUnixUtc,
 						untilUnixUtc,
 						total: stats.flatMap((s) => s.values[0]).reduce((a, b) => a + b, 0),
