@@ -1,8 +1,14 @@
 import LoxClient from 'svelte-lox-client';
-import type FileMessage from 'svelte-lox-client/dist/WebSocketMessages/FileMessage';
 import { appStore } from '$lib/stores/LbAppStore.svelte';
 import { controlStore } from '$lib/stores/LbControlStore.svelte';
 import { utils } from '$lib/helpers/Utils';
+
+type FileMessage = {
+	filename: string;
+	type: 'json' | 'text' | 'binary';
+	data: unknown;
+	length: number;
+};
 
 /**
  * Singleton that manages the Miniserver connection.
@@ -13,6 +19,11 @@ export class MiniserverClient {
 	private hostName: string = ''; // should include http or https
 	private userName: string = '';
 	private token: string = '';
+
+	/**
+	 * Constructor is empty. Instead we use the connect method to initialize the Miniserver client.
+	 */
+	constructor() {}
 
 	/**
 	 * Connect to a Miniserver:
@@ -147,7 +158,7 @@ export class MiniserverClient {
 	 * @param filename Name of the file to retrieve
 	 * @returns returns the file contents as a FileMessage
 	 */
-	async getFile(filename: string): Promise<FileMessage> {
+	async getFile(filename: string): Promise<FileMessage | undefined> {
 		return await this.client?.sendFileCommand(filename);
 	}
 

@@ -735,6 +735,13 @@ export type MqttCredentials = {
 	topicPrefix: string;
 }
 
+export type SipCredentials = {
+	wsServer: string;
+	userName: string;
+	domainName: string;
+	password: string;
+}
+
 export type Icon = {
 	id: string;
 	name: string;

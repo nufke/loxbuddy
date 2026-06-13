@@ -19,6 +19,7 @@ LoxBuddy establishes a WebSocket connection to your Miniserver to control and mo
 * 20+ themes / color palettes
 * Light / Dark mode
 * Independent icons
+* VoIP / SIP client to communicate with intercom
 * Weather forecast (using LoxBerry Weather4Lox)
 
 Visit the [Status page](https://github.com/nufke/loxbuddy/wiki/Status) for the latest updates on supported features and controls.

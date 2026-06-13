@@ -52,7 +52,7 @@ or submit a [pull request](https://github.com/nufke/loxbuddy/pulls).
 | InfoOnlyDigital          | Available         |                                       |
 | InfoOnlyText             | Available         |                                       |
 | InfoView                 | Not started       |                                       |
-| Intercom                 | Under development | No SIP communication yet              |
+| Intercom                 | Available         |                                       |
 | IntercomV2               | Not started       |                                       |
 | IRCDaytimer              | Available         |                                       |
 | IRCV2Daytimer            | Available         |                                       |
@@ -153,6 +153,7 @@ or submit a [pull request](https://github.com/nufke/loxbuddy/pulls).
 | User calendar                | Not started                |
 | User-defined icons           | Available                  |
 | Voice control                | Not started                |
+| VoIP / SIP client (intercom) | Available                  |
 | Weather forecast             | Available (Weather4Lox)    |
 
 ## Other ideas

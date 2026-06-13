@@ -5,6 +5,7 @@
 	import { innerWidth } from 'svelte/reactivity/window';
 	import type { Route } from '$lib/types/models';
 	import { mqttClient } from '$lib/communication/MqttClient';
+	import { sipClient } from '$lib/communication/SipClient';
 	import { appStore } from '$lib/stores/LbAppStore.svelte';
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 	import { weatherStore } from '$lib/stores/LbWeatherStore.svelte';
@@ -67,7 +68,7 @@
 	let hourlyForecast = $derived(weatherStore.hourly);
 	let date = $derived(appStore.date);
 	let mqttStatus = $derived(appStore.mqttStatus);
-	let autoLogin = $derived(appStore.autoLogin);
+	let sipStatus = $derived(appStore.sipStatus);
 	let loxStatus = $derived(appStore.loxStatus); // TODO use controlStore.msStatus?
 	let isDemo = $derived(appStore.isDemo);
 	let path = $derived(page.url.pathname);
@@ -217,6 +218,9 @@
 	// connect to MQTT if credentials are available
 	mqttClient.connect();
 
+	// register SIP client if credentials are available
+	sipClient.register();
+
 	Logger(logLevel, true);
 	enableDragDropTouch(document, document, options);
 	weatherStore.startWeatherForecast();
@@ -299,12 +303,16 @@
 			{#if appStore.showStatus && !layoutRail}
 				<div class="mt-3 ml-2 mb-1 flex flex-col justify-left gap-2 {layoutRail ? '' : '-mb-2'}">
 					<div class="flex flex-row items-center gap-2">
+						<LbIcon name="square" class={getStatusColor(loxStatus)} height="16" width="16"/>
+						<span class="text-xs">Miniserver</span>
+					</div>
+					<div class="flex flex-row items-center gap-2">
 						<LbIcon name="circle" class={getStatusColor(mqttStatus)} height="16" width="16"/>
 						<span class="text-xs">MQTT</span>
 					</div>
 					<div class="flex flex-row items-center gap-2">
-						<LbIcon name="square" class={getStatusColor(loxStatus)} height="16" width="16"/>
-						<span class="text-xs">Miniserver</span>
+						<LbIcon name="triangle" class={getStatusColor(sipStatus)} height="16" width="16"/>
+						<span class="text-xs">VoIP</span>
 					</div>
 				</div>
 			{/if}
@@ -408,12 +416,16 @@
 					<footer class="fixed left-0 bottom-0">
 						<div class="ml-4 mb-4 flex flex-col justify-left gap-2">
 							<div class="flex flex-row items-center gap-2">
+								<LbIcon name="square" class={getStatusColor(loxStatus)} height="16" width="16"/>
+								<span class="text-xs">Miniserver</span>
+							</div>
+							<div class="flex flex-row items-center gap-2">
 								<LbIcon name="circle" class={getStatusColor(mqttStatus)} height="16" width="16"/>
 								<span class="text-xs">MQTT</span>
 							</div>
 							<div class="flex flex-row items-center gap-2">
-								<LbIcon name="square" class={getStatusColor(loxStatus)} height="16" width="16"/>
-								<span class="text-xs">Miniserver</span>
+								<LbIcon name="lucide:diamond" class={getStatusColor(sipStatus)} height="16" width="16"/>
+								<span class="text-xs">VoIP</span>
 							</div>
 						</div>
 					</footer>

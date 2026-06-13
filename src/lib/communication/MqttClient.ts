@@ -16,16 +16,16 @@ export class MqttClient {
 	private topicPrefix: string = 'loxone'; 				// TODO configure prefix in GUI
 	private registeredTopics: string[] = [];
 
-	/** 
+	/**
 	 * Constructor is empty as we initialize the MQTT server after reading the environment variables.
-	 * Instead we use the connect method to initialize the MQTT client
+	 * Instead we use the connect method to initialize the MQTT client.
 	 */
 	constructor() {
 	}
 
 	/**
 	 * Establish connection to MQTT server. If no arguments are given, then use the MqttCredentials
-	 * from localStorage
+	 * from localStorage.
 	 * @param hostName (optional) IP address of MQTT server and port
 	 * @param port (optional) port of MQTT server
 	 * @param userName (optional) Name of the user

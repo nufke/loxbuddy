@@ -28,7 +28,7 @@
 	let fillColor = $derived(isUnidirectional ? FillColor.reverse() : FillColor);
 	let mbCorr = $derived( selector == 'Week' ? 16 : 0);
 	let margin = $derived({ top: 22, right: 10, bottom: 20 + mbCorr, left: 32 });
-	let height = $derived( 180 + mbCorr);
+	let height = $derived( 170 + mbCorr);
 	let data = $derived(statistics?.data ?? []);
 	let width = $derived(viewport?.clientWidth || 450);
 	let graphWidth = $derived(width - (margin.left + margin.right));

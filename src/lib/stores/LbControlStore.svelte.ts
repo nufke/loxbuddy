@@ -6,7 +6,7 @@ import type { Structure, MsInfo, Control, ControlState, Category, Room, Notifica
 							NotificationList, UserSettings, UserDefaultStructure, IconAndColor,
 							SystemStatus, GlobalStates, MessageCenter, NotificationMessage,
 							Icon, StatisticV2, Statistics, StatisticInfo, StatisticInfoType,
-							StatisticsEntry } from '$lib/types/models';
+							StatisticsEntry, SecuredDetails } from '$lib/types/models';
 import { startOfDay, endOfDay, startOfISOWeek, endOfISOWeek, startOfMonth,
 				 endOfMonth, startOfYear, endOfYear, getUnixTime } from 'date-fns';
 import { utils } from '$lib/helpers/Utils';
@@ -26,7 +26,6 @@ class LbControlStore {
 	operatingModes: SvelteMap<string, string> = new SvelteMap();
 	rooms: SvelteMap<string, Room> = new SvelteMap();
 	sortingMap: SvelteMap<string, UserDefaultStructure> = new SvelteMap();
-
 	globalStates: GlobalStates = $state(DEFAULT_GLOBALSTATES);
 	iconList: Icon[] | undefined = $state();
 	msInfo: MsInfo = $state(DEFAULT_MSINFO);
@@ -34,7 +33,7 @@ class LbControlStore {
 	sortingMode: number = $state(0);// default sorting (config based)
 	systemStatus: SystemStatus = $state(EMPTY_SYSTEM_STATUS);
 	userSettings = $state(DEFAULT_USERSETTINGS);
-
+	
 	categoryList: Category[] = $derived(Array.from(this.categories.values()));
 	controlList: Control[] = $derived(Array.from(this.controls.values()));
 	customSorting = $derived(((this.sortingMode == 1) ? this.userSettings.userDefaultStructure : this.sortingMap.get(this.msInfo.serialNr)) ?? {}) as UserDefaultStructure;
@@ -150,6 +149,7 @@ class LbControlStore {
 		// Add message center to mapping table
 		const messageCenter = Object.values(data.messageCenter);
 		this.controlClient.set(messageCenter[0].uuidAction, client);
+
 	}
 
 	/**
@@ -246,6 +246,16 @@ class LbControlStore {
 	}
 
 	/**
+	 * Fetch secured details for intercom
+	 * @param control intercom control
+	 */
+	async fetchSecuredDetails(control: Control): Promise<SecuredDetails> {
+		return controlStore.fetchUrl(control.uuidAction, `jdev/sps/io/${control.uuidAction}/securedDetails`)
+		.then((resp) => resp.json())
+		.then((json) => json as SecuredDetails)
+	}
+
+	/**
 	 * Fetch statistical information, including when data is active/ valid (activeSince)
 	 * @param control The control of which the statistic al info is fetched
 	 * @returns Statistic info including when statistics are valid (activeSince)
@@ -253,7 +263,7 @@ class LbControlStore {
 	async fetchStatisticInfo(control: Control): Promise<StatisticInfo> {
 		const info: StatisticInfo = {};
 		await this.fetchUrl(control.uuidAction, `jdev/sps/getStatisticInfo/${control.uuidAction}`)
-			.then((r) => r.json())
+			.then((resp) => resp.json())
 			.then((json) => {
 				const obj = json.LL?.value && utils.isValidJSONObject(json.LL.value) ? JSON.parse(json.LL.value) : json;
 				if (obj.length) {

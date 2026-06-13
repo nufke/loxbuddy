@@ -1,5 +1,5 @@
 import { SvelteMap } from 'svelte/reactivity';
-import type { DialogView, Credentials, MqttCredentials } from '$lib/types/models';
+import type { DialogView, Credentials, MqttCredentials, SipCredentials } from '$lib/types/models';
 import { utils } from '$lib/helpers/Utils';
 import { nl, enGB, de } from 'date-fns/locale'
 import { locale } from 'svelte-i18n';
@@ -20,6 +20,9 @@ class LbAppStore {
 	mode: string = $state('dark');
 	mqttCredentials: MqttCredentials | null = $state(null);
 	mqttStatus: number = $state(0); // 0=disconnected (grey), 1=connected/ok/info (green), 2=warning/issue (yellow), 3=error (red)
+	sipCredentials: SipCredentials | null = $state(null);
+	sipStatus: number = $state(0); // 0=unregistered (grey), 1=registered (green), 3=error (red)
+	callStatus: string = $state('');
 	showStatus: boolean = $state(true);
 	showWeather: boolean = $state(true);
 	startPage: string = $state('/');
@@ -61,6 +64,7 @@ class LbAppStore {
 		this.locale = localStorage.getItem('locale') || 'en';
 		this.credentials = utils.deserialize(utils.getCookie('credentials')) as Credentials;
 		this.mqttCredentials = utils.deserialize(utils.getCookie('mqttCredentials')) as MqttCredentials;
+		this.sipCredentials = utils.deserialize(utils.getCookie('sipCredentials')) as SipCredentials;
 	}
 
 	storeCredentials(credentials: Credentials): void {
@@ -71,6 +75,11 @@ class LbAppStore {
 	storeMqttCredentials(credentials: MqttCredentials): void {
 		this.mqttCredentials = credentials;
 		utils.setCookie('mqttCredentials', utils.serialize(credentials));
+	}
+
+	storeSipCredentials(credentials: SipCredentials): void {
+		this.sipCredentials = credentials;
+		utils.setCookie('sipCredentials', utils.serialize(credentials));
 	}
 
 	getVisuPw(controlUuid: string) {
