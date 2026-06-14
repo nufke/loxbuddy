@@ -792,3 +792,16 @@ export type StatisticInfoType = {
 	activeSince: number;
 }
 
+export type MapIcon = {
+	coordinates: number[];
+	name: string;
+	color: string;
+	bgColor: string;
+}
+
+export type MapType = {
+	map: string;
+	coordinates: number[];
+	zoom: number;
+	icons: MapIcon[]
+}

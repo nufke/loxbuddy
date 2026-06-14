@@ -96,6 +96,10 @@ export class DemoClient {
 		if (obj && obj[0]) {
 			controlStore.setState('__uuid__controls_daytimer_states_mode', obj[0]);
 		}
+
+		// Map demo using InfoOnlyText marker
+		controlStore.setState('__uuid__controls_location_on_map', 
+			'{"map":"osm","coordinates":[4.898829,52.373104],"zoom":19,"icons":[{"coordinates":[4.898829,52.373104],"name":"hugeicons:car-05","color":"#ef4444","bgColor":"#ffffff"},{"coordinates":[4.89895,52.373104],"name":"tabler:armchair","color":"#3b82f6","bgColor":"#ffffff"}]}');
 	}
 
 	/**

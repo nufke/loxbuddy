@@ -3,8 +3,8 @@
 This page lists the development status of the controls and subcontrols, and future requirements and features.
 Controls marked with a \* are LoxBuddy specific controls, which do not exist in the official app.
 
-For additional requests or ideas, you can raise an [issue](https://github.com/nufke/loxbuddy/issues)
-or submit a [pull request](https://github.com/nufke/loxbuddy/pulls).
+For additional requests or ideas, you can raise an [issue][issue]
+or submit a [pull request][pull request].
 
 ## Controls
 
@@ -72,7 +72,7 @@ or submit a [pull request](https://github.com/nufke/loxbuddy/pulls).
 | LightV2                  | Not started       |                                       |
 | LoadManager              | Available         |                                       |
 | MailBox                  | Not started       |                                       |
-| Map\*                    | Available         | uses InfoOnlyText control             |
+| [Map][Map]\*             | Available         | uses InfoOnlyText or Webpage control  |
 | Media                    | Not started       |                                       |
 | MediaClient              | Not started       |                                       |
 | Meter                    | Under development |                                       |
@@ -165,3 +165,8 @@ or submit a [pull request](https://github.com/nufke/loxbuddy/pulls).
  * Biometic control / screen unlock (e.g. TouchID, FaceID)
  * Near Field Communication
  * QR code scanning
+
+[issue]: https://github.com/nufke/loxbuddy/issues
+[pull request]: https://github.com/nufke/loxbuddy/pulls
+
+[Map]: https://github.com/nufke/loxbuddy/wiki/Map

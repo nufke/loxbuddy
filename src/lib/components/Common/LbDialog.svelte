@@ -17,6 +17,7 @@
 	import { format } from 'date-fns';
 	import { innerHeight } from 'svelte/reactivity/window';
 	import LbGeneralDialog from '$lib/components/Common/LbGeneralDialog.svelte';
+	import LbMap from '$lib/components/Common/LbMap.svelte';
 
 	let { controlView = $bindable() }: { controlView: ControlView } = $props();
 
@@ -149,14 +150,14 @@
 									{/if}
 								</div>
 								{/if}
-								<div class="w-full flex flex-col justify-center items-center truncate">
-									{#if controlView.statusName && !controlView.dialog.details?.tracker} <!-- remove status when we show a tracker -->
-										<p class="w-full text-center mb-3 text-lg truncate {controlView.statusColor}" style={getStatusColorHex(controlView.statusColor)}>{$_(controlView.statusName)}</p>
-									{/if}
-								</div>
+								{#if controlView.statusName && !controlView.dialog.details?.tracker && !controlView.dialog.details?.map} <!-- remove status when we show a tracker or map -->
+									<div class="w-full flex flex-col justify-center items-center truncate">
+											<p class="w-full text-center text-lg truncate {controlView.statusColor}" style={getStatusColorHex(controlView.statusColor)}>{$_(controlView.statusName)}</p>
+									</div>
+								{/if}
 							</div>
-							{#if controlView.buttons.length && !controlView.slider && !controlView.dialog.buttons}
-							<div class="w-full grid grid-cols-1 {controlView.dialog.class} gap-2 overflow-y-auto" {style} bind:this={viewport} >
+							{#if controlView.buttons?.length && !controlView.slider && !controlView.dialog.buttons}
+							<div class="w-full mt-3 grid grid-cols-1 {controlView.dialog.class} gap-2 overflow-y-auto" {style} bind:this={viewport} >
 								{#each controlView.buttons as button}
 									{#if button.type === 'button' && button.click}
 										<button type="button" class="w-full btn btn-lg h-[48px] bg-surface-50-950 shadow-sm rounded-lg border border-white/15 hover:border-white/50 active:bg-primary-500 active:bg-primary-500"
@@ -179,8 +180,8 @@
 								{/each}
 							</div>
 							{/if}
-							{#if controlView && controlView.slider && controlView.slider.position >= min}
-								<div class="container flex justify-center items-center p-1 pb-3">
+							{#if controlView.slider && controlView.slider.position >= min}
+								<div class="container mt-3 flex justify-center items-center p-1 pb-3">
 									{#if controlView.control?.type=='Dimmer'}
 										<LbSimpleSlider classes='dimmer' {orientation} {min} {max} {step} {locked} {value} onValueChange={(e: any) => {setPostion(e.value)}}/>
 									{:else}
@@ -201,8 +202,8 @@
 									{/if}
 								</div>
 							{/if}
-							{#if controlView && controlView.dialog && controlView.dialog.buttons}
-							<div class="container grid grid-cols-1 {controlView.dialog.class} gap-2 overflow-y-auto" {style} bind:this={viewport}>
+							{#if controlView.dialog.buttons}
+							<div class="container mt-3 grid grid-cols-1 {controlView.dialog.class} gap-2 overflow-y-auto" {style} bind:this={viewport}>
 								{#each controlView.dialog.buttons as button}
 									{#if button.type === 'button' && button.click}
 										<button type="button" class="w-full {button.class} btn btn-lg h-[48px] bg-surface-50-950 shadow-sm rounded-lg border border-white/15 hover:border-white/50 active:bg-primary-500"
@@ -230,8 +231,8 @@
 								{/each}
 							</div>
 							{/if}
-							{#if controlView.dialog && controlView.dialog.details && controlView.dialog.details.tracker} <!-- used for entries for tracker -->
-							<div class="flex flex-col w-full mt-2 pl-2 pr-2 overflow-y-auto" {style} bind:this={viewport}>
+							{#if controlView.dialog.details?.tracker}
+							<div class="flex flex-col w-full mt-3 pl-2 pr-2 overflow-y-auto" {style} bind:this={viewport}>
 								{#each Object.keys(controlView.dialog.details.tracker) as key}
 									<p class="text-lg dark:text-surface-50 text-surface-950">{format(new Date(Number(key)), "PPP")}</p>
 									<hr class="hr" />
@@ -244,8 +245,8 @@
 								{/each}
 							</div>
 							{/if}
-							{#if controlView.dialog && controlView.dialog.details && controlView.dialog.details.loadManager}
-								<div class="w-full bg-surface-50-950 rounded-lg border border-white/15 hover:border-white/50">
+							{#if controlView.dialog.details?.loadManager}
+								<div class="w-full mt-3 bg-surface-50-950 rounded-lg border border-white/15 hover:border-white/50">
 									<LbStatusBar maxPower={controlView.dialog.details.loadManager.maxPower}
 																currentPower={controlView.dialog.details.loadManager.currentPower}
 																mode={controlView.dialog.details.loadManager.mode} />
@@ -273,6 +274,11 @@
 											</button>
 										{/each}
 									</div>
+								</div>
+							{/if}
+							{#if controlView.dialog.details?.map}
+								<div class="relative w-full mt-3">
+									<LbMap map={controlView.dialog.details.map}/>
 								</div>
 							{/if}
 							{#if linkedControls.length}

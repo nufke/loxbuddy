@@ -13,6 +13,7 @@
 	let urlHd = $derived(control.details?.urlHd);
 	let httpUrl = $derived((urlHd || url).match(/^https?:\/\/(.*)/)[1]); // https prio over http
 	let passwordView: GeneralView = $state(DEFAULT_GENERALVIEW);
+	let isMap = $derived(httpUrl.match(/openstreetmap.org\/#map=.*\/.*\/.*/));
 
 	let buttons: SingleButtonView[] = $state([
 		{
@@ -29,6 +30,8 @@
 		state: false
 	});
 
+	let dialogExt = $derived(isMap ? {...dialog, disableIcon: true,	details: { map: httpUrl }} : dialog)
+
 	let controlView: ControlView = $derived({
 		...DEFAULT_CONTROLVIEW,
 		control: control,
@@ -36,8 +39,8 @@
 		iconName: controlStore.getIcon(control, controlOptions.isSubControl),
 		textName: control.name,
 		statusName: httpUrl,
-		buttons: buttons,
-		dialog: dialog
+		buttons: isMap ? [] : buttons,
+		dialog: dialogExt
 	});
 
 	function openWebPage(): void {

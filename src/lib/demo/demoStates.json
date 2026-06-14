@@ -205,7 +205,6 @@
   "__uuid__controls_smoke_alarm_level": 0,
   "__uuid__controls_smoke_alarm_timeServiceMode": 0,
   "__uuid__controls_intercom_securedDetails": "{\"videoInfo\":{\"alertImage\":\"\",\"streamUrl\":\"http://84.35.147.6/mjpg/video.mjpg?camera=1\",\"deviceUuid\":\"__uuid_device\",\"user\":\"\",\"pass\":\"\"}}",
-  "__uuid__controls_location_on_map": "https://www.openstreetmap.org/#map=19/52.373104/4.898829",
   "__uuid__controls_efm_states_Ppwr": "3.5",
   "__uuid__controls_efm_states_Gpwr": "-0.8",
   "__uuid__controls_efm_states_Spwr": "-0.8",
