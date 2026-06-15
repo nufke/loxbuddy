@@ -9,15 +9,18 @@
 	import { utils } from '$lib/helpers/Utils';
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
+
+	let isMap = false;
+
 	let text = $derived(controlStore.getState(control.states?.text));
-	let mapCoordinates = $derived(extractCoordinates(text));
+	let status = $derived(checkMap(text));
 
 	let dialog: DialogView = $state({
 		action: (state: boolean) => {dialog.state = state},
 		state: false
 	});
 
-	let dialogExt = $derived(mapCoordinates.length ? {...dialog, disableIcon: true,	details: { map: text }} : dialog)
+	let dialogExt = $derived(isMap ? {...dialog, disableIcon: true,	details: { map: text }} : dialog);
 
 	let controlView: ControlView = $derived({
 		...DEFAULT_CONTROLVIEW,
@@ -25,20 +28,28 @@
 		isFavorite: controlOptions.isFavorite,
 		iconName: controlStore.getIcon(control, controlOptions.isSubControl),
 		textName: control.name,
-		statusName: mapCoordinates.length ? `${mapCoordinates[0]}, ${mapCoordinates[1]}` : fmt.sprintf(control.details?.format, text),
+		statusName: status,
 		dialog: dialogExt
 	});
 
-	function extractCoordinates(text: string | MapType): number[] {
+	function checkMap(text: string | MapType): string {
 		const map = (text as string).match(/openstreetmap.org\/#map=.*\/(.*)\/(.*)/) ?? [];
 		if (map.length) {
-			return [Number(map[1]), Number(map[2])];
+			isMap = true;
+			return `${map[1]}, ${map[2]}`;
+		}
+		const mapWithMarker = (text as string).match(/openstreetmap.org\/\?mlat=(.*)&mlon=(.*)#map.*/) ?? [];
+		if (mapWithMarker.length) {
+			isMap = true;
+			return `${mapWithMarker[1]}, ${mapWithMarker}`;
 		}
 		const mapObj = utils.isValidJSONObject(text as string) ? JSON.parse(text as string) : (text as MapType);
 		if (mapObj?.map && mapObj?.coordinates) {
-			return mapObj.coordinates.reverse();
+			isMap = true;
+			return mapObj.description?.length ? mapObj.description : `${mapObj.coordinates[1]}, ${mapObj.coordinates[0]}`;
 		}
-		return []; // not a map string nor object, return []
+		isMap = false;
+		return fmt.sprintf(control.details?.format, text); // not a map string nor object, return original text
 	}
 </script>
 

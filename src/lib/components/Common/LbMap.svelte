@@ -4,6 +4,7 @@
 	import 'svelte-openlayers/styles.css';
 	import { Style, Icon, Circle, Fill, Stroke } from 'ol/style';
 	import type { MapType } from '$lib/types/models';
+	import { getCustomIconSrc } from '$lib/helpers/registerIcons';
 	import { _ } from 'svelte-i18n';
 	import { utils } from '$lib/helpers/Utils';
 
@@ -16,13 +17,20 @@
 		if (mapElement.length) return {
 			map: 'osm',
 			coordinates: [Number(mapElement[3]), Number(mapElement[2])],
+			description: "Map",
 			zoom: Number(mapElement[1]),
-			icons: [
+		}
+		const mapw =	(map as string).match(/openstreetmap.org\/\?mlat=(.*)&mlon=(.*)#map=(.*)\/(.*)\/(.*)/) ?? [];
+		if (mapw.length) return {
+			map: 'osm',
+			coordinates: [Number(mapw[5]), Number(mapw[4])],
+			zoom: Number(mapw[3]),
+			markers: [
 				{
-					coordinates: [Number(mapElement[3]), Number(mapElement[2])],
-					name: 'boxicons:location-filled', // default: location pin
-					color: '#0000ff', // blue icon
-					bgColor: '#ffffff' // white background
+      		coordinates: [Number(mapw[2]), Number(mapw[1])],
+      		name: 'Marker',
+      		icon: 'weui:location-filled',
+      		color: '#0000ff'
 				}
 			]
 		}
@@ -33,21 +41,28 @@
 		return null; // not a map string nor object, return null
 	}
 
-	function createIconStyle(iconName: string, color: string, bgColor: string): Style[] {
+	function createIconStyle(iconName: string, color: string, bgColor?: string): Style[] {
 		const [prefix, name] = iconName.split(':');
-		const src = `https://api.iconify.design/${prefix}/${name}.svg?color=${encodeURIComponent(color)}`;
-		return [
-			new Style({
-				image: new Circle({
-					radius: 20,
-					fill: new Fill({ color: bgColor }),
-					stroke: new Stroke({ color: '#bfbfbf', width: 1 })
+		const src = (prefix === 'loxbuddy') ? getCustomIconSrc(name, color)
+			: `https://api.iconify.design/${prefix}/${name}.svg?color=${encodeURIComponent(color)}`;
+		const style: Style[] = [];
+		if (bgColor) { // only add cicle if we specify an icon background
+			style.push(
+				new Style({
+					image: new Circle({
+						radius: 20,
+						fill: new Fill({ color: bgColor }),
+						stroke: new Stroke({ color: '#bfbfbf', width: 1 })
+					})
 				})
-			}),
+			)
+		};
+		style.push(
 			new Style({
-				image: new Icon({ src, width: 24, height: 24, crossOrigin: 'anonymous' })
+				image: new Icon({ src, width: 28, height: 28, crossOrigin: 'anonymous' })
 			})
-		];
+		);
+		return style;
 	}
 </script>
 
@@ -56,9 +71,9 @@
 		<View center={map_.coordinates} zoom={map_.zoom}>
 			<Map controls={{ fullscreen: true }}>
 				<Layer.Tile source={(map_.map) as LayerTileProps['source']} />
-				{#each map_.icons as icon}
-					<Layer.Vector style={createIconStyle(icon.name, icon.color, icon.bgColor)}>
-						<Feature.Point coordinates={icon.coordinates} />
+				{#each map_.markers as marker}
+					<Layer.Vector style={createIconStyle(marker.icon, marker.color, marker?.bgColor)}>
+						<Feature.Point coordinates={marker.coordinates} />
 					</Layer.Vector>
 				{/each}
 			</Map>

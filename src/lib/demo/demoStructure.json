@@ -1185,8 +1185,8 @@
 			"restrictions": 0,
 			"details": {
 				"jLockable": false,
-				"url": "https://www.openstreetmap.org/#map=19/52.373104/4.898829",
-				"urlHd": "https://www.openstreetmap.org/#map=19/52.373104/4.898829",
+				"url": "https://www.openstreetmap.org/?mlat=52.373104&mlon=4.898829#map=19/52.373104/4.898829",
+				"urlHd": "https://www.openstreetmap.org/?mlat=52.373104&mlon=4.898829#map=19/52.373104/4.898829",
 				"image": "",
 				"iconColor": "#000000"
 			}

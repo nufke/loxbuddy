@@ -99,7 +99,7 @@ export class DemoClient {
 
 		// Map demo using InfoOnlyText marker
 		controlStore.setState('__uuid__controls_location_on_map', 
-			'{"map":"osm","coordinates":[4.898829,52.373104],"zoom":19,"icons":[{"coordinates":[4.898829,52.373104],"name":"hugeicons:car-05","color":"#ef4444","bgColor":"#ffffff"},{"coordinates":[4.89895,52.373104],"name":"tabler:armchair","color":"#3b82f6","bgColor":"#ffffff"}]}');
+			'{"map":"osm","coordinates":[4.898829,52.373104],"description":"Map of Amsterdam","zoom":19,"markers":[{"coordinates":[4.898829,52.373104],"name":"Car","icon":"hugeicons:car-05","color":"#ef4444","bgColor":"#ffffff"},{"coordinates":[4.89895,52.373104],"name":"Gas station","icon":"tabler:gas-station","color":"#3b82f6","bgColor":"#ffffff"}]}');
 	}
 
 	/**

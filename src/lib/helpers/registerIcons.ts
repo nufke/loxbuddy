@@ -1,4 +1,17 @@
-import { addCollection } from '@iconify/svelte';
+import { addCollection, getIcon } from '@iconify/svelte';
+
+/**
+ * get custom icon source
+ * @param name icon name
+ * @param color icon color
+ * @returns icon source (svg)
+ */
+export function getCustomIconSrc(name: string, color: string): string {
+	const iconData = getIcon(`loxbuddy:${name}`);
+	if (!iconData) return '';
+	const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${iconData.width}" height="${iconData.height}" viewBox="0 0 ${iconData.width} ${iconData.height}">${iconData.body.replace(/currentColor/g, color)}</svg>`;
+	return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+}
 
 /**
  * Register LoxBuddy icons using Iconify API
