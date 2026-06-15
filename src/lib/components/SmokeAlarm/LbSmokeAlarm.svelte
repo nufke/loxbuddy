@@ -165,7 +165,7 @@
 							{/if}
 							{#if selectedTab==2}
 							<div class="justify-center text-center">
-								<p class="h5 text-lg dark:text-surface-300 text-surface-700">{$_("Duration servicemode")} ({$_("Uren").toLocaleLowerCase()} : {$_("Minuten").toLocaleLowerCase()})</p>
+								<p class="h5 text-lg dark:text-surface-300 text-surface-700">{$_("Duration servicemode")} ({$_("Hours").toLocaleLowerCase()} : {$_("Minutes").toLocaleLowerCase()})</p>
 							</div>
 							<div class="w-[100px] m-auto justify-center text-center">
 								<div class="grid grid-cols-3">

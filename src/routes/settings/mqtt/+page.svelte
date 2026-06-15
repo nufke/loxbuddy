@@ -92,7 +92,7 @@
 	<form onsubmit={connect} class="p-5 space-y-4">
 		<fieldset class="space-y-4" disabled={mqttStatus > 0 || connecting}>
 			<label class="label">
-				<span class="label-text">{$_("Host name or IP address")}</span>
+				<span class="label-text">{$_("Host name or IP address")} (WebSocket)</span>
 				<input class="input" type="text" bind:value={hostName} placeholder="192.168.x.x" />
 			</label>
 			<label class="label">

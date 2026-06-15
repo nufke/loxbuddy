@@ -83,7 +83,7 @@
 	<form onsubmit={register} class="p-5 space-y-4">
 		<fieldset class="space-y-4" disabled={sipStatus > 0 || connecting}>
 			<label class="label">
-				<span class="label-text">{$_("SIP server URL (WebSocket)")}</span>
+				<span class="label-text">{$_("SIP server URL")}  (WebSocket)</span>
 				<input class="input" type="text" bind:value={wsServer} placeholder="wss://sip.example.com:8081" />
 			</label>
 			<label class="label">
