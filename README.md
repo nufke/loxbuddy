@@ -109,7 +109,7 @@ Special thanks and credits to:
 
 ## Disclaimer
 
-Although the developer followed the [official documentation](https://www.loxone.com/wp-content/uploads/datasheets/StructureFile.pdf), use this application at your own risk.
+Although the developer followed the [official documentation](https://www.loxone.com/enen/wp-content/uploads/sites/3/2026/04/1700_Structure-File.pdf), use this application at your own risk.
 
 ## Buy Me A Coffee
 

@@ -17,8 +17,8 @@ or submit a [pull request][pull request].
 | AlarmCentral             | Not started       |                                       |
 | AlarmChain               | Not started       |                                       |
 | AlarmClock               | Available         |                                       |
-| Athene                   | Not started       |                                       |
 | Application              | Not started       |                                       |
+| Athene                   | Not started       |                                       |
 | AudioPlayerGroup         | Not started       |                                       |
 | AudioZone                | Not started       |                                       |
 | AudioZoneCentral         | Not started       |                                       |
@@ -75,8 +75,9 @@ or submit a [pull request][pull request].
 | [Map][Map]\*             | Available         | uses InfoOnlyText or Webpage control  |
 | Media                    | Not started       |                                       |
 | MediaClient              | Not started       |                                       |
-| Meter                    | Under development |                                       |
+| Meter                    | Available         |                                       |
 | MeterV2                  | Not started       |                                       |
+| MsShortcut               | Not started       |                                       |
 | MultifunctionSW          | Not started       |                                       |
 | NFCCodeTouch             | Not started       |                                       |
 | Pool                     | Not started       |                                       |
@@ -88,6 +89,7 @@ or submit a [pull request][pull request].
 | PresenceDetector         | Available         |                                       |
 | PulseAt                  | Not started       |                                       |
 | Pushbutton               | Available         |                                       |
+| PVProductionForecast     | Not started       |                                       |
 | Radio                    | Available         |                                       |
 | Remote                   | Not started       |                                       |
 | Sauna                    | Not started       |                                       |
@@ -113,6 +115,7 @@ or submit a [pull request][pull request].
 | ValueSelector            | Available         |                                       |
 | Ventilation              | Not started       |                                       |
 | Wallbox2                 | Not started       |                                       |
+| WallboxManager           | Not started       |                                       |
 | Webpage                  | Available         |                                       |
 | Weather                  | Not started       |                                       |
 | Window                   | Not started       |                                       |
@@ -141,7 +144,7 @@ or submit a [pull request][pull request].
 | Pin protected pages          | Not started                |
 | Push messages (internet)     | Not started                |
 | Screensaver / Lockscreen     | Available                  |
-| Secured controls             | Under development (switch) |
+| Secured controls             | Available                  |
 | Secured communication (wss)  | Available                  |
 | Settings menu                | Available                  |
 | Sorting of controls          | Under development          |
@@ -168,5 +171,4 @@ or submit a [pull request][pull request].
 
 [issue]: https://github.com/nufke/loxbuddy/issues
 [pull request]: https://github.com/nufke/loxbuddy/pulls
-
 [Map]: https://github.com/nufke/loxbuddy/wiki/Map
