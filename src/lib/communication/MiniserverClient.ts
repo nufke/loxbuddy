@@ -2,6 +2,7 @@ import LoxClient from 'svelte-lox-client';
 import { appStore } from '$lib/stores/LbAppStore.svelte';
 import { controlStore } from '$lib/stores/LbControlStore.svelte';
 import { utils } from '$lib/helpers/Utils';
+import type { UserSettings } from '$lib/types/models';
 
 type FileMessage = {
 	filename: string;
@@ -104,8 +105,8 @@ export class MiniserverClient {
 
 		this.client?.on('disconnected', () => {
 			console.info('[MiniserverClient] Disconnected from Miniserver');
+			this.client = null; /* null before any further calls to prevent re-entry */
 			appStore.loxStatus = 0;
-			miniserverClient.disconnect();
 		});
 
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -166,10 +167,11 @@ export class MiniserverClient {
 	 * Disconnect Miniserver (if not already done)
 	 */
   async disconnect(): Promise<void> {
-		if (this.client) {
-			await this.client.disconnect();
-			this.client = null;
+		const client = this.client;
+		if (client) {
+			this.client = null; /* null first to prevent re-entry from disconnected event */
 			appStore.loxStatus = 0;
+			await client.disconnect();
 		}
   }
 
@@ -200,11 +202,11 @@ export class MiniserverClient {
 
 		// get UserSettings for sorting and favorites
 		console.info('[MiniserverClient] Get user settings...');
-		this.getUserSettings();
+		await this.getUserSettings();
 
 		// get System status
 		console.info('[MiniserverClient] Get system status...');
-		this.getSystemStatus();
+		await this.getSystemStatus();
 
 		// update locale based on structure language
 		appStore.setLocale(controlStore.msInfo.languageCode.toLowerCase().slice(0, 2));
@@ -235,40 +237,24 @@ export class MiniserverClient {
 	}
 
 	/**
-	 * Check credentials using REST API with username and password (no login)
-	 * NOTE: no catch implemented in this fetch, this should be handled in the caller
-	 * @param url IP address and/or hostname of the Miniserver
-	 * @param userName name of the user
-	 * @param password user password
-	 */
-	checkCredentials(url: string, userName: string, password: string): void {
-		fetch(`${url}/jdev/sps/getusersettings`, {
-			method: 'GET',
-			headers: {
-				'Content-Type': 'application/json',
-				'Authorization': 'Basic ' + btoa(userName + ':' + password)
-			}
-		})
-		.then((response) => {
-			if (response.status != 200) {
-				throw new Error('[MiniserverClient]: Check credentials failed');
-			};
-		});
-	}
-
-	/**
 	 * Store user settings (e.g. sorting/order of controls)
-	 * @param settings in string/strigify format 
+	 * @param settings user settings of type UserSettings
 	 */
-	setUserSettings(settings: string): void {
-		console.info('[MiniserverClient] setUserSettings not implemented', JSON.parse(settings));
+	async setUserSettings(settings: UserSettings): Promise<void> {
+		console.info('[MiniserverClient] user settings send to Miniserver:', settings);
+		await fetch(`${this.hostName}/jdev/sps/setusersettings?autht=${appStore.credentials?.token}&user=${this.userName}`,
+		{ 
+			method: "POST",
+			body: settings.ts + '/' + JSON.stringify(settings)
+		})
+		.catch((error) => console.error('[MiniserverClient] setUserSettings fetch POST error: ', error));
 	}
 
 	/**
 	 * Retrieve user settings (e.g. sorting/order of controls)
 	 */
-	getUserSettings(): void {
-		fetch(`${this.hostName}/jdev/sps/getusersettings?autht=${appStore.credentials?.token}&user=${this.userName}`)
+	async getUserSettings(): Promise<void> {
+		await fetch(`${this.hostName}/jdev/sps/getusersettings?autht=${appStore.credentials?.token}&user=${this.userName}`)
 		.then((response) => {
 			if (response.ok) {
 				return response.json();
@@ -277,7 +263,7 @@ export class MiniserverClient {
 			}
 		})
 		.then((data) => {
-			controlStore.setUserSettings(data);
+			controlStore.storeUserSettings(data);
 		})
 		.catch((error) => console.error('[MiniserverClient] getUserSettings fetch error: ', error));
 	}
@@ -285,7 +271,7 @@ export class MiniserverClient {
 	/**
 	 * Retrieve Miniserver system status
 	 */
-	getSystemStatus(): void {
+	async getSystemStatus(): Promise<void> {
 		if (!controlStore.messageCenterList.length) return; /* no messageCenter, return */
 		fetch(`${this.hostName}/jdev/sps/io/${controlStore.messageCenterList[0].uuidAction}/getEntries/2?autht=${appStore.credentials?.token}&user=${this.userName}`)
 		.then((response) => {

@@ -372,7 +372,6 @@ export class SipClient {
 		}
 		if (this.localMedia) {
 			const localStream = new MediaStream(pc.getSenders().map(s => s.track).filter(Boolean) as MediaStreamTrack[]);
-		console.log('localStream', localStream)
 			this.localMedia.srcObject = localStream;
 			this.localMedia.play().catch((e) => console.warn('[SipClient] localMedia play failed:', e));
 		}

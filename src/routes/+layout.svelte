@@ -25,7 +25,7 @@
 	import { demo } from '$lib/demo/DemoClient';
 
 	const env = page.data.env;
-	const logLevel = env && env.APP_LOGLEVEL ? Number(env.APP_LOGLEVEL) : 0;
+
 	const anchorRail = 'btn aspect-square pl-6 w-full max-w-[74px] flex flex-col items-center gap-0.5';
 	const anchorSidebar = 'btn justify-start px-2 w-full ';
 	const anchorBar = 'btn hover:preset-tonal flex-col items-center gap-1';
@@ -221,7 +221,13 @@
 	// register SIP client if credentials are available
 	sipClient.register();
 
-	Logger(logLevel, true);
+	// register logger and update the level if changed
+	$effect(() => {
+		Logger(appStore.logLevel, true);
+		const level = ['NONE', 'ERROR', 'WARN', 'INFO', 'DEBUG'];
+		console.info('Log level set to', level[appStore.logLevel]);
+	});
+
 	enableDragDropTouch(document, document, options);
 	weatherStore.startWeatherForecast();
 

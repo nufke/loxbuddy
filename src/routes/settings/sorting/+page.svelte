@@ -35,10 +35,10 @@
 		ok: (sortMode: number) => {
 			sortingMode = sortMode;
 			controlStore.setSortingMode(sortMode);
-			controlStore.getUserSettings();
 			if (sortMode == 0) { /* when config selected, disable sorting */
 				onSortingEnabled({ checked: false });
 			}
+			void controlStore.getUserSettings(); /* async method */
 		}
 	});
 

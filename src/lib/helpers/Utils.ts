@@ -253,6 +253,13 @@ class Utils {
 	frontToBack<T>(list: T[]): T[] {
 		return [list[list.length-1], ...list.slice(0, list.length-1)];
 	}
+
+	getLoxTime(sec: boolean = false): number {
+		const epoch = Date.now() - 1230764400000;
+		const epochDST = this.isDST(new Date(epoch)) ? epoch - 3600000 : epoch;
+		return sec ? Math.round(epochDST/1000) : epochDST;
+	}
+
 }
 
 export const utils = new Utils();

@@ -16,6 +16,7 @@ class LbAppStore {
 	date: Date = $state(new Date());
 	isDemo: boolean = $state(false);
 	locale: string = $state('en'); // default English
+	logLevel: number = $state(3); //	DEBUG = 4, INFO = 3, WARN = 2, ERROR = 1, NONE = 0
 	loxStatus: number = $state(0);  // 0=disconnected (grey), 1=connected/ok/info (green), 2=warning/issue (yellow), 3=error (red)
 	mode: string = $state('dark');
 	mqttCredentials: MqttCredentials | null = $state(null);
@@ -55,7 +56,9 @@ class LbAppStore {
 		this.appId = localStorage.getItem('appId') || utils.generateUuid();
 		localStorage.setItem('appId', this.appId);
 
+
 		this.showStatus = localStorage.getItem('showStatus') == '1';
+		this.logLevel = Number(localStorage.getItem('logLevel') || '3');
 		this.autoLogin = localStorage.getItem('autoLogin') == '1';
 		this.mode = localStorage.getItem('mode') || 'dark';
 		this.theme = localStorage.getItem('theme') || 'LoxBuddy';
@@ -91,6 +94,11 @@ class LbAppStore {
 		setTimeout(() => {
 			this.visuPw.delete(controlUuid);
 		}, 10000); // delete visuPw after 10 sec
+	}
+
+	setLogLevel(level: number) {
+		this.logLevel = level;
+		localStorage.setItem('logLevel', String(level));
 	}
 
 	clearCredentials(): void {

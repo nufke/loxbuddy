@@ -73,7 +73,7 @@
 							<div class="w-full mt-3 mb-2 grid gap-2">
 								{#if view.buttons && view.buttons.length}
 									{#each view.buttons as button}
-									<button type="button" class="w-full h-[48px] btn btn-lg { selectedButton.id == button.id ? 'bg-surface-200-800' : 'bg-surface-50-950' }
+									<button type="button" class="w-full h-[48px] btn btn-lg { selectedButton?.id == button.id ? 'bg-surface-200-800' : 'bg-surface-50-950' }
 												shadow-sm rounded-lg border border-white/15 hover:border-white/50"
 													onclick={(e) => { e.stopPropagation(); e.preventDefault(); buttonSelect(button.id)}}>
 												<span class="text-lg">{$_(button.name)}</span>

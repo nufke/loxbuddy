@@ -149,7 +149,6 @@ class LbControlStore {
 		// Add message center to mapping table
 		const messageCenter = Object.values(data.messageCenter);
 		this.controlClient.set(messageCenter[0].uuidAction, client);
-
 	}
 
 	/**
@@ -345,25 +344,28 @@ class LbControlStore {
 	 * @param list updated list of controls, rooms or categories
 	 * @param key key indicating if this is a favorite, room, or category
 	 */
-	updateSortingOrder(list: Control[] | Room[] | Category[], key: string): void {
+	async updateSortingOrder(list: Control[] | Room[] | Category[], key: string): Promise<void> {
+		const currentSorting: UserDefaultStructure = $state.snapshot(this.customSorting); /* plain copy, no proxy */
+		const newSorting: UserDefaultStructure = { ...currentSorting };
 		list.forEach((item, index) => {
 			const uuid = (item as Control).uuidAction ?? (item as Room | Category).uuid;
-			this.customSorting[uuid] ??= {}; /* create if not exists */
-			this.customSorting[uuid][key] = {
-				...(this.customSorting[uuid][key] ?? { isFav: true }),
-				position: index
+			newSorting[uuid] = {
+				...(currentSorting[uuid] ?? {}),
+				[key]: { ...(currentSorting[uuid]?.[key] ?? { isFav: true }), position: index }
 			};
 		});
-
 		switch (this.sortingMode) {
-			case 1: { /* user-defined sorting */
+			case 0: break; /* sorting according to Lox Config, skip */
+			case 1: { /* user-defined sorting: write back to userSettings so $derived re-evaluates correctly */
 				const client = this.controlClient.get(this.msInfo.serialNr) || demo;
-				client.setUserSettings(JSON.stringify({...this.userSettings, userDefaultStructure: this.customSorting}));
+				const settings: UserSettings = { ...$state.snapshot(this.userSettings), ts: utils.getLoxTime(true), userDefaultStructure: newSorting };
+				await client.setUserSettings(settings);
+				this.storeUserSettings(settings);
 				break;
 			}
-			case 2: { /* app-specific sorting */
-				this.sortingMap.set(this.msInfo.serialNr, this.customSorting);
-				localStorage.setItem('sortingMap', utils.serialize(Object.fromEntries(this.sortingMap))); /* store sorting in localStorage */
+			case 2: { /* app-specific sorting: write back to sortingMap so $derived re-evaluates correctly */
+				this.sortingMap.set(this.msInfo.serialNr, newSorting);
+				localStorage.setItem('sortingMap', utils.serialize(Object.fromEntries(this.sortingMap)));
 				break;
 			}
 			default: /* none */
@@ -374,7 +376,7 @@ class LbControlStore {
 	 * Set and store user settings
 	 * @param settings userSettings
 	 */
-	setUserSettings(settings: UserSettings): void {
+	storeUserSettings(settings: UserSettings): void {
 		this.userSettings = settings;
 		localStorage.setItem('userSettings', utils.serialize(this.userSettings)); /* store user settings in localStorage */
 
@@ -389,9 +391,9 @@ class LbControlStore {
 	/**
 	 * Retrieve user settings
 	 */
-	getUserSettings(): void {
+	async getUserSettings(): Promise<void> {
 		const client = this.controlClient.get(this.msInfo.serialNr) || demo;
-		client.getUserSettings();
+		await client.getUserSettings();
 	}
 
 	/**

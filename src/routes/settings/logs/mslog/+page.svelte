@@ -5,14 +5,14 @@
 	let errorMsg = 'Unable to retrieve log from Miniserver';
 
 	function getLog() {
-		console.log('Retrieving Miniserver log...');
+		console.info('Retrieving Miniserver log...');
 		controlStore
 			.fetchUrl(controlStore.msInfo.serialNr, `dev/fsget/log/def.log`)
 			.then((response) => {
 				if (response.ok) {
 					return response.text();
 				} else {
-					console.log(errorMsg);
+					console.error(errorMsg);
 					return errorMsg;
 				}
 			})

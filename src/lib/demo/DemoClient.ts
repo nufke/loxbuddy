@@ -1,5 +1,5 @@
 import { controlStore } from '$lib/stores/LbControlStore.svelte';
-import type { Control, AlarmClockEntries } from '$lib/types/models';
+import type { Control, AlarmClockEntries, UserSettings } from '$lib/types/models';
 import { utils } from '$lib/helpers/Utils';
 import structure from '$lib/demo/demoStructure.json';
 import states from '$lib/demo/demoStates.json';
@@ -60,7 +60,7 @@ export class DemoClient {
 			// only load user settings if not available in localStorage
 			console.info('[DEMO] Get user settings...');
 			if (!controlStore.userSettings.userDefaultStructure?.length) {
-				this.getUserSettings();
+				void this.getUserSettings(); /* called async */
 			}
 		}, 100);
 
@@ -902,7 +902,7 @@ export class DemoClient {
 	 * Helper method to get file in demo mode
 	 * @param url url to file
 	 */
-	getFile(url: string): void {
+	async getFile(url: string): Promise<void> {
 		console.info('[DEMO] getFile not yet implemented in demo mode.');
 	}
 
@@ -910,15 +910,15 @@ export class DemoClient {
 	 * Store user settings (e.g. sorting/order of controls)
 	 * @param settings Object containing user settings
 	 */
-	setUserSettings(settings: string): void {
-		console.info('[DEMO] setUserSettings not implemented in demo mode.', JSON.parse(settings));
+	async setUserSettings(settings: UserSettings): Promise<void> {
+		console.info('[DEMO] setUserSettings not implemented in demo mode.', settings);
 	}
 
 	/**
 	 * Retrieve user settings (e.g. sorting/order of controls)
 	 */
 	getUserSettings(): void {
-		controlStore.setUserSettings(userSettings);
+		controlStore.storeUserSettings(userSettings);
 	}
 
 	/**

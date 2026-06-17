@@ -2,6 +2,7 @@ import mqtt from 'mqtt';
 import { appStore } from '$lib/stores/LbAppStore.svelte';
 import { controlStore } from '$lib/stores/LbControlStore.svelte';
 import { utils } from '$lib/helpers/Utils';
+import type { UserSettings } from '$lib/types/models';
 
 /**
  * Class to connect to MQTT Server
@@ -224,16 +225,17 @@ export class MqttClient {
 
 	/**
 	 * Dummy placeholder to store user settings (e.g. sorting/order of controls)
+	 * @param settings user settings of type UserSettings
 	 */
-	setUserSettings(settings: string): void {
-		console.info('[MqttClient] setUserSettings not yet implemented', JSON.parse(settings));
+	async setUserSettings(settings: UserSettings): Promise<void> {
+		console.info('[MqttClient] setUserSettings not yet implemented for MQTT', settings);
 	}
 
 	/**
 	 * Dummy placeholder to retrieve user settings (e.g. sorting/order of controls)
 	 */
-	getUserSettings(): void {
-		console.info('[MqttClient] getUserSettings not yet implemented');
+	async getUserSettings(): Promise<void> {
+		console.info('[MqttClient] getUserSettings not yet implemented for MQTT');
 	}
 
 	/**
