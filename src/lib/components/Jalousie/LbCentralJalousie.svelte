@@ -19,9 +19,33 @@
 
 	let margin = 200;
 
+	let screenSelected = $state(false);
+	let passwordView: GeneralView = $state(DEFAULT_GENERALVIEW);
+
+	let dialog: DialogView = $state({
+		action: (state: boolean) => {
+			dialog.state = state;
+		},
+		state: false
+	});
+
+	let buttons: SingleButtonView[] = $state([
+		{
+			iconName: 'chevron-down',
+			type: 'button',
+			color: '',
+			click: (e: any, visuPw?: string) => controlStore.setControl(control, 'FullDown', visuPw)
+		},
+		{
+			iconName: 'chevron-up',
+			type: 'button',
+			color: '',
+			click: (e: any, visuPw?: string) => controlStore.setControl(control, 'FullUp', visuPw)
+		}
+	]);
+
 	let selectedControl: Control | undefined= $state();
 	let selectedControlOptions: ControlOptions | undefined = $state();
-	let screenSelected = $state(false);
 	let screenList = $derived(control.details?.controls) as ScreenItem[];
 	let screenUuid = $derived(control.details?.controls.map((item: ScreenItem) => item.uuid));
 	let viewport: any = $state(); // TODO make HTMLDivElement
@@ -47,32 +71,13 @@
 
 	let selectedScreenCount = $derived(screenList.filter((item) => item.selected == true).length);
 	let windowHeight = $derived(innerHeight.current || 0);
-	let size = $derived(windowHeight * 0.9 - viewport?.clientHeight - margin || 0);
-	let style = $derived(size > 0 && viewport?.clientHeight == viewport?.scrollHeight ? 'height: 100%' : 'height: ' + (viewport?.clientHeight + size) + 'px');
+	let availableHeight = $derived(Math.floor(windowHeight * 0.9) - margin);
 
-	let dialog: DialogView = $state({
-		action: (state: boolean) => {
-			dialog.state = state;
-		},
-		state: false
-	});
-
-	let passwordView: GeneralView = $state(DEFAULT_GENERALVIEW);
-
-	let buttons: SingleButtonView[] = $state([
-		{
-			iconName: 'chevron-down',
-			type: 'button',
-			color: '',
-			click: (e: any, visuPw?: string) => controlStore.setControl(control, 'FullDown', visuPw)
-		},
-		{
-			iconName: 'chevron-up',
-			type: 'button',
-			color: '',
-			click: (e: any, visuPw?: string) => controlStore.setControl(control, 'FullUp', visuPw)
-		}
-	]);
+	let style = $derived(
+		viewport && viewport.scrollHeight > availableHeight
+			? `height: ${availableHeight}px`
+			: 'height: auto'
+	);
 
 	let controlView: ControlView = $derived({
 		...DEFAULT_CONTROLVIEW,

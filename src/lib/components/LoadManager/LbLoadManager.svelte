@@ -9,9 +9,14 @@
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
+	let dialog: DialogView = $state({
+		action: (state: boolean) => {dialog.state = state},
+		state: false,
+		disableIcon: true
+	});
+
 	let loads = $derived(control.details?.loads);
 	let mode = $derived(control.details?.mode);
-
 	let currentPower = $derived(Number(controlStore.getState(control.states?.currentPower)));
 	let peakOverloadPower = $derived(Number(controlStore.getState(control.states?.peakOverloadPower)));
 	let maxPower = $derived(Number(controlStore.getState(control.states?.maxPower)));
@@ -20,12 +25,6 @@
 	let maxTp = $derived(Number(controlStore.getState(control.states?.maxTp)));
 	let lockedLoads = $derived(Number(controlStore.getState(control.states?.lockedLoads)));
 	let statusLoads = $derived(Number(controlStore.getState(control.states?.statusLoads)));
-
-	let dialog: DialogView = $state({
-		action: (state: boolean) => {dialog.state = state},
-		state: false,
-		disableIcon: true
-	});
 
 	let controlView: ControlView = $derived({
 		...DEFAULT_CONTROLVIEW,

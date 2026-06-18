@@ -8,13 +8,6 @@
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
-	let sliderBar: SliderBar = $derived({
-		min: Number(control.details?.min),
-		max: Number(control.details?.max),
-		step: Number(control.details?.step),
-		position: Number(controlStore.getState(control.states?.value))
-	});
-
 	let buttons: SingleButtonView[] = $state([
 		{
 			iconName: 'minus',
@@ -33,6 +26,13 @@
 	let dialog: DialogView = $state({
 		action: (state: boolean) => {dialog.state = state},
 		state: false,
+	});
+
+	let sliderBar: SliderBar = $derived({
+		min: Number(control.details?.min),
+		max: Number(control.details?.max),
+		step: Number(control.details?.step),
+		position: Number(controlStore.getState(control.states?.value))
 	});
 
 	let controlView: ControlView = $derived({

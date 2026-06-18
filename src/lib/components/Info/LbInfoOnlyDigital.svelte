@@ -7,12 +7,12 @@
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS}: { control: Control, controlOptions: ControlOptions } = $props();
 
-	let controlState = $derived(Number(controlStore.getState(control.states?.active)) ? 'on' : 'off');
-
 	let dialog: DialogView = $state({
 		action: (state: boolean) => {dialog.state = state},
 		state: false
 	});
+
+	let controlState = $derived(Number(controlStore.getState(control.states?.active)) ? 'on' : 'off');
 
 	let controlView: ControlView = $derived({
 		...DEFAULT_CONTROLVIEW,

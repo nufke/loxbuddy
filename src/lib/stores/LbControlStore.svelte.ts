@@ -33,7 +33,7 @@ class LbControlStore {
 	sortingMode: number = $state(0);// default sorting (config based)
 	systemStatus: SystemStatus = $state(EMPTY_SYSTEM_STATUS);
 	userSettings = $state(DEFAULT_USERSETTINGS);
-	
+
 	categoryList: Category[] = $derived(Array.from(this.categories.values()));
 	controlList: Control[] = $derived(Array.from(this.controls.values()));
 	customSorting = $derived(((this.sortingMode == 1) ? this.userSettings.userDefaultStructure : this.sortingMap.get(this.msInfo.serialNr)) ?? {}) as UserDefaultStructure;
@@ -42,6 +42,7 @@ class LbControlStore {
 	notificationsMap: NotificationMap = $derived(this.updateNotificationMap(this.notifications)); /* process incoming notifications */
 	notificationsList: NotificationMessage[] = $derived(this.listNotifications(this.notificationsMap)); /* update list of current notifications */
 	msStatus: number = $derived(this.systemStatus.entries ? Math.max(...this.systemStatus.entries.filter((item) => item.isHistoric == false).map((item) => item.severity)) : 0);
+	operatingModeList: string[] = $derived(Array.from(this.operatingModes.keys()));
 	roomList: Room[] = $derived(Array.from(this.rooms.values()));
 
 	/** 

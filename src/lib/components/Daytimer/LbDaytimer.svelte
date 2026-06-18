@@ -29,20 +29,7 @@
 	const toaster = createToaster({duration: 1500});
 
 	let passwordView: GeneralView = $state(DEFAULT_GENERALVIEW);
-	let dayOfTheWeek = $derived(format(appStore.date, 'eeee'));
-	let isAnalog = $derived(Boolean(control.details?.analog));
-	let value = $derived(Number(controlStore.getState(control.states?.value)));
-	let valueFormatted = $derived(fmt.sprintf(control.details?.format, value));
-	let mode = $derived(Number(controlStore.getState(control.states?.mode)));
-	let entries = $derived(utils.extractEntries(controlStore.getState(control.states?.entriesAndDefaultValue))) as EntriesAndDefaultValue;
-	let modeList = $derived(String(controlStore.getState(control.states?.modeList))); 
-	let currentTime = $derived(appStore.date);
-	let dayModes = $derived(utils.extractDayModes(modeList)) as WeekDays;
-	let status = $derived(isAnalog ? valueFormatted : ( value ? control.details?.text.on : control.details?.text.off)) as string;
-	let override = $derived(Number(controlStore.getState(control.states?.override)));
-	let timeslot = $derived(calcStartEndTime(entries));
 	let overrideDate = $state({start: new SvelteDate(), end: new SvelteDate(), active: false});
-	let outputActive = $derived(false);
 
 	let calendarView = $state({
 		control: control,
@@ -61,6 +48,19 @@
 		action: (state: boolean) => {dialog.state = state},
 		state: false
 	});
+
+	let dayOfTheWeek = $derived(format(appStore.date, 'eeee'));
+	let isAnalog = $derived(Boolean(control.details?.analog));
+	let value = $derived(Number(controlStore.getState(control.states?.value)));
+	let valueFormatted = $derived(fmt.sprintf(control.details?.format, value));
+	let mode = $derived(Number(controlStore.getState(control.states?.mode)));
+	let entries = $derived(utils.extractEntries(controlStore.getState(control.states?.entriesAndDefaultValue))) as EntriesAndDefaultValue;
+	let modeList = $derived(String(controlStore.getState(control.states?.modeList))); 
+	let dayModes = $derived(utils.extractDayModes(modeList)) as WeekDays;
+	let status = $derived(isAnalog ? valueFormatted : ( value ? control.details?.text.on : control.details?.text.off)) as string;
+	let override = $derived(Number(controlStore.getState(control.states?.override)));
+	let timeslot = $derived(calcStartEndTime(entries));
+	let outputActive = $derived(false);
 
 	let controlView: ControlView = $derived({
 		...DEFAULT_CONTROLVIEW,
@@ -107,7 +107,7 @@
 
 	function getTime(t: string): Date {
 		let hhmm = t.split(':');
-		let d = setHours(currentTime, Number(hhmm[0]));
+		let d = setHours(appStore.date, Number(hhmm[0]));
 		let d2 = setMinutes(d, Number(hhmm[1]));
 		let d3 = setSeconds(d2, 0);
 		return d3;
@@ -125,13 +125,13 @@
 
 		entryList.entry.forEach( (item: any) => {
 			if (Number(item.mode) == mode ) {
-				if (isAfter(currentTime, getTime(item.to))) {
+				if (isAfter(appStore.date, getTime(item.to))) {
 					startTime = item.to;
 				}
-				if (isBefore(currentTime, getTime(item.from))) {
+				if (isBefore(appStore.date, getTime(item.from))) {
 					endTime = item.from;
 				}
-				if (isAfter(currentTime, getTime(item.from)) && isBefore(currentTime, getTime(item.to))) {
+				if (isAfter(appStore.date, getTime(item.from)) && isBefore(appStore.date, getTime(item.to))) {
 					startTime = item.from;
 					return {startTime: startTime, endTime: endTime};
 				}

@@ -8,12 +8,6 @@
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
-	let min = $derived(Number(controlStore.getState(control.states?.min)));
-	let max = $derived(Number(controlStore.getState(control.states?.max)));
-	let step = $derived(Number(controlStore.getState(control.states?.step)));
-	let value = $derived(Number(controlStore.getState(control.states?.value)));
-	let increaseOnly = $derived(control.details?.increaseOnly);
-
 	let buttonMinus: SingleButtonView[] = $state([
 		{
 			iconName: 'minus',
@@ -40,6 +34,12 @@
 			width: 'w-[450px]'
 		}
 	});
+
+	let min = $derived(Number(controlStore.getState(control.states?.min)));
+	let max = $derived(Number(controlStore.getState(control.states?.max)));
+	let step = $derived(Number(controlStore.getState(control.states?.step)));
+	let value = $derived(Number(controlStore.getState(control.states?.value)));
+	let increaseOnly = $derived(control.details?.increaseOnly);
 
 	let controlView: ControlView = $derived({
 		...DEFAULT_CONTROLVIEW,

@@ -8,6 +8,22 @@
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
+	let controlButtons: SingleButtonView[] = $state([
+		{
+			iconName: 'timer-2',
+			type: 'button',
+			iconColor: 'dark:text-surface-50 text-surface-950',
+			click: (e: any, visuPw?: string) => {
+				controlStore.setControl(control, 'pulse', visuPw);
+			}
+		}
+	]);
+
+	let dialog: DialogView = $state({
+		action: (state: boolean) => {dialog.state = state},
+		state: controlOptions.showDialog
+	});
+
 	/*
 		deactivationDelay:
 		 0: output turned off
@@ -48,22 +64,6 @@
 			}
 		}
 	);
-
-	let controlButtons: SingleButtonView[] = $state([
-		{
-			iconName: 'timer-2',
-			type: 'button',
-			iconColor: 'dark:text-surface-50 text-surface-950',
-			click: (e: any, visuPw?: string) => {
-				controlStore.setControl(control, 'pulse', visuPw);
-			}
-		}
-	]);
-
-	let dialog: DialogView = $state({
-		action: (state: boolean) => {dialog.state = state},
-		state: controlOptions.showDialog
-	});
 
 	let controlView: ControlView = $derived({
 		...DEFAULT_CONTROLVIEW,

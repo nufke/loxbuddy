@@ -9,6 +9,11 @@
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS}: { control: Control, controlOptions: ControlOptions } = $props();
 
+	let dialog: DialogView = $state({
+		action: (state: boolean) => {dialog.state = state},
+		state: false
+	});
+
 	let tempActual = $derived(fmt.sprintf('%.1f', Number(controlStore.getState(control.states?.tempActual))));
 	let activeMode = $derived(Number(controlStore.getState(control.states?.activeMode)));
 	let operatingMode = $derived(Number(controlStore.getState(control.states?.operatingMode)));
@@ -22,11 +27,6 @@
 	let isHeating = $derived((currentMode == 1) || (currentMode == 4));
 	let temperatureList = $derived(getTemperatureList(isHeating, false));
 	let mode = $derived((activeMode == 2) ? 4 : activeMode); // remapping
-
-	let dialog: DialogView = $state({
-		action: (state: boolean) => {dialog.state = state},
-		state: false
-	});
 
 	let controlView: ControlView = $derived({
 		...DEFAULT_CONTROLVIEW,

@@ -9,13 +9,6 @@
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
-	let url = $derived(control.details?.url);
-	let urlHd = $derived(control.details?.urlHd);
-	let httpUrl = $derived((urlHd || url).match(/^https?:\/\/(.*)/)[1]); // https prio over http
-	let passwordView: GeneralView = $state(DEFAULT_GENERALVIEW);
-	let isMap = $derived(httpUrl.match(/openstreetmap.org\/#map=.*\/.*\/.*/) || 
-		httpUrl.match(/openstreetmap.org\/\?mlat=.*&mlon=.*#map/));
-
 	let buttons: SingleButtonView[] = $state([
 		{
 			iconName: 'square-arrow-out-up-right',
@@ -31,6 +24,12 @@
 		state: false
 	});
 
+	let url = $derived(control.details?.url);
+	let urlHd = $derived(control.details?.urlHd);
+	let httpUrl = $derived((urlHd || url).match(/^https?:\/\/(.*)/)[1]); // https prio over http
+	let passwordView: GeneralView = $state(DEFAULT_GENERALVIEW);
+	let isMap = $derived(httpUrl.match(/openstreetmap.org\/#map=.*\/.*\/.*/) || 
+		httpUrl.match(/openstreetmap.org\/\?mlat=.*&mlon=.*#map/));
 	let dialogExt = $derived(isMap ? {...dialog, disableIcon: true,	details: { map: httpUrl }} : dialog)
 
 	let controlView: ControlView = $derived({

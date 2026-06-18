@@ -12,6 +12,7 @@
 	import LbMoon from '$lib/components/Weather/LbMoon.svelte';
 
 	let slider = $state(Array.from({length: 8}, (v,i) => v = (i==0))); // open first slider at start
+
 	let current = $derived(weatherStore.current);
 	let daily = $derived(weatherStore.daily);
 	let hourly = $derived(weatherStore.hourly);

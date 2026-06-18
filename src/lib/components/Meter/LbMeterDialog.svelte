@@ -48,7 +48,7 @@
 	let BgColorSVG = $derived(selector !== 'Today' && getPercent('in')
 		? 'dark:stroke-secondary-500 stroke-secondary-700'
 		: 'dark:stroke-surface-700 stroke-surface-200');
-	
+
 	// load statistics at mount
 	onMount(async () => {
 		await getStatisticsInfo();

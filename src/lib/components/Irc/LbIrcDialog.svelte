@@ -38,61 +38,16 @@
 	/* this dialog is used for V1 and V2, so we need to select the proper attributes */
 	let isV1 = controlView.control.type !== 'IRoomControllerV2'; 
 
-	let dayOfTheWeek = $derived(format(appStore.date, 'eeee'));
-	let opModes = $derived(controlStore.operatingModes);
-	let temperatureList = $derived(controlView.list ? controlView.list.filter((item) => item.visible == true) : []); // hide items not marked as visible 
-	let selectedItem = $derived(temperatureList.find( (item: ListItem) => $_(item.name) === controlView.statusName ));
 	let selectedTab = $state(1);
-	let tempActual = $derived(Number(controlStore.getState(controlView.control?.states.tempActual)));
-	let tempTarget = $derived(Number(controlStore.getState(controlView.control?.states.tempTarget)));
-	let date: SvelteDate = $state(new SvelteDate(Date.now() + 3600000));
-
-	let overrideV1 = $derived(Number(controlStore.getState(controlView.control.states?.override)));
-	let overrideEntriesV2 = $derived(controlStore.getState(controlView.control.states?.overrideEntries));
-	let overrideV2 = $derived(overrideEntriesV2 && overrideEntriesV2[0] ? (overrideEntriesV2[0].isTimer ? 1: 0 ) : 0); // TODO, we might have more entries
-
-	let modeV1 = $derived(Number(controlStore.getState(controlView.control.states?.mode)));
-	let modeIdV1 = $derived(temperatureModeList && temperatureModeList[modeV1] ? temperatureModeList[modeV1].id : 0);
-	let isAutomaticV1 = $derived(modeIdV1<5);
-	let isHeatingV1 = $derived(modeIdV1==1 || modeIdV1==3 || modeIdV1==5);
-	let isCoolingV1 = $derived(modeIdV1==2 || modeIdV1==4 || modeIdV1==6);
-	let isEcoV1 = $derived(selectedItem?.id == 0);
-
-	let operatingModeV2 = $derived(Number(controlStore.getState(controlView.control.states?.operatingMode)));
-	let currentModeV2 = $derived(Number(controlStore.getState(controlView.control.states?.currentMode)));
-	let isAutomaticV2 = $derived(operatingModeV2<3);
-	let isHeatingV2 = $derived(currentModeV2==1 || currentModeV2 == 4);
-	let isCoolingV2 = $derived(currentModeV2==2 || currentModeV2 == 5);
-	let isEcoV2 = $derived(Number(controlStore.getState(controlView.control.states?.activeMode))==0);
-
-	let override = $derived(isV1 ? overrideV1 : overrideV2);
-	let isAutomatic = $derived(isV1 ? isAutomaticV1 : isAutomaticV2);
-	let isHeating = $derived(isV1 ? isHeatingV1 : isHeatingV2);
-	let isCooling = $derived(isV1 ? isCoolingV1 : isCoolingV2);
-	let isEco = $derived(isV1 ? isEcoV1 : isEcoV2);
-
 	let timerEndsV1 = $state(new SvelteDate());
 	let timerEndsV2 = $state(new SvelteDate());
 	let selectedEntry = $state();
 	let overrideDate = $state({start: new SvelteDate().valueOf(), end: new SvelteDate().valueOf()});
-
 	let viewport: any = $state(); // TODO make HTMLDivElement
 	let hasScroll = $state(true);
 	let showScrollTop = $state(false);
 	let showScrollBottom = $state(false);
-
-	let windowHeight = $derived(innerHeight.current || 0);
-
-	let selectedSubControl = $derived(isV1 ? (subControls.find( subControl => subControl.name == (isHeating ? 'Heating' : 'Cooling')) || subControls[0] ):
-																	subControls[0]);
-
-	let entries = $derived(utils.extractEntries(controlStore.getState(selectedSubControl.states.entriesAndDefaultValue))) as EntriesAndDefaultValue;
-	let modeList = $derived(String(controlStore.getState(selectedSubControl.states.modeList))); 
-	let mode = $derived(Number(controlStore.getState(selectedSubControl.states.mode))); 
-	let dayModes = $derived(utils.extractDayModes(modeList));
-
-	let size = $derived(windowHeight * 0.9 - viewport?.clientHeight - margin || 0);
-	let style = $derived(size > 0 && viewport?.clientHeight == viewport?.scrollHeight ? 'height: 100%' : 'height: ' + (viewport?.clientHeight + size) + 'px');
+	let date: SvelteDate = $state(new SvelteDate(Date.now() + 3600000));
 
 	let dateTimeView = $state({
 		isDateView: true,
@@ -119,6 +74,53 @@
 		openDialog: false // updated when dialog is opened
 	});
 
+	let dayOfTheWeek = $derived(format(appStore.date, 'eeee'));
+	let temperatureList = $derived(controlView.list ? controlView.list.filter((item) => item.visible == true) : []); // hide items not marked as visible 
+	let selectedItem = $derived(temperatureList.find( (item: ListItem) => $_(item.name) === controlView.statusName ));
+	let tempActual = $derived(Number(controlStore.getState(controlView.control?.states.tempActual)));
+	let tempTarget = $derived(Number(controlStore.getState(controlView.control?.states.tempTarget)));
+
+	let overrideV1 = $derived(Number(controlStore.getState(controlView.control.states?.override)));
+	let overrideEntriesV2 = $derived(controlStore.getState(controlView.control.states?.overrideEntries));
+	let overrideV2 = $derived(overrideEntriesV2 && overrideEntriesV2[0] ? (overrideEntriesV2[0].isTimer ? 1: 0 ) : 0); // TODO, we might have more entries
+
+	let modeV1 = $derived(Number(controlStore.getState(controlView.control.states?.mode)));
+	let modeIdV1 = $derived(temperatureModeList && temperatureModeList[modeV1] ? temperatureModeList[modeV1].id : 0);
+	let isAutomaticV1 = $derived(modeIdV1<5);
+	let isHeatingV1 = $derived(modeIdV1==1 || modeIdV1==3 || modeIdV1==5);
+	let isCoolingV1 = $derived(modeIdV1==2 || modeIdV1==4 || modeIdV1==6);
+	let isEcoV1 = $derived(selectedItem?.id == 0);
+
+	let operatingModeV2 = $derived(Number(controlStore.getState(controlView.control.states?.operatingMode)));
+	let currentModeV2 = $derived(Number(controlStore.getState(controlView.control.states?.currentMode)));
+	let isAutomaticV2 = $derived(operatingModeV2<3);
+	let isHeatingV2 = $derived(currentModeV2==1 || currentModeV2 == 4);
+	let isCoolingV2 = $derived(currentModeV2==2 || currentModeV2 == 5);
+	let isEcoV2 = $derived(Number(controlStore.getState(controlView.control.states?.activeMode))==0);
+
+	let override = $derived(isV1 ? overrideV1 : overrideV2);
+	let isAutomatic = $derived(isV1 ? isAutomaticV1 : isAutomaticV2);
+	let isHeating = $derived(isV1 ? isHeatingV1 : isHeatingV2);
+	let isCooling = $derived(isV1 ? isCoolingV1 : isCoolingV2);
+	let isEco = $derived(isV1 ? isEcoV1 : isEcoV2);
+
+	let windowHeight = $derived(innerHeight.current || 0);
+
+	let selectedSubControl = $derived(isV1 ? (subControls.find( subControl => subControl.name == (isHeating ? 'Heating' : 'Cooling')) || subControls[0] ):
+																	subControls[0]);
+
+	let entries = $derived(utils.extractEntries(controlStore.getState(selectedSubControl.states.entriesAndDefaultValue))) as EntriesAndDefaultValue;
+	let modeList = $derived(String(controlStore.getState(selectedSubControl.states.modeList))); 
+	let mode = $derived(Number(controlStore.getState(selectedSubControl.states.mode))); 
+	let dayModes = $derived(utils.extractDayModes(modeList));
+	let availableHeight = $derived(Math.floor(windowHeight * 0.9) - margin);
+
+	let style = $derived(
+		viewport && viewport.scrollHeight > availableHeight
+			? `height: ${availableHeight}px`
+			: 'height: auto'
+	);
+
 	function parseScroll(height: number, view: any = undefined): void {
 		if (!view) return;
 		hasScroll = view.scrollHeight > view.clientHeight;
@@ -127,7 +129,7 @@
 	}
 
 	function getOperatingMode(s: string): string {
-		const entries = Array.from(opModes.entries());
+		const entries = Array.from(controlStore.operatingModes.entries());
 		let obj = entries.find ( e => e[1] == s );
 		return obj ? obj[0] : '';
 	}
@@ -264,9 +266,9 @@
 				entry.needActivate == item.needActivate &&
 				entry.value == item.value);
 			if (itemFound) { // entry exists, only add dayMode
-				itemFound.name.push(', '+ opModes.get(entry.mode));
+				itemFound.name.push(', '+ controlStore.operatingModes.get(entry.mode));
 			} else { // new entry
-				const name = opModes.get(entry.mode);
+				const name = controlStore.operatingModes.get(entry.mode);
 				list.push({ 
 					name: name ? [name] : [],
 					to: entry.to,

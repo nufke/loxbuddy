@@ -15,6 +15,7 @@
 
 	let localDate = $state(new SvelteDate(date));
 	let offset = $state(0); // offset in months from currently selected date
+
 	let dateStr = $derived(getDateStr(localDate));
 	let selected: string = $derived(dateStr);
 	let timeStr: string = $derived(getTimeStr(localDate));

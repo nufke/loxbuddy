@@ -14,9 +14,6 @@
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS}: { control: Control, controlOptions: ControlOptions } = $props();
 
-
-	let timeServiceMode = $derived(Number(controlStore.getState(control.states?.timeServiceMode)));
-	let level = $derived((timeServiceMode > 0) ? 99 : Number(controlStore.getState(control.states?.level)));
 	let passwordView: GeneralView = $state(DEFAULT_GENERALVIEW);
 	let statusName = $state('');
 	let statusColor = $state('');
@@ -30,6 +27,9 @@
 		action: (state: boolean) => {dialog.state = state},
 		state: false,
 	});
+
+	let timeServiceMode = $derived(Number(controlStore.getState(control.states?.timeServiceMode)));
+	let level = $derived((timeServiceMode > 0) ? 99 : Number(controlStore.getState(control.states?.level)));
 
 	let serviceButton: SingleButtonView = $derived(
 		{

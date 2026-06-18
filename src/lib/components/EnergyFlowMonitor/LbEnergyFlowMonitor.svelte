@@ -10,17 +10,16 @@
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
-	let actualFormat = $derived(control.details?.actualFormat ?? '%.1f kW');
-
-	let productionPower = $derived(Number(controlStore.getState(control.states?.Ppwr) ?? 0));
-	let storagePower = $derived(Number(controlStore.getState(control.states?.Spwr) ?? 0));
-	let gridPower = $derived(Number(controlStore.getState(control.states?.Gpwr) ?? 0));
-	let consumptionPower = $derived(gridPower + productionPower + storagePower);
-
 	let dialog: DialogView = $state({
 		action: (state: boolean) => { dialog.state = state },
 		state: false
 	});
+
+	let actualFormat = $derived(control.details?.actualFormat ?? '%.1f kW');
+	let productionPower = $derived(Number(controlStore.getState(control.states?.Ppwr) ?? 0));
+	let storagePower = $derived(Number(controlStore.getState(control.states?.Spwr) ?? 0));
+	let gridPower = $derived(Number(controlStore.getState(control.states?.Gpwr) ?? 0));
+	let consumptionPower = $derived(gridPower + productionPower + storagePower);
 
 	let controlView: ControlView = $derived({
 		...DEFAULT_CONTROLVIEW,

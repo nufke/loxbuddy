@@ -26,6 +26,11 @@
 	let showScrollTop = $state(false);
 	let showScrollBottom = $state(false);
 
+	let dialog: DialogView = $state({
+		action: (state: boolean) => {	dialog.state = state; },
+		state: false
+	});
+
 	let windowStates = $derived(String(controlStore.getState(control.states?.windowStates)));
 	let windowStatesList = $derived(getSortedWindowList(windowStates.split(',')));
 	let windowList: WindowListItem[] = $derived(control.details?.windows);
@@ -38,13 +43,13 @@
 	let allClosed = $derived((numOpen + numTilted + numUnlocked) == 0);
 	let windowHeight = $derived(innerHeight.current || 0);
 	let summary = $derived(getSummary(numOpen, numTilted, numUnlocked));
-	let size = $derived(windowHeight * 0.9 - viewport?.clientHeight - margin);
-	let style = $derived(size > 0 && viewport?.clientHeight == viewport?.scrollHeight ? 'height: 100%' : 'height: ' + (viewport?.clientHeight + size) + 'px');
+	let availableHeight = $derived(Math.floor(windowHeight * 0.9) - margin);
 
-	let dialog: DialogView = $state({
-		action: (state: boolean) => {	dialog.state = state; },
-		state: false
-	});
+	let style = $derived(
+		viewport && viewport.scrollHeight > availableHeight
+			? `height: ${availableHeight}px`
+			: 'height: auto'
+	);
 
 	let controlView: ControlView = $derived({
 		...DEFAULT_CONTROLVIEW,

@@ -8,9 +8,11 @@
 	let { view = $bindable() } = $props();
 
 	let returnObj: any; // Dialog can return any object
-	let selectedButton: any = $derived(view.buttons ? view.buttons.find( (b: Button) => b.selected): null);
+
 	let password = $state('');
 	let hidePassword = $state(true);
+
+	let selectedButton: any = $derived(view.buttons ? view.buttons.find( (b: Button) => b.selected): null);
 
 	/**
 	 * Helper function to establish focus on the input field when dialog opens.

@@ -13,7 +13,6 @@
 
 	let actualFormat = $derived(controlView.control.details?.actualFormat ?? '%.1f kW');
 	let nodes = $derived((controlView.control.details?.nodes ?? []) as any[]);
-
 	let productionPower = $derived(Number(controlStore.getState(controlView.control.states?.Ppwr) ?? 0));
 	let storagePower = $derived(Number(controlStore.getState(controlView.control.states?.Spwr) ?? 0));
 	let gridPower = $derived(Number(controlStore.getState(controlView.control.states?.Gpwr) ?? 0));

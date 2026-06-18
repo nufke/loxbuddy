@@ -8,6 +8,11 @@
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
+	let dialog: DialogView = $state({
+		action: (state: boolean) => {dialog.state = state},
+		state: false
+	});
+
 	let buttonActive = $derived(Number(controlStore.getState(control.states?.active)) == 1);
 
 	let buttons: SingleButtonView[] = $derived([
@@ -19,11 +24,6 @@
 			}
 		}
 	]);
-
-	let dialog: DialogView = $state({
-		action: (state: boolean) => {dialog.state = state},
-		state: false
-	});
 
 	let controlView: ControlView = $derived({
 		...DEFAULT_CONTROLVIEW,

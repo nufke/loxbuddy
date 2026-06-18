@@ -15,16 +15,24 @@
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
+	let margin = 200;
+
 	let selectedControl: Control | undefined= $state();
 	let selectedControlOptions: ControlOptions | undefined = $state();
-	let lightList = $derived(control.details?.controls) as LightItem[];
-	let lightsUuid = $derived(control.details?.controls.map((item: LightItem) => item.uuid));
-
 	let scenesEnabled = $state(false);
 	let viewport: any = $state(); // TODO make HTMLDivElement
 	let hasScroll = $state(true);
 	let showScrollTop = $state(false);
 	let showScrollBottom = $state(false);
+
+	let dialog: DialogView = $state({
+		action: (state: boolean) => {
+			dialog.state = state; },
+		state: false
+	});
+
+	let lightList = $derived(control.details?.controls) as LightItem[];
+	let lightsUuid = $derived(control.details?.controls.map((item: LightItem) => item.uuid));
 
 	let lightControls = $derived(controlStore.controlList.filter(
 		(controls: Control) => lightsUuid.indexOf(controls.uuidAction) > -1
@@ -38,15 +46,13 @@
 	let selectedLightCount = $derived(lightList.filter((item) => item.selected == true).length);
 
 	let windowHeight = $derived(innerHeight.current || 0);
-	let margin = 200;
-	let size = $derived(windowHeight * 0.9 - viewport?.clientHeight - margin || 0);
-	let style = $derived(size > 0 && viewport?.clientHeight == viewport?.scrollHeight ? 'height: 100%' : 'height: ' + (viewport?.clientHeight + size) + 'px');
+	let availableHeight = $derived(Math.floor(windowHeight * 0.9) - margin);
 
-	let dialog: DialogView = $state({
-		action: (state: boolean) => {
-			dialog.state = state; },
-		state: false
-	});
+	let style = $derived(
+		viewport && viewport.scrollHeight > availableHeight
+			? `height: ${availableHeight}px`
+			: 'height: auto'
+	);
 
 	let controlView: ControlView = $derived({
 		...DEFAULT_CONTROLVIEW,

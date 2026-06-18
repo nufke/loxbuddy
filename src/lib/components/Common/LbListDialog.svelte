@@ -31,8 +31,13 @@
 	let id = $derived(subControls.findIndex((subControl) => subControl.type === 'ColorPickerV2')); // select first color subControl
 	let windowHeight = $derived(innerHeight.current || 0);
 	let margin = $derived(getMargin(controlView.control, selectedTab));
-	let size = $derived(windowHeight * 0.9 - viewport?.clientHeight - margin || 0);
-	let style = $derived(size > 0 && viewport?.clientHeight == viewport?.scrollHeight ? 'height: 100%' : 'height: ' + (viewport?.clientHeight + size) + 'px');
+	let availableHeight = $derived(Math.floor(windowHeight * 0.9) - margin);
+
+	let style = $derived(
+		viewport && viewport.scrollHeight > availableHeight
+			? `height: ${availableHeight}px`
+			: 'height: auto'
+	);
 
 	function setItem(i: number): void {
 		const cachedVisuPw = appStore.getVisuPw(controlView.control.uuidAction);

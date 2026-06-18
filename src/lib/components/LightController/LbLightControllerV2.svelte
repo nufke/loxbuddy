@@ -8,9 +8,6 @@
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
-	let moodList = $derived(controlStore.getState(control.states?.moodList)) as MoodList[];
-	let activeMoodsNum = $derived(Number(controlStore.getState(control.states?.activeMoodsNum)));
-
 	let buttons: SingleButtonView[] = $state([
 		{
 			iconName: 'plus',
@@ -24,6 +21,9 @@
 		action: (state: boolean) => {dialog.state = state},
 		state: controlOptions.showDialog,
 	});
+
+	let moodList = $derived(controlStore.getState(control.states?.moodList)) as MoodList[];
+	let activeMoodsNum = $derived(Number(controlStore.getState(control.states?.activeMoodsNum)));
 
 	let controlView: ControlView = $derived({
 		...DEFAULT_CONTROLVIEW,

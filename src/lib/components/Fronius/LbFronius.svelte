@@ -11,13 +11,14 @@
 
 	const prod = $_('Production');
 	const cons = $_('Consumption');
-	let prodCurr = $derived(Number(controlStore.getState(control.states?.prodCurr)));
-	let consCurr = $derived(Number(controlStore.getState(control.states?.consCurr)));
 
 	let dialog: DialogView = $state({
 		action: (state: boolean) => {dialog.state = state},
 		state: false
 	});
+
+	let prodCurr = $derived(Number(controlStore.getState(control.states?.prodCurr)));
+	let consCurr = $derived(Number(controlStore.getState(control.states?.consCurr)));
 
 	let controlView: ControlView = $derived({
 		...DEFAULT_CONTROLVIEW,

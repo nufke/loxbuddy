@@ -9,13 +9,6 @@
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
-	let position = $derived(Number(controlStore.getState(control.states?.position)) * 100);
-	let shadePosition = $derived(controlStore.getState(control.states?.shadePosition) * 100);
-	let autoActive = $derived(Number(controlStore.getState(control.states?.autoActive)));
-	let isAutomatic = $derived(Number(control.details?.isAutomatic));
-	let isLocked = $derived(Number(controlStore.getState(control.states?.locked)));
-	let type = $derived(control.details?.animation);
-
 	/* blinds type
 		0: Venetian blinds (jaloezie/lamellen)
 		1: Roller blinds (rolluik/dakrolgordijn/screen)
@@ -25,7 +18,7 @@
 		5: Curtain right
 		6: Awning (zonneluifel)
 		*/
-		
+
 	let buttons: SingleButtonView[] = $state([
 		{
 			iconName: 'chevron-down',
@@ -88,6 +81,13 @@
 			}
 		]
 	});
+
+	let position = $derived(Number(controlStore.getState(control.states?.position)) * 100);
+	let shadePosition = $derived(controlStore.getState(control.states?.shadePosition) * 100);
+	let autoActive = $derived(Number(controlStore.getState(control.states?.autoActive)));
+	let isAutomatic = $derived(Number(control.details?.isAutomatic));
+	let isLocked = $derived(Number(controlStore.getState(control.states?.locked)));
+	let type = $derived(control.details?.animation);
 
 	let jalousie = $derived({
 		position: position,

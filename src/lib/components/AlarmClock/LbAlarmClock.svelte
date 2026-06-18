@@ -22,8 +22,9 @@
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
-	let passwordView: GeneralView = $state(DEFAULT_GENERALVIEW);
+	let margin = 200;
 
+	let passwordView: GeneralView = $state(DEFAULT_GENERALVIEW);
 	let viewport: any = $state(); // TODO make HTMLDivElement
 	let hasScroll = $state(true);
 	let showScrollTop = $state(false);
@@ -49,8 +50,6 @@
 	let alarms = $derived(entryObj ? Object.values(entryObj).filter((entry) => entry.isActive) : []);
 	let nextEntryTime = $derived(Number(controlStore.getState(control.states?.nextEntryTime)) || 0);
 	let windowHeight = $derived(innerHeight.current || 0);
-
-	let margin = 200;
 	let	size = $derived(windowHeight * 0.9 - viewport?.clientHeight - margin);
 	let style = $derived(size > 0 && viewport?.clientHeight == viewport?.scrollHeight ? 'height: 100%' : 'height: ' + (viewport?.clientHeight + size) + 'px');
 

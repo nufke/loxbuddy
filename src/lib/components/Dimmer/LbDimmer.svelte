@@ -8,19 +8,6 @@
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
-	let min = $derived(Number(controlStore.getState(control.states?.min)) || 0 );
-	let max = $derived(Number(controlStore.getState(control.states?.max)) || 100);
-	let step = $derived(Number(controlStore.getState(control.states?.step)) || 1);
-	let position = $derived(Number(controlStore.getState(control.states?.position)) || 0);
-
-	let sliderBar: SliderBar = $derived({
-		min: min,
-		max: max,
-		step: step,
-		position: position,
-		orientation: 'vertical'
-	});
-
 	let plusMinusButtons: SingleButtonView[] = $state([
 		{
 			iconName: 'minus',
@@ -36,6 +23,25 @@
 		}
 	]);
 
+	let dialog: DialogView = $state({
+		action: (state: boolean) => {dialog.state = state},
+		state: false,
+		class: 'grid-cols-2',
+	});
+
+	let min = $derived(Number(controlStore.getState(control.states?.min)) || 0 );
+	let max = $derived(Number(controlStore.getState(control.states?.max)) || 100);
+	let step = $derived(Number(controlStore.getState(control.states?.step)) || 1);
+	let position = $derived(Number(controlStore.getState(control.states?.position)) || 0);
+
+	let sliderBar: SliderBar = $derived({
+		min: min,
+		max: max,
+		step: step,
+		position: position,
+		orientation: 'vertical'
+	});
+
 	let onOffButton: SingleButtonView = $derived(
 		{
 			name: (position > 0) ? 'Switch off' : 'Switch on',
@@ -46,12 +52,6 @@
 			}
 		}
 	);
-	
-	let dialog: DialogView = $state({
-		action: (state: boolean) => {dialog.state = state},
-		state: false,
-		class: 'grid-cols-2',
-	});
 
 	let controlView: ControlView = $derived({
 		...DEFAULT_CONTROLVIEW,

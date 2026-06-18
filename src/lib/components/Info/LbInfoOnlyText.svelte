@@ -12,15 +12,14 @@
 
 	let isMap = false;
 
-	let text = $derived(controlStore.getState(control.states?.text));
-	let status = $derived(checkMap(text));
-
 	let dialog: DialogView = $state({
 		action: (state: boolean) => {dialog.state = state},
 		state: false
 	});
 
 	let dialogExt = $derived(isMap ? {...dialog, disableIcon: true,	details: { map: text }} : dialog);
+	let text = $derived(controlStore.getState(control.states?.text));
+	let status = $derived(checkMap(text));
 
 	let controlView: ControlView = $derived({
 		...DEFAULT_CONTROLVIEW,

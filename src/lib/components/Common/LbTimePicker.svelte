@@ -12,11 +12,12 @@
 	let size = 300;
 	let ts = 'text-md';
 
-	let localDate = $derived(new SvelteDate(date));
 	let isMinuteView: boolean = $state(view.isMinuteView);
+	let isMouseDown: boolean = $state(false);
+
+	let localDate = $derived(new SvelteDate(date));
 	let selectedHour = $derived(localDate.getHours() || 0);
 	let selectedMinutes = $derived(localDate.getMinutes() || 0);
-	let isMouseDown: boolean = $state(false);
 	let pos = $derived(positions(isMinuteView ? size : size*0.85, size/2, 0, false, 0));
 	let isPM = $derived(showMeridian ? selectedHour >= 12 : false);
 	let multiplier = $derived(isMinuteView ? 5 : 1);

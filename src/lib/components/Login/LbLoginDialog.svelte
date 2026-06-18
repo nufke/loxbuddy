@@ -10,12 +10,6 @@
 	import { fadeInOut } from '$lib/helpers/styles';
 	import { demo } from '$lib/demo/DemoClient';
 
-	let openPopup = $state(false);
-	let hostName = $state('');
-	let userName = $state('');
-	let password = $state('');
-	let hidePassword = $state(true);
-
 	type PopupView = {
 		title: string;
 		list: DeviceInfo[];
@@ -23,6 +17,12 @@
 		description: string;
 		showSpinner: boolean;
 	}
+
+	let openPopup = $state(false);
+	let hostName = $state('');
+	let userName = $state('');
+	let password = $state('');
+	let hidePassword = $state(true);
 
 	let popupView: PopupView = $state({
 		title: 'Search Miniserver',

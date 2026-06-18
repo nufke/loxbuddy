@@ -8,13 +8,13 @@
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
-	let locked = $derived(Number(controlStore.getState(control.states?.locked)) || 0);
-	let active = $derived(Number(controlStore.getState(control.states?.active)) || 0);
-
 	let	dialog: DialogView = $state({
 		action: (state: boolean) => {dialog.state = state},
 		state: false
 	});
+
+	let locked = $derived(Number(controlStore.getState(control.states?.locked)) || 0);
+	let active = $derived(Number(controlStore.getState(control.states?.active)) || 0);
 
 	let controlView: ControlView = $derived({
 		...DEFAULT_CONTROLVIEW,

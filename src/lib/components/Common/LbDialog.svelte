@@ -36,11 +36,16 @@
 	let controlOptions: ControlOptions = $derived({...DEFAULT_CONTROLOPTIONS, isLink: true});
 	let windowHeight = $derived(innerHeight.current || 0);
 	let margin = $derived(getMargin(controlView.control));
-	let size = $derived(windowHeight * 0.9 - viewport?.clientHeight - margin || 0);
-	let style = $derived(size > 0 && viewport?.clientHeight == viewport?.scrollHeight ? 'height: 100%' : 'height: ' + (viewport?.clientHeight + size) + 'px');
+	let availableHeight = $derived(Math.floor(windowHeight * 0.9) - margin);
 
-	let linkedControls: Control[] = $derived(
-		controlStore.controlList.filter((control) => controlView.links ? controlView.links.includes(control.uuidAction) : null)
+	let style = $derived(
+		viewport && viewport.scrollHeight > availableHeight
+			? `height: ${availableHeight}px`
+			: 'height: auto'
+	);
+
+	let	linkedControls = $derived(controlStore.controlList
+			.filter((control) => controlView.links ? controlView.links.includes(control.uuidAction) : null)
 			.sort((a, b) => a.name.localeCompare(b.name, appStore.locale)));
 
 	function setPostion(position: any): void {

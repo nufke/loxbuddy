@@ -15,23 +15,8 @@
 	let { view = $bindable(), entries, selectedEntry, dayModes, temperatureList = [] } = $props();
 
 	let isAnalog = Boolean(view.control.details?.analog);
-	let opModes = $derived(controlStore.operatingModes);
 	let isStartTime = $state(false);
 	let dateTime = $state();
-	let updatedEntries = $derived(entries.entry) as Entry[];
-	let startTime = $derived(selectedEntry?.from); // TODO fix notation
-	let endTime = $derived(selectedEntry?.to == '0:00' || selectedEntry?.to == '00:00' ? '24:00' : selectedEntry?.to );
-	let value = $derived(selectedEntry?.value)
-	let isFullDay = $derived((startTime == '0:00' || startTime == '00:00') && endTime == '24:00'); // TODO startTime notation
-	let needActivate = $derived(Number(selectedEntry?.needActivate) == 1);
-	let sameEntries = $derived( updatedEntries && selectedEntry ? 
-			entries.entry.filter( (entry: Entry) => entry.from == selectedEntry.from &&
-																							entry.to == selectedEntry.to &&
-																							entry.needActivate == selectedEntry.needActivate &&
-																							entry.value == selectedEntry.value) : []) as Entry[];
-	let otherEntries = $derived( entries.entry.filter( (entry: Entry) => !sameEntries.includes(entry))) as Entry[];
-	let modes = $derived(sameEntries.length ? sameEntries.map( (m: Entry) => m.mode) : [selectedEntry?.mode]) as string[];
-	let timeValid = $derived(utils.hours2min(startTime) < utils.hours2min(endTime));
 
 	let dateTimeView = $state({
 		isDateView: false,
@@ -60,8 +45,23 @@
 		ok: () => {}
 	});
 
+	let updatedEntries = $derived(entries.entry) as Entry[];
+	let startTime = $derived(selectedEntry?.from); // TODO fix notation
+	let endTime = $derived(selectedEntry?.to == '0:00' || selectedEntry?.to == '00:00' ? '24:00' : selectedEntry?.to );
+	let value = $derived(selectedEntry?.value)
+	let isFullDay = $derived((startTime == '0:00' || startTime == '00:00') && endTime == '24:00'); // TODO startTime notation
+	let needActivate = $derived(Number(selectedEntry?.needActivate) == 1);
+	let sameEntries = $derived( updatedEntries && selectedEntry ? 
+			entries.entry.filter( (entry: Entry) => entry.from == selectedEntry.from &&
+																							entry.to == selectedEntry.to &&
+																							entry.needActivate == selectedEntry.needActivate &&
+																							entry.value == selectedEntry.value) : []) as Entry[];
+	let otherEntries = $derived( entries.entry.filter( (entry: Entry) => !sameEntries.includes(entry))) as Entry[];
+	let modes = $derived(sameEntries.length ? sameEntries.map( (m: Entry) => m.mode) : [selectedEntry?.mode]) as string[];
+	let timeValid = $derived(utils.hours2min(startTime) < utils.hours2min(endTime));
+
 	function getDayModes(): string {
-		return Array.from(modes, (x) => opModes.get(x)).join(', ');
+		return Array.from(modes, (x) => controlStore.operatingModes.get(x)).join(', ');
 	}
 
 	function getTemperature(): string {

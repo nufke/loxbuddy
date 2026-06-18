@@ -7,8 +7,8 @@
 	let trackSelected = false;
 	let trackMin = 20;
 	let trackMax = 380;
-	let trackRatio = $derived((max - min) / (trackMax - trackMin));
 
+	let trackRatio = $derived((max - min) / (trackMax - trackMin));
 	let targetTempLimit = $derived(Math.max(min, Math.min(target, max)));
 	let actualTempLimit = $derived(Math.max(min, Math.min(actual, max)));
 	let targetPos = $derived(((targetTempLimit - min) / trackRatio + trackMin) || 0);

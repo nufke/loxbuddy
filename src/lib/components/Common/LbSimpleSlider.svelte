@@ -7,6 +7,7 @@
 	let viewport: any;
 	let startMouseMove = $state(false);
 	let startTouch = $state(false);
+
 	let windowHeight = $derived(innerHeight.current || 0);
  
 	function handleMouseUp(e: any): void {

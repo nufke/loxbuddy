@@ -10,8 +10,7 @@
 	let o = 8;  // offset
 	let tc = 'dark:fill-surface-50 fill-surface-950'; // text color
 
-	let date = $derived(appStore.date); // current date/time (dynamic)
-	let m = $derived(utils.hours2dec(format(date, 'p'))); // marker
+	let m = $derived(utils.hours2dec(format(appStore.date, 'p'))); // marker
 	let os = $derived(utils.hours2dec(format(overrideDate.start, 'p'))); // override start
 	let oe = $derived(utils.hours2dec(format(overrideDate.end, 'p')) || 24); // override end (correction for 24h)
 	let oa = $derived(overrideDate.active); // override active

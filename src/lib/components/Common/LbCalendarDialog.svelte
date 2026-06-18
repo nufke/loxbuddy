@@ -21,10 +21,6 @@
 	let initialModes: number[] = [];
 
 	let selectedEntry = $state();
-	let modeEntries: number[] = $derived(entries.entry.map( (m: Entry) => m.mode));
-	let modes = $derived(modeEntries.filter((mode, idx) => modeEntries.indexOf(mode) == idx));
-	let opModes = $derived(controlStore.operatingModes);
-	let currentTime = $derived(format(appStore.date, 'p'));
 
 	let calendarEntryView: CalendarEntryView = $state({
 		control: view.control,
@@ -35,6 +31,10 @@
 		enableDelete: true,
 		openDialog: false
 	});
+
+	let modeEntries: number[] = $derived(entries.entry.map( (m: Entry) => m.mode));
+	let modes = $derived(modeEntries.filter((mode, idx) => modeEntries.indexOf(mode) == idx));
+	let currentTime = $derived(format(appStore.date, 'p'));
 
 	function getDayTimerColor(needActivate: string): string {
 		return needActivate == '0' ? 'dark:fill-primary-500 fill-primary-700' : 'dark:fill-tertiary-500 fill-tertiary-700'
@@ -170,7 +170,7 @@
 							<svg width={length+20} height="1050">
 								<rect class="dark:fill-surface-900 fill-surface-100" x={0+getModeIndex(mode)*156} y="55" width="150" height="960" fill="currentColor"></rect>
 								{#each initialModes as mode}
-									<text class="dark:fill-surface-50 fill-surface-950" font-size="15px" text-anchor="middle" x={75+getModeIndex(mode)*156} y="40">{opModes.get(String(mode))}</text>
+									<text class="dark:fill-surface-50 fill-surface-950" font-size="15px" text-anchor="middle" x={75+getModeIndex(mode)*156} y="40">{controlStore.operatingModes.get(String(mode))}</text>
 								{/each}
 								{#each hours as hour,j}
 									<path class="stroke-surface-500" stroke-width="1" stroke-dasharray="150 6" d="m 0 {55+j*40} H {length}"></path>

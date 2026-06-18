@@ -18,24 +18,15 @@
 		[key: string]: Entry[];
 	}
 
-	let entries = $derived(controlStore.getState(control.states?.entries)) as String;
-	let entryList = $derived(entries ? entries.split('|') : []);
-	let entryMap = $derived(updateEntries(entryList));
-	let lastEntryDate = $derived(Object.keys(entryMap)[0]);
-
-	function sortEntries(entries: Entries): Entries {
-		return Object.keys(entries)
-			.sort( (a, b) => Number(b) - Number(a))
-			.reduce( (newEntries: Entries, key: string) => {
-				newEntries[key] = entries[key].sort( (a, b) => b.time - a.time);
-				return newEntries;
-			}, {});
-	}
-
 	let	dialog: DialogView = $state({
 		action: (state: boolean) => {dialog.state = state},
 		state: false
 	});
+
+	let entries = $derived(controlStore.getState(control.states?.entries)) as String;
+	let entryList = $derived(entries ? entries.split('|') : []);
+	let entryMap = $derived(updateEntries(entryList));
+	let lastEntryDate = $derived(Object.keys(entryMap)[0]);
 
 	let controlView: ControlView = $derived({
 		...DEFAULT_CONTROLVIEW,
@@ -51,6 +42,15 @@
 			}
 		}
 	});
+
+	function sortEntries(entries: Entries): Entries {
+		return Object.keys(entries)
+			.sort( (a, b) => Number(b) - Number(a))
+			.reduce( (newEntries: Entries, key: string) => {
+				newEntries[key] = entries[key].sort( (a, b) => b.time - a.time);
+				return newEntries;
+			}, {});
+	}
 
 	function updateEntries(list: string[]): Entries {
 		let entries: Entries = {};

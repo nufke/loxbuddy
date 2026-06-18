@@ -25,8 +25,6 @@
 	];
 
 	let busy = $state(false);
-	let color = $derived(String(controlStore.getState(control.states?.color)));
-	let {rgbColor, tempColor, brightness, isTempColor} = $derived(getColor(color));
 
 	let temperatureLayout = $state([
 		{
@@ -39,6 +37,9 @@
 			}
 		}
 	]);
+
+	let color = $derived(String(controlStore.getState(control.states?.color)));
+	let {rgbColor, tempColor, brightness, isTempColor} = $derived(getColor(color));
 
 	/*
 	 * Pending issue:
