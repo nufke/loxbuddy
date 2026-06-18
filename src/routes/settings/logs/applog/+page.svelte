@@ -4,7 +4,7 @@
 </script>
 
 <div class="container p-3">
-  {#each consoleArray as item}
+  {#each consoleArray.reverse() as item}
     <p class="text-md">{format(item.date, "Pp")} [{item.level}] {item.message}</p>
   {/each}
 </div>

@@ -181,6 +181,20 @@ class LbControlStore {
 	setState(uuid: string, data: ControlState): void {
 		const item = $state(data);
 		this.controlState.set(uuid, item);
+		this.checkUpdateOfUserSettings(item);
+	}
+
+	/**
+	 * Check for updated user settings (e.g. sorting)
+	 * If this is the case, fetch the latest user settings
+	 * @param data value/data of the control
+	 */
+	checkUpdateOfUserSettings(data: ControlState): void {
+		const ts = Number(data[this.msInfo.currentUser.uuid]);
+		if (ts && ts > (this.userSettings.ts ?? 0)) {
+			console.info('[LbControlStore] Newer user settings available on Miniserver, updating...');
+			void this.getUserSettings();
+		}
 	}
 
 	/**

@@ -13,7 +13,7 @@
 	let wsServer = $state(cred.wsServer);
 	let userName = $state(cred.userName);
 	let domainName = $state(cred.domainName);
-	let password = $state(cred.password);
+	let password = $state('');
 	let hidePassword = $state(true);
 	let connecting = $state(false);
 	let openPopup = $state(false);
@@ -26,13 +26,15 @@
 
 	function register(e: SubmitEvent): void {
 		e.preventDefault();
+		if (!wsServer.length || !userName.length || !domainName.length || !password.length) return;
 		const credentials: SipCredentials = { wsServer, userName, domainName, password };
 		appStore.storeSipCredentials(credentials);
 		connecting = true;
 		showConnectDialog($_('Registering with SIP server...'));
-		sipClient.register(wsServer, userName, domainName, password).catch(() => {
+		// async call
+		void sipClient.register(wsServer, userName, domainName, password).catch(() => {
 			connecting = false;
-			showMessageDialog($_('Unable to register with SIP server'));
+			showMessageDialog($_('Unable to register to SIP server'));
 		});
 	}
 
@@ -40,6 +42,7 @@
 		if (connecting && sipStatus > 0) {
 			connecting = false;
 			openPopup = false;
+			password = ''; // clear password
 		}
 	});
 
@@ -72,6 +75,13 @@
 			case 3: return 'dark:text-red-500 text-red-700';
 			default: return connecting ? 'dark:text-yellow-500 text-yellow-700' : 'dark:text-surface-400 text-surface-600';
 		}
+	}
+
+	function unregister() {
+		// update credentials (password empty)
+		const credentials: SipCredentials = { wsServer, userName, domainName, password };
+		appStore.storeSipCredentials(credentials);
+		sipClient.unregister();
 	}
 </script>
 
@@ -107,12 +117,12 @@
 		</fieldset>
 		<div class="p-1 pt-5 flex gap-3">
 			<button type="submit" disabled={sipStatus > 0 || connecting}
-				class="flex-1 btn {wsServer.length && userName.length && domainName.length && sipStatus === 0 && !connecting ? 'preset-filled-primary-500' : 'preset-outlined-surface-300-700'}">
+				class="flex-1 btn {wsServer.length && userName.length && domainName.length && password.length && sipStatus === 0 && !connecting ? 'preset-filled-primary-500' : 'preset-outlined-surface-300-700'}">
 				{$_("Register")}
 			</button>
 			{#if sipStatus > 0}
 				<button type="button" class="flex-1 btn preset-outlined-error-500"
-					onclick={() => sipClient.unregister()}>
+					onclick={unregister}>
 					{$_("Unregister")}
 				</button>
 			{/if}

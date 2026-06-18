@@ -49,17 +49,17 @@ export class MqttClient {
 		this.registeredTopics = this.topicPrefix.split(',').map((item) => item + '/#');
 
 		if (!this.hostName.length) {
-			console.error('[MqttClient] Invalid hostname, cannot connect to MQTT server.');
+			console.error('[MqttClient] Hostname not given, cannot connect to MQTT server.');
+			return;
+		}
+
+		if (!this.userName.length) {
+			console.error('[MqttClient] Username not given, cannot connect to MQTT server.');
 			return;
 		}
 
 		if (!this.passwd.length) {
-			console.error('[MqttClient] Invalid password, cannot connect to MQTT server.');
-			return;
-		}
-
-		if (!this.passwd.length) {
-			console.error('[MqttClient] Invalid password, cannot connect to MQTT server.');
+			console.error('[MqttClient] Password not given, cannot connect to MQTT server.');
 			return;
 		}
 

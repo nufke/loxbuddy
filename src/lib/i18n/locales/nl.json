@@ -303,7 +303,7 @@
     "Up": "Omhoog",
     "Update entry": "Item wijzingen",
     "Unable to connect to MQTT server": "Aanmelden bij MQTT server mislukt",
-    "Unable to register with SIP server": "Aanmelden bij SIP server mislukt",
+    "Unable to register to SIP server": "Aanmelden bij SIP server mislukt",
     "Unknown state": "Status onbekend",
     "Unlocked": "Ontgrendeld",
     "Unregistered": "Afgemeld",

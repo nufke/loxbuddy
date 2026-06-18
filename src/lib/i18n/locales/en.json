@@ -303,7 +303,7 @@
     "Up": "Up",
     "Update entry": "Update entry",
     "Unable to connect to MQTT server": "Unable to connect to MQTT server",
-    "Unable to register with SIP server": "Unable to register with SIP server",
+    "Unable to register to SIP server": "Unable to register to SIP server",
     "Unknown state": "Unknown state",
     "Unlocked": "Unlocked",
     "Unregistered": "Unregistered",

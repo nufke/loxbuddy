@@ -14,7 +14,7 @@
 	let hostName = $state(cred.hostName);
 	let port = $state(cred.port);
 	let userName = $state(cred.userName);
-	let password = $state(cred.password);
+	let password = $state('');
 	let topicPrefix = $state(cred.topicPrefix);
 	let hidePassword = $state(true);
 	let connecting = $state(false);
@@ -28,6 +28,7 @@
 
 	function connect(e: SubmitEvent): void {
 		e.preventDefault();
+		if (!hostName.length || !port.length || !userName.length || !password.length || !topicPrefix.length) return;
 		const credentials: MqttCredentials = { hostName, port, userName, password, topicPrefix };
 		appStore.storeMqttCredentials(credentials);
 		connecting = true;
@@ -38,8 +39,8 @@
 			}
 		}, 3000);
 		showConnectDialog($_('Connecting to MQTT Server...'));
-    setTimeout(() => {
-		  mqttClient.connect(hostName, port, userName, password, topicPrefix);
+    setTimeout( () => {
+		  void mqttClient.connect(hostName, port, userName, password, topicPrefix); /* async call */
     }, 800);
   }
 
@@ -47,6 +48,7 @@
 		if (connecting && mqttStatus > 0) {
 			connecting = false;
 			openPopup = false;
+			password = ''; // clear password
 		}
 	});
 
@@ -81,6 +83,13 @@
 			case 3: return 'dark:text-red-500 text-red-700';
 			default: return connecting ? 'dark:text-yellow-500 text-yellow-700' : 'dark:text-surface-400 text-surface-600';
 		}
+	}
+
+	function disconnect() {
+		// update credentials (password empty)
+		const credentials: MqttCredentials = { hostName, port, userName, password, topicPrefix };
+		appStore.storeMqttCredentials(credentials);
+		mqttClient.disconnect();
 	}
 </script>
 
@@ -125,7 +134,7 @@
 			</button>
 			{#if mqttStatus > 0}
 				<button type="button" class="flex-1 btn preset-outlined-error-500"
-					onclick={() => mqttClient.disconnect()}>
+					onclick={disconnect}>
 					{$_("Disconnect")}
 				</button>
 			{/if}

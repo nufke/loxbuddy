@@ -64,7 +64,7 @@ export class SipClient {
 		userName = userName ?? cred?.userName ?? '';
 		password = password ?? cred?.password ?? '';
 		if (!wsServer.length || !domainName.length || !userName.length || !password.length) {
-			console.error('[SipClient] Incomplete SIP credentials configured');
+			console.error('[SipClient] Incomplete credentials. Unable to connect to SIP server.');
 			return;
 		}
 		const caller = `sip:${userName}@${domainName}`;

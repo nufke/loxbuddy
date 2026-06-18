@@ -116,28 +116,33 @@ export class MiniserverClient {
 
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		this.client?.on('event_value', (event: any) => {
-			console.debug(`[MiniserverClient] event_value received: ${event.detail.value}`);
+			const value = event.detail.value;
+			const uuid = event.detail.uuid.stringValue;
+			console.debug(`[MiniserverClient] event_value received: ${uuid} ${value}`);
 			controlStore.setState(event.detail.uuid.stringValue, event.detail.value);
 		});
 
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		this.client?.on('event_daytimer', (event: any) => {
 			const str = event.detail.toString();
-			console.debug(`[MiniserverClient] event_daytimer received: ${str}`);
+			const uuid = event.detail.uuid.stringValue;
+			console.debug(`[MiniserverClient] event_daytimer received: ${uuid} ${str}`);
 			controlStore.setState(event.detail.uuid.stringValue, str);
 		});
 
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		this.client?.on('event_weather', (event: any) => {
 			const str = event.detail.toString();
-			console.debug(`[MiniserverClient] event_weather received: ${str}`);
+			const uuid = event.detail.uuid.stringValue;
+			console.debug(`[MiniserverClient] event_weather received: ${uuid} ${str}`);
 			controlStore.setState(event.detail.uuid.stringValue, str);
 		});
 
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		this.client?.on('event_text', (event: any) => {
 			const text = event.detail.text;
-			console.debug(`[MiniserverClient] event_text received: ${text}`);
+			const uuid = event.detail.uuid.stringValue;
+			console.debug(`[MiniserverClient] event_text received: ${uuid} ${text}`);
 			const objOrText = utils.isValidJSONObject(text) ? JSON.parse(text) : text;
 			controlStore.setState(event.detail.uuid.stringValue, objOrText);
 		});
