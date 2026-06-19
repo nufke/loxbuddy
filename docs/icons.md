@@ -2,11 +2,39 @@
 
 LoxBuddy uses the [Iconify](https://iconify.design/) repository and API for the icons in cards and controls. A LoxBuddy-specific icon set has been created to complement the library for smart home applications. 
 
-LoxBuddy maps existing icon names coming from your Loxone Config structure to Iconify and LoxBuddy icon names. The table below shows the icon names and the equivalent name used in the LoxBuddy App.
+## Default icons
 
-In the near future, LoxBuddy will support the creation of a user-defined icon mapping table, to enable full customization of your own icons.
+LoxBuddy maps existing icon names coming from your Loxone Config structure to Iconify and LoxBuddy icon names. The default icon table is given below.
 
-> In case you like to request new icons in LoxBuddy, you can raise an [issue][issue] or submit a [pull request][pull request].
+## User-defined icons
+
+You can define your own [Iconify icons](https://icon-sets.iconify.design/) and map them to existing legacy icon names.
+The format for the icon mapping is as follows:
+
+```json
+{
+  "IconsFilled/window-state-open-1.svg": "game-icons:window",
+  "IconsFilled/alarm-1.svg": "mdi:alarm-light"
+}
+```
+
+Any number of entries can be specified, adding new icons or overriding the existing entries based on the default icon table below. Publish your icon JSON map over MQTT to the topic prefix registered in LoxBuddy, using the following format:
+
+```
+<mqtt-topic-prefix>/<miniserver-serialnr>/icons
+```
+
+where:
+* `mqtt-topic-prefix` is the MQTT topic prefix defined in the LoxBuddy MQTT settings
+* `miniserver-serialnr` is the serial number of you Miniserver as defined in the structure file (`LoxAPP3.json`)
+
+## Requesting new LoxBuddy icons
+
+In case you like to request specific icons in LoxBuddy which cannot be found in the Iconify library, feel free to raise an [issue][issue] or submit a [pull request][pull request].
+
+## Default icon table
+
+The table below shows the icons used in the LoxBuddy App and the equivalent legacy icon name.
 
 | Icon | Icon name | Icon set | Legacy name |
 |:----:|-----------|----------|-------------|
@@ -668,7 +696,6 @@ In the near future, LoxBuddy will support the creation of a user-defined icon ma
 | ![icon](https://api.iconify.design/lucide/x.svg?height=24&color=%23ffffff) | x | lucide | x |
 | ![icon](https://api.iconify.design/lucide/undo-2.svg?height=24&color=%23ffffff) | undo-2 | lucide | undo-2 |
 | ![icon](https://api.iconify.design/hugeicons/border-none-02.svg?height=24&color=%23ffffff) | border-none-02 | hugeicons | unknown |
-
 
 [issue]: https://github.com/nufke/loxbuddy/issues
 [pull request]: https://github.com/nufke/loxbuddy/pulls

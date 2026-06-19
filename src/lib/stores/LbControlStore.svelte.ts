@@ -6,7 +6,7 @@ import type { Structure, MsInfo, Control, ControlState, Category, Room, Notifica
 							NotificationList, UserSettings, UserDefaultStructure, IconAndColor,
 							SystemStatus, GlobalStates, MessageCenter, NotificationMessage,
 							Icon, StatisticV2, Statistics, StatisticInfo, StatisticInfoType,
-							StatisticsEntry, SecuredDetails } from '$lib/types/models';
+							StatisticsEntry, SecuredDetails, InitialStateMap } from '$lib/types/models';
 import { startOfDay, endOfDay, startOfISOWeek, endOfISOWeek, startOfMonth,
 				 endOfMonth, startOfYear, endOfYear, getUnixTime } from 'date-fns';
 import { utils } from '$lib/helpers/Utils';
@@ -107,6 +107,7 @@ class LbControlStore {
 	 * @param client any of the available clients (DemoClient, MiniserverClient, MqttClient)
 	 */
 	initStructure(data: Structure, client: DemoClient | MiniserverClient | MqttClient ): void {
+		console.debug('[LbControlStore] Loading structure...');
 		// Store reference to client using device serial nr 
 		this.controlClient.set(data.msInfo.serialNr, client);
 		// fill maps
@@ -200,12 +201,12 @@ class LbControlStore {
 
 	/**
 	 * Set initial states. Used to load all states at once for DemoClient
-	 * @param data map containing all states  
+	 * @param states map containing all states  
 	 */
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	setInitialStates(data: any) {
-		Object.keys(data).forEach( (key) => {
-			const item = $state(data[key]);
+	 
+	setInitialStates(states: InitialStateMap) {
+		Object.keys(states).forEach( (key) => {
+			const item = $state(states[key]);
 			const obj = utils.isValidJSONObject(item) ? JSON.parse(item) : item;
 			this.controlState.set(key, obj);
 		});

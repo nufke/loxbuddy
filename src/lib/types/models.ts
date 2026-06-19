@@ -807,3 +807,7 @@ export type MapType = {
 	description?: string;
 	markers?: MapMarker[]
 }
+
+export type InitialStateMap = {
+	[key:string]: string;
+}

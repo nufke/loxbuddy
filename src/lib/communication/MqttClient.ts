@@ -1,8 +1,11 @@
 import mqtt from 'mqtt';
 import { appStore } from '$lib/stores/LbAppStore.svelte';
 import { controlStore } from '$lib/stores/LbControlStore.svelte';
+import { iconStore } from '$lib/stores/LbIconStore.svelte';
 import { utils } from '$lib/helpers/Utils';
-import type { UserSettings } from '$lib/types/models';
+import type { UserSettings, InitialStateMap } from '$lib/types/models';
+
+type MessageHandler = (msg: string, match: RegExpMatchArray) => void;
 
 /**
  * Class to connect to MQTT Server
@@ -16,6 +19,7 @@ export class MqttClient {
 	private isConnected: boolean = false;
 	private topicPrefix: string = 'loxone'; 				// TODO configure prefix in GUI
 	private registeredTopics: string[] = [];
+	private messageHandlers: Array<[RegExp, MessageHandler]> = [];
 
 	/**
 	 * Constructor is empty as we initialize the MQTT server after reading the environment variables.
@@ -47,6 +51,7 @@ export class MqttClient {
 		this.passwd = passwd ?? cred?.password ?? '';
 		this.topicPrefix = topicPrefix ?? cred?.topicPrefix ?? 'loxone';
 		this.registeredTopics = this.topicPrefix.split(',').map((item) => item + '/#');
+		this.buildMessageHandlers();
 
 		if (!this.hostName.length) {
 			console.error('[MqttClient] Hostname not given, cannot connect to MQTT server.');
@@ -117,17 +122,31 @@ export class MqttClient {
 	}
 
 	/**
-	 * Callback when message is received
-	 * @param topic Received MQTT topic 
+	 * Build the map of regex patterns to message handler callbacks.
+	 * Called once after topicPrefix is set.
+	 */
+	private buildMessageHandlers(): void {
+		this.messageHandlers = [
+			[new RegExp(this.topicPrefix + '/(.*)/structure'), (m, match) => this.updateStructure(m, match)],
+			[new RegExp(this.topicPrefix + '/(.*)/states'),   (m, match) => this.updateInitialStates(m, match)],
+			[new RegExp(this.topicPrefix + '/(.*)/icons'),   (m, match) => this.updateIcons(m, match)],
+			[new RegExp(this.topicPrefix + '/(.*)/(.*)'),     (m, match) => this.updateState(m, match)],
+		];
+	}
+
+	/**
+	 * Callback when message is received. Dispatches to the matching handler(s).
+	 * @param topic Received MQTT topic
 	 * @param message Received message for this MQTT topic
 	 */
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	private onMessage(topic: string, message: any): void {
-		//console.info('[MqttClient] Message received for topic ', topic);
 		const msg = message.toString();
-		this.monitorStructure(topic, msg);
-		this.monitorInitialStates(topic, msg);
-		this.monitorStates(topic, msg);
+		console.debug('[MqttClient] MQTT message received: ', topic, msg);
+		for (const [regex, handler] of this.messageHandlers) {
+			const match = topic.match(regex);
+			if (match) handler(msg, match);
+		}
 	};
 
 	/**
@@ -139,7 +158,7 @@ export class MqttClient {
 	publishTopic(uuid: string, msg: string, retain: boolean = false): void {
 		const qos = 1; // TODO add to configuration?
 		const serialNr = controlStore.msInfo.serialNr;
-		const topic = this.topicPrefix + '/' + serialNr + '/' + uuid + '/cmd';
+		const topic = `${this.topicPrefix}/${serialNr}/${uuid}/cmd`;
 		if (this.isConnected && serialNr) {
 			console.info('[MqttClient] published:', topic, msg);
 			this.client.publish(topic, msg, { retain, qos });
@@ -147,52 +166,56 @@ export class MqttClient {
 	}
 
 	/**
-	 * Monitor MQTT structure
-	 * @param topic Incoming topic
-	 * @param msg Incoming mesage
+	 * Update structure
+	 * @param msg Incoming message
+	 * @param match Regex match result from the message handler map
 	 */
-	monitorStructure(topic: string, msg: string): void {
-		const regex = new RegExp(this.topicPrefix + '/(.*)/structure');
-		const found = topic.match(regex);
-		if (found && found[1]) {
-			const serialNr = controlStore.msInfo.serialNr;
-			if (serialNr == found[1]) {
-				console.info('[MqttClient] Miniserver structure received for serialNr: ', serialNr);
-				controlStore.initStructure(JSON.parse(msg), this);
-			} else {
-				console.error('[MqttClient] Miniserver serialNr mismatch between topic and structure: ', serialNr, found[1]);
-			}
- 		}
-	}
-
-	/**
-	 * Monitor MQTT initial states
-	 * @param topic Incoming topic
-	 * @param msg Incoming mesage
-	 */
-	monitorInitialStates(topic: string, msg: string): void {
-		const regex = new RegExp(this.topicPrefix + '/(.*)/states');
-		const found = topic.match(regex);
-		if (found && found[1]) {
-			const regex2 = new RegExp(this.topicPrefix + '/' + found[1] + '/', 'g'); // TODO replace stored states at server 
-			msg = msg.replace(regex2, '');
-			controlStore.setInitialStates(JSON.parse(msg));
+	private updateStructure(msg: string, match: RegExpMatchArray): void {
+		if (!match[1]) return;
+		const serialNr = controlStore.msInfo.serialNr;
+		if (serialNr == match[1]) {
+			console.info('[MqttClient] Miniserver structure received for serialNr: ', serialNr);
+			controlStore.initStructure(JSON.parse(msg), this);
+		} else {
+			console.error('[MqttClient] Miniserver serialNr mismatch between topic and structure: ', serialNr, match[1]);
 		}
 	}
 
 	/**
-	 * Monitor MQTT individual states
-	 * @param topic Incoming topic
-	 * @param msg Incoming mesage
+	 * Update initial states
+	 * @param msg Incoming message
+	 * @param match Regex match result from the message handler map
 	 */
-	monitorStates(topic: string, msg: string): void {
-		const regex = new RegExp(this.topicPrefix + '/(.+)/(.*)');
-		const found = topic.match(regex);
-		if (found && found[1] && found[2]) {
-			const obj = utils.isValidJSONObject(msg) ? JSON.parse(msg) : msg;
-			//console.debug('[MqttClient] setState: ', found[2], obj);
-			controlStore.setState(found[2], obj);
-		}
+	private updateInitialStates(msg: string, match: RegExpMatchArray): void {
+		const serialNr = controlStore.msInfo.serialNr;
+		if (!match[1] || match[1] != serialNr) return;
+		const states = JSON.parse(msg) as InitialStateMap;
+		controlStore.setInitialStates(states);
+	}
+
+	/**
+	 * Update individual state
+	 * @param msg Incoming message
+	 * @param match Regex match result from the message handler map
+	 */
+	private updateState(msg: string, match: RegExpMatchArray): void {
+		const serialNr = controlStore.msInfo.serialNr;
+		if (!match[1] || !match[2] ||  match[1] != serialNr) return;
+		const obj = utils.isValidJSONObject(msg) ? JSON.parse(msg) : msg;
+		controlStore.setState(match[2], obj);
+	}
+
+	/**
+	 * Update icons
+	 * @param msg Incoming message
+	 * @param match Regex match result from the message handler map
+	 */
+	private updateIcons(msg: string, match: RegExpMatchArray): void {
+		const serialNr = controlStore.msInfo.serialNr;
+		if (!match[1] || match[1] != serialNr) return;
+		const icons = JSON.parse(msg);
+		console.debug('[MqttClient] icon map updated', icons);
+		iconStore.registerIcons(icons);
 	}
 
 	/**

@@ -19,8 +19,8 @@ export const load: LayoutLoad = async () => {
 	await waitLocale();
 	locale.set(localeSettings);
 
-	// pre-load icons
-	iconStore.registerIcons();
+	// pre-load default icons
+	iconStore.loadCustomIcons();
 }
 
 /**
