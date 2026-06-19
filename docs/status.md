@@ -133,6 +133,7 @@ or submit a [pull request][pull request].
 | Alarm sync w mobile alarm    | Not started                |
 | Battery status update        | Not started                |
 | Connection status            | Available                  |
+| Control history              | Not started                |
 | Dark / Light mode            | Available                  |
 | Demo mode                    | Available                  |
 | Internationalization         | Available (NL, DE, US)     |
@@ -147,9 +148,9 @@ or submit a [pull request][pull request].
 | Secured controls             | Available                  |
 | Secured communication (wss)  | Available                  |
 | Settings menu                | Available                  |
-| Sorting of controls          | Under development          |
-| Splashscreen                 | Not started                |
-| Statistics / history         | Under development          |
+| Sorting of controls          | Available                  |
+| Splashscreen                 | Available (part of PWA)    |
+| Statistics                   | Available                  |
 | Statusbar (weather, time)    | Available                  |
 | System messages              | Available                  |
 | Theme / color presets        | Available                  |
