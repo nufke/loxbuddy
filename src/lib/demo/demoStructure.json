@@ -247,6 +247,21 @@
 				"__uuid__controls_window_monitor"
 			]
 		},
+		"__uuid__controls_info_analog": {
+			"name": "Outdoor temperature ",
+			"type": "InfoOnlyAnalog",
+			"uuidAction": "__uuid__controls_info_analog",
+			"room": "__uuid__rooms_outside",
+			"cat": "__uuid__cats_energy",
+			"defaultRating": 0,
+			"isFavorite": true,
+			"isSecured": false,
+			"defaultIcon": "IconsFilled/thermometer.svg",
+			"restrictions": 0,
+			"states": {
+				"value": "__uuid__controls_info_analog"
+			}
+		},
 		"__uuid__controls_switch": {
 			"name": "Switch",
 			"type": "Switch",

@@ -1,310 +1,81 @@
 <script lang="ts">
-	import type { Control, ControlView, ControlOptions, GeneralView } from '$lib/types/models';
-	import LbIcon from '$lib/components/Common/LbIcon.svelte';
-	import LbSimpleSlider from '$lib/components/Common/LbSimpleSlider.svelte';
-	import LbStatusBar from '$lib/components/Common/LbStatusBar.svelte';
-	import { fadeInOut } from '$lib/helpers/styles';
-	import { appStore } from '$lib/stores/LbAppStore.svelte';
-	import { controlStore } from '$lib/stores/LbControlStore.svelte';
-	import { lbControl } from '$lib/helpers/LbControl';
-	import { DEFAULT_CONTROLOPTIONS, DEFAULT_GENERALVIEW } from '$lib/types/models';
-	import { Switch } from '@skeletonlabs/skeleton-svelte';
+	import type { Snippet } from 'svelte';
+	import type { Control } from '$lib/types/models';
 	import { Dialog, Portal } from '@skeletonlabs/skeleton-svelte';
-	import { Slider } from '@skeletonlabs/skeleton-svelte';
-	import { _ } from 'svelte-i18n';
-	import { fade } from 'svelte/transition';
+	import { fadeInOut } from '$lib/helpers/styles';
+	import LbIcon from '$lib/components/Common/LbIcon.svelte';
 	import LbInfo from '$lib/components/Common/LbInfo.svelte';
-	import { format } from 'date-fns';
-	import { innerHeight } from 'svelte/reactivity/window';
-	import LbGeneralDialog from '$lib/components/Common/LbGeneralDialog.svelte';
-	import LbMap from '$lib/components/Common/LbMap.svelte';
 
-	let { controlView = $bindable() }: { controlView: ControlView } = $props();
+	let {
+		open,
+		onClose,
+		control,
+		title,
+		width = 'w-[450px]',
+		zIndex = 'z-10',
+		isFullscreen = false,
+		showClose = true,
+		header,
+		description,
+	}: {
+		open: boolean;
+		onClose: () => void;
+		control?: Control;
+		title?: string;
+		width?: string;
+		zIndex?: string;
+		isFullscreen?: boolean;
+		showClose?: boolean;
+		header?: Snippet<[]>;
+		description: Snippet<[]>;
+	} = $props();
 
-	let viewport: any = $state(); // TODO make HTMLDivElement
-	let hasScroll = $state(true);
-	let showScrollTop = $state(false);
-	let showScrollBottom = $state(true);
-	let passwordView: GeneralView = $state(DEFAULT_GENERALVIEW);
+	let backdropClass = $derived(isFullscreen
+		? `fixed top-0 left-0 right-0 bottom-0 ${zIndex} bg-surface-50-950 ${fadeInOut}`
+		: `fixed inset-0 ${zIndex} bg-surface-50-950/75 backdrop-blur-sm ${fadeInOut}` );
 
-	let value = $derived(controlView.slider && controlView.slider.position? [controlView.slider.position] : [0]);
-	let min = $derived(controlView.slider ? controlView.slider.min : 0);
-	let max = $derived(controlView.slider ? controlView.slider.max : 100);
-	let step = $derived(controlView.slider ? controlView.slider.step : 1);
-	let orientation = $derived(controlView.slider ? controlView.slider.orientation : 'horizontal');
-	let locked = $derived(controlView.slider ? controlView.slider.locked : false);
-	let controlOptions: ControlOptions = $derived({...DEFAULT_CONTROLOPTIONS, isLink: true});
-	let windowHeight = $derived(innerHeight.current || 0);
-	let margin = $derived(getMargin(controlView.control));
-	let availableHeight = $derived(Math.floor(windowHeight * 0.9) - margin);
+		let positionerClass = $derived(isFullscreen
+		? `fixed top-0 left-0 w-full h-full ${zIndex}`
+		: `fixed inset-0 ${zIndex} flex justify-center items-center p-4`);
 
-	let style = $derived(
-		viewport && viewport.scrollHeight > availableHeight
-			? `height: ${availableHeight}px`
-			: 'height: auto'
-	);
+	let contentClass = $derived(isFullscreen
+		? `card ${header ? '' : 'p-2'} shadow-xl h-full overflow-y-auto ${fadeInOut}`
+		: `card bg-surface-100-900 p-4 pt-3 shadow-sm rounded-lg border border-white/5 hover:border-white/10
+			 max-w-full max-h-full ${width} ${fadeInOut}`);
 
-	let	linkedControls = $derived(controlStore.controlList
-			.filter((control) => controlView.links ? controlView.links.includes(control.uuidAction) : null)
-			.sort((a, b) => a.name.localeCompare(b.name, appStore.locale)));
-
-	function setPostion(position: any): void {
-		let pos: number = position.length ? position[0] : position; // skeleton Slider returns array, select first one
-		if (controlView && controlView.buttons && controlView.buttons[0]) {
-			controlView.buttons[0].click({sliderPosition: pos});
-		}
-	}
-
-	function getStatusColorHex(hexColor: string|undefined): string {
-		return (hexColor && hexColor[0] == '#') ? 'color: ' + hexColor : '';
-	}
-
-	function getIconColorHex(hexColor: string | undefined): string {
-		return (hexColor && hexColor[0] == '#') ? 'fill: ' + hexColor : '';
-	}
-
-	function getPowerLevel(n: number): string {
-		return (n.toLocaleString(appStore.locale, { minimumFractionDigits: 1 })) + ' kW max.';
-	}
-
-	function getPowerStatus(mask: number): {name: string, color: string} {
-		const statusLoads = controlView.dialog.details.loadManager.statusLoads & (mask+1);
-		const lockedLoads = controlView.dialog.details.loadManager.lockedLoads & (mask+1);
-		return { 
-			name: lockedLoads ? $_('Locked') : (statusLoads ? $_('On') : $_('Off')),
-			color: lockedLoads ? 'dark:text-error-500 text-error-700' : (statusLoads ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700')
-		}
-	}
-
-	function getMargin(control: Control): number {
-		let margin: number = 200;
-		switch(control.type) {
-			case 'Switch': margin = 100; break;
-			case 'Alarm': margin = 250; break;
-			case 'TextState': margin = 250; break;
-			case 'LoadManager': margin = 300; break;
-			default: console.info(`[LbDialog] No margin specified for ${control.type}, default margin of ${margin}px used`);
-		}
-		return margin;
-	}
-
-	function parseScroll(height: number, view: any = undefined): void {
-		if (!view) return;
-		hasScroll = view.scrollHeight > view.clientHeight;
-		showScrollTop = height > 0 && hasScroll && (view?.scrollTop > 10);
-		showScrollBottom = height > 0 && hasScroll && (view.scrollTop + view.clientHeight < (view.scrollHeight - 10));
-	}
-
-	function close(): void {
-		controlView.dialog.action(false);
-	}
-
-	function handleButtonClick(button: any, e: any) {
-		const cachedVisuPw = appStore.getVisuPw(controlView.control.uuidAction);
-		if (controlView.control.isSecured && cachedVisuPw) {
-			button.click(e, cachedVisuPw);
-			return 
-		}
-		if (controlView.control.isSecured) {
-			passwordView.label = $_('Secured control');
-			passwordView.ok = (visuPw: string) => { button.click(e, visuPw); appStore.setVisuPw(controlView.control.uuidAction, visuPw);}
-			passwordView.openDialog = true;
-			return;
-		}
-		button.click(e);
-	}
-
-	$effect( () => { // check scroll status and window change and viewwport construction
-		parseScroll(windowHeight, viewport);
-	});
+	let headerClass = $derived(isFullscreen
+		? 'sticky top-0 h-[40px] dark:bg-surface-950/50 bg-surface-50/50 z-1 grid grid-cols-[5%_90%_5%]'
+		: 'grid grid-cols-[5%_90%_5%]');
+		
+	let iconPositionClass = $derived(isFullscreen ? 'absolute right-1 top-1' : 'flex justify-center items-center');
 </script>
 
-{#if controlView.dialog.state} <!-- only construct dialog when opened, important to get current clientHeight -->
-	<Dialog
-		open={controlView.dialog.state}
-		onInteractOutside={close}>
+<!-- Only construct dialog when opened, important to get correct clientHeight -->
+{#if open}
+	<Dialog {open} onInteractOutside={onClose}>
 		<Portal>
-			<Dialog.Backdrop class="fixed inset-0 z-10 bg-surface-50-950/75 backdrop-blur-sm {fadeInOut}"/>
-			<Dialog.Positioner class="fixed inset-0 z-10 flex justify-center items-center p-4">
-				<Dialog.Content class="card bg-surface-100-900 p-4 pt-3 shadow-sm rounded-lg border border-white/5 hover:border-white/10
-									max-w-full max-h-full w-[450px] {fadeInOut}">
-					<LbInfo control={controlView.control}/>
-					<header class="grid grid-cols-[5%_90%_5%]">
-						<div class="flex justify-center items-center"></div><!-- placeholder for menu -->
-						<div>
-							<Dialog.Title class="h5 flex justify-center items-center">{controlView.textName}</Dialog.Title>
-						</div>
-						<div class="flex justify-center items-center">
-							<button type="button" class="btn-icon hover:preset-tonal" onclick={close}>
-								<LbIcon name="x" height="16" width="16"/>
-							</button>
-						</div>
-					</header>
+			<Dialog.Backdrop class={backdropClass}/>
+			<Dialog.Positioner class={positionerClass}>
+				<Dialog.Content class={contentClass}>
+					{#if control}<LbInfo {control}/>{/if}
+					{#if header}
+						{@render header()}
+					{:else if title !== undefined}
+						<header class={headerClass}>
+							<div class="flex justify-center items-center"></div><!-- placeholder for menu -->
+							<Dialog.Title class="h5 flex justify-center items-center">{title}</Dialog.Title>
+							<div class={iconPositionClass}>
+								{#if showClose}
+									<button type="button" class="btn-icon hover:preset-tonal" onclick={onClose}>
+										<LbIcon name="x" height="16" width="16"/>
+									</button>
+								{/if}
+							</div>
+						</header>
+					{/if}
 					<Dialog.Description>
-						<div class="mt-2">
-							<div class="flex flex-col items-center justify-center">
-								{#if !controlView.dialog.disableIcon}
-								<div class="mb-2 relative inline-flex h-18 w-18 items-center justify-center overflow-hidden rounded-full border border-white/10 bg-surface-50-950">
-									<LbIcon class={controlView.iconColor} name={controlView.iconName} width="36" height="36"
-													style={getIconColorHex(controlView.iconColor)}/>
-									{#if controlView.badgeIconName?.length}
-										<div class="absolute top-[9px] left-[10px] inline-flex items-center justify-center w-[18px] h-[18px] {controlView.badgeIconColor} rounded-full
-																border border-1 dark:border-surface-950 border-surface-50">
-											<LbIcon class='dark:text-surface-950 text-surface-50' name={controlView.badgeIconName} height="10" width="10"/>
-										</div>
-									{/if}
-								</div>
-								{/if}
-								{#if controlView.statusName && !controlView.dialog.details?.tracker && !controlView.dialog.details?.map} <!-- remove status when we show a tracker or map -->
-									<div class="w-full flex flex-col justify-center items-center truncate">
-											<p class="w-full text-center text-lg truncate {controlView.statusColor}" style={getStatusColorHex(controlView.statusColor)}>{$_(controlView.statusName)}</p>
-									</div>
-								{/if}
-							</div>
-							{#if controlView.buttons?.length && !controlView.slider && !controlView.dialog.buttons}
-							<div class="w-full mt-3 grid grid-cols-1 {controlView.dialog.class} gap-2 overflow-y-auto" {style} bind:this={viewport} >
-								{#each controlView.buttons as button}
-									{#if button.type === 'button' && button.click}
-										<button type="button" class="w-full btn btn-lg h-[48px] bg-surface-50-950 shadow-sm rounded-lg border border-white/15 hover:border-white/50 active:bg-primary-500 active:bg-primary-500"
-												onclick={(e) => {e.stopPropagation(); e.preventDefault(); handleButtonClick(button, null);}}>
-												{#if button.name}
-													<span>{$_(button.name)}</span>
-												{:else}
-													<span>
-														<LbIcon name={button.iconName}/>
-													</span>
-												{/if}
-										</button>
-									{/if}
-									{#if button.type == 'switch' && button.name }
-										<button type="button" class="w-full btn btn-lg bg-surface-50-950 shadow-sm rounded-lg border border-white/15 hover:border-white/50" 
-												onclick={(e) => {e.stopPropagation(); e.preventDefault(); handleButtonClick(button, {checked: !controlView.buttonState});}}>
-											<span style="font-size:18px">{$_(button.name)}</span>
-										</button>
-									{/if}
-								{/each}
-							</div>
-							{/if}
-							{#if controlView.slider && controlView.slider.position >= min}
-								<div class="container mt-3 flex justify-center items-center p-1 pb-3">
-									{#if controlView.control?.type=='Dimmer'}
-										<LbSimpleSlider classes='dimmer' {orientation} {min} {max} {step} {locked} {value} onValueChange={(e: any) => {setPostion(e.value)}}/>
-									{:else}
-										<Slider thumbSize={{ width: 20, height: 20}} {value} {min} {max} {step} onValueChange={(e: any) => setPostion(e.value)}> <!-- TODO thumbSize not working??-->
-											<Slider.Control>
-												<Slider.Track>
-													<Slider.Range />
-												</Slider.Track>
-												<Slider.Thumb index={0}  >
-													<Slider.HiddenInput />
-												</Slider.Thumb>
-											</Slider.Control>
-											<Slider.MarkerGroup>
-												<Slider.Marker value={min} />
-												<Slider.Marker value={max} />
-											</Slider.MarkerGroup>
-										</Slider>
-									{/if}
-								</div>
-							{/if}
-							{#if controlView.dialog.buttons}
-							<div class="container mt-3 grid grid-cols-1 {controlView.dialog.class} gap-2 overflow-y-auto" {style} bind:this={viewport}>
-								{#each controlView.dialog.buttons as button}
-									{#if button.type === 'button' && button.click}
-										<button type="button" class="w-full {button.class} btn btn-lg h-[48px] bg-surface-50-950 shadow-sm rounded-lg border border-white/15 hover:border-white/50 active:bg-primary-500"
-												onclick={(e) => handleButtonClick(button, e)}>
-												{#if button.name}
-													<span class="text-lg">{$_(button.name)}</span>
-												{:else}
-													<LbIcon name={button.iconName}/>
-												{/if}
-										</button>
-									{/if}
-									{#if button.type == 'switch' && button.name}
-										<button class="btn btn-lg bg-surface-50-950 shadow-sm rounded-lg border border-white/15 hover:border-white/50" onclick={(e) => { e.stopPropagation()}}> <!-- workaround wrapper to stop propagation for switch -->
-											<div class="flex w-full justify-between">
-												<h1 class="truncate text-lg">{$_(button.name)}</h1>
-												<Switch checked={controlView.buttonState} onCheckedChange={(e) => handleButtonClick(button, e)}>
-													<Switch.Control class="w-12 h-8 data-[state=checked]:preset-filled-primary-500">
-														<Switch.Thumb />
-													</Switch.Control>
-													<Switch.HiddenInput />
-												</Switch>
-											</div>
-										</button>
-									{/if}
-								{/each}
-							</div>
-							{/if}
-							{#if controlView.dialog.details?.tracker}
-							<div class="flex flex-col w-full mt-3 pl-2 pr-2 overflow-y-auto" {style} bind:this={viewport}>
-								{#each Object.keys(controlView.dialog.details.tracker) as key}
-									<p class="text-lg dark:text-surface-50 text-surface-950">{format(new Date(Number(key)), "PPP")}</p>
-									<hr class="hr" />
-									<div class="grid grid-cols-5 gap-2 mt-2 mb-2">
-										{#each controlView.dialog.details.tracker[key] as item}
-											<p class="text-md dark:text-surface-300 text-surface-700">{format(new Date(Number(item.time)), "p")}</p>
-											<p class="text-md col-span-4">{item.description}</p>
-										{/each}
-									</div>
-								{/each}
-							</div>
-							{/if}
-							{#if controlView.dialog.details?.loadManager}
-								<div class="w-full mt-3 bg-surface-50-950 rounded-lg border border-white/15 hover:border-white/50">
-									<LbStatusBar maxPower={controlView.dialog.details.loadManager.maxPower}
-																currentPower={controlView.dialog.details.loadManager.currentPower}
-																mode={controlView.dialog.details.loadManager.mode} />
-								</div>
-								<div class="relative flex flex-col w-full">
-									{#if showScrollTop}
-										<div class="absolute z-10 left-[50%] lb-center top-[11px] text-surface-500" transition:fade={{ duration: 300 }}><LbIcon name="chevron-up" height="30" width="30"/></div>
-									{/if}
-									{#if showScrollBottom}
-										<div class="absolute z-10 left-[50%] lb-center -bottom-[19px] text-surface-500" transition:fade={{ duration: 300 }}><LbIcon name="chevron-down"height="30" width="30"/></div>
-									{/if}
-									<div class="overflow-y-auto" {style} bind:this={viewport}>
-										{#each controlView.dialog.details.loadManager.loads as load,i}
-											<button class="mt-2 w-full flex items-center justify-start rounded-lg border border-white/15 hover:border-white/50
-																		bg-surface-50-950">
-												<div class="p-3 flex flex-row w-full justify-between  items-center h-[60px]">
-													<div class="flex flex-col truncate">
-														<p class="truncate text-lg text-left">{load.name}</p>
-														<p class="truncate text-left text-xs dark:text-surface-300 text-surface-700">{getPowerLevel(load.power)}</p>
-													</div>
-													{#if load.hasStatus}
-														<p class="text-left text-lg {getPowerStatus(i).color}">{getPowerStatus(i).name}</p>
-													{/if}
-												</div>
-											</button>
-										{/each}
-									</div>
-								</div>
-							{/if}
-							{#if controlView.dialog.details?.map}
-								<div class="relative w-full mt-3">
-									<LbMap map={controlView.dialog.details.map}/>
-								</div>
-							{/if}
-							{#if linkedControls.length}
-							<div class="flex flex-col relative w-full mt-2">
-								{#if showScrollTop}
-									<div class="absolute z-10 left-[50%] lb-center top-[11px] text-surface-500" transition:fade={{ duration: 300 }}><LbIcon name="chevron-up" height="30" width="30"/></div>
-								{/if}
-								{#if showScrollBottom}
-									<div class="absolute z-10 left-[50%] lb-center -bottom-[19px] text-surface-500" transition:fade={{ duration: 300 }}><LbIcon name="chevron-down" height="30" width="30"/></div>
-								{/if}
-								<div class="grid grid-cols-1 gap-2
-									{linkedControls.length > 1 ? 'lg:grid-cols-2' : ''}
-									{linkedControls.length > 2 ? 'xl:grid-cols-3' : ''}
-									lg:flex-wrap overflow-y-auto" bind:this={viewport} onscroll={() => parseScroll(windowHeight, viewport)} {style}>
-									{#each linkedControls as control}
-										{@const Component = lbControl.getControl(control.type)}
-										<Component {control} controlOptions={controlOptions}/>
-									{/each}
-								</div>
-							</div>
-							{/if}
+						<div class={!header && title !== undefined ? 'mt-3' : ''}>
+							{@render description()}
 						</div>
 					</Dialog.Description>
 				</Dialog.Content>
@@ -312,11 +83,3 @@
 		</Portal>
 	</Dialog>
 {/if}
-
-<LbGeneralDialog bind:view={passwordView}/>
-
-<style>
-	.lb-center {
-		transform: translate(-50%, -50%);
-	}
-</style>

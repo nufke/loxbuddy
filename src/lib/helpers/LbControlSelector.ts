@@ -26,13 +26,13 @@ import LbSwitch from '$lib/components/Switch/LbSwitch.svelte';
 import LbTextState from '$lib/components/TextState/LbTextState.svelte';
 import LbTimedSwitch from '$lib/components/TimedSwitch/LbTimedSwitch.svelte';
 import LbTracker from '$lib/components/Tracker/LbTracker.svelte';
-import LbUnknownControl from '$lib/components/Common/LbUnknownControl.svelte';
+import LbUnknownControl from '$lib/components/Unknown/LbUnknownControl.svelte';
 import LbUpDownDigital from '$lib/components/UpDownDigital/LbUpDownDigital.svelte';
 import LbValueSelector from '$lib/components/ValueSelector/LbValueSelector.svelte';
 import LbWebpage from '$lib/components/Webpage/LbWebpage.svelte';
 import LbWindowMonitor from '$lib/components/WindowMonitor/LbWindowMonitor.svelte';
 
-class LbControl {
+class LbControlSelector {
 	private controlList = [
 		{ type: 'Alarm', control: LbAlarm, defaultIcon: 'IconsFilled/shield-2.svg' },
 		{ type: 'AlarmClock', control: LbAlarmClock, defaultIcon: 'IconsFilled/alarm-clock.svg' },
@@ -80,4 +80,4 @@ class LbControl {
 	}
 }
 
-export const lbControl = new LbControl();
+export const lbControlSelector = new LbControlSelector();

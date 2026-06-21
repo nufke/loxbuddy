@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Dialog, Portal } from '@skeletonlabs/skeleton-svelte';
 	import { _ } from 'svelte-i18n';
-	import { lbControl } from '$lib/helpers/LbControl';
+	import { lbControlSelector } from '$lib/helpers/LbControlSelector';
 	import type { Control, ControlOptions, UserDefaultStructure } from '$lib/types/models';
 	import { DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import { appStore } from '$lib/stores/LbAppStore.svelte';
@@ -29,7 +29,7 @@
 		.sort((a, b) => getPosition(customSorting, a, key) - getPosition(customSorting, b, key))
 	);
 
-	let openPopup = $derived(controlStore.controlList.length == 0 && appStore.loginDialog.state == false);
+	let openPopup = $derived(controlStore.controlList.length == 0 && appStore.loginDialogOpen == false);
 
 	/**
 	 * Check if given control is set as favorite control
@@ -84,7 +84,7 @@
 	 */
 	function cancelConnect(): void {
 		openPopup = false;
-		appStore.loginDialog.state = true; // goto login 
+		appStore.loginDialogOpen = true; // goto login 
 	}
 
 	/**
@@ -104,7 +104,7 @@
 				<button class="pl-2 h5" onclick={() => {goto('/room/'+centralRoom.uuid)}}>{centralRoom.name}</button>
 				<div class="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 lg:flex-wrap">
 					{#each selectedControls as control (control)}
-						{@const Component = lbControl.getControl(control.type)}
+						{@const Component = lbControlSelector.getControl(control.type)}
 						<div animate:flip={{ duration: 300 }}
 							draggable={controlStore.sorting}
 							onpointerdown={onDragHandlePointerDown}

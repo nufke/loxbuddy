@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { _ } from 'svelte-i18n';
-	import { lbControl } from '$lib/helpers/LbControl';
+	import { lbControlSelector } from '$lib/helpers/LbControlSelector';
 	import type { Control, ControlOptions, UserDefaultStructure } from '$lib/types/models';
 	import { DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import { appStore } from '$lib/stores/LbAppStore.svelte';
@@ -84,7 +84,7 @@
 	<p class="pl-2 pb-2 h5">{$_('Favorites')}</p>
 	<div class="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 lg:flex-wrap">
 		{#each favoriteControls as control (control)}
-			{@const Component = lbControl.getControl(control.type)}
+			{@const Component = lbControlSelector.getControl(control.type)}
 			<div animate:flip={{ duration: 300 }}
 				draggable={controlStore.sorting}
 				onpointerdown={onDragHandlePointerDown}

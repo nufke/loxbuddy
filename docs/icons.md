@@ -8,7 +8,7 @@ LoxBuddy maps existing icon names coming from your Loxone Config structure to Ic
 
 ## User-defined icons
 
-You can define your own [Iconify icons](https://icon-sets.iconify.design/) and map them to existing legacy icon names.
+You can select your own [Iconify icons](https://icon-sets.iconify.design/) and map them to existing legacy icon names.
 The format for the icon mapping is as follows:
 
 ```json
@@ -27,6 +27,8 @@ Any number of entries can be specified, adding new icons or overriding the exist
 where:
 * `mqtt-topic-prefix` is the MQTT topic prefix defined in the LoxBuddy MQTT settings
 * `miniserver-serialnr` is the serial number of you Miniserver as defined in the structure file (`LoxAPP3.json`)
+
+You can remove all user-defined icons by sending an empty message to the topic above.
 
 ## Requesting new LoxBuddy icons
 

@@ -1,5 +1,5 @@
 import { SvelteMap } from 'svelte/reactivity';
-import type { DialogView, Credentials, MqttCredentials, SipCredentials } from '$lib/types/models';
+import type { Credentials, MqttCredentials, SipCredentials } from '$lib/types/models';
 import { utils } from '$lib/helpers/Utils';
 import { nl, enGB, de } from 'date-fns/locale'
 import { locale } from 'svelte-i18n';
@@ -16,6 +16,9 @@ class LbAppStore {
 	date: Date = $state(new Date());
 	isDemo: boolean = $state(false);
 	locale: string = $state('en'); // default English
+	lockScreenDialogOpen: boolean = $state(false);
+	lockScreenDialogTimeout: ReturnType<typeof setTimeout> | undefined = undefined;
+	loginDialogOpen: boolean = $state(false);
 	logLevel: number = $state(3); //	DEBUG = 4, INFO = 3, WARN = 2, ERROR = 1, NONE = 0
 	loxStatus: number = $state(0);  // 0=disconnected (grey), 1=connected/ok/info (green), 2=warning/issue (yellow), 3=error (red)
 	mode: string = $state('dark');
@@ -29,24 +32,8 @@ class LbAppStore {
 	startPage: string = $state('/');
 	theme: string = $state('LoxBuddy');
 	visuPw: SvelteMap<string, string> = new SvelteMap();
-
-	weatherDialog: DialogView = $state({
-		action: () => {},
-		state: false,
-		timeout: undefined
-	});
-
-	loginDialog: DialogView = $state({
-		action: () => {},
-		state: false,
-		timeout: undefined
-	});
-	
-	lockScreenDialog: DialogView = $state({
-		action: () => {},
-		state: false,
-		timeout: undefined
-	});
+	weatherDialogOpen: boolean = $state(false);
+	weatherDialogTimeout: ReturnType<typeof setTimeout> | undefined = undefined;
 
 	constructor() {
 		setInterval(() => {
@@ -121,26 +108,25 @@ class LbAppStore {
 	}
 
 	resetLockScreenDialogTimeout(): void {
-		this.lockScreenDialog.state = false; 
-		clearTimeout(this.lockScreenDialog.timeout); 
+		this.lockScreenDialogOpen = false;
+		clearTimeout(this.lockScreenDialogTimeout);
 		this.setLockScreenDialogTimeout();
 	}
 
 	resetWeatherDialogTimeout(): void {
-		//this.weatherDialog.state = false; 
-		clearTimeout(this.weatherDialog.timeout); 
+		clearTimeout(this.weatherDialogTimeout);
 		this.setWeatherDialogTimeout();
 	}
 
 	setWeatherDialogTimeout(): void {
-		this.weatherDialog.timeout = setTimeout(() => {
-			this.weatherDialog.state = false;
+		this.weatherDialogTimeout = setTimeout(() => {
+			this.weatherDialogOpen = false;
 		}, 30000); // 30s TODO add to configuration
 	}
 
 	setLockScreenDialogTimeout(): void {
-		this.lockScreenDialog.timeout = setTimeout(() => {
-			this.lockScreenDialog.state = true;
+		this.lockScreenDialogTimeout = setTimeout(() => {
+			this.lockScreenDialogOpen = true;
 		}, 60000); // 60s TODO add to configuration
 	}
 }

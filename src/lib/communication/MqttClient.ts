@@ -4,6 +4,7 @@ import { controlStore } from '$lib/stores/LbControlStore.svelte';
 import { iconStore } from '$lib/stores/LbIconStore.svelte';
 import { utils } from '$lib/helpers/Utils';
 import type { UserSettings, InitialStateMap } from '$lib/types/models';
+import loxiconmap from '$lib/helpers/lox2iconify.json';
 
 type MessageHandler = (msg: string, match: RegExpMatchArray) => void;
 
@@ -31,11 +32,12 @@ export class MqttClient {
 	/**
 	 * Establish connection to MQTT server. If no arguments are given, then use the MqttCredentials
 	 * from localStorage.
-	 * @param hostName (optional) IP address of MQTT server and port
-	 * @param port (optional) port of MQTT server
-	 * @param userName (optional) Name of the user
-	 * @param passwd (optional) Password of the user
-	 * @param topicPrefix (optional) Subscribed topic prefix
+	 *
+	 * @param hostName - (optional) IP address of MQTT server and port
+	 * @param port - (optional) port of MQTT server
+	 * @param userName - (optional) Name of the user
+	 * @param passwd - (optional) Password of the user
+	 * @param topicPrefix - (optional) Subscribed topic prefix
 	 */
 	async connect(
 		hostName?: string,
@@ -81,7 +83,7 @@ export class MqttClient {
 	}
 
 	/**
-	 * Listen to MQTT server events, such as connection status and messages
+	 * Listen to MQTT server events, such as connection status and messages.
 	 */
 	registerEvents(): void {
 		this.client.on('connect', () => this.onConnect());
@@ -103,7 +105,7 @@ export class MqttClient {
 	}
 
 	/**
-	 * Callback when client is connected to the MQTT server
+	 * Callback when client is connected to the MQTT server.
 	 */
 	onConnect(): void {
 		console.info('[MqttClient] Connected');
@@ -136,8 +138,9 @@ export class MqttClient {
 
 	/**
 	 * Callback when message is received. Dispatches to the matching handler(s).
-	 * @param topic Received MQTT topic
-	 * @param message Received message for this MQTT topic
+	 *
+	 * @param topic - Received MQTT topic
+	 * @param message - Received message for this MQTT topic
 	 */
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	private onMessage(topic: string, message: any): void {
@@ -145,15 +148,37 @@ export class MqttClient {
 		console.debug('[MqttClient] MQTT message received: ', topic, msg);
 		for (const [regex, handler] of this.messageHandlers) {
 			const match = topic.match(regex);
-			if (match) handler(msg, match);
+			if (match) {
+				handler(msg, match);
+				break;
+			}
 		}
 	};
 
 	/**
+	 * Check given serial number (part of MQTT topic) with the currently
+	 * active serialNr of the Miniserver registered in the controlStore.
+	 * In case they match, true is returned, otherwise false.
+	 *
+	 * @param snr - received serial number in MQTT topic
+	 * @returns true if serial numbers match, otherwise return false
+	 */
+	checkSerialNr(snr: string): boolean {
+		const serialNr = controlStore.msInfo.serialNr;
+		if (snr !== serialNr) {
+			console.debug(`[MqttClient] serial number in topic ${snr} not equal to connected Miniserver with serial nr ${serialNr}.`);
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	/**
 	 * Publish MQTT message
-	 * @param uuid Unique ID of the control
-	 * @param msg Message
-	 * @param retain flag to retain message in MQTT server (default: false)
+	 *
+	 * @param uuid - Unique ID of the control
+	 * @param msg - Message
+	 * @param retain - flag to retain message in MQTT server (default: false)
 	 */
 	publishTopic(uuid: string, msg: string, retain: boolean = false): void {
 		const qos = 1; // TODO add to configuration?
@@ -167,62 +192,66 @@ export class MqttClient {
 
 	/**
 	 * Update structure
-	 * @param msg Incoming message
-	 * @param match Regex match result from the message handler map
+	 *
+	 * @param msg - Incoming message
+	 * @param match - Regex match result from the message handler map
 	 */
 	private updateStructure(msg: string, match: RegExpMatchArray): void {
 		if (!match[1]) return;
-		const serialNr = controlStore.msInfo.serialNr;
-		if (serialNr == match[1]) {
-			console.info('[MqttClient] Miniserver structure received for serialNr: ', serialNr);
+		if (this.checkSerialNr(match[1])) {
+			console.info('[MqttClient] Miniserver structure received for serialNr: ', match[1]);
 			controlStore.initStructure(JSON.parse(msg), this);
-		} else {
-			console.error('[MqttClient] Miniserver serialNr mismatch between topic and structure: ', serialNr, match[1]);
 		}
 	}
 
 	/**
 	 * Update initial states
-	 * @param msg Incoming message
-	 * @param match Regex match result from the message handler map
+	 *
+	 * @param msg - Incoming message
+	 * @param match - Regex match result from the message handler map
 	 */
 	private updateInitialStates(msg: string, match: RegExpMatchArray): void {
-		const serialNr = controlStore.msInfo.serialNr;
-		if (!match[1] || match[1] != serialNr) return;
+		if (!match[1] || this.checkSerialNr(match[1])) return;
 		const states = JSON.parse(msg) as InitialStateMap;
 		controlStore.setInitialStates(states);
 	}
 
 	/**
 	 * Update individual state
-	 * @param msg Incoming message
-	 * @param match Regex match result from the message handler map
+	 *
+	 * @param msg - Incoming message
+	 * @param match - Regex match result from the message handler map
 	 */
 	private updateState(msg: string, match: RegExpMatchArray): void {
-		const serialNr = controlStore.msInfo.serialNr;
-		if (!match[1] || !match[2] ||  match[1] != serialNr) return;
+		if (!match[1] || !match[2] || this.checkSerialNr(match[1])) return;
 		const obj = utils.isValidJSONObject(msg) ? JSON.parse(msg) : msg;
 		controlStore.setState(match[2], obj);
 	}
 
 	/**
 	 * Update icons
-	 * @param msg Incoming message
-	 * @param match Regex match result from the message handler map
+	 *
+	 * @param msg - Incoming message
+	 * @param match - Regex match result from the message handler map
 	 */
 	private updateIcons(msg: string, match: RegExpMatchArray): void {
-		const serialNr = controlStore.msInfo.serialNr;
-		if (!match[1] || match[1] != serialNr) return;
-		const icons = JSON.parse(msg);
-		console.debug('[MqttClient] icon map updated', icons);
-		iconStore.registerIcons(icons);
+		if (!match[1] || this.checkSerialNr(match[1])) return;
+		const icons = utils.isValidJSONObject(msg) ? JSON.parse(msg) : msg
+		if (msg.length && Object.keys(icons).length) {
+			console.debug('[MqttClient] icon map updated', icons);
+			iconStore.registerIcons(icons);
+		} else {
+			console.debug('[MqttClient] flush user-defined icons');
+			iconStore.registerIcons(loxiconmap); // update store with defaults
+		}
 	}
 
 	/**
 	 * Send control state over MQTT
-	 * @param uuid universally unique ID of the control
-	 * @param value value of the control
-	 * @param visuPw (optional) visualization password for secured controls
+	 *
+	 * @param uuid - universally unique ID of the control
+	 * @param value - value of the control
+	 * @param visuPw - (optional) visualization password for secured controls
 	 */
 	async control(uuid: string, value: string, visuPw?: string): Promise<void> {
 		console.info('[MqttClient] Send / publish control:', uuid, value);
@@ -239,23 +268,25 @@ export class MqttClient {
 	}
 
 	/**
-	 * Dummy placeholder 
-	 * @param filename filename
+	 * Dummy placeholder
+	 *
+	 * @param filename - filename
 	 */
 	async getFile(fileName: string): Promise<void> {
 		// TODO
 	}
 
 	/**
-	 * Dummy placeholder to store user settings (e.g. sorting/order of controls)
-	 * @param settings user settings of type UserSettings
+	 * Dummy placeholder to store user settings (e.g. sorting/order of controls).
+	 *
+	 * @param settings - user settings of type UserSettings
 	 */
 	async setUserSettings(settings: UserSettings): Promise<void> {
 		console.info('[MqttClient] setUserSettings not yet implemented for MQTT', settings);
 	}
 
 	/**
-	 * Dummy placeholder to retrieve user settings (e.g. sorting/order of controls)
+	 * Dummy placeholder to retrieve user settings (e.g. sorting/order of controls).
 	 */
 	async getUserSettings(): Promise<void> {
 		console.info('[MqttClient] getUserSettings not yet implemented for MQTT');
@@ -263,7 +294,7 @@ export class MqttClient {
 
 	/**
 	 * Dummy placeholder to fetch information
-	 * @param url endpoint?
+	 * @param url - url endpoint
 	*/
 	async fetch(url: string): Promise<Response> {
 		return fetch(url); // TODO

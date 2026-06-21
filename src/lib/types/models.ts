@@ -456,60 +456,6 @@ export type SliderBar = {
 	locked?: boolean;
 }
 
-export type ControlView = {
-	control: Control;
-	isSubControl?: boolean;
-	showControl?: boolean;
-	isFavorite?: boolean;
-	iconName: string;
-	iconText?: string;
-	iconColor?: string;
-	badgeIconName?: string;
-	badgeIconColor?: string;
-	textName: string;
-	statusName: string;
-	statusColor: string;
-	buttonState?: boolean;
-	buttons: SingleButtonView[];
-	slider?: SliderBar;
-	list?: ListItem[];
-	links?: string[];
-	details?: any;
-	dialog: DialogView;
-}
-
-export type DialogView = {
-	action: any,
-	state?: boolean;
-	class?: string;
-	buttons?: SingleButtonView[];
-	disableIcon?: boolean;
-	details?: any;
-	timeout?: any;			// timeout for screensaver
-	noBlur?: boolean;
-	size?: {
-		width?: string;		// tailwindcss notation
-		height?: string;	// tailwindcss notation
-	}
-}
-
-export const DEFAULT_CONTROLVIEW: ControlView = {
-	control: DEFAULT_CONTROL,
-	isSubControl: false,
-	showControl: true,
-	isFavorite: false,
-	iconName: '',
-	iconColor: 'dark:text-surface-50 text-surface-950',
-	textName: '',
-	iconText: '',
-	statusName: '',
-	statusColor: 'dark:text-surface-300 text-surface-700',
-	buttons: [],
-	dialog: {
-		action: () => {} // no default action
-	}
-}
-
 export type LightItem = {
 	id: number;
 	uuid: string;
@@ -611,24 +557,6 @@ export type Button = {
 	id: number;
 	name: string;
 	selected: boolean;
-}
-
-export type GeneralView = {
-	label: string;
-	openDialog: boolean;
-	buttons: Button[];
-	input?: boolean;
-	cancel: any;
-	ok: any;
-}
-
-export const DEFAULT_GENERALVIEW: GeneralView = {
-	label: '',
-	openDialog: false,
-	buttons: [],
-	input: true,
-	cancel: () => {},
-	ok: () => {}
 }
 
 export type CalendarListItem = {

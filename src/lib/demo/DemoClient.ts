@@ -15,8 +15,8 @@ type IntervalMap = {
 
 /**
  * Helper class to demonstrate LoxBuddy capabilities.
- * This demo mimics a Smart Home and the controls. There is 
- * no Miniserver required to test the functionalities
+ * This demo mimics a Smart Home and the controls. There is
+ * no Miniserver required to test the functionalities.
 */
 export class DemoClient {
 	private timedSwitchIntervalMap: IntervalMap = {};
@@ -32,7 +32,7 @@ export class DemoClient {
 	}
 
 	/**
-	 * Initialize Demo
+	 * Initialize Demo.
 	 */
 	start(): void {
 		console.info('[DEMO] Use demo structure');
@@ -46,7 +46,7 @@ export class DemoClient {
 
 		controlStore.clearStructure();
 
-		// loadding of structure and states delayed to test uninitialized variables
+		// loadding of structure and states delayed to test uninitialized variables.
 		setTimeout( () => {
 			controlStore.initStructure(structure, this);
 		}, 100);
@@ -103,10 +103,11 @@ export class DemoClient {
 	}
 
 	/**
-	 * Method to activate the given control or subcontrol based on the given UUID with the given message
-	 * @param uuid uuidAction of the control or subcontrol
-	 * @param msg actual payload message for the control
-	 * @param visuPw (optional) visualization password for secured controls
+	 * Method to activate the given control or subcontrol based on the given UUID with the given message.
+	 *
+	 * @param uuid - uuidAction of the control or subcontrol.
+	 * @param msg - actual payload message for the control.
+	 * @param visuPw - (optional) visualization password for secured controls.
 	 */
 	control(uuid: string, msg: string, visuPw?: string): void {
 		console.info('[DEMO] Control:', uuid, msg);
@@ -127,10 +128,11 @@ export class DemoClient {
 	}
 
 	/**
-	 * Method to initiate the action for the control
-	 * @param control Object containing all control meta-data, such as type, icon, states, etc
-	 * @param msg actual payload message for the control
-	 * @param parentControl In case of a subcontrol, pass the parent control
+	 * Method to initiate the action for the control.
+	 *
+	 * @param control - Object containing all control meta-data, such as type, icon, states, etc.
+	 * @param msg - actual payload message for the control.
+	 * @param parentControl - In case of a subcontrol, pass the parent control.
 	 */
 	private action(control: Control, msg: string, parentControl: Control | undefined): void {
 		switch (control.type) {
@@ -160,10 +162,11 @@ export class DemoClient {
 	}
 
 	/**
-	 * Method implementing the action for the Switch control
-	 * @param control Control meta-data
-	 * @param msg Control payload as string, e.g. 'on', 'off', '1' or '0' 
-	 * @param parentControl Meta-data of parent control if any
+	 * Method implementing the action for the Switch control.
+	 *
+	 * @param control - Control meta-data.
+	 * @param msg - Control payload as string, e.g. 'on', 'off', '1' or '0'.
+	 * @param parentControl - Meta-data of parent control if any.
 	 */
 	private switch(control: Control, msg: string, parentControl: Control | undefined): void {
 		const activeId = control.states?.active;
@@ -177,8 +180,9 @@ export class DemoClient {
 	}
 
 	/**
-	 * Method implementing the action for the Meter control
-	 * @param control Control meta-data
+	 * Method implementing the action for the Meter control.
+	 *
+	 * @param control - Control meta-data.
 	 */
 	private meter(control: Control): void {
 		const stateList = ['total', 'totalNeg', 'storage', 'totalDay', 'totalWeek', 'totalMonth', 'totalYear',
@@ -189,9 +193,10 @@ export class DemoClient {
 	}
 
 	/**
-	 * Method implementing the action for the Radio control
-	 * @param control Control meta-data
-	 * @param msg Control payload as string, e.g. 'reset'
+	 * Method implementing the action for the Radio control.
+	 *
+	 * @param control - Control meta-data.
+	 * @param msg - Control payload as string, e.g. 'reset'.
 	 */
 	private radio(control: Control, msg: string): void {
 		const activeOutputId = control.states?.activeOutput;
@@ -200,10 +205,11 @@ export class DemoClient {
 	}
 
 	/**
-	 * Method implementing the action for the Dimmer control
-	 * @param control Control meta-data
-	 * @param msg Control payload as string, e.g. 'on', 'off' or dimmer level as string
-	 * @param parentControl Meta-data of parent control if any
+	 * Method implementing the action for the Dimmer control.
+	 *
+	 * @param control - Control meta-data.
+	 * @param msg - Control payload as string, e.g. 'on', 'off' or dimmer level as string.
+	 * @param parentControl - Meta-data of parent control if any.
 	*/
 	private dimmer(control: Control, msg: string, parentControl: Control | undefined): void {
 		const positionId = control.states?.position;
@@ -220,10 +226,11 @@ export class DemoClient {
 	}
 
 	/**
-	 * Method implementing the action for the ColorPickerV2 control
-	 * @param control Control meta-data
-	 * @param msg Control payload as string
- 	 * @param parentControl Meta-data of parent control if any
+	 * Method implementing the action for the ColorPickerV2 control.
+	 *
+	 * @param control - Control meta-data.
+	 * @param msg - Control payload as string.
+ 	 * @param parentControl - Meta-data of parent control, if any.
 	 */
 	private colorPickerV2(control: Control, msg: string, parentControl: Control | undefined): void {
 		const colorId = control.states?.color;
@@ -234,9 +241,10 @@ export class DemoClient {
 	}
 
 	/**
-	 * Method implementing the action for the ValueSelector control
-	 * @param control Control meta-data
-	 * @param msg Control payload as string
+	 * Method implementing the action for the ValueSelector control.
+	 *
+	 * @param control - Control meta-data.
+	 * @param msg - Control payload as string.
 	 */
 	private valueSelector(control: Control, msg: string): void {
 		const valueId = control.states?.value;
@@ -244,9 +252,10 @@ export class DemoClient {
 	}
 
 	/**
-	 * Method implementing the action for the Slider control
-	 * @param control Control meta-data
-	 * @param msg Control payload as string
+	 * Method implementing the action for the Slider control.
+	 *
+	 * @param control - Control meta-data.
+	 * @param msg - Control payload as string.
 	 */
 	private slider(control: Control, msg: string): void {
 		const valueId = control.states?.value;
@@ -254,9 +263,10 @@ export class DemoClient {
 	}
 
 	/**
-	 * Method implementing the action for the InfoOnlyDigital control
-	 * @param control Control meta-data
-	 * @param msg Control payload as string
+	 * Method implementing the action for the InfoOnlyDigital control.
+	 *
+	 * @param control - Control meta-data.
+	 * @param msg - Control payload as string.
 	 */
 	private infoOnlyDigital(control: Control, msg: string): void {
 		const activeId = control.states?.active;
@@ -264,9 +274,10 @@ export class DemoClient {
 	}
 
 	/**
-	 * Method implementing the action for the LightControllerV2 control
-	 * @param control Control meta-data
-	 * @param msg Control payload as string
+	 * Method implementing the action for the LightControllerV2 control.
+	 *
+	 * @param control - Control meta-data.
+	 * @param msg - Control payload as string.
 	 */
 	private lightControllerV2(control: Control, msg: string): void {
 		const stateId = control.states?.activeMoodsNum;
@@ -319,9 +330,10 @@ export class DemoClient {
 	}
 
 	/**
-	 * Method implementing the action for the Gate control
-	 * @param control Control meta-data
-	 * @param msg Control payload as string
+	 * Method implementing the action for the Gate control.
+	 *
+	 * @param control - Control meta-data.
+	 * @param msg - Control payload as string.
 	 */
 	private gate(control: Control, msg: string): void { 
 		switch (msg) {
@@ -334,9 +346,10 @@ export class DemoClient {
 	}
 
 	/**
-	 * Method implementing the subaction for the Gate control
-	 * @param control Control meta-data
-	 * @param endState Define the end state of the gate
+	 * Method implementing the subaction for the Gate control.
+	 *
+	 * @param control - Control meta-data.
+	 * @param endState - Define the end state of the gate.
 	 */
 	private moveGate(control: Control, endState: number): void {
 		if (this.gateIntervalMap[control.uuidAction]) {
@@ -359,9 +372,10 @@ export class DemoClient {
 	}
 
 	/**
-	 * Method implementing the action for the Jalousie control
-	 * @param control Control meta-data
-	 * @param msg Control payload as string
+	 * Method implementing the action for the Jalousie control.
+	 *
+	 * @param control - Control meta-data.
+	 * @param msg - Control payload as string.
 	 */
 	private jalousie(control: Control, msg: string): void {
 		switch (msg) {
@@ -376,9 +390,10 @@ export class DemoClient {
 	}
 
 	/**
-	 * Method implementing the subaction for the Jalousie control
-	 * @param control Control meta-data
-	 * @param direction Direction of the jalousie, 1=down, -1=up
+	 * Method implementing the subaction for the Jalousie control.
+	 *
+	 * @param control - Control meta-data.
+	 * @param direction - Direction of the jalousie, 1=down, -1=up.
 	 */
 	private startJalousie(control: Control, direction: number): void {
 		if (this.jalousieIntervalMap[control.uuidAction]) {
@@ -399,9 +414,10 @@ export class DemoClient {
 	}
 
 	/**
-	 * Method implementing the action for the TimedSwitch control
-	 * @param control Control meta-data
-	 * @param msg Control payload as string
+	 * Method implementing the action for the TimedSwitch control.
+	 *
+	 * @param control - Control meta-data.
+	 * @param msg - Control payload as string.
 	 */
 	private timedSwitch(control: Control, msg: string): void {
 		const deactivationDelayId= control.states?.deactivationDelay;
@@ -415,8 +431,9 @@ export class DemoClient {
 	}
 
 	/**
-	 * Method implementing the action to start the TimedSwitch control
-	 * @param control Control meta-data
+	 * Method implementing the action to start the TimedSwitch control.
+	 *
+	 * @param control - Control meta-data.
 	 */
 	private startTimedSwitch(control: Control): void {
 		let deactivationDelayTotalId = controlStore.getState(control.states?.deactivationDelayTotal);
@@ -431,9 +448,10 @@ export class DemoClient {
 	}
 
 	/**
-	 * Method implementing the action for the Alarm control
-	 * @param control Control meta-data
-	 * @param msg Control payload as string
+	 * Method implementing the action for the Alarm control.
+	 *
+	 * @param control - Control meta-data.
+	 * @param msg - Control payload as string.
 	 */
 	private alarm(control: Control, msg: string): void {
 		const msgItems = msg.split('/');
@@ -469,9 +487,10 @@ export class DemoClient {
 	}
 
 	/**
-	 * Method implementing the action for the AlarmClock control
-	 * @param control Control meta-data
-	 * @param msg Control payload as string
+	 * Method implementing the action for the AlarmClock control.
+	 *
+	 * @param control - Control meta-data.
+	 * @param msg - Control payload as string.
 	 */
 	private alarmClock(control: Control, msg: string): void {
 		const entryListId = control.states?.entryList;
@@ -519,9 +538,10 @@ export class DemoClient {
 	}
 
 	/**
-	 * Method implementing the action for the SmokeAlarm control
-	 * @param control Control meta-data
-	 * @param msg Control payload as string
+	 * Method implementing the action for the SmokeAlarm control.
+	 *
+	 * @param control - Control meta-data.
+	 * @param msg - Control payload as string.
 	 */
 	private smokeAlarm(control: Control, msg: string): void {
 		const msgItems = msg.split('/');
@@ -532,9 +552,10 @@ export class DemoClient {
 	}
 
 	/**
-	 * Method implementing the subaction for the SmokeAlarm control to put it in service mode
-	 * @param control Control meta-data
-	 * @param msgItems List containing the time for service mode
+	 * Method implementing the subaction for the SmokeAlarm control to put it in service mode.
+	 *
+	 * @param control - Control meta-data.
+	 * @param msgItems - List containing the time for service mode.
 	 */
 	private smokeAlarmServiceMode(control: Control, msgItems: string[]): void {
 		let time = Number(msgItems[1]); // Override time given in seconds
@@ -561,9 +582,10 @@ export class DemoClient {
 	}
 
 	/**
-	 * Method implementing the action for the Intelligent Room Control (IRC) Version 1
-	 * @param control Control meta-data
-	 * @param msg Control payload as string
+	 * Method implementing the action for the Intelligent Room Control (IRC) Version 1.
+	 *
+	 * @param control - Control meta-data.
+	 * @param msg - Control payload as string.
 	 */
 	private ircv1(control: Control, msg: string): void {
 		const msgItems = msg.split('/');
@@ -581,9 +603,10 @@ export class DemoClient {
 	}
 
 	/**
-	 * Method implementing the subaction for the IRCv1 to start the timer
-	 * @param control Control meta-data
-	 * @param msg List containing the time
+	 * Method implementing the subaction for the IRCv1 to start the timer.
+	 *
+	 * @param control - Control meta-data.
+	 * @param msg - List containing the time.
 	 */
 	private startIRCV1Timer(control: Control, msgItems: string[]): void {
 		const modeId = controlStore.getState(control.states?.mode);
@@ -611,9 +634,10 @@ export class DemoClient {
 	}
 
 	/**
-	 * Method implementing the action for the Intelligent Room Control (IRC) Version 2
-	 * @param control Control meta-data
-	 * @param msg Control payload as string
+	 * Method implementing the action for the Intelligent Room Control (IRC) Version 2.
+	 *
+	 * @param control - Control meta-data.
+	 * @param msg - Control payload as string.
 	 */
 	private ircv2(control: Control, msg: string): void {
 		const msgItems = msg.split('/');
@@ -628,9 +652,10 @@ export class DemoClient {
 	}
 
 	/**
-	 * Method implementing the subaction for the IRCv2 to start the timer
-	 * @param control Control meta-data
-	 * @param msgItems List containing the time
+	 * Method implementing the subaction for the IRCv2 to start the timer.
+	 *
+	 * @param control - Control meta-data.
+	 * @param msgItems - List containing the time.
 	 */
 	private startIRCV2Timer(control: Control, msgItems: string[]): void {
 		const selectedMode = Number(msgItems[1]);
@@ -671,8 +696,9 @@ export class DemoClient {
 	}
 
 	/**
-	 * Method implementing the subaction for the IRCv2 to stop the timer
-	 * @param control Control meta-data
+	 * Method implementing the subaction for the IRCv2 to stop the timer.
+	 *
+	 * @param control - Control meta-data.
 	 */
 	private stopIRCV2Timer(control: Control): void {
 		const overrideOff = [{ 
@@ -688,9 +714,10 @@ export class DemoClient {
 	}
 
 	/**
-	 * Method implementing the action for the DayTimer control
-	 * @param control Control meta-data
-	 * @param msg Control payload as string
+	 * Method implementing the action for the DayTimer control.
+	 *
+	 * @param control - Control meta-data.
+	 * @param msg - Control payload as string.
 	 */
 	private daytimer(control: Control, msg: string): void {
 		const valueId = control.states?.value;
@@ -722,9 +749,10 @@ export class DemoClient {
 	}
 
 	/**
-	 * Method implementing the subaction for the DayTimer control to start timer
-	 * @param control Control meta-data
-	 * @param msgItems List containing the time
+	 * Method implementing the subaction for the DayTimer control to start timer.
+	 *
+	 * @param control - Control meta-data.
+	 * @param msgItems - List containing the time.
 	 */
 	private startDaytimer(control: Control, msgItems: string[]): void {
 		let time = Number(msgItems[2]);
@@ -745,9 +773,10 @@ export class DemoClient {
 	}
 
 	/**
-	 * Method implementing the subaction for the DayTimer control to set/update the timer
-	 * @param control Control meta-data
-	 * @param msgItems List containing the entries
+	 * Method implementing the subaction for the DayTimer control to set/update the timer.
+	 *
+	 * @param control - Control meta-data.
+	 * @param msgItems - List containing the entries.
 	 */
 	private setDayTimer(control: Control, msgItems: string[]): void {
 		const entriesAndDefaultValueId = control.states?.entriesAndDefaultValue;
@@ -769,9 +798,10 @@ export class DemoClient {
 	}
 
 	/**
-	 * Method implementing the subaction for the DayTimer control to set/update the timer modes
-	 * @param control Control meta-data
-	 * @param modeList List containing the modes
+	 * Method implementing the subaction for the DayTimer control to set/update the timer modes.
+	 *
+	 * @param control - Control meta-data.
+	 * @param modeList - List containing the modes.
 	 */
 	private setDayTimerModes(control: Control, modeList: string[]): void {
 		const modeListId = control.states?.modeList;
@@ -791,9 +821,10 @@ export class DemoClient {
 	}
 
 	/**
-	 * Method to fetch dummy info in demo mode
-	 * @param url string containing the url
-	 * @returns Response payload
+	 * Method to fetch dummy info in demo mode.
+	 *
+	 * @param url - string containing the url.
+	 * @returns - Response payload.
 	 */
 	fetch(url: string): Promise<Response> {
 		console.info('[DEMO] fetch URL:', url);
@@ -816,9 +847,10 @@ export class DemoClient {
 	}
 
 	/**
-	 * Method to create statistic response
-	 * @param url given url
-	 * @returns Response payload
+	 * Method to create statistic response.
+	 *
+	 * @param url - given url.
+	 * @returns - Response payload.
 	 */
 	private createStatisticInfo(url: string): Promise<Response> {
 		const match = url.match(/getStatisticInfo\/([^/]+)/);
@@ -829,9 +861,10 @@ export class DemoClient {
 	}
 
 	/**
-	 * Method to create dummy statistics for Meter control
-	 * @param url given url
-	 * @returns Response payload containing binary statisticV2 data
+	 * Method to create dummy statistics for Meter control.
+	 *
+	 * @param url - given url.
+	 * @returns - Response payload containing binary statisticV2 data.
 	 */
 	private createStatistics(url: string): Promise<Response> {
 		// jdev/sps/getStatistic/{uuid}/{diff}/{from}/{until}/{unit}/{id}/
@@ -892,23 +925,25 @@ export class DemoClient {
 	}
 
 	/**
-	 * disconnect demo mode
+	 * disconnect demo mode.
 	 */
 	disconnect(): void {
 		controlStore.clearStructure();
 	}
 
 	/**
-	 * Helper method to get file in demo mode
-	 * @param url url to file
+	 * Helper method to get file in demo mode.
+	 *
+	 * @param url - url to file.
 	 */
 	async getFile(url: string): Promise<void> {
 		console.info('[DEMO] getFile not yet implemented in demo mode.');
 	}
 
 	/**
-	 * Store user settings (e.g. sorting/order of controls)
-	 * @param settings Object containing user settings
+	 * Store user settings (e.g. sorting/order of controls).
+	 *
+	 * @param settings - Object containing user settings.
 	 */
 	async setUserSettings(settings: UserSettings): Promise<void> {
 		console.info('[DEMO] setUserSettings not implemented in demo mode.', settings);
@@ -922,9 +957,10 @@ export class DemoClient {
 	}
 
 	/**
-	 * Helper method to create response promise
-	 * @param msg message for the response
-	 * @returns Response
+	 * Helper method to create response promise.
+	 *
+	 * @param msg - Message for the response.
+	 * @returns - Response as promise.
 	 */
 	private createPromise(msg: string | ArrayBuffer): Promise<Response> {
     const headers = { 
@@ -939,9 +975,10 @@ export class DemoClient {
 	}
 
 	/**
-	 * Helper method to extract HSV colors from string
-	 * @param color Color in HSV format
-	 * @returns string list with HSV elements
+	 * Helper method to extract HSV colors from string.
+	 *
+	 * @param color - Color in HSV format.
+	 * @returns - string list with HSV elements.
 	 */
 	private getHsv(color: string): string[] {
 		const regex = new RegExp('hsv\\(([0-9]+),([0-9]+),([0-9]+)\\)');

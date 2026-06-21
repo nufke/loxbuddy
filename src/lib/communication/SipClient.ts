@@ -22,7 +22,8 @@ export class SipClient {
 
 	/**
 	 * Called whenever the call state transitions. Override to react to state changes in the UI.
-	 * @param state The new {@link SipCallState} value.
+	 *
+	 * @param state - The new {@link SipCallState} value.
 	 */
 	onCallState: (state: SipCallState) => void = (state) => {
 		appStore.callStatus = String(state);
@@ -31,7 +32,8 @@ export class SipClient {
 
 	/**
 	 * Called when an incoming invitation arrives. Override to present an incoming-call UI.
-	 * @param invitation The sip.js {@link Invitation} for the incoming call.
+	 *
+	 * @param invitation - The sip.js {@link Invitation} for the incoming call.
 	 */
 	onIncomingCall: (invitation: Invitation) => void = (invitation) => {
 		console.info(`[SipClient] Incoming call from: ${invitation.remoteIdentity.uri}`);
@@ -39,7 +41,8 @@ export class SipClient {
 
 	/**
 	 * Called when the SIP registration state changes. Override to update UI indicators.
-	 * @param registered `true` when successfully registered, `false` when unregistered.
+	 *
+	 * @param registered - true when successfully registered, false when unregistered.
 	 */
 	onRegistrationState: (registered: boolean) => void = (registered) => {
 		appStore.sipStatus = registered ? 1 : 0;
@@ -51,10 +54,11 @@ export class SipClient {
 	/**
 	 * Connects to the SIP WebSocket server and registers the user agent.
 	 * If arguments are omitted, credentials are read from {@link appStore.sipCredentials}.
-	 * @param wsServer (optional) WebSocket SIP server URL, e.g. wss://sip.example.com:8081
-	 * @param userName (optional) SIP username (caller)
-	 * @param domainName (optional) SIP domain, e.g. sip.example.com
-	 * @param password (optional) SIP password
+	 *
+	 * @param wsServer - (optional) WebSocket SIP server URL, e.g. wss://sip.example.com:8081
+	 * @param userName - (optional) SIP username (caller)
+	 * @param domainName - (optional) SIP domain, e.g. sip.example.com
+	 * @param password - (optional) SIP password
 	 * @returns A promise that resolves once registration is sent.
 	 */
 	async register(wsServer?: string, userName?: string, domainName?: string, password?: string): Promise<void> {
@@ -100,8 +104,9 @@ export class SipClient {
 
 	/**
 	 * Initiates an outgoing SIP call (RFC 3323).
-	 * @param target Full SIP URI of the callee, e.g. sip:intercom@192.168.1.100
-	 * @param withVideo Whether to include a video track. Defaults to true.
+	 *
+	 * @param target - Full SIP URI of the callee, e.g. sip:intercom@192.168.1.100
+	 * @param withVideo - Whether to include a video track. Defaults to true.
 	 * @returns A promise that resolves once the invite has been sent.
 	 */
 	async call(target: string, withVideo = true): Promise<void> {
@@ -134,7 +139,8 @@ export class SipClient {
 	/**
 	 * Accepts the current incoming call.
 	 * No-op if there is no pending incoming invitation.
-	 * @param withVideo Whether to include a video track in the answer. Defaults to true.
+	 *
+	 * @param withVideo - Whether to include a video track in the answer. Defaults to true.
 	 * @returns A promise that resolves once the 200 OK has been sent.
 	 */
 	async answer(withVideo = true): Promise<void> {
@@ -149,6 +155,7 @@ export class SipClient {
 	/**
 	 * Rejects the current incoming call with a 486 Busy Here response.
 	 * No-op if there is no pending incoming invitation.
+	 *
 	 * @returns A promise that resolves once the rejection has been sent.
 	 */
 	async reject(): Promise<void> {
@@ -161,6 +168,7 @@ export class SipClient {
 	 * Ends or cancels the current session regardless of its state.
 	 * Sends cancel() for an establishing call, and bye() for an established call,
 	 * or 486 for an unanswered incoming call. No-op if there is no active session.
+	 *
 	 * @returns A promise that resolves once the termination message has been sent.
 	 */
 	async hangup(): Promise<void> {
@@ -188,6 +196,7 @@ export class SipClient {
 	/**
 	 * Hangs up any active session, unregisters from the SIP server and stops the user agent.
 	 * The instance can be re-used by calling {@link register} again.
+	 *
 	 * @returns A promise that resolves once the user agent has fully stopped.
 	 */
 	async unregister(): Promise<void> {
@@ -202,6 +211,7 @@ export class SipClient {
 	 * Binds an HTML media element to receive the remote audio/video stream.
 	 * The element's  source object is set automatically when a call is established
 	 * and cleared when the call ends.
+	 *
 	 * @param element - A video or audio element for remote playback.
 	 */
 	setRemoteMedia(element: HTMLVideoElement | HTMLAudioElement): void {
@@ -212,6 +222,7 @@ export class SipClient {
 	 * Binds a video element to display the local camera preview.
 	 * The element's source object is set automatically when a call is established
 	 * and cleared when the call ends.
+	 *
 	 * @param videoElement A video element for local camera preview.
 	 */
 	setLocalMedia(videoElement: HTMLVideoElement): void {
@@ -220,6 +231,7 @@ export class SipClient {
 
 	/**
 	 * Whether the user agent is currently registered with the SIP server.
+	 *
 	 * @returns true if registered, and false otherwise.
 	 */
 	get isRegistered(): boolean {
@@ -228,6 +240,7 @@ export class SipClient {
 
 	/**
 	 * The current call state derived from the active session.
+	 *
 	 * @returns One of idle,  calling, ringing, connected, or ended state
 	 */
 	get callState(): SipCallState {
@@ -246,6 +259,7 @@ export class SipClient {
 	/**
 	 * Helper method to play a sine-wave tone fade-in and fade-out to avoid clicks.
 	 * Uses the shared {@link audioCtx} to avoid initialisation latency between calls.
+	 *
 	 * @param frequency Frequency of the tone in Hz.
 	 * @param duration Duration of the tone in seconds.
 	 * @param volume Peak gain level (0–1). Defaults to 0.2.
@@ -281,6 +295,7 @@ export class SipClient {
 	/**
 	 * Plays a bell-like ping when the connection is established and video starts playing.
 	 * Used by {@link stopBeep} to signal that the connection has been established.
+	 *
 	 * @param frequency Frequency of the tone in Hz. Defaults to 800 Hz.
 	 * @param duration Total decay duration in seconds. Defaults to 0.6 s.
 	 * @param volume Initial peak gain (0–1). Defaults to 0.18.
@@ -304,6 +319,7 @@ export class SipClient {
 	/**
 	 * Clears the repeating beep interval started by {@link call} and immediately stops
 	 * any currently playing oscillator. Optionally plays a {@link ping} to confirm connection.
+	 *
 	 * @param ping When true, plays a confirmation ping after stopping the beep. Defaults to false.
 	 */
 	private stopBeep(ping: boolean = false): void {
@@ -316,6 +332,7 @@ export class SipClient {
 
 	/**
 	 * Handles a new incoming invitation from the user agent delegate.
+	 *
 	 * @param invitation The incoming invitation session provided by sip.js.
 	 */
 	private handleIncomingCall(invitation: Invitation): void {
@@ -328,6 +345,7 @@ export class SipClient {
 	/**
 	 * Attaches listeners to a session to drive media attachment
 	 * and the public {@link onCallState} callback.
+	 *
 	 * @param session The sip.js session to observe.
 	 */
 	private setupSessionListeners(session: Session): void {
@@ -353,6 +371,7 @@ export class SipClient {
 	/**
 	 * Wires the local and remote media streams from the session description handler
 	 * to the bound HTML media elements.
+	 *
 	 * @param session The established sip.js session whose streams to attach.
 	 */
 	private attachMedia(session: Session): void {

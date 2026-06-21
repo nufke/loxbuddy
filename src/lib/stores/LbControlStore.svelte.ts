@@ -2,6 +2,7 @@ import { SvelteMap } from 'svelte/reactivity';
 import { MqttClient } from '$lib/communication/MqttClient';
 import { DEFAULT_USERSETTINGS, EMPTY_SYSTEM_STATUS, DEFAULT_GLOBALSTATES,
 				 DEFAULT_MSINFO, EMPTY_ICON_AND_COLOR } from '$lib/types/models';
+import type { Page } from '@sveltejs/kit';
 import type { Structure, MsInfo, Control, ControlState, Category, Room, NotificationMap,
 							NotificationList, UserSettings, UserDefaultStructure, IconAndColor,
 							SystemStatus, GlobalStates, MessageCenter, NotificationMessage,
@@ -10,7 +11,7 @@ import type { Structure, MsInfo, Control, ControlState, Category, Room, Notifica
 import { startOfDay, endOfDay, startOfISOWeek, endOfISOWeek, startOfMonth,
 				 endOfMonth, startOfYear, endOfYear, getUnixTime } from 'date-fns';
 import { utils } from '$lib/helpers/Utils';
-import { lbControl } from '$lib/helpers/LbControl';
+import { lbControlSelector } from '$lib/helpers/LbControlSelector';
 import { DemoClient, demo } from '$lib/demo/DemoClient';
 import { MiniserverClient} from '$lib/communication/MiniserverClient';
 
@@ -58,9 +59,10 @@ class LbControlStore {
 	/**
 	 * Send the control command to the Miniserver. THe visualization password
 	 * should be given for secure controls.
-	 * @param uuid UUID of control
-	 * @param cmd command to be sent to Miniserver
-	 * @param visuPw (optional) visualization password for secured controls
+	 *
+	 * @param uuid - UUID of control.
+	 * @param cmd - command to be sent to Miniserver.
+	 * @param visuPw - (optional) visualization password for secured controls.
 	 */
 	setControl(control: Control, cmd: string, visuPw?: string): void {
 		if (control.isSecured && (!visuPw || !visuPw?.length)) return; // secured control, but no password given, so return
@@ -70,8 +72,9 @@ class LbControlStore {
 
 	/**
 	 * Update notifications map containing messages and system states.
-	 * @param notifications notification message or notification list
-	 * @param statusOverride (optional) enable override (default 0)
+	 * 
+	 * @param notifications - notification message or notification list.
+	 * @param statusOverride - (optional) enable override (default 0).
 	 */
 	updateNotificationMap(notifications: NotificationMessage | NotificationList, statusOverride: number = 0 ): NotificationMap {
 		const map: NotificationMap = utils.deserialize(localStorage.getItem('notifications')) || {};
@@ -92,9 +95,11 @@ class LbControlStore {
 	}
 
 	/**
-	 * get list of (old) notifications of current Miniserver
-	 * Sort messages based on timestamp
-	 * @returns time sorted list of notifications
+	 * get list of (old) notifications of current Miniserver.
+	 * Sort messages based on timestamp.
+	 *
+	 * @param map - map of notifications.
+	 * @returns time sorted list of notifications.
 	 */
 	listNotifications(map: NotificationMap): NotificationMessage[] {
 		return map && map[this.msInfo.serialNr] ? Object.values(map[this.msInfo.serialNr]).sort((a, b) => b.ts - a.ts) : [];
@@ -103,8 +108,9 @@ class LbControlStore {
 	/**
 	 * Parse the Miniserver structure file. For each Miniserver and control we register the clients instance,
 	 * such that we can send control states to the associated client.
-	 * @param data structure object
-	 * @param client any of the available clients (DemoClient, MiniserverClient, MqttClient)
+	 *
+	 * @param data - structure object.
+	 * @param client - any of the available clients (DemoClient, MiniserverClient, MqttClient).
 	 */
 	initStructure(data: Structure, client: DemoClient | MiniserverClient | MqttClient ): void {
 		console.debug('[LbControlStore] Loading structure...');
@@ -168,8 +174,9 @@ class LbControlStore {
 
 	/**
 	 * Retrieves the control state.
-	 * @param uuid UUID of the control
-	 * @returns value of the control (note: could be an object)
+	 *
+	 * @param uuid - UUID of the control.
+	 * @returns value of the control (note: could be an object).
 	 */
 	getState(uuid: string): ControlState {
 		return this.controlState.get(uuid);
@@ -177,8 +184,9 @@ class LbControlStore {
 
 	/**
 	 * Sets the control state.
-	 * @param uuid UUID of the control
-	 * @param data value/data of the control
+	 *
+	 * @param uuid - UUID of the control.
+	 * @param data - value/data of the control.
 	 */
 	setState(uuid: string, data: ControlState): void {
 		const item = $state(data);
@@ -187,9 +195,10 @@ class LbControlStore {
 	}
 
 	/**
-	 * Check for updated user settings (e.g. sorting)
-	 * If this is the case, fetch the latest user settings
-	 * @param data value/data of the control
+	 * Check for updated user settings (e.g. sorting).
+	 * If this is the case, fetch the latest user settings.
+	 *
+	 * @param data - value/data of the control.
 	 */
 	checkUpdateOfUserSettings(data: ControlState): void {
 		const ts = Number(data[this.msInfo.currentUser.uuid]);
@@ -200,10 +209,10 @@ class LbControlStore {
 	}
 
 	/**
-	 * Set initial states. Used to load all states at once for DemoClient
-	 * @param states map containing all states  
+	 * Set initial states. Used to load all states at once for DemoClient.
+	 *
+	 * @param states - map containing all states.
 	 */
-	 
 	setInitialStates(states: InitialStateMap) {
 		Object.keys(states).forEach( (key) => {
 			const item = $state(states[key]);
@@ -215,34 +224,51 @@ class LbControlStore {
 	/**
 	 * Select the icon for a given control:
 	 * - If the control has a state for the IconAndColor, then returns the icon specified by the IconAndColor state.
-	 * - If the control has a defaultIcon, return it.
-	 * - If the control has no default icon, use the category icon
-	 * - If nothing works, returns a empty string (aka no icon)
-	 * @param control Control object
-	 * @param isSubControl (optional) specify if Control is a subControl
-	 * @param iconAndColor object containing the icon and color
-	 * @returns name of the icon or empty of no icon is available
+	 * - If the control has a defaultIcon, return it..
+	 * - If the control has no default icon, use the category icon.
+	 * - If nothing works, returns a empty string (aka no icon).
+	 *
+	 * @param control - Control object.
+	 * @param isSubControl - (optional) specify if Control is a subControl.
+	 * @param iconAndColor - object containing the icon and color.
+	 * @returns name of the icon or empty of no icon is available.
 	 */
 	getIcon(control: Control, isSubControl: boolean | undefined, iconAndColor: IconAndColor = EMPTY_ICON_AND_COLOR): string {
 		if (iconAndColor && iconAndColor.icon && iconAndColor.icon.length) return iconAndColor.icon; /* used for TextState icon */
 		if (control.defaultIcon) return control.defaultIcon;
 		if (!isSubControl) { 
-			const icon = lbControl.getDefaultIcon(control.type);
+			const icon = lbControlSelector.getDefaultIcon(control.type);
 			if (icon.length) {
 				return icon;
 			} 
 			const cat = this.categoryList.find((cat: Category) => cat.uuid == control.cat);
 			return (cat && cat.image && cat.image.length) ? cat.image : 'unknown';
 		}
-		console.error('[LbControlStore] No icon found for ', control.name);
-		return ''; // no icon found / used (TODO: keep empty?)
+		return ''; // subcontrols with no defaultIcon have no icon by design
 	}
 
 	/**
-	 * Retrieve file from Miniserver (e.g. camera images of intercom)
-	 * @param uuid UUID of the control, to look-up the associated client
-	 * @param url url of the hostName
-	 * @returns returns the file contents as a FileMessage
+	 * Returns the display label for a control card.
+	 * On a category page the control's room name is returned; on a room page
+	 *   the control's category name is returned.
+	 *
+	 * @param page - the SvelteKit page object.
+	 * @param control - the control to look up.
+	 * @returns the room or category name, or an empty string if not found.
+	 */
+	getLabel(page: Page, control: Control): string {
+		if (page.url.pathname.includes('/category')) {
+			return this.roomList.find((room) => room.uuid === control.room)?.name ?? '';
+		}
+		return this.categoryList.find((cat) => cat.uuid === control.cat)?.name ?? '';
+	}
+
+	/**
+	 * Retrieve file from Miniserver (e.g. camera images of intercom).
+	 *
+	 * @param uuid - UUID of the control, to look-up the associated client.
+	 * @param url - url of the hostName.
+	 * @returns returns the file contents as a FileMessage.
 	 */
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	async getFile(uuid: string, url: string): Promise<any> {
@@ -251,9 +277,11 @@ class LbControlStore {
 	}
 
 	/**
-	 * Generic fetch command using Miniserver user credentials
-	 * @param uuid UUID of the control, to look-up the associated client
-	 * @param url endpoint (e.g., /jdev/sps/io/...)
+	 * Generic fetch command using Miniserver user credentials.
+	 *
+	 * @param uuid - UUID of the control, to look-up the associated client.
+	 * @param url - endpoint (e.g., /jdev/sps/io/...).
+	 * @return response of the fetched url
 	*/
 	fetchUrl(uuid: string, url: string): Promise<Response> {
 		const client = this.controlClient.get(uuid) || demo;
@@ -261,8 +289,10 @@ class LbControlStore {
 	}
 
 	/**
-	 * Fetch secured details for intercom
-	 * @param control intercom control
+	 * Fetch secured details for intercom.
+	 *
+	 * @param control - intercom control.
+	 * @returns object containing secured details.
 	 */
 	async fetchSecuredDetails(control: Control): Promise<SecuredDetails> {
 		return controlStore.fetchUrl(control.uuidAction, `jdev/sps/io/${control.uuidAction}/securedDetails`)
@@ -271,9 +301,10 @@ class LbControlStore {
 	}
 
 	/**
-	 * Fetch statistical information, including when data is active/ valid (activeSince)
-	 * @param control The control of which the statistic al info is fetched
-	 * @returns Statistic info including when statistics are valid (activeSince)
+	 * Fetch statistical information, including when data is active/ valid (activeSince).
+	 *
+	 * @param control - The control of which the statistic al info is fetched.
+	 * @returns Statistic info including when statistics are valid (activeSince).
 	*/
 	async fetchStatisticInfo(control: Control): Promise<StatisticInfo> {
 		const info: StatisticInfo = {};
@@ -291,8 +322,13 @@ class LbControlStore {
 	}
 
 	/**
-	 * Fetch statistics of the given control
-	 * @param control The control of which the statistics are fetched
+	 * Fetch statistics of the given control.
+	 *
+	 * @param control - The control of which the statistics are fetched.
+	 * @param statisticV2 - statistic metadata supplied by the control.
+	 * @param newDate - reference date for the query.
+	 * @param selector - indicator of selected entry: day, week, monthh, year or all.
+	 * @param type - meter type ('storage', 'unidirectional', 'bidirectional').
 	 * @returns Statistics including metadata
 	*/
 	async fetchStatistics(control: Control, statisticV2: StatisticV2, newDate: Date, selector: string, type: string):
@@ -347,8 +383,9 @@ class LbControlStore {
 	}
 
 	/**
-	 * Set control sorting
-	 * @param mode mode 0=LoxConfig, 1=user-defined, 2=app-specific
+	 * Set control sorting.
+	 *
+	 * @param mode - mode as number, where 0=LoxConfig, 1=user-defined, 2=app-specific.
 	 */
 	setSortingMode(mode: number): void {
 		this.sortingMode = mode;
@@ -356,9 +393,10 @@ class LbControlStore {
 	}
 
 	/**
-	 * Update control sorting map
-	 * @param list updated list of controls, rooms or categories
-	 * @param key key indicating if this is a favorite, room, or category
+	 * Update control sorting map.
+	 *
+	 * @param list - updated list of controls, rooms or categories.
+	 * @param key - key indicating if this is a favorite, room, or category.
 	 */
 	async updateSortingOrder(list: Control[] | Room[] | Category[], key: string): Promise<void> {
 		const currentSorting: UserDefaultStructure = $state.snapshot(this.customSorting); /* plain copy, no proxy */
@@ -389,8 +427,9 @@ class LbControlStore {
 	}
 
 	/**
-	 * Set and store user settings
-	 * @param settings userSettings
+	 * Set and store user settings.
+	 *
+	 * @param settings - userSettings.
 	 */
 	storeUserSettings(settings: UserSettings): void {
 		this.userSettings = settings;
@@ -405,7 +444,7 @@ class LbControlStore {
 	}
 
 	/**
-	 * Retrieve user settings
+	 * Retrieve user settings.
 	 */
 	async getUserSettings(): Promise<void> {
 		const client = this.controlClient.get(this.msInfo.serialNr) || demo;
@@ -413,7 +452,7 @@ class LbControlStore {
 	}
 
 	/**
-	 * Disconnect client based on the registered Miniserver serial number
+	 * Disconnect client based on the registered Miniserver serial number.
 	 */
 	disconnectClient(): void {
 		this.clearStructure();

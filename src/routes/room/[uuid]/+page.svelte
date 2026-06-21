@@ -4,7 +4,7 @@
 	import type { Control, ControlOptions, Category, Room, UserDefaultStructure } from '$lib/types/models';
 	import { DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import { _ } from 'svelte-i18n';
-	import { lbControl } from '$lib/helpers/LbControl';
+	import { lbControlSelector } from '$lib/helpers/LbControlSelector';
 	import { appStore } from '$lib/stores/LbAppStore.svelte';
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 	import { flip } from 'svelte/animate';
@@ -106,7 +106,7 @@
 	{#if favorites.length}
 		<div class="mt-2 mb-2 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 lg:flex-wrap">
 			{#each favorites as control (control)}
-				{@const Component = lbControl.getControl(control.type)}
+				{@const Component = lbControlSelector.getControl(control.type)}
 				<div animate:flip={{ duration: 300 }}
 					draggable={controlStore.sorting}
 					onpointerdown={onDragHandlePointerDown}
@@ -125,7 +125,7 @@
 			<button class="h6 ml-2" onclick={() => {goto('/category/'+label.uuid)}}>{label.name}</button>
 			<div class="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 lg:flex-wrap" >
 				{#each selectedControls as control (control)}
-					{@const Component = lbControl.getControl(control.type)}
+					{@const Component = lbControlSelector.getControl(control.type)}
 					<div animate:flip={{ duration: 300 }}
 						draggable={controlStore.sorting}
 						onpointerdown={onDragHandlePointerDown}

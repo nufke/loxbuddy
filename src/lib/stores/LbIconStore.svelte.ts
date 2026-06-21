@@ -67,6 +67,7 @@ class LbIconStore {
 	 * If the name is present in {@link iconMap} the mapped value is returned;
 	 * otherwise the original name is returned as-is so the caller can still
 	 * attempt to render it directly.
+	 *
 	 * @param name - The raw icon name (e.g. a legacy Loxone icon filename).
 	 * @returns The Iconify identifier (e.g. `"light_lucide:home"`) or the
 	 *   unchanged input when no mapping exists.
@@ -80,6 +81,7 @@ class LbIconStore {
 	 * Icons that already contain a colon (i.e. are valid Iconify identifiers)
 	 * are prefixed with `"light_"` so that the default weight-variant loader
 	 * is applied. Icons without a colon are stored as-is.
+	 *
 	 * @param map - Mapping of legacy icon names to Iconify identifiers.
 	 */
 	private loadIconMap(map: IconMap): void {
@@ -94,6 +96,7 @@ class LbIconStore {
 	 * to the requested visual weight.
 	 * The scale factor is derived from the icon's own height so that the
 	 * resulting stroke appears consistent across different viewBox sizes.
+	 *
 	 * @param name - Icon name within the icon set (without the set prefix).
 	 * @param iconSet - Iconify icon set identifier (e.g. lucide).
 	 * @param strokeWidth - Desired stroke-width multiplier where 1.0 = thin,
@@ -116,6 +119,7 @@ class LbIconStore {
 	 * thin_, light_, medium_, semibold_, and bold_.
 	 * Each loader delegates to {@link updateIconProps} with a fixed
 	 * strokeWidth value that corresponds to the weight.
+	 *
 	 * @param map - Mapping of legacy icon names to Iconify identifiers, used to
 	 *   extract the set names (the part before the `:` separator).
 	 */

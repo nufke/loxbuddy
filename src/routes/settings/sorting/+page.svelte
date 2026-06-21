@@ -1,20 +1,16 @@
 <script lang="ts">
-	import { Switch } from '@skeletonlabs/skeleton-svelte';
-	import { Tabs } from '@skeletonlabs/skeleton-svelte';
-	import { Dialog, Portal } from '@skeletonlabs/skeleton-svelte';
-	import type { Room, Category, GeneralView } from '$lib/types/models';
+	import { Switch, Tabs } from '@skeletonlabs/skeleton-svelte';
+	import type { Room, Category } from '$lib/types/models';
 	import { _ } from 'svelte-i18n';
-	import { fadeInOut } from '$lib/helpers/styles';
 	import { appStore } from '$lib/stores/LbAppStore.svelte';
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
-	import LbIcon from '$lib/components/Common/LbIcon.svelte';
-	import LbGeneralDialog from '$lib/components/Common/LbGeneralDialog.svelte';
+	import LbDialog from '$lib/components/Common/LbDialog.svelte';
 
-	const sortMap: any = {
-		0: 'Sorting using LoxConfig',
-		1: 'User-defined sorting',
-		2: 'App-specific sorting'
-	};
+	const sortingOptions = [
+		{ mode: 0, name: 'Sorting using LoxConfig' },
+		{ mode: 1, name: 'User-defined sorting' },
+		{ mode: 2, name: 'App-specific sorting' },
+	];
 
 	const other = [
 		{ name: 'Home', uuid: '/'}
@@ -25,40 +21,9 @@
 	let sortingMode = $state(Number(localStorage.getItem('sortingMode')) || 0);
  	let group = $state('room');
 	let sortingButtonDisabled = $derived(Number(sortingMode) == 0);
-	let sortingText = $derived(sortMap[sortingMode]);
+	let sortingText = $derived(sortingOptions.find(o => o.mode === sortingMode)?.name ?? '');
 
-	let sortingSelectView: GeneralView = $state({
-		label: $_('Sorting order'),
-		openDialog: false,
-		buttons: [],
-		cancel: () => {},
-		ok: (sortMode: number) => {
-			sortingMode = sortMode;
-			controlStore.setSortingMode(sortMode);
-			if (sortMode == 0) { /* when config selected, disable sorting */
-				onSortingEnabled({ checked: false });
-			}
-			void controlStore.getUserSettings(); /* async method */
-		}
-	});
-
-	let sortingSelectViewButtons = $derived([
-		{
-			id: 0,
-			name: sortMap['0'],
-			selected: sortingMode == 0
-		},
-		{
-			id: 1,
-			name: sortMap['1'],
-			selected: sortingMode == 1
-		},
-		{
-			id: 2,
-			name: sortMap['2'],
-			selected: sortingMode == 2
-		}
-	]);
+	let sortingSelectOpen = $state(false);
 
 	let rooms: Room[] = $derived(
 		controlStore.roomList.filter((item) => controlStore.controlList.map((control) => control.room)
@@ -73,9 +38,15 @@
 	/**
 	 * Open dialog to specify user defined sorting option
 	*/
+	function handleSortingOk(sortMode: number): void {
+		sortingMode = sortMode;
+		controlStore.setSortingMode(sortMode);
+		if (sortMode == 0) onSortingEnabled({ checked: false });
+		void controlStore.getUserSettings();
+	}
+
 	function openUserDefinedSorting(): void {
-		sortingSelectView.buttons = sortingSelectViewButtons;
-		sortingSelectView.openDialog = true;
+		sortingSelectOpen = true;
 	}
 
 	/**
@@ -142,73 +113,64 @@
 	</button>
 </div>
 
-<Dialog
-	open={openStartpageDialog}
-	onInteractOutside={() => openStartpageDialog=false}>
-	<Portal>
-		<Dialog.Backdrop class="fixed inset-0 z-10 bg-surface-50-950/75 backdrop-blur-sm {fadeInOut}"/>
-		<Dialog.Positioner class="fixed inset-0 z-10 flex justify-center items-center p-4">
-			<Dialog.Content class="card bg-surface-100-900 p-4 pt-3 shadow-sm rounded-lg border border-white/5 hover:border-white/10
-								md:max-w-9/10 md:max-h-9/1 w-full w-[450px] {fadeInOut}">
-				<header class="grid grid-cols-[5%_90%_5%]">
-					<div></div>
-					<div>
-						<Dialog.Title class="h5 flex justify-center items-center">{$_("Startpage")}</Dialog.Title>
-					</div>
-					<div class="flex justify-center items-center">
-						<button type="button" class="btn-icon hover:preset-tonal" onclick={() => openStartpageDialog=false}>
-							<LbIcon name="x" height="16" width="16"/>
+<LbDialog open={openStartpageDialog} onClose={() => openStartpageDialog = false}
+	title={$_('Startpage')} zIndex="z-40">
+	{#snippet description()}
+		<Tabs value={group} onValueChange={(e) => (group = e.value)}>
+			<Tabs.List class="border-b-[2px] border-transparent">
+				<Tabs.Trigger value="room" class="truncate flex-1 text-lg">{$_("Rooms")}</Tabs.Trigger>
+				<Tabs.Trigger value="category" class="truncate flex-1 text-lg">{$_("Categories")}</Tabs.Trigger>
+				<Tabs.Trigger value="other" class="truncate flex-1 text-lg">{$_("Other")}</Tabs.Trigger>
+				<Tabs.Indicator/>
+			</Tabs.List>
+			<Tabs.Content value="room">
+				<div class="overflow-y-auto">
+					{#each rooms as room}
+						<button type="button" class="w-full mt-2 btn btn-lg {room.name == getStartpageName(startPage) ? 'bg-surface-200-800' : 'bg-surface-50-950'}
+									shadow-sm rounded-lg border border-white/15 hover:border-white/50"
+							onclick={() => onChangeStartpage(group, room.uuid)}>
+							<p class="text-lg">{room.name}</p>
 						</button>
-					</div>
-				</header>
-				<Dialog.Description>
-					<div class="mt-2">
-						<Tabs value={group} onValueChange={(e) => (group = e.value)}>
-							<Tabs.List class="border-b-[2px] border-transparent">
-								<Tabs.Trigger value="room" class="truncate flex-1 text-lg">{$_("Rooms")}</Tabs.Trigger>
-								<Tabs.Trigger value="category" class="truncate flex-1 text-lg">{$_("Categories")}</Tabs.Trigger>
-								<Tabs.Trigger value="other" class="truncate flex-1 text-lg">{$_("Other")}</Tabs.Trigger>
-								<Tabs.Indicator/>
-							</Tabs.List>
-							<Tabs.Content value="room">
-								<div class="overflow-y-auto">
-									{#each rooms as room}
-										<button type="button" class="w-full mt-2 btn btn-lg {(room.name == getStartpageName(startPage)) ? 'bg-surface-200-800' : 'bg-surface-50-950' }
-													shadow-sm rounded-lg border border-white/15 hover:border-white/50"
-											onclick={(e) => { onChangeStartpage(group, room.uuid)}}>
-											<p class="text-lg">{room.name}</p>
-										</button>
-									{/each}
-								</div>
-							</Tabs.Content>
-							<Tabs.Content value="category">
-								<div class="overflow-y-auto">
-									{#each categories as category}
-										<button type="button" class="w-full mt-2 btn btn-lg {(category.name == getStartpageName(startPage)) ? 'bg-surface-200-800' : 'bg-surface-50-950' }
-													shadow-sm rounded-lg border border-white/15 hover:border-white/50"
-											onclick={(e) => { onChangeStartpage(group, category.uuid)}}>
-											<p class="text-lg">{category.name}</p>
-										</button>
-									{/each}
-								</div>
-							</Tabs.Content>
-							<Tabs.Content value="other">
-								<div class="overflow-y-auto">
-									{#each other as item}
-										<button type="button" class="w-full mt-2 btn btn-lg {(item.name == getStartpageName(startPage)) ? 'bg-surface-200-800' : 'bg-surface-50-950' }
-													shadow-sm rounded-lg border border-white/15 hover:border-white/50"
-											onclick={(e) => { onChangeStartpage('', item.uuid)}}>
-											<p class="text-lg">{item.name}</p>
-										</button>
-									{/each}
-								</div>
-							</Tabs.Content>
-						</Tabs>
-					</div>
-				</Dialog.Description>
-			</Dialog.Content>
-		</Dialog.Positioner>
-	</Portal>
-</Dialog>
+					{/each}
+				</div>
+			</Tabs.Content>
+			<Tabs.Content value="category">
+				<div class="overflow-y-auto">
+					{#each categories as category}
+						<button type="button" class="w-full mt-2 btn btn-lg {category.name == getStartpageName(startPage) ? 'bg-surface-200-800' : 'bg-surface-50-950'}
+									shadow-sm rounded-lg border border-white/15 hover:border-white/50"
+							onclick={() => onChangeStartpage(group, category.uuid)}>
+							<p class="text-lg">{category.name}</p>
+						</button>
+					{/each}
+				</div>
+			</Tabs.Content>
+			<Tabs.Content value="other">
+				<div class="overflow-y-auto">
+					{#each other as item}
+						<button type="button" class="w-full mt-2 btn btn-lg {item.name == getStartpageName(startPage) ? 'bg-surface-200-800' : 'bg-surface-50-950'}
+									shadow-sm rounded-lg border border-white/15 hover:border-white/50"
+							onclick={() => onChangeStartpage('', item.uuid)}>
+							<p class="text-lg">{item.name}</p>
+						</button>
+					{/each}
+				</div>
+			</Tabs.Content>
+		</Tabs>
+	{/snippet}
+</LbDialog>
 
-<LbGeneralDialog bind:view={sortingSelectView}/>
+<LbDialog open={sortingSelectOpen} onClose={() => sortingSelectOpen = false}
+	title={$_('Sorting order')} zIndex="z-40">
+	{#snippet description()}
+		<div class="w-full mt-3 mb-2 grid gap-2">
+			{#each sortingOptions as option}
+				<button type="button"
+						class="w-full h-[48px] btn btn-lg {sortingMode === option.mode ? 'bg-surface-200-800' : 'bg-surface-50-950'} shadow-sm rounded-lg border border-white/15 hover:border-white/50"
+						onclick={() => { handleSortingOk(option.mode); sortingSelectOpen = false; }}>
+					<span class="text-lg">{$_(option.name)}</span>
+				</button>
+			{/each}
+		</div>
+	{/snippet}
+</LbDialog>

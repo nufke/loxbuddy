@@ -1,10 +1,9 @@
 <script lang="ts">
-	import { Dialog, Portal } from '@skeletonlabs/skeleton-svelte';
 	import { utils } from '$lib/helpers/Utils';
 	import LbIcon from '$lib/components/Common/LbIcon.svelte';
-	import { fadeInOut } from '$lib/helpers/styles';
+	import LbDialog from '$lib/components/Common/LbDialog.svelte';
 	import type { Entry, CalendarEntryView } from '$lib/types/models';
-	import LbCalendarEntryDialog from '$lib/components/Common/LbCalendarEntryDialog.svelte';
+	import LbCalendarEntry from '$lib/components/Common/LbCalendarEntry.svelte';
 	import { _ } from 'svelte-i18n';
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 	import { appStore } from '$lib/stores/LbAppStore.svelte';
@@ -134,74 +133,66 @@
 	});
 </script>
 
-{#if view.openDialog}
-<Dialog
-	open={view.openDialog}
-	onInteractOutside={close}>
-	<Portal>
-		<Dialog.Backdrop class="fixed z-20 top-0 left-0 right-0 bottom-0 bg-surface-50-950 {fadeInOut}" />
-		<Dialog.Positioner class="fixed z-20 top-0 left-0 w-full h-full">
-			<Dialog.Content class="card p-2 space-y-4 shadow-xl overflow-auto h-full {fadeInOut}"> <!-- container mx-auto max-w-full w-full overflow-auto h-full-->
-				<header class="fixed w-full top-0 left-0 preset-filled-surface-100-900 z-1 shadow-md">
-					<div class="grid grid-cols-2 text-center items-center m-auto h-[60px]">
-						<div class="flex flex-row text-center items-center gap-3">
-							<button class="btn-icon w-auto ml-4 mr-0 text-left" onclick={close}>
-								<LbIcon name="arrow-left"/>
-							</button>
-							<p class="text-lg">{$_("Calendar")} {getCoolingDayTimerInfo()}</p>
-						</div>
-						<div class="mr-3 flex flex-row gap-3 justify-end">
-							<button type="button" aria-label="close" class="btn-icon w-auto" onclick={addEntry}>
-								<LbIcon name="plus"/>
-							</button>
-						</div>
-					</div>
-				</header>
-				<Dialog.Description>
-					<div class="mt-[36px] flex flex-row">
-						<div>
-							<svg width="65" height="1050">
-								{#each hours as hour,j}
-									<text class="dark:fill-surface-50 fill-surface-950" font-size="15px" x="10" y={60+j*40}>{notation(hour)}</text>
-								{/each}
-							</svg>
-						</div>
-						<div>
-							<svg width={length+20} height="1050">
-								<rect class="dark:fill-surface-900 fill-surface-100" x={0+getModeIndex(mode)*156} y="55" width="150" height="960" fill="currentColor"></rect>
-								{#each initialModes as mode}
-									<text class="dark:fill-surface-50 fill-surface-950" font-size="15px" text-anchor="middle" x={75+getModeIndex(mode)*156} y="40">{controlStore.operatingModes.get(String(mode))}</text>
-								{/each}
-								{#each hours as hour,j}
-									<path class="stroke-surface-500" stroke-width="1" stroke-dasharray="150 6" d="m 0 {55+j*40} H {length}"></path>
-									{#if j<24}
-										<path class="stroke-surface-500" stroke-width="1" stroke-dasharray="6"  d="m 0 {75+j*40} H {length}"></path>
-									{/if}
-								{/each}
-								{#each entries?.entry as entry}
-								<g onclick={() => {updateEntry(entry)}}>
-										{#if view.isIRC}
-											<rect class={getIRCColor(entry.value)} x={0+getModeIndex(entry.mode)*156} y={55+getTime(entry.from)*40} width="150" height={(getTime(entry.to)-getTime(entry.from))*40} 
-													rx="6"></rect>
-										{:else}
-											<rect class={getDayTimerColor(entry.needActivate)} x={0+getModeIndex(entry.mode)*156} y={55+getTime(entry.from)*40} width="150" height={(getTime(entry.to)-getTime(entry.from))*40} 
-													rx="6"></rect>
-										{/if}
-										<text class={getTextColor()} x={5+getModeIndex(entry.mode)*156} y={70+getTime(entry.from)*40} font-size="14">{showTime(entry)}</text>
-										{#if view.isIRC}
-											<text class={getTextColor()} x={5+getModeIndex(entry.mode)*156} y={90+getTime(entry.from)*40} font-size="14">{getTemperature(entry)}</text>
-										{/if}
-									</g>
-								{/each}
-								<path class="dark:stroke-surface-50 stroke-surface-950" stroke-width="2" d="m 0 {55+getTime(currentTime)*40} H {length}"></path>
-							</svg>
-						</div>
-					</div>
-				</Dialog.Description>
-			</Dialog.Content>
-		</Dialog.Positioner>
-	</Portal>
-</Dialog>
-{/if}
+<LbDialog open={view.openDialog} onClose={close}
+	title={$_("Calendar")} isFullscreen={true} zIndex="z-20">
+	{#snippet header()}
+		<header class="sticky top-0 z-1 preset-filled-surface-100-900 shadow-md">
+			<div class="grid grid-cols-2 text-center items-center h-[60px]">
+				<div class="flex flex-row items-center gap-3">
+					<button class="btn-icon ml-4" onclick={close}>
+						<LbIcon name="arrow-left"/>
+					</button>
+					<p class="text-lg">{$_("Calendar")} {getCoolingDayTimerInfo()}</p>
+				</div>
+				<div class="mr-3 flex flex-row gap-3 justify-end">
+					<button type="button" aria-label="add" class="btn-icon" onclick={addEntry}>
+						<LbIcon name="plus"/>
+					</button>
+				</div>
+			</div>
+		</header>
+	{/snippet}
+	{#snippet description()}
+		<div class="overflow-x-auto">
+			<div class="flex flex-row">
+				<div>
+					<svg width="65" height="1050">
+						{#each hours as hour,j}
+							<text class="dark:fill-surface-50 fill-surface-950" font-size="15px" x="10" y={60+j*40}>{notation(hour)}</text>
+						{/each}
+					</svg>
+				</div>
+				<div>
+					<svg width={length+20} height="1050">
+						<rect class="dark:fill-surface-900 fill-surface-100" x={0+getModeIndex(mode)*156} y="55" width="150" height="960" fill="currentColor"></rect>
+						{#each initialModes as mode}
+							<text class="dark:fill-surface-50 fill-surface-950" font-size="15px" text-anchor="middle" x={75+getModeIndex(mode)*156} y="40">{controlStore.operatingModes.get(String(mode))}</text>
+						{/each}
+						{#each hours as _,j}
+							<path class="stroke-surface-500" stroke-width="1" stroke-dasharray="150 6" d="m 0 {55+j*40} H {length}"></path>
+							{#if j<24}
+								<path class="stroke-surface-500" stroke-width="1" stroke-dasharray="6" d="m 0 {75+j*40} H {length}"></path>
+							{/if}
+						{/each}
+						{#each entries?.entry as entry}
+							<g onclick={() => updateEntry(entry)}>
+								{#if view.isIRC}
+									<rect class={getIRCColor(entry.value)} x={0+getModeIndex(entry.mode)*156} y={55+getTime(entry.from)*40} width="150" height={(getTime(entry.to)-getTime(entry.from))*40} rx="6"></rect>
+								{:else}
+									<rect class={getDayTimerColor(entry.needActivate)} x={0+getModeIndex(entry.mode)*156} y={55+getTime(entry.from)*40} width="150" height={(getTime(entry.to)-getTime(entry.from))*40} rx="6"></rect>
+								{/if}
+								<text class={getTextColor()} x={5+getModeIndex(entry.mode)*156} y={70+getTime(entry.from)*40} font-size="14">{showTime(entry)}</text>
+								{#if view.isIRC}
+									<text class={getTextColor()} x={5+getModeIndex(entry.mode)*156} y={90+getTime(entry.from)*40} font-size="14">{getTemperature(entry)}</text>
+								{/if}
+							</g>
+						{/each}
+						<path class="dark:stroke-surface-50 stroke-surface-950" stroke-width="2" d="m 0 {55+getTime(currentTime)*40} H {length}"></path>
+					</svg>
+				</div>
+			</div>
+		</div>
+	{/snippet}
+</LbDialog>
 
-<LbCalendarEntryDialog bind:view={calendarEntryView} {entries} {selectedEntry} {dayModes} {temperatureList}/>
+<LbCalendarEntry bind:view={calendarEntryView} {entries} {selectedEntry} {dayModes} {temperatureList}/>

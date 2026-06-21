@@ -3,7 +3,7 @@
 	import { fade } from 'svelte/transition';
 	import { _ } from 'svelte-i18n';
 
-	let { date = $bindable(), view } = $props();
+	let { date = $bindable(), isMinuteView: initialMinuteView = false } = $props();
 
 	let minuteIncrement: number = 1;
 	let showMeridian: boolean = false;
@@ -12,7 +12,7 @@
 	let size = 300;
 	let ts = 'text-md';
 
-	let isMinuteView: boolean = $state(view.isMinuteView);
+	let isMinuteView: boolean = $state(initialMinuteView);
 	let isMouseDown: boolean = $state(false);
 
 	let localDate = $derived(new SvelteDate(date));

@@ -1,50 +1,47 @@
 <script lang="ts">
-	import LbControl from '$lib/components/Common/LbControl.svelte';
-	import LbLightControllerV2 from '$lib/components/LightController/LbLightControllerV2.svelte'
-	import { fadeInOut } from '$lib/helpers/styles';
-	import type { Control, ControlOptions, ControlView, DialogView, LightItem, MoodList } from '$lib/types/models';
-	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
-	import { controlStore } from '$lib/stores/LbControlStore.svelte';
-	import { Dialog, Portal } from '@skeletonlabs/skeleton-svelte';
-	import LbIcon from '$lib/components/Common/LbIcon.svelte';
-	import { _ } from 'svelte-i18n';
+	import { page } from '$app/state';
 	import { fade } from 'svelte/transition';
-	import fmt from 'sprintf-js';
-	import LbInfo from '$lib/components/Common/LbInfo.svelte';
 	import { innerHeight } from 'svelte/reactivity/window';
+	import type { Control, ControlOptions, LightItem, MoodList } from '$lib/types/models';
+	import { DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
+	import LbControl from '$lib/components/Common/LbControl.svelte';
+	import LbDialog from '$lib/components/Common/LbDialog.svelte';
+	import LbLightControllerV2 from '$lib/components/LightController/LbLightControllerV2.svelte';
+	import LbIcon from '$lib/components/Common/LbIcon.svelte';
+	import { controlStore } from '$lib/stores/LbControlStore.svelte';
+	import { _ } from 'svelte-i18n';
+	import fmt from 'sprintf-js';
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
-	let margin = 200;
+	const margin = 200;
 
-	let selectedControl: Control | undefined= $state();
+	let controlOpen = $state(false);
+	let selectedControl: Control | undefined = $state();
 	let selectedControlOptions: ControlOptions | undefined = $state();
-	let scenesEnabled = $state(false);
-	let viewport: any = $state(); // TODO make HTMLDivElement
+	let viewport: any = $state();
 	let hasScroll = $state(true);
 	let showScrollTop = $state(false);
 	let showScrollBottom = $state(false);
-
-	let dialog: DialogView = $state({
-		action: (state: boolean) => {
-			dialog.state = state; },
-		state: false
-	});
 
 	let lightList = $derived(control.details?.controls) as LightItem[];
 	let lightsUuid = $derived(control.details?.controls.map((item: LightItem) => item.uuid));
 
 	let lightControls = $derived(controlStore.controlList.filter(
-		(controls: Control) => lightsUuid.indexOf(controls.uuidAction) > -1
+		(c: Control) => lightsUuid.indexOf(c.uuidAction) > -1
 	));
 
 	let lightsOff = $derived(
-		lightControls.filter((control: Control) => controlStore.getState(control.states?.activeMoodsNum) == 778)
+		lightControls.filter((c: Control) => controlStore.getState(c.states?.activeMoodsNum) == 778)
 	);
 
 	let lightsOn = $derived(lightList.length - lightsOff.length);
-	let selectedLightCount = $derived(lightList.filter((item) => item.selected == true).length);
-
+	let selectedLightCount = $derived(lightList.filter((item: LightItem) => item.selected === true).length);
+	let scenesEnabled = $derived(selectedLightCount === 1);
+	let iconName = $derived(controlStore.getIcon(control, controlOptions.isSubControl));
+	let iconColor = $derived(lightsOn ? 'dark:text-primary-500 text-primary-700' : 'text-surface-950 dark:text-surface-50');
+	let statusColor = $derived(lightsOn ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700');
+	let statusName = $derived(getActiveLights());
 	let windowHeight = $derived(innerHeight.current || 0);
 	let availableHeight = $derived(Math.floor(windowHeight * 0.9) - margin);
 
@@ -54,197 +51,214 @@
 			: 'height: auto'
 	);
 
-	let controlView: ControlView = $derived({
-		...DEFAULT_CONTROLVIEW,
-		control: control,
-		isFavorite: controlOptions.isFavorite,
-		iconName: controlStore.getIcon(control, controlOptions.isSubControl),
-		iconColor: lightsOn ? 'dark:text-primary-500 text-primary-700' : 'text-surface-950 dark:text-surface-50',
-		textName: control.name,
-		statusName: getActiveLights(),
-		statusColor: lightsOn ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700', 
-		dialog: dialog
-	});
+	// handle scrolling
+	$effect(() => { parseScroll(windowHeight, viewport); });
 
+	// reset all selections when the light list changes (e.g. on miniserver reconnect)
+	$effect(() => { lightList.forEach((item: LightItem) => (item.selected = false)); });
+
+	/**
+	 * Recomputes scroll-indicator visibility from the current viewport metrics.
+	 * Called on mount/resize (via $effect) and on every scroll event.
+	 *
+	 * @param height - current window inner height (guards against SSR zero).
+	 * @param view - the scrollable div element bound via bind:this.
+	 */
 	function parseScroll(height: number, view: any = undefined): void {
 		if (!view) return;
 		hasScroll = view.scrollHeight > view.clientHeight;
-		showScrollTop = height > 0 && hasScroll && (view?.scrollTop > 10);
-		showScrollBottom = height > 0 && hasScroll && (view.scrollTop + view.clientHeight < (view.scrollHeight - 10));
+		showScrollTop = height > 0 && hasScroll && view.scrollTop > 10;
+		showScrollBottom = height > 0 && hasScroll && view.scrollTop + view.clientHeight < view.scrollHeight - 10;
 	}
 
+	/**
+	 * Returns a localised summary of how many light zones are currently on.
+	 */
 	function getActiveLights(): string {
-		let status = '';
 		switch (lightsOn) {
-			case 0:
-				status = $_('All off');
-				break;
-			case 1:
-				status = fmt.sprintf($_('On in %s room'), 1);
-				break;
-			default:
-				status = fmt.sprintf($_('On in %s rooms'), lightsOn);
+			case 0: return $_('All off');
+			case 1: return fmt.sprintf($_('On in %s room'), 1);
+			default: return fmt.sprintf($_('On in %s rooms'), lightsOn);
 		}
-		return status;
 	}
 
-	function close(): void {
-		lightList.forEach((item) => item.selected = false ); // empty selected lights
-		scenesEnabled = false;
+	/**
+	 * Opens the control dialog. If controlOptions.action is set, that custom
+	 * action is invoked instead. At subcontrol level (no icon) the dialog is
+	 * suppressed.
+	 */
+	function openControl(): void {
+		if (controlOptions.action) { controlOptions.action(); return; }
+		if (!iconName.length) return;
+		controlOpen = true;
+	}
+
+	/**
+	 * Closes the control dialog and resets all per-session state: selected
+	 * lights and the open sub-controller reference.
+	 */
+	function closeControl(): void {
+		controlOpen = false;
+		lightList.forEach((item: LightItem) => (item.selected = false));
 		selectedControl = undefined;
 		selectedControlOptions = undefined;
-		controlView.dialog.action(false);
 	}
 
-	function getControlName(control: Control): string {
-		const origNameFound = $_('LightControllerV2').includes(control.name);
-		const room = controlStore.rooms.get(control.room);
-		return (origNameFound && room) ? room.name : control.name;
+	/**
+	 * Returns the display name for a light controller. Falls back to the room
+	 * name when the controller carries the generic 'LightControllerV2' name.
+	 *
+	 * @param c - the individual light-controller Control object.
+	 */
+	function getControlName(c: Control): string {
+		const origNameFound = $_('LightControllerV2').includes(c.name);
+		const room = controlStore.rooms.get(c.room);
+		return origNameFound && room ? room.name : c.name;
 	}
 
-	function getRoomName(control: Control): string {
-		const origNameFound = $_('LightControllerV2').includes(control.name);
-		const room = controlStore.rooms.get(control.room);
-		return (origNameFound || !room) ? '' : room.name;
+	/**
+	 * Returns the room name for display below the controller name, or an empty
+	 * string when the controller already uses the room name as its own name.
+	 *
+	 * @param c - the individual light-controller Control object.
+	 */
+	function getRoomName(c: Control): string {
+		const origNameFound = $_('LightControllerV2').includes(c.name);
+		const room = controlStore.rooms.get(c.room);
+		return origNameFound || !room ? '' : room.name;
 	}
 
-	function getStatusName(control: Control): string {
-		let moodList = controlStore.getState(control.states?.moodList) as MoodList[];
-		let activeMoodsNum = Number(controlStore.getState(control.states?.activeMoodsNum));
-		return (activeMoodsNum < 0) ? $_('Manual') : 
-			moodList?.find((item:MoodList) => item.id == activeMoodsNum)?.name ?? '';
+	/**
+	 * Returns the name of the currently active mood for a light controller,
+	 * or 'Manual' when a manual override is active.
+	 *
+	 * @param c - the individual light-controller Control object.
+	 */
+	function getStatusName(c: Control): string {
+		const moodList = controlStore.getState(c.states?.moodList) as MoodList[];
+		const activeMoodsNum = Number(controlStore.getState(c.states?.activeMoodsNum));
+		return activeMoodsNum < 0
+			? $_('Manual')
+			: moodList?.find((item: MoodList) => item.id == activeMoodsNum)?.name ?? '';
 	}
 
-	function getStatusColor(control: Control): string {
-		let activeMoodsNum = Number(controlStore.getState(control.states?.activeMoodsNum));
-		return activeMoodsNum == 778 ? 'text-surface-950 dark:text-surface-50' : 'dark:text-primary-500 text-primary-700';
+	/**
+	 * Returns the status colour class for a light controller based on whether
+	 * its activeMoodsNum indicates all lights off (778) or some lights on.
+	 *
+	 * @param c - the individual light-controller Control object.
+	 */
+	function getStatusColor(c: Control): string {
+		const activeMoodsNum = Number(controlStore.getState(c.states?.activeMoodsNum));
+		return activeMoodsNum == 778
+			? 'text-surface-950 dark:text-surface-50'
+			: 'dark:text-primary-500 text-primary-700';
 	}
 
+	/**
+	 * Toggles the selected state of a light controller in the list.
+	 *
+	 * @param c - the Control object whose selection to toggle.
+	 */
 	function selectLight(control: Control): void {
-		let index = lightList.findIndex((item) => item.uuid == control.uuidAction);
+		const index = lightList.findIndex((item: LightItem) => item.uuid == control.uuidAction);
 		if (lightList[index]) {
 			lightList[index].selected = !lightList[index].selected;
 		}
-		scenesEnabled = selectedLightCount == 1;
-	}
-	
-	function isSelected(control: Control): boolean {
-		let light = lightList.find((item) => item.uuid == control.uuidAction);
-		return light && light.selected || false;
 	}
 
+	/**
+	 * Returns true when the given light controller is currently selected.
+	 */
+	function isSelected(c: Control): boolean {
+		return lightList.find((item: LightItem) => item.uuid == control.uuidAction)?.selected ?? false;
+	}
+
+	/**
+	 * Sends an On or Off command to all currently selected light controllers.
+	 * 'On' activates the first mood in the list; 'Off' sends mood ID 778.
+	 *
+	 * @param mood - 'On' to switch on, 'Off' to switch off.
+	 */
 	function changeLight(mood: string): void {
-		lightList.forEach( light => { 
-			if (light.selected) {
-				let control: Control | undefined = controlStore.controlList.find( (control: Control) => control.uuidAction == light.uuid);
-				let moodList = controlStore.getState(control?.states.moodList) as MoodList[];
-				let moodCmd;
-				switch (mood) {
-					case 'On': moodCmd = String(moodList[0].id); break;
-					case 'Off': moodCmd = '778'; break; // TODO check if Off is always nr 778
-					default: /* none */
-				}
-				if (control && moodList && moodCmd) {
-					controlStore.setControl(control, 'changeTo/' + moodCmd);
-				}
-			}
+		lightList.forEach((light) => {
+			if (!light.selected) return;
+			const c = controlStore.controlList.find((ctrl: Control) => ctrl.uuidAction == light.uuid);
+			const moodList = controlStore.getState(c?.states.moodList) as MoodList[];
+			const moodCmd = mood === 'On' ? String(moodList[0].id) : mood === 'Off' ? '778' : undefined;
+			if (c && moodList && moodCmd) controlStore.setControl(c, 'changeTo/' + moodCmd);
 		});
 	}
 
+	/**
+	 * Opens the scenes sub-dialog for the single selected light controller.
+	 * No-op when more or fewer than one controller is selected.
+	 */
 	function selectScenes(): void {
-		if (!scenesEnabled) return; // more than one scene selected
-		let light = lightList.find((item) => item.selected);
-		let control: Control | undefined = controlStore.controlList.find( (control: Control) => control.uuidAction == light?.uuid);
-		if (control) {
-			selectedControl = control;
-			selectedControlOptions = {...DEFAULT_CONTROLOPTIONS, showDialog: true, showControl: false};
+		if (!scenesEnabled) return;
+		const light = lightList.find((item: LightItem) => item.selected);
+		const c = controlStore.controlList.find((ctrl: Control) => ctrl.uuidAction == light?.uuid);
+		if (c) {
+			selectedControl = c;
+			selectedControlOptions = { ...DEFAULT_CONTROLOPTIONS, showDialog: true, showControl: false };
 		}
 	}
-
-	$effect( () => { // check scroll status and window change and viewwport construction
-		parseScroll(windowHeight, viewport);
-	});
-
-	$effect( () => {
-		lightList.forEach((item) => item.selected = false ); // default all lights unselected
-	});
 </script>
 
-<div>
-	<LbControl bind:controlView {controlOptions}/>
-	{#if controlView.dialog.state} <!-- only construct dialog when opened, important to get current clientHeight -->
-		<Dialog 
-			open={controlView.dialog.state}
-			onInteractOutside={close}>
-			<Portal>
-				<Dialog.Backdrop class="fixed inset-0 z-10 bg-surface-50-950/75 backdrop-blur-sm {fadeInOut}"/>
-				<Dialog.Positioner class="fixed inset-0 z-10 flex justify-center items-center p-4">
-					<Dialog.Content class="card bg-surface-100-900 p-4 pt-3 shadow-sm rounded-lg border border-white/5 hover:border-white/10
-										max-w-full max-h-full w-[450px] {fadeInOut}">
-						<LbInfo control={controlView.control}/>
-						<header>
-							<div class="grid grid-cols-[5%_90%_5%]">
-								<div class="flex justify-center items-center"></div><!-- placeholder for menu -->
-								<div>
-									<p class="h5 flex justify-center items-center">{controlView.textName}</p>
-								</div>
-								<div class="flex justify-center items-center">
-									<button type="button" class="btn-icon hover:preset-tonal" onclick={close}>
-										<LbIcon name="x" height="16" width="16"/>
-									</button>
-								</div>
-							</div>
-							<p class="text-lg text-center {lightsOn ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700'}">{getActiveLights()}</p>
-							<div class="grid grid-cols-3 gap-2 mt-2 mb-2">
-								<button type="button" class="w-full btn btn-lg h-[48px] bg-surface-50-950 shadow-sm text-surface-950-50
-																			rounded-lg border border-white/15 hover:border-white/50 active:bg-primary-500" onclick={() => changeLight('On')}>{$_('On')}</button>
-								<button type="button" class="w-full btn btn-lg h-[48px] bg-surface-50-950 shadow-sm text-surface-950-50
-																			rounded-lg border border-white/15 hover:border-white/50 active:bg-primary-500" onclick={() => changeLight('Off')}>{$_('Off')}</button>
-								<button type="button" class="w-full btn btn-lg h-[48px] bg-surface-50-950 shadow-sm {scenesEnabled ? 'text-surface-800-200 active:bg-primary-500' : 'text-surface-200-800'}
-																			rounded-lg border border-white/15 hover:border-white/50" onclick={() => selectScenes()}>{$_('Scenes')}</button>
-							</div>
-						</header>
-						<Dialog.Description>
-							<div class="relative flex flex-col items-center justify-center">
-								<div class="flex flex-col w-full">
-									{#if showScrollTop}
-										<div class="absolute z-10 left-[50%] lb-center top-[10px] text-surface-500" transition:fade={{ duration: 300 }}><LbIcon name="chevron-up" height="30" width="30"/></div>
-									{/if}
-									{#if showScrollBottom}
-										<div class="absolute z-10 left-[50%] lb-center -bottom-[19px] text-surface-500" transition:fade={{ duration: 300 }}><LbIcon name="chevron-down" height="30" width="30"/></div>
-									{/if}
-									<div class="flex flex-col space-y-2 overflow-y-auto h-[50%]" {style} bind:this={viewport} onscroll={() => parseScroll(windowHeight, viewport)}>
-										{#each lightControls as control}
-											<button class="w-full flex h-[60px] items-center justify-start rounded-lg border border-white/15 hover:border-white/50
-													{isSelected(control) ? 'bg-surface-200-800' : 'bg-surface-50-950'} px-2 py-2"
-													onclick={() => selectLight(control)}>
-												<div class="p-2 grid grid-cols-2 w-fit w-full items-center h-[60px]">
-													<div class="text-left">
-														<p class="truncate leading-6 text-base {getStatusColor(control)}">{getControlName(control)}</p>
-														<p class="truncate bg-transparent text-xs dark:text-surface-300 text-surface-700">{getRoomName(control)}</p>
-													</div>
-													<p class="truncate text-right text-base {getStatusColor(control)}">{getStatusName(control)}</p>
-												</div>
-											</button>
-										{/each}
-									</div>
-								</div>
-							</div>
-						</Dialog.Description>
-					</Dialog.Content>
-				</Dialog.Positioner>
-			</Portal>
-		</Dialog>
-	{/if}
-	{#if selectedControl && selectedControlOptions }
-		{#key selectedControlOptions} <!-- reinit component -->
-			<LbLightControllerV2 control={selectedControl} controlOptions={selectedControlOptions}/>
-		{/key}
-	{/if}
-</div>
+<LbControl {controlOptions} {iconName} {iconColor} {statusName} {statusColor}
+	textName={control.name} label={controlStore.getLabel(page, control)} onclick={openControl}/>
 
-<style>
-	.lb-center {
-		transform: translate(-50%, -50%);
-	}
-</style>
+{#if !controlOptions.action}
+	<LbDialog open={controlOpen} onClose={closeControl} {control} title={control.name}>
+		{#snippet description()}
+			<p class="text-lg text-center {statusColor}">{statusName}</p>
+			<div class="grid grid-cols-3 gap-2 mt-2 mb-2">
+				<button type="button" class="w-full btn btn-lg h-[48px] bg-surface-50-950 shadow-sm text-surface-950-50
+						rounded-lg border border-white/15 hover:border-white/50 active:bg-primary-500"
+						onclick={() => changeLight('On')}>{$_('On')}</button>
+				<button type="button" class="w-full btn btn-lg h-[48px] bg-surface-50-950 shadow-sm text-surface-950-50
+						rounded-lg border border-white/15 hover:border-white/50 active:bg-primary-500"
+						onclick={() => changeLight('Off')}>{$_('Off')}</button>
+				<button type="button" class="w-full btn btn-lg h-[48px] bg-surface-50-950 shadow-sm {scenesEnabled ? 'text-surface-800-200 active:bg-primary-500' : 'text-surface-200-800'}
+						rounded-lg border border-white/15 hover:border-white/50"
+						onclick={selectScenes}>{$_('Scenes')}</button>
+			</div>
+			<div class="relative flex flex-col items-center justify-center">
+				<div class="flex flex-col w-full">
+					{#if showScrollTop}
+						<div class="absolute z-10 left-[50%] -translate-x-1/2 -translate-y-1/2 top-[10px] text-surface-500" transition:fade={{ duration: 300 }}>
+							<LbIcon name="chevron-up" height="30" width="30"/>
+						</div>
+					{/if}
+					{#if showScrollBottom}
+						<div class="absolute z-10 left-[50%] -translate-x-1/2 -translate-y-1/2 -bottom-[19px] text-surface-500" transition:fade={{ duration: 300 }}>
+							<LbIcon name="chevron-down" height="30" width="30"/>
+						</div>
+					{/if}
+					<div class="flex flex-col space-y-2 overflow-y-auto" {style} bind:this={viewport}
+							onscroll={() => parseScroll(windowHeight, viewport)}>
+						{#each lightControls as c}
+							<button class="w-full flex h-[60px] items-center justify-start rounded-lg border border-white/15 hover:border-white/50
+									{isSelected(c) ? 'bg-surface-200-800' : 'bg-surface-50-950'} px-2 py-2"
+									onclick={() => selectLight(c)}>
+								<div class="p-2 grid grid-cols-2 w-full items-center h-[60px]">
+									<div class="text-left">
+										<p class="truncate leading-6 text-base {getStatusColor(c)}">{getControlName(c)}</p>
+										<p class="truncate bg-transparent text-xs dark:text-surface-300 text-surface-700">{getRoomName(c)}</p>
+									</div>
+									<p class="truncate text-right text-base {getStatusColor(c)}">{getStatusName(c)}</p>
+								</div>
+							</button>
+						{/each}
+					</div>
+				</div>
+			</div>
+		{/snippet}
+	</LbDialog>
+{/if}
+
+{#if selectedControl && selectedControlOptions}
+	{#key selectedControlOptions}
+		<LbLightControllerV2 control={selectedControl} controlOptions={selectedControlOptions}/>
+	{/key}
+{/if}

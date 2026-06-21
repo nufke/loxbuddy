@@ -215,5 +215,6 @@
   "__uuid__controls_efm_states_actual4": "0.55",
   "__uuid__controls_efm_states_actual5": "0.0",
   "__uuid__controls_efm_states_selfConsumption": "3.5",
-  "__uuid__controls_efm_states_jLocked": ""
+  "__uuid__controls_efm_states_jLocked": "",
+  "__uuid__controls_info_analog": "21.2"
 }

@@ -30,8 +30,12 @@ export class MiniserverClient {
 	 * Connect to a Miniserver:
 	 * - Called without arguments: startup path using stored credentials (or demo).
 	 *   Shows the login dialog when no valid credentials are found.
-	 * - Called with (hostName, userName, password): disconnects any existing connection
+	 * - Called with all three arguments: disconnects any existing connection
 	 *   and connects with the supplied credentials, reusing a stored token when possible.
+	 *
+	 * @param hostName - IP address or hostname of the Miniserver (including http/https prefix).
+	 * @param userName - login name of the Miniserver user.
+	 * @param password - plaintext password used for the initial token request.
 	 */
 	async connect(hostName?: string, userName?: string, password?: string): Promise<void> {
 		if (appStore.isDemo) return; // do not connect if we are in demo mode
@@ -86,11 +90,14 @@ export class MiniserverClient {
 		}
 
 		console.error('[MiniserverClient] Unable to connect and authenticate');
-		appStore.loginDialog.state = true;
+		appStore.loginDialogOpen = true;
 	}
 
 	/**
-	 * Listen to Miniserver events, such as connection status, text and value events, etc.
+	 * Registers WebSocket event listeners for connection lifecycle events
+	 * (connected, authenticated, disconnected, error) and all state-update event types
+	 * (event_value, event_daytimer, event_weather, event_text), forwarding each to
+	 * the control store.
 	 */
 	private registerEvents(): void {
 		this.client?.on('connected', () => {
@@ -100,7 +107,7 @@ export class MiniserverClient {
 		this.client?.on('authenticated', () => {
 			console.info(`[MiniserverClient] User ${this.userName} authenticated`);
 			appStore.loxStatus = 1;
-			appStore.loginDialog.state = false; // close login dialog
+			appStore.loginDialogOpen = false; // close login dialog
 		});
 
 		this.client?.on('disconnected', () => {
@@ -149,10 +156,11 @@ export class MiniserverClient {
 	}
 
 	/**
-	 * Send control state to Miniserver
-	 * @param uuid universally unique ID of the control
-	 * @param value value of the control
-	 * @param visuPw (optional) visualization password for secured controls
+	 * Sends a control command to the Miniserver over the active WebSocket connection.
+	 *
+	 * @param uuid - universally unique ID of the control.
+	 * @param value - command value string.
+	 * @param visuPw - optional visualisation password for secured controls.
 	 */
 	async control(uuid: string, value: string, visuPw?: string): Promise<void> {
 		console.info(`[MiniserverClient] Send ${visuPw ? 'secure ' : ''}control:`, uuid, value);
@@ -160,16 +168,18 @@ export class MiniserverClient {
 	}
 
 	/**
-	 * Retrieve file from Miniserver (e.g. camera images of intercom)
-	 * @param filename Name of the file to retrieve
-	 * @returns returns the file contents as a FileMessage
+	 * Retrieves a file from the Miniserver (e.g. a camera image from the intercom).
+	 *
+	 * @param filename - path/name of the file to retrieve.
+	 * @returns file contents as a `FileMessage`, or `undefined` when the client is disconnected.
 	 */
 	async getFile(filename: string): Promise<FileMessage | undefined> {
 		return await this.client?.sendFileCommand(filename);
 	}
 
 	/**
-	 * Disconnect Miniserver (if not already done)
+	 * Disconnects from the Miniserver and resets the connection state.
+	 * No-op when no connection is active.
 	 */
   async disconnect(): Promise<void> {
 		const client = this.client;
@@ -181,7 +191,8 @@ export class MiniserverClient {
   }
 
 	/**
-	 * Retrieve Miniserver settings, such as structure, user settings, system status, etc.
+	 * Fetches and applies the full Miniserver configuration after a successful connection:
+	 * structure file, user settings, system status, and locale. Also enables event streaming.
 	 */
 	private async getSettings(): Promise<void> {
 		if (!appStore.loxStatus) return; // make sure we are connected
@@ -221,11 +232,12 @@ export class MiniserverClient {
 	}
 
 	/**
-	 * Check validity of token using the REST API
-	 * @param url IP address and/or hostname of the Miniserver
-	 * @param userName name of the user
-	 * @param token authorization token
-	 * @returns true if the token is valid. Returns false if token is invalid or server is not responding
+	 * Checks whether a stored token is still accepted by the Miniserver via the REST API.
+	 *
+	 * @param url - IP address and/or hostname of the Miniserver (including http/https prefix).
+	 * @param userName - name of the user the token belongs to.
+	 * @param token - authorization token to validate.
+	 * @returns true if the token is valid; false if the token is invalid or the server is not responding.
 	 */
 	private async checkTokenValidity(url: string, userName: string, token: string): Promise<boolean> {
 		return fetch(`${url}/jdev/sys/checktoken/${token}/${userName}?autht=${token}&user=${userName}`, {cache: "no-store"})
@@ -242,8 +254,9 @@ export class MiniserverClient {
 	}
 
 	/**
-	 * Store user settings (e.g. sorting/order of controls)
-	 * @param settings user settings of type UserSettings
+	 * Persists user settings (e.g. control sort order and favourites) to the Miniserver via REST.
+	 *
+	 * @param settings - user settings object to store.
 	 */
 	async setUserSettings(settings: UserSettings): Promise<void> {
 		console.info('[MiniserverClient] user settings send to Miniserver:', settings);
@@ -256,7 +269,8 @@ export class MiniserverClient {
 	}
 
 	/**
-	 * Retrieve user settings (e.g. sorting/order of controls)
+	 * Retrieves user settings (e.g. control sort order and favourites) from the Miniserver
+	 * and forwards them to the control store.
 	 */
 	async getUserSettings(): Promise<void> {
 		await fetch(`${this.hostName}/jdev/sps/getusersettings?autht=${appStore.credentials?.token}&user=${this.userName}`)
@@ -274,7 +288,8 @@ export class MiniserverClient {
 	}
 
 	/**
-	 * Retrieve Miniserver system status
+	 * Retrieves the current system status entries from the first MessageCenter control
+	 * and stores them in the control store. No-op when no MessageCenter is configured.
 	 */
 	async getSystemStatus(): Promise<void> {
 		if (!controlStore.messageCenterList.length) return; /* no messageCenter, return */
@@ -291,9 +306,11 @@ export class MiniserverClient {
 	}
 
 	/**
-	 * Generic fetch command using Miniserver user credentials
-	 * @param url endpoint (e.g., /jdev/sps/io/...)
-	*/
+	 * Issues a generic authenticated GET request to the Miniserver using the stored credentials.
+	 *
+	 * @param url - endpoint path (e.g. `jdev/sps/io/...`), without host or auth query parameters.
+	 * @returns the raw fetch `Response` from the Miniserver.
+	 */
 	async fetch(url: string): Promise<Response> {
 		const request = new Request(`${this.hostName}/${url}?autht=${appStore.credentials?.token}&user=${this.userName}`);
 		return fetch(request);

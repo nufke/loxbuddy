@@ -1,216 +1,138 @@
 <script lang="ts">
-	import { Switch } from '@skeletonlabs/skeleton-svelte';
-	import type { ControlView, Control, ControlOptions, Category, Room, GeneralView } from '$lib/types/models';
-	import { DEFAULT_CONTROLOPTIONS, DEFAULT_GENERALVIEW } from '$lib/types/models';
+	import type { Snippet } from 'svelte';
+	import type { ControlOptions } from '$lib/types/models';
+	import { DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import LbIcon from '$lib/components/Common/LbIcon.svelte';
-	import LbJalousieIcon from '$lib/components/Jalousie/LbJalousieIcon.svelte';
-	import { appStore } from '$lib/stores/LbAppStore.svelte';
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
-	import { _ } from 'svelte-i18n';
-	import { page } from '$app/state';
-	import LbGeneralDialog from '$lib/components/Common/LbGeneralDialog.svelte';
 
-	let { controlView = $bindable(), controlOptions = DEFAULT_CONTROLOPTIONS } : { controlView: ControlView, controlOptions: ControlOptions } = $props();
-	let isCategory = page.url.pathname.includes('/category');
-	let locked = controlView.dialog?.details?.locked;
+	let {
+		controlOptions = DEFAULT_CONTROLOPTIONS,
+		iconName = '',
+		iconColor = 'dark:text-surface-50 text-surface-950',
+		iconText = '',
+		badgeIconName = '',
+		badgeIconColor = '',
+		textName,
+		statusName = '',
+		statusColor = 'dark:text-surface-300 text-surface-700',
+		label = '',
+		onclick,
+		icon,		// optional custom icon content (e.g. LbJalousieIcon); falls back to LbIcon with iconName
+		actions,	// control-specific buttons/toggle, receives isFavorite as param
+	}: {
+		controlOptions?: ControlOptions;
+		iconName?: string;
+		iconColor?: string;
+		iconText?: string;		// IRC temperature / value shown as SVG text instead of an icon
+		badgeIconName?: string;
+		badgeIconColor?: string;
+		textName: string;
+		statusName?: string;
+		statusColor?: string;
+		label?: string;
+		onclick: () => void;
+		icon?: Snippet;
+		actions?: Snippet<[boolean]>;
+	} = $props();
 
-	let passwordView: GeneralView = $state(DEFAULT_GENERALVIEW);
-	let resetSwitch = $state(false); // fix: reset switch state in case cancel is pressed
-
-	function getT(): {num: string, frac: string} {
-		let temp = controlView.iconText?.split('.') || '';
+	function getIconText(): { num: string; frac: string } {
+		const parts = iconText.split('.');
 		return {
-			num: temp[0] && temp[1]? (temp[0] + '.') : temp[0],
-			frac: temp[1] ? temp[1] : ''
-		}
+			num: parts[0] && parts[1] ? parts[0] + '.' : parts[0],
+			frac: parts[1] ?? '',
+		};
 	}
 
-	function getStatusColorHex(hexColor: string | undefined): string {
-		return (hexColor && hexColor[0] == '#') ? 'color: ' + hexColor : '';
-	}
-
-	function getIconColorHex(hexColor: string | undefined): string {
-		return (hexColor && hexColor[0] == '#') ? 'color: ' + hexColor : '';
-	}
-
-	function openDialog(): void {
-		if (!controlView.iconName.length && !controlView.iconText?.length) return; // no dialog if we are at subcontrol level (we have no icon at this level)
-		controlView.dialog.action(true);
-	}
-
-	function getLabel(control: Control): string {
-		let label : Category | Room | undefined;
-		if (isCategory) {
-			label = controlStore.roomList.find((room) => room.uuid === control.room);
-		} else {
-			label = controlStore.categoryList.find((cat) => cat.uuid === control.cat);
-		}
-		return label?.name ?? '';
-	}
-
-	function handleButtonClick(button: any, e: any) {
-		const cachedVisuPw = appStore.getVisuPw(controlView.control.uuidAction);
-		if (controlView.control.isSecured && cachedVisuPw) {
-			button.click(e, cachedVisuPw);
-			return 
-		}
-		if (controlView.control.isSecured) {
-			passwordView.label = $_('Secured control');
-			passwordView.cancel = () => {resetSwitch = !resetSwitch};
-			passwordView.ok = (visuPw: string) => { button.click(e, visuPw); appStore.setVisuPw(controlView.control.uuidAction, visuPw);}
-			passwordView.openDialog = true;
-			return;
-		}
-		button.click(e);
+	function getColor(hexColor: string | undefined): string {
+		return hexColor && hexColor[0] == '#' ? 'color: ' + hexColor : '';
 	}
 </script>
 
-{#if controlView.isFavorite} <!-- Widget style for favorite -->
-<div role="button" tabindex="0" onkeydown={()=>{}} aria-label="card" onclick={openDialog}
+<!-- Shared icon circle content (used in both card modes) -->
+{#snippet iconCircle(compact: boolean)}
+	<div class="relative mr-1 {compact ? 'inline-flex' : 'flex'} items-center justify-center w-12 h-12 min-w-12 overflow-hidden rounded-full border border-white/10 bg-surface-50-950">
+		{#if icon}
+			{@render icon()}
+		{:else}
+			<LbIcon class={iconColor} name={iconName} width="32" height="32"/>
+		{/if}
+		{#if badgeIconName?.length}
+			<div class="absolute top-[0px] right-[2px] inline-flex items-center justify-center w-[22px] h-[22px] bg-surface-50-950 rounded-full">
+				<LbIcon class={badgeIconColor} name={badgeIconName} height="12" width="12"/>
+			</div>
+		{/if}
+	</div>
+{/snippet}
+
+<!-- Drag handle shown when sorting is active -->
+{#snippet dragHandle()}
+	{#if controlStore.sorting}
+		<div class="absolute -right-[3px] -bottom-[3px] text-surface-500" data-drag-handle>
+			<LbIcon name="clarity:drag-handle-corner-line"/>
+		</div>
+	{/if}
+{/snippet}
+
+<!-- Widget style for favorites -->
+{#if controlOptions.isFavorite}
+<div role="button" tabindex="0" onkeydown={()=>{}} aria-label="card" {onclick}
 	class="card m-0 flex justify-start rounded-lg shadow-sm border border-white/5
 					bg-surface-100-900 min-h-[150px] px-2 py-2 hover:border-white/10 relative">
 	<div class="flex w-full flex-col">
-		{#if controlStore.sorting}
-			<div class="absolute -right-[3px] -bottom-[3px] text-surface-500" data-drag-handle>
-				<LbIcon name="clarity:drag-handle-corner-line"/>
-			</div>
-		{/if}
+		{@render dragHandle()}
 		<div class="flex w-full justify-between">
 			<div class="relative flex items-center truncate">
-				{#if controlView.iconName.length}
-					<div class="relative mr-1 flex items-center justify-center w-12 h-12 min-w-12 overflow-hidden rounded-full border border-white/10 bg-surface-50-950">
-						{#if controlView.control.type =='Jalousie'}
-							<LbJalousieIcon control={controlView.control} width="28" height="28"/>
-						{:else}
-						<LbIcon class={controlView.iconColor} name={controlView.iconName} width="32" height="32"
-							style={getIconColorHex(controlView.iconColor)}/>
-						{/if}
-						{#if controlView.badgeIconName?.length}
-							<div class="absolute top-[0px] right-[2px] inline-flex items-center justify-center w-[22px] h-[22px] bg-surface-50-950 rounded-full">
-								<LbIcon class={controlView.badgeIconColor} name={controlView.badgeIconName} height="12" width="12"/>
-							</div>
-						{/if}
-					</div>
+				{#if iconName.length}
+					{@render iconCircle(false)}
 				{/if}
-				{#if controlView.iconText?.length} 
+				{#if iconText?.length} <!-- IRC: show value as text instead of icon -->
 					<div class="relative mr-1 inline-flex items-center justify-center w-12 h-12 min-w-12 overflow-hidden rounded-full border border-white/10 bg-surface-50-950">
 						<svg width="32" height="32">
-							<text class={controlView.iconColor} text-anchor="middle" x="16" y="22" font-size="18">{getT().num}<tspan font-size="14">{getT().frac}</tspan>
-							</text>
+							<text class={iconColor} text-anchor="middle" x="16" y="22" font-size="18">{getIconText().num}<tspan font-size="14">{getIconText().frac}</tspan></text>
 						</svg>
 					</div>
 				{/if}
 			</div>
 			<div class="flex flex-row items-top justify-right">
-				{#if controlView.buttons.length}
-					{#each controlView.buttons as button, index}
-						{#if index > 0}
-							<div class="ml-2"></div>
-						{/if}
-						{#if button.type === 'button' && button.iconName}
-							<button type="button" disabled={locked} class="btn-icon w-[18px] h-[18px] p-3 bg-surface-50-950 rounded-lg border border-white/15 hover:border-white/50 {locked ? '' : 'active:bg-primary-500'}" 
-											onclick={(e) => { e.stopPropagation(); e.preventDefault(); handleButtonClick(button, e);}}>
-								<LbIcon class={button.iconColor} name={button.iconName}/>
-							</button>
-						{/if}
-						{#if button.type == 'switch'}
-							{#key resetSwitch}
-								<button onclick={(e) => { e.stopPropagation()}}> <!-- workaround wrapper to stop propagation for switch -->
-									<Switch checked={controlView.buttonState} onCheckedChange={(e) => handleButtonClick(button, e)}>
-										<Switch.Control class="w-12 h-8 mr-1 data-[state=checked]:preset-filled-primary-500">
-											<Switch.Thumb />
-										</Switch.Control>
-										<Switch.HiddenInput />
-									</Switch>
-								</button>
-							{/key}
-						{/if}
-					{/each}
-				{/if}
+				{#if actions}{@render actions(true)}{/if}
 			</div>
 		</div>
 		<div class="pl-1 pt-2 truncate">
-			<p class="truncate text-xs dark:text-surface-300 text-surface-700">{getLabel(controlView.control)}</p>
-			<p class="truncate text-lg">{controlView.textName}</p>
-			<p class="truncate text-md {controlView.statusColor}" style={getStatusColorHex(controlView.statusColor)}>{controlView.statusName}</p>
+			{#if label}<p class="truncate text-xs dark:text-surface-300 text-surface-700">{label}</p>{/if}
+			<p class="truncate text-lg">{textName}</p>
+			{#if statusName}<p class="truncate text-md {statusColor}" style={getColor(statusColor)}>{statusName}</p>{/if}
 		</div>
 	</div>
 </div>
 {/if}
 
-{#if controlView.showControl && !controlView.isFavorite} <!-- Regular style used in control list -->
-<div role="button" tabindex="0" onkeydown={()=>{}} aria-label="card" onclick={openDialog}
+<!-- Regular style used in control list -->
+{#if controlOptions.showControl && !controlOptions.isFavorite}
+<div role="button" tabindex="0" onkeydown={()=>{}} aria-label="card" {onclick}
 			class="card m-0 flex items-center justify-start rounded-lg shadow-sm border border-white/5 relative
-						{ controlView.isSubControl ? 'bg-surface-200-800 min-h-[64px]' :
-						( controlOptions.isLink ? 'bg-surface-200-800 h-[70px]' : 'bg-surface-100-900 h-[70px]') }  px-2 py-2 hover:border-white/10">
+						{ controlOptions.isSubControl ? 'bg-surface-200-800 min-h-[64px]' :
+						( controlOptions.isLink ? 'bg-surface-200-800' : 'bg-surface-100-900') } px-2 py-2 hover:border-white/10">
 	<div class="flex w-full justify-between">
-		{#if controlStore.sorting}
-			<div class="absolute -right-[3px] -bottom-[3px] text-surface-500" data-drag-handle>
-				<LbIcon name="clarity:drag-handle-corner-line"/>
-			</div>
-		{/if}
+		{@render dragHandle()}
 		<div class="relative flex items-center truncate">
-			{#if controlView.iconName.length && !controlView.isSubControl} <!-- only show icon if name is given -->
-				<div class="relative mr-1 inline-flex items-center justify-center w-12 h-12 min-w-12 overflow-hidden rounded-full border border-white/10 bg-surface-50-950">
-					{#if controlView.control.type =='Jalousie'}
-						<LbJalousieIcon control={controlView.control} width="28" height="28"/>
-					{:else}
-					<LbIcon class={controlView.iconColor} name={controlView.iconName} width="32" height="32"
-						style={getIconColorHex(controlView.iconColor)}/>
-					{/if}
-					{#if controlView.badgeIconName?.length}
-						<div class="absolute top-[0px] right-[2px] inline-flex items-center justify-center w-[22px] h-[22px] bg-surface-50-950 rounded-full">
-							<LbIcon class={controlView.badgeIconColor} name={controlView.badgeIconName} height="12" width="12"/>
-						</div>
-					{/if}
-				</div>
+			{#if iconName.length && !controlOptions.isSubControl} <!-- only show icon if not a subcontrol -->
+				{@render iconCircle(true)}
 			{/if}
-			{#if controlView.iconText?.length} <!-- IRC -->
+			{#if iconText?.length} <!-- IRC: show value as text instead of icon -->
 				<div class="relative mr-1 inline-flex items-center justify-center w-12 h-12 min-w-12 overflow-hidden rounded-full border border-white/10 bg-surface-50-950">
 					<svg width="32" height="32">
-						<text class={controlView.iconColor} text-anchor="middle" x="16" y="22" font-size="18">{getT().num}<tspan font-size="14">{getT().frac}</tspan>
-						</text>
+						<text class={iconColor} text-anchor="middle" x="16" y="22" font-size="18">{getIconText().num}<tspan font-size="14">{getIconText().frac}</tspan></text>
 					</svg>
 				</div>
 			{/if}
 			<div class="m-0 ml-2 truncate">
-				<p class="truncate text-lg">{controlView.textName}</p>
-				{#if controlView.statusName}
-					<p class="text-md truncate {controlView.statusColor}" style={getStatusColorHex(controlView.statusColor)}>{controlView.statusName}</p>
-				{/if}
+				<p class="truncate text-lg">{textName}</p>
+				{#if statusName}<p class="text-md truncate {statusColor}" style={getColor(statusColor)}>{statusName}</p>{/if}
 			</div>
 		</div>
 		<div class="flex flex-row items-center justify-center {controlStore.sorting ? 'pr-[3px]' : 'pr-0'}">
-			{#if controlView.buttons.length}
-				{#each controlView.buttons as button, index}
-					{#if index > 0}
-						<div class="ml-2"></div>
-					{/if}
-					{#if button.type === 'button' && button.iconName}
-						<button type="button" disabled={locked} class="btn-icon w-[18px] h-[18px] p-3 bg-surface-50-950 rounded-lg border border-white/15 hover:border-white/50 {locked ? '' : 'active:bg-primary-500'}"
-										onclick={(e) => { e.stopPropagation(); e.preventDefault(); handleButtonClick(button, e);}}>
-							<span style="font-size:26px">
-								<LbIcon class={button.iconColor} name={button.iconName} />
-							</span>
-						</button>
-					{/if}
-					{#if button.type == 'switch'}
-						{#key resetSwitch}
-							<button class="mt-1" onclick={(e) => { e.stopPropagation()}}> <!-- workaround wrapper to stop propagation for switch -->
-								<Switch checked={controlView.buttonState} onCheckedChange={(e) => handleButtonClick(button, e)}>
-									<Switch.Control class="w-12 h-8 mr-1 preset-filled-surface-400-600 data-[state=checked]:preset-filled-primary-500">
-										<Switch.Thumb />
-									</Switch.Control>
-									<Switch.HiddenInput />
-								</Switch>
-							</button>
-						{/key}
-					{/if}
-				{/each}
-			{/if}
+			{#if actions}{@render actions(false)}{/if}
 		</div>
 	</div>
 </div>
 {/if}
-
-<LbGeneralDialog bind:view={passwordView}/>

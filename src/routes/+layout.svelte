@@ -14,9 +14,9 @@
 	import { utils } from '$lib/helpers/Utils';
 	import type { WeatherCurrentConditions } from '$lib/types/weather';
 	import LbIcon from '$lib/components/Common/LbIcon.svelte';
-	import LbWeatherDialog from '$lib/components/Weather/LbWeatherDialog.svelte';
-	import LbLoginDialog from '$lib/components/Login/LbLoginDialog.svelte';
-	import LbLockScreenDialog from '$lib/components/LockScreen/LbLockScreenDialog.svelte';
+	import LbWeather from '$lib/components/Weather/LbWeather.svelte';
+	import LbLogin from '$lib/components/Login/LbLogin.svelte';
+	import LbLockScreen from '$lib/components/LockScreen/LbLockScreen.svelte';
 	import { miniserverClient } from '$lib/communication/MiniserverClient';
 	import { format } from 'date-fns';
 	import { goto } from '$app/navigation';
@@ -105,7 +105,7 @@
 	 */
 	function openWeather(): void {
 		if (currentWeather.time > 0) {
-			appStore.weatherDialog.state = true;
+			appStore.weatherDialogOpen = true;
 			appStore.setWeatherDialogTimeout();
 		}
 	}
@@ -143,8 +143,8 @@
 	function navigate(url: string): void {
 		switch (url) {
 			case '/weather': openWeather(); break;
-			case '/login': appStore.loginDialog.state = true; break;
-			case '/logout': if (isDemo) { appStore.setDemo(0); } appStore.loginDialog.state = true; controlStore.disconnectClient(); break;
+			case '/login': appStore.loginDialogOpen = true; break;
+			case '/logout': if (isDemo) { appStore.setDemo(0); } appStore.loginDialogOpen = true; controlStore.disconnectClient(); break;
 			default: goto(url);
 		}
 	}
@@ -212,7 +212,7 @@
 	if (appStore.autoLogin) {
 		miniserverClient.connect();
 	} else if (!appStore.isDemo) {
-		appStore.loginDialog.state = true;
+		appStore.loginDialogOpen = true;
 	}
 
 	// connect to MQTT if credentials are available
@@ -269,7 +269,7 @@
 						</button>
 					</div>
 				{/if}
-				<div class="flex justify-center items-center" onclick={(e)=>{e.stopPropagation(); appStore.lockScreenDialog.state=true;}}>
+				<div class="flex justify-center items-center" onclick={(e)=>{e.stopPropagation(); appStore.lockScreenDialogOpen=true;}}>
 					<p class="text-right text-xl font-medium">{format(date, "p")}</p>
 				</div>
 			</Navigation.Header>
@@ -338,7 +338,7 @@
 				</button>
 				{#if showWeather}
 					<button class="flex flex-row items-center justify-center gap-1" onclick={openWeather}>
-						{#if (innerWidth.current !== undefined && innerWidth.current > 395) || appStore.lockScreenDialog.state == true}
+						{#if (innerWidth.current !== undefined && innerWidth.current > 395) || appStore.lockScreenDialogOpen == true}
 							<LbIcon name={getCurrentIcon(currentWeather)} width="48" height="48"/>	
 						{/if}
 						<span class="text-[22px] truncate">{currentWeather.airTemperature}°</span>
@@ -351,7 +351,7 @@
 				</a>
 			</div>
 			<div class="mr-2 flex flex-row gap-3 justify-end items-center">
-				<div onclick={(e)=>{e.stopPropagation(); appStore.lockScreenDialog.state=true;}}>
+				<div onclick={(e)=>{e.stopPropagation(); appStore.lockScreenDialogOpen=true;}}>
 					<p class="text-right text-2xl font-medium">{format(date, "p")}</p>
 				</div>
 			</div>
@@ -384,9 +384,9 @@
 </div>
 {/if}
 
-<LbWeatherDialog />
-<LbLoginDialog />
-<LbLockScreenDialog />
+<LbWeather />
+<LbLogin />
+<LbLockScreen />
 
 <Dialog
 	open={mobileMenuDialog}

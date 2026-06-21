@@ -6,18 +6,12 @@
 	import LbDialog from '$lib/components/Common/LbDialog.svelte';
 	import LbIcon from '$lib/components/Common/LbIcon.svelte';
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
-	import fmt from 'sprintf-js';
-	import { _ } from 'svelte-i18n';
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
 	let controlOpen = $state(false);
 
-	let prodCurr = $derived(Number(controlStore.getState(control.states?.prodCurr)));
-	let consCurr = $derived(Number(controlStore.getState(control.states?.consCurr)));
 	let iconName = $derived(controlStore.getIcon(control, controlOptions.isSubControl));
-	let statusName = $derived(fmt.sprintf('%s %.2f kW • %s %.2f kW', $_('Production')[0], prodCurr, $_('Consumption')[0], consCurr));
-	const statusColor = 'dark:text-primary-500 text-primary-700';
 
 	/**
 	 * Opens the control dialog. If controlOptions.action is set, that custom
@@ -36,7 +30,7 @@
 	}
 </script>
 
-<LbControl {controlOptions} {iconName} {statusName} {statusColor}
+<LbControl {controlOptions} {iconName} statusName="(control unknown)"
 	textName={control.name} label={controlStore.getLabel(page, control)} onclick={openControl}/>
 
 {#if !controlOptions.action}
@@ -46,7 +40,7 @@
 				<div class="mb-2 relative inline-flex h-18 w-18 items-center justify-center overflow-hidden rounded-full border border-white/10 bg-surface-50-950">
 					<LbIcon name={iconName} width="36" height="36"/>
 				</div>
-				<p class="text-lg {statusColor}">{statusName}</p>
+				<p class="text-lg">(control unknown)</p>
 			</div>
 		{/snippet}
 	</LbDialog>

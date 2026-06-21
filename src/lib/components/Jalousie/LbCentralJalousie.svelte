@@ -1,72 +1,51 @@
 <script lang="ts">
+	import { page } from '$app/state';
+	import type { Control, ControlOptions, ScreenItem } from '$lib/types/models';
+	import { DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import LbControl from '$lib/components/Common/LbControl.svelte';
+	import LbDialog from '$lib/components/Common/LbDialog.svelte';
+	import LbPasswordForm from '$lib/components/Common/LbPasswordForm.svelte';
 	import LbJalousie from '$lib/components/Jalousie/LbJalousie.svelte';
-	import LbIcon from '$lib/components/Common/LbIcon.svelte';
 	import LbJalousieIcon from '$lib/components/Jalousie/LbJalousieIcon.svelte';
-	import { fadeInOut } from '$lib/helpers/styles';
-	import type { Control, ControlOptions, ControlView, DialogView, ScreenItem, SingleButtonView, GeneralView } from '$lib/types/models';
-	import { DEFAULT_CONTROLVIEW, DEFAULT_CONTROLOPTIONS, DEFAULT_GENERALVIEW } from '$lib/types/models';
-	import LbGeneralDialog from '$lib/components/Common/LbGeneralDialog.svelte';
+	import LbIcon from '$lib/components/Common/LbIcon.svelte';
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 	import { appStore } from '$lib/stores/LbAppStore.svelte';
-	import { Dialog, Portal } from '@skeletonlabs/skeleton-svelte';
 	import { _ } from 'svelte-i18n';
 	import { fade } from 'svelte/transition';
-	import LbInfo from '$lib/components/Common/LbInfo.svelte';
 	import { innerHeight } from 'svelte/reactivity/window';
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
-	let margin = 200;
+	const margin = 200;
+	let pendingAction: ((visuPw?: string) => void) | null = null;
 
+	let controlOpen = $state(false);
+	let passwordOpen = $state(false);
 	let screenSelected = $state(false);
-	let passwordView: GeneralView = $state(DEFAULT_GENERALVIEW);
-
-	let dialog: DialogView = $state({
-		action: (state: boolean) => {
-			dialog.state = state;
-		},
-		state: false
-	});
-
-	let buttons: SingleButtonView[] = $state([
-		{
-			iconName: 'chevron-down',
-			type: 'button',
-			color: '',
-			click: (e: any, visuPw?: string) => controlStore.setControl(control, 'FullDown', visuPw)
-		},
-		{
-			iconName: 'chevron-up',
-			type: 'button',
-			color: '',
-			click: (e: any, visuPw?: string) => controlStore.setControl(control, 'FullUp', visuPw)
-		}
-	]);
-
-	let selectedControl: Control | undefined= $state();
+	let selectedControl: Control | undefined = $state();
 	let selectedControlOptions: ControlOptions | undefined = $state();
-	let screenList = $derived(control.details?.controls) as ScreenItem[];
-	let screenUuid = $derived(control.details?.controls.map((item: ScreenItem) => item.uuid));
-	let viewport: any = $state(); // TODO make HTMLDivElement
+	let viewport: any = $state();
 	let hasScroll = $state(true);
 	let showScrollTop = $state(false);
 	let showScrollBottom = $state(false);
 
+	let screenList = $derived(control.details?.controls) as ScreenItem[];
+	let screenUuid = $derived(control.details?.controls.map((item: ScreenItem) => item.uuid));
+
 	let screenControls = $derived(controlStore.controlList.filter(
-		(controls: Control) => screenUuid.indexOf(controls.uuidAction) > -1
+		(c: Control) => screenUuid.indexOf(c.uuidAction) > -1
 	));
 
 	let screensClosed = $derived(
-		screenControls.filter((control: Control) => (Number(controlStore.getState(control.states?.position)) * 100 > 1) && Number(controlStore.getState(control.states?.locked)) == 0)
+		screenControls.filter((c: Control) => (Number(controlStore.getState(c.states?.position)) * 100 > 1) && !Number(controlStore.getState(c.states?.locked) ?? 0))
 	);
 
 	let screensOpen = $derived(
-		screenControls.filter((control: Control) => (Number(controlStore.getState(control.states?.position)) * 100 < 1) && Number(controlStore.getState(control.states?.locked)) == 0)
+		screenControls.filter((c: Control) => (Number(controlStore.getState(c.states?.position)) * 100 < 1) && !Number(controlStore.getState(c.states?.locked) ?? 0))
 	);
 
 	let screensLocked = $derived(
-		screenControls.filter((control: Control) => Number(controlStore.getState(control.states?.locked)) == 1)
+		screenControls.filter((c: Control) => Number(controlStore.getState(c.states?.locked)) == 1)
 	);
 
 	let selectedScreenCount = $derived(screenList.filter((item) => item.selected == true).length);
@@ -79,211 +58,318 @@
 			: 'height: auto'
 	);
 
-	let controlView: ControlView = $derived({
-		...DEFAULT_CONTROLVIEW,
-		control: control,
-		isFavorite: controlOptions.isFavorite,
-		iconName: controlStore.getIcon(control, controlOptions.isSubControl),
-		iconColor: screensClosed.length ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700',
-		textName: control.name,
-		statusName: getActiveScreens(),
-		statusColor: screensClosed.length + screensLocked.length ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700',
-		buttons: buttons,
-		dialog: dialog
-	});
+	let iconName = $derived(controlStore.getIcon(control, controlOptions.isSubControl));
+	let iconColor = $derived(screensClosed.length ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700');
+	let statusName = $derived(getActiveScreens(screensClosed, screensOpen, screensLocked));
+	let statusColor = $derived(screensClosed.length + screensLocked.length ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700');
 
+	$effect(() => { parseScroll(windowHeight, viewport); });
+	$effect(() => { screenList.forEach((item) => item.selected = false); });
+
+	/**
+	 * Recomputes scroll-indicator visibility from the current viewport metrics.
+	 * Called on mount/resize (via $effect) and on every scroll event.
+	 *
+	 * @param height - current window inner height (used to guard against SSR zero).
+	 * @param view - the scrollable div element bound via bind:this.
+	 */
 	function parseScroll(height: number, view: any = undefined): void {
 		if (!view) return;
 		hasScroll = view.scrollHeight > view.clientHeight;
-		showScrollTop = height > 0 && hasScroll && (view?.scrollTop > 10);
-		showScrollBottom = height > 0 && hasScroll && (view.scrollTop + view.clientHeight < (view.scrollHeight - 10));
+		showScrollTop = height > 0 && hasScroll && view.scrollTop > 10;
+		showScrollBottom = height > 0 && hasScroll && view.scrollTop + view.clientHeight < view.scrollHeight - 10;
 	}
 
-	function getActiveScreens(): string {
+	/**
+	 * Builds a localised status string summarising how many screens are
+	 * closed, open, and locked.
+	 *
+	 * @param closed - list of Controls where screens are closed
+	 * @param open - list of Controls where screens are open
+	 * @param locked - list of Controls where screens are locked
+	 * @returns e.g. "3 closed 1 open 2 locked", or empty string when all idle.
+	 */
+	function getActiveScreens(closed: Control[], open: Control[], locked: Control[]): string {
 		let status = '';
-		status += screensClosed.length > 0 ? String(screensClosed.length) + ' ' + $_('Closed').toLowerCase() : '';
-		status += screensOpen.length > 0 ? ' ' + String(screensOpen.length) + ' ' + $_('Open').toLowerCase() : '';
-		status += screensLocked.length > 0 ? ' ' + String(screensLocked.length) + ' ' + $_('Locked').toLowerCase() : '';
+		status += closed.length > 0 ? `${closed.length} ${$_('Closed').toLowerCase()}` : '';
+		status += open.length > 0 ? (closed.length > 0 ? ',' : '') + ` ${open.length} ${$_('Open').toLowerCase()}` : '';
+		status += locked.length > 0 ? (closed.length > 0 || open.length > 0 ? ',' : '') + ` ${locked.length} ${$_('Locked').toLowerCase()} ` : '';
 		return status;
 	}
 
-	function selectScreen(control: Control): void {
-		let index = screenList.findIndex((item) => item.uuid == control.uuidAction);
-		if (screenList[index]) {
-			screenList[index].selected = !screenList[index].selected;
-		}
+	/**
+	 * Toggles the selection state of a screen row and updates screenSelected
+	 * to reflect whether exactly one screen is now selected.
+	 *
+	 * @param c - the jalousie control whose row was tapped.
+	 */
+	function selectScreen(c: Control): void {
+		const index = screenList.findIndex((item) => item.uuid == c.uuidAction);
+		if (screenList[index]) screenList[index].selected = !screenList[index].selected;
 		screenSelected = selectedScreenCount == 1;
 	}
 
-	function isSelected(control: Control): boolean {
-		let screen = screenList.find((item) => item.uuid == control.uuidAction);
-		return screen && screen.selected || false;
+	/**
+	 * Returns whether the given control's row is currently selected.
+	 *
+	 * @param c - the jalousie control to check.
+	 */
+	function isSelected(c: Control): boolean {
+		const screen = screenList.find((item) => item.uuid == c.uuidAction);
+		return screen?.selected || false;
 	}
 
+	/**
+	 * Opens the individual LbJalousie dialog for the single selected screen.
+	 * Does nothing when more than one (or zero) screens are selected.
+	 */
 	function selectScreenOptions(): void {
-		if (!screenSelected) return; // more than one screen selected
-		let screen = screenList.find((item) => item.selected);
-		let control: Control | undefined = controlStore.controlList.find( (control: Control) => control.uuidAction == screen?.uuid);
-		if (control) {
-			selectedControl = control;
-			selectedControlOptions = {...DEFAULT_CONTROLOPTIONS, showDialog: true, showControl: false};
+		if (!screenSelected) return;
+		const screen = screenList.find((item) => item.selected);
+		const ctrl = controlStore.controlList.find((c: Control) => c.uuidAction == screen?.uuid);
+		if (ctrl) {
+			selectedControl = ctrl;
+			selectedControlOptions = { ...DEFAULT_CONTROLOPTIONS, showDialog: true, showControl: false };
 		}
 	}
 
-	function isAutoActive(control: Control): number {
-		return Number(controlStore.getState(control.states?.autoActive));
+	/**
+	 * Returns tue when the automatic sun-position mode is active for the given control,
+	 * and false otherwise
+	 *
+	 * @param c - the jalousie control to query.
+	 */
+	function isAutoActive(c: Control): boolean {
+		return Number(controlStore.getState(c.states?.autoActive)) == 1;
 	}
 
-	function isLocked(control: Control): number {
-		return Number(controlStore.getState(control.states?.locked));
+	/**
+	 * Returns true when the given jalousie control is locked, and false otherwise
+	 *
+	 * @param c - the jalousie control to query.
+	 */
+	function isLocked(c: Control): boolean {
+		return Number(controlStore.getState(c.states?.locked)) == 1;
 	}
 
-	function getStatusColor(control: Control): string {
-		let position = Math.round(Number(controlStore.getState(control.states?.position)) * 100);
-		return position > 1 ? 'dark:text-primary-500 text-primary-700' : 'text-surface-950 dark:text-surface-50';
+	/**
+	 * Returns the Tailwind colour class for the position text in a screen row.
+	 * Primary when the screen is more than 1% closed, surface otherwise.
+	 *
+	 * @param c - the jalousie control to query.
+	 */
+	function getStatusColor(c: Control): string {
+		return Math.round(Number(controlStore.getState(c.states?.position)) * 100) > 1
+			? 'dark:text-primary-500 text-primary-700'
+			: 'text-surface-950 dark:text-surface-50';
 	}
 
-	function close(): void {
-		screenList.forEach((item) => item.selected = false ); // clear selected screens
+	/**
+	 * Returns the display name for a screen row. When the control has the
+	 * default Jalousie name, the room name is shown instead.
+	 *
+	 * @param c - the jalousie control to name.
+	 */
+	function getControlName(c: Control): string {
+		const origNameFound = $_('Jalousie').includes(c.name);
+		const room = controlStore.rooms.get(c.room);
+		return origNameFound && room ? room.name : c.name;
+	}
+
+	/**
+	 * Returns the room name subtitle for a screen row, or empty string when
+	 * the control has a custom name (which already identifies it uniquely).
+	 *
+	 * @param c - the jalousie control to query.
+	 */
+	function getRoomName(c: Control): string {
+		const origNameFound = $_('Jalousie').includes(c.name);
+		const room = controlStore.rooms.get(c.room);
+		return origNameFound || !room ? '' : room.name;
+	}
+
+	/**
+	 * Opens the control dialog. If controlOptions.action is set, that custom
+	 * action is invoked instead. At subcontrol level (no icon) the dialog is
+	 * suppressed.
+	 */
+	function openControl(): void {
+		if (controlOptions.action) { controlOptions.action(); return; }
+		if (!iconName.length) return;
+		controlOpen = true;
+	}
+
+	/**
+	 * Closes the control dialog and resets all screen selections and the
+	 * individual jalousie sub-dialog state.
+	 */
+	function closeControl(): void {
+		screenList.forEach((item) => item.selected = false);
 		screenSelected = false;
 		selectedControl = undefined;
 		selectedControlOptions = undefined;
-		controlView.dialog.action(false);
+		controlOpen = false;
 	}
 
-	function screenAction(action: string): void {
+	/**
+	 * Cancels the password prompt, discarding the pending screen action.
+	 */
+	function cancelPassword(): void {
+		passwordOpen = false;
+		pendingAction = null;
+	}
+
+	/**
+	 * Confirms the password entered by the user, caches it for the control's
+	 * UUID, executes the deferred screen action with the supplied password,
+	 * then clears the pending state.
+	 *
+	 * @param pw - the visualisation password entered by the user.
+	 */
+	function confirmPassword(pw: string): void {
+		appStore.setVisuPw(control.uuidAction, pw);
+		pendingAction?.(pw);
+		passwordOpen = false;
+		pendingAction = null;
+	}
+
+	/**
+	 * Handles a click that may require a secured-control password.
+	 * If a cached password exists it is used directly; otherwise the password
+	 * dialog is opened and the action is deferred until the user confirms.
+	 *
+	 * @param action - callback executed with the resolved password once confirmed.
+	 */
+	function handleSecuredClick(action: (visuPw?: string) => void): void {
 		const cachedVisuPw = appStore.getVisuPw(control.uuidAction);
-		if (control.isSecured && cachedVisuPw) {
-			screenList.forEach((screen) => { if (screen.selected) controlStore.setControl(screen.uuid, action, cachedVisuPw); });
-			return;
-		}
-		if (control.isSecured) {
-			passwordView.label = $_('Secured control');
-			passwordView.ok = (visuPw: string) => {
-				screenList.forEach((screen) => { if (screen.selected) controlStore.setControl(screen.uuid, action, visuPw); });
-				appStore.setVisuPw(control.uuidAction, visuPw);
-			};
-			passwordView.openDialog = true;
-			return;
-		}
-		screenList.forEach((screen) => { if (screen.selected) controlStore.setControl(screen.uuid, action); });
+		if (control.isSecured && cachedVisuPw) { action(cachedVisuPw); return; }
+		if (control.isSecured) { pendingAction = action; passwordOpen = true; return; }
+		action();
 	}
 
-	function getControlName(control: Control): string {
-		const origNameFound = $_('Jalousie').includes(control.name);
-		const room = controlStore.rooms.get(control.room);
-		return (origNameFound && room) ? room.name : control.name;
+	/**
+	 * Sends a jalousie action command to all currently selected screens,
+	 * prompting for a password first if the control is secured.
+	 * Resolves selected UUIDs against screenControls to obtain the Control
+	 * objects required by controlStore.setControl.
+	 *
+	 * @param action - Loxone command string, e.g. 'FullDown', 'FullUp', 'shade', 'stop'.
+	 */
+	function screenAction(action: string): void {
+		const selectedUuids = new Set(screenList.filter((s) => s.selected).map((s) => s.uuid));
+		handleSecuredClick((visuPw) => {
+			screenControls
+				.filter((control) => selectedUuids.has(control.uuidAction))
+				.forEach((control) => controlStore.setControl(control, action, visuPw));
+		});
 	}
-
-	function getRoomName(control: Control): string {
-		const origNameFound = $_('Jalousie').includes(control.name);
-		const room = controlStore.rooms.get(control.room);
-		return (origNameFound || !room ) ? '' : room.name;
-	}
-
-	$effect( () => { // check scroll status and window change and viewwport construction
-		parseScroll(windowHeight, viewport);
-	});
-
-	$effect( () => {
-		screenList.forEach((item) => item.selected = false); // default all screens unselected
-	});
 </script>
 
-<div>
-	<LbControl bind:controlView {controlOptions}/>
-	{#if controlView.dialog.state} <!-- only construct dialog when opened, important to get current clientHeight -->
-		<Dialog
-			open={controlView.dialog.state}
-			onInteractOutside={close}>
-			<Portal>
-				<Dialog.Backdrop class="fixed inset-0 z-10 bg-surface-50-950/75 backdrop-blur-sm {fadeInOut}"/>
-				<Dialog.Positioner class="fixed inset-0 z-10 flex justify-center items-center p-4">
-					<Dialog.Content class="card bg-surface-100-900 p-4 pt-3 shadow-sm rounded-lg border border-white/5 hover:border-white/10
-										max-w-full max-h-full w-[450px] {fadeInOut}">
-							<LbInfo control={controlView.control}/>
-							<header class="grid grid-cols-[5%_90%_5%]">
-								<div class="flex justify-center items-center"></div><!-- placeholder for menu -->
-								<div>
-									<Dialog.Title class="h5 flex justify-center items-center">{controlView.textName}</Dialog.Title>
-								</div>
-								<div class="flex justify-center items-center">
-									<button type="button" class="btn-icon hover:preset-tonal" onclick={close}>
-										<LbIcon name="x" height="16" width="16"/>
-									</button>
-								</div>
-							</header>
-						<Dialog.Description>
-							<div class="flex flex-col items-center justify-center">
-								<p class="mt-2 mb-4 text-lg text-center {screensClosed.length ? 'dark:text-primary-500 text-primary-700' :
-												'dark:text-surface-300 text-surface-700'}">{getActiveScreens()}</p>
-								<div class="container grid grid-cols-5 gap-2 mb-2">
-									<button type="button" class="btn btn-lg h-[48px] bg-surface-50-950 shadow-sm text-surface-950-50
-																				rounded-lg border border-white/10 hover:border-white/50 active:bg-primary-500" onclick={() => screenAction("FullDown")}>
-																				<span class="w-[32px] flex justify-center items-center"><LbIcon name="chevron-down"/></span></button> <!-- to span to avoid scaling of icons -->
-									<button type="button" class="btn btn-lg h-[48px] bg-surface-50-950 shadow-sm text-surface-950-50
-																				rounded-lg border border-white/10 hover:border-white/50 active:bg-primary-500" onclick={() => screenAction("FullUp")}>
-																				<span class="w-[32px] flex justify-center items-center"><LbIcon name="chevron-up"/></span></button>
-									<button type="button" class="btn btn-lg h-[48px] bg-surface-50-950 shadow-sm text-surface-950-50
-																				rounded-lg border border-white/10 hover:border-white/50 active:bg-primary-500" onclick={() => screenAction("shade")}>
-																				<span class="w-[32px] flex justify-center items-center"><LbIcon name="blinds"/></span></button>
-									<button type="button" class="btn btn-lg h-[48px] bg-surface-50-950 shadow-sm text-surface-950-50
-																				rounded-lg border border-white/10 hover:border-white/50 active:bg-primary-500" onclick={() => screenAction("stop")}>
-																				<span class="w-[32px] flex justify-center items-center"><LbIcon name="octagon-minus"/></span></button>
-									<button type="button" class="btn btn-lg h-[48px] bg-surface-50-950 shadow-sm {screenSelected ? 'text-surface-800-200 active:bg-primary-500' : 'text-surface-200-800'}
-																				rounded-lg border border-white/10 hover:border-white/50" onclick={() => selectScreenOptions()}>
-																				<span class="w-[32px] flex justify-center items-center"><LbIcon name="settings"/></span></button>
-								</div>
-								<div class="relative flex flex-col w-full">
-									{#if showScrollTop}
-										<div class="absolute z-10 left-[50%] lb-center top-[10px] text-surface-500" transition:fade={{ duration: 300 }}><LbIcon name="chevron-up" height="30" width="30"/></div>
-									{/if}
-									{#if showScrollBottom}
-										<div class="absolute z-10 left-[50%] lb-center -bottom-[19px] text-surface-500" transition:fade={{ duration: 300 }}><LbIcon name="chevron-down" height="30" width="30"/></div>
-									{/if}
-									<div class="flex flex-col overflow-y-auto space-y-2" {style} bind:this={viewport} onscroll={() => parseScroll(windowHeight, viewport)}>
-										{#each screenControls as control}
-											<button class="w-full flex h-[60px] items-center justify-start rounded-lg border border-white/10 hover:border-white/50
-												{isSelected(control) ? 'bg-surface-200-800' : 'bg-surface-50-950'} px-2 py-2"
-												onclick={() => selectScreen(control)}>
-												<div class="relative flex truncate w-full">
-													<div class="p-2 grid grid-cols-2 w-fit w-full justify-between items-center h-[60px]">
-														<div class="justify-self-start truncate">
-															<p class="leading-6 truncate text-base {getStatusColor(control)}">{getControlName(control)}</p>
-															<p class="truncate text-left text-xs dark:text-surface-300 text-surface-700">{getRoomName(control)}</p>
-														</div>
-														<div class="relative inline-flex h-12 p-0 justify-self-end">
-															<LbJalousieIcon {control} width="32" height="32"/>
-															{#if control.details?.isAutomatic || isLocked(control)}
-																<div class="absolute -right-[2px] inline-flex items-center justify-center w-[20px] h-[20px] rounded-full {isSelected(control) ? 'bg-surface-200-800' : 'bg-surface-50-950'}">
-																	<LbIcon class={isLocked(control)? 'text-warning-500' : isAutoActive(control) ? 'dark:text-primary-500 text-primary-700' : 'text-surface-500'}
-																	  name={isLocked(control) ? 'lucide:lock-keyhole' : 'bold_loxbuddy:letter-a'} height="12" width="12"/>
-																</div>
-															{/if}
-														</div>
-													</div>
+<LbControl {controlOptions} {iconName} {iconColor} {statusName} {statusColor}
+	textName={control.name} label={controlStore.getLabel(page, control)} onclick={openControl}>
+	{#snippet actions()}
+		<div class="flex flex-row items-center gap-2 mr-1">
+			<button type="button" class="btn-icon w-[18px] h-[18px] p-3 bg-surface-50-950 rounded-lg border border-white/15 hover:border-white/50 active:bg-primary-500"
+					onclick={(e) => { e.stopPropagation(); e.preventDefault(); controlStore.setControl(control, 'FullDown'); }}>
+				<LbIcon name="chevron-down"/>
+			</button>
+			<button type="button" class="btn-icon w-[18px] h-[18px] p-3 bg-surface-50-950 rounded-lg border border-white/15 hover:border-white/50 active:bg-primary-500"
+					onclick={(e) => { e.stopPropagation(); e.preventDefault(); controlStore.setControl(control, 'FullUp'); }}>
+				<LbIcon name="chevron-up"/>
+			</button>
+		</div>
+	{/snippet}
+</LbControl>
+
+{#if !controlOptions.action}
+	<LbDialog open={controlOpen} onClose={closeControl} {control} title={control.name}>
+		{#snippet description()}
+			<div class="flex flex-col items-center justify-center">
+				<p class="mb-4 -mt-2 text-lg text-center {screensClosed.length ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700'}">{statusName}</p>
+				<div class="container grid grid-cols-5 gap-2 mb-2">
+					<button type="button" class="btn btn-lg h-[48px] bg-surface-50-950 shadow-sm text-surface-950-50 rounded-lg border border-white/10 hover:border-white/50 active:bg-primary-500"
+							onclick={() => screenAction('FullDown')}>
+						<span class="w-[32px] flex justify-center items-center">
+							<LbIcon name="chevron-down"/>
+						</span>
+					</button>
+					<button type="button" class="btn btn-lg h-[48px] bg-surface-50-950 shadow-sm text-surface-950-50 rounded-lg border border-white/10 hover:border-white/50 active:bg-primary-500"
+							onclick={() => screenAction('FullUp')}>
+						<span class="w-[32px] flex justify-center items-center">
+							<LbIcon name="chevron-up"/>
+						</span>
+					</button>
+					<button type="button" class="btn btn-lg h-[48px] bg-surface-50-950 shadow-sm text-surface-950-50 rounded-lg border border-white/10 hover:border-white/50 active:bg-primary-500"
+							onclick={() => screenAction('shade')}>
+						<span class="w-[32px] flex justify-center items-center">
+							<LbIcon name="blinds"/>
+						</span>
+					</button>
+					<button type="button" class="btn btn-lg h-[48px] bg-surface-50-950 shadow-sm text-surface-950-50 rounded-lg border border-white/10 hover:border-white/50 active:bg-primary-500"
+							onclick={() => screenAction('stop')}>
+						<span class="w-[32px] flex justify-center items-center">
+							<LbIcon name="octagon-minus"/>
+						</span>
+					</button>
+					<button type="button" class="btn btn-lg h-[48px] bg-surface-50-950 shadow-sm {screenSelected ? 'text-surface-800-200 active:bg-primary-500' : 'text-surface-200-800'} rounded-lg border border-white/10 hover:border-white/50"
+							onclick={selectScreenOptions}>
+						<span class="w-[32px] flex justify-center items-center">
+							<LbIcon name="settings"/>
+						</span>
+					</button>
+				</div>
+				<div class="relative flex flex-col w-full">
+					{#if showScrollTop}
+						<div class="absolute z-10 left-[50%] -translate-x-1/2 -translate-y-1/2 top-[10px] text-surface-500" transition:fade={{ duration: 300 }}>
+							<LbIcon name="chevron-up" height="30" width="30"/>
+						</div>
+					{/if}
+					{#if showScrollBottom}
+						<div class="absolute z-10 left-[50%] -translate-x-1/2 -translate-y-1/2 -bottom-[19px] text-surface-500" transition:fade={{ duration: 300 }}>
+							<LbIcon name="chevron-down" height="30" width="30"/>
+						</div>
+					{/if}
+					<div class="flex flex-col overflow-y-auto space-y-2" {style} bind:this={viewport}
+							onscroll={() => parseScroll(windowHeight, viewport)}>
+						{#each screenControls as c}
+							<button class="w-full flex h-[60px] items-center justify-start rounded-lg border border-white/10 hover:border-white/50
+									{isSelected(c) ? 'bg-surface-200-800' : 'bg-surface-50-950'} px-2 py-2"
+									onclick={() => selectScreen(c)}>
+								<div class="relative flex truncate w-full">
+									<div class="p-2 grid grid-cols-2 w-full justify-between items-center h-[60px]">
+										<div class="justify-self-start truncate">
+											<p class="leading-6 truncate text-base {getStatusColor(c)}">{getControlName(c)}</p>
+											<p class="truncate text-left text-xs dark:text-surface-300 text-surface-700">{getRoomName(c)}</p>
+										</div>
+										<div class="relative inline-flex h-12 p-0 justify-self-end">
+											<LbJalousieIcon control={c} width="32" height="32"/>
+											{#if c.details?.isAutomatic || isLocked(c)}
+												<div class="absolute -right-[2px] inline-flex items-center justify-center w-[20px] h-[20px] rounded-full {isSelected(c) ? 'bg-surface-200-800' : 'bg-surface-50-950'}">
+													<LbIcon class={isLocked(c) ? 'text-warning-500' : isAutoActive(c) ? 'dark:text-primary-500 text-primary-700' : 'text-surface-500'}
+														name={isLocked(c) ? 'lucide:lock-keyhole' : 'bold_loxbuddy:letter-a'} height="12" width="12"/>
 												</div>
-											</button>
-										{/each}
+											{/if}
+										</div>
 									</div>
 								</div>
-							</div>
-						</Dialog.Description>
-					</Dialog.Content>
-				</Dialog.Positioner>
-			</Portal>
-		</Dialog>
-	{/if}
-	{#if selectedControl && selectedControlOptions }
-		{#key selectedControlOptions} <!-- reinit component -->
-			<LbJalousie control={selectedControl} controlOptions={selectedControlOptions}/>
-		{/key}
-	{/if}
-	<LbGeneralDialog bind:view={passwordView}/>
-</div>
+							</button>
+						{/each}
+					</div>
+				</div>
+			</div>
+		{/snippet}
+	</LbDialog>
+{/if}
 
-<style>
-	.lb-center {
-		transform: translate(-50%, -50%);
-	}
-</style>
+<!-- Individual jalousie dialog, opened via settings button when exactly one screen is selected -->
+{#if selectedControl && selectedControlOptions}
+	{#key selectedControlOptions}
+		<LbJalousie control={selectedControl} controlOptions={selectedControlOptions}/>
+	{/key}
+{/if}
+
+<LbDialog open={passwordOpen} onClose={cancelPassword} {control} title={$_('Secured control')} zIndex="z-40">
+	{#snippet description()}
+		<LbPasswordForm onSubmit={confirmPassword} onCancel={cancelPassword}/>
+	{/snippet}
+</LbDialog>
