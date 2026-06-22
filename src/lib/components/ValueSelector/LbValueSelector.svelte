@@ -13,10 +13,11 @@
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
-	let controlOpen = $state(false);
-	let passwordOpen = $state(false);
 	let pendingAction: ((visuPw?: string) => void) | null = null;
 	let pendingCancel: (() => void) | null = null;
+
+	let controlOpen = $state(false);
+	let passwordOpen = $state(false);
 
 	let min = $derived(Number(controlStore.getState(control.states?.min)));
 	let max = $derived(Number(controlStore.getState(control.states?.max)));

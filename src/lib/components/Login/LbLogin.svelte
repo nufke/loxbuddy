@@ -110,7 +110,9 @@
 		openPopup = false;
 	}
 
-	/** Opens the search popup and triggers a UDP Miniserver discovery scan. */
+	/**
+	 * Opens the search popup and triggers a UDP Miniserver discovery scan.
+	 */
 	async function doSearch(): Promise<void> {
 		popupView = { title: 'Search Miniserver', list: [], button: 'search', description: '', showSpinner: false };
 		openPopup = true;
@@ -137,7 +139,9 @@
 		openPopup = true;
 	}
 
-	/** Clears all login form fields and resets the password visibility toggle. */
+	/**
+	 * Clears all login form fields and resets the password visibility toggle.
+	 */
 	function clearFormFields(): void {
 		hostName = '';
 		userName = '';

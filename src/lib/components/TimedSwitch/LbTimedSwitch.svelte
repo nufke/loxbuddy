@@ -23,6 +23,7 @@
 		-1: output permanently on
 		other: count down from deactivationDelayTotal
 	*/
+
 	let deactivationDelay = $derived(Number(controlStore.getState(control.states?.deactivationDelay)) || 0);
 	let iconName = $derived(controlStore.getIcon(control, controlOptions.isSubControl));
 	let active = $derived(deactivationDelay !== 0);
@@ -37,6 +38,7 @@
 		deactivationDelay === 0 ? $_('Turn on') :
 		(deactivationDelay === -1 ? $_('Turn off') : $_('Switch on permanently'))
 	);
+
 	let button1Command = $derived(deactivationDelay === -1 ? 'off' : 'on');
 	let button2Label = $derived(deactivationDelay === 0 ? $_('Start timer') : $_('Turn off'));
 	let button2Command = $derived(deactivationDelay === 0 ? 'pulse' : 'off');

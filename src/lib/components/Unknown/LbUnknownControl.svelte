@@ -24,7 +24,9 @@
 		controlOpen = true;
 	}
 
-	/** Closes the control dialog. */
+	/**
+	 * Closes the control dialog.
+	 */
 	function closeControl(): void {
 		controlOpen = false;
 	}

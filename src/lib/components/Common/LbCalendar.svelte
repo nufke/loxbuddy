@@ -2,47 +2,65 @@
 	import { utils } from '$lib/helpers/Utils';
 	import LbIcon from '$lib/components/Common/LbIcon.svelte';
 	import LbDialog from '$lib/components/Common/LbDialog.svelte';
-	import type { Entry, CalendarEntryView } from '$lib/types/models';
+	import type { Entry } from '$lib/types/models';
 	import LbCalendarEntry from '$lib/components/Common/LbCalendarEntry.svelte';
 	import { _ } from 'svelte-i18n';
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 	import { appStore } from '$lib/stores/LbAppStore.svelte';
 	import { format } from 'date-fns';
 
-	let { view = $bindable(), mode, dayModes, entries, temperatureList = [] } = $props();
+	let { open = $bindable(false), control, subControl = undefined, isIRC = false, isIRCV1 = false,
+		isCooling = false, mode, dayModes, entries, temperatureList = [] } = $props();
 
-	const notation = (num: number): string => String(num).padStart(2, '0') + ':00'
 	const hours = [...Array(24).keys(), 0];
 
 	// these variables should not be reactive, as we keep their initial state
 	let initialEntries: Entry[] = [];
 	let length = 0;
-	let initialModes: number[] = [];
+	let initialModes: number[] = [];	
 
 	let selectedEntry = $state();
-
-	let calendarEntryView: CalendarEntryView = $state({
-		control: view.control,
-		subControl: view.subControl,
-		isIRC: false, // updated when Dialog is opened
-		isCooling: false, // updated when Dialog is opened
-		label: '',
-		enableDelete: true,
-		openDialog: false
-	});
+	let calendarEntryOpen = $state(false);
+	let calendarEntryTitle = $state('');
+	let calendarEntryEnableDelete = $state(true);
 
 	let modeEntries: number[] = $derived(entries.entry.map( (m: Entry) => m.mode));
 	let modes = $derived(modeEntries.filter((mode, idx) => modeEntries.indexOf(mode) == idx));
 	let currentTime = $derived(format(appStore.date, 'p'));
 
+	/**
+	 * Formats a zero-based hour number as a zero-padded HH:00 time string.
+	 *
+	 * @param hour - hour value (0–24).
+	 * @returns formatted string, e.g. `'08:00'` or `'24:00'`.
+	 */
+	function notation(hour: number): string {
+		return String(hour).padStart(2, '0') + ':00';
+	}
+
+	/**
+	 * Returns the Tailwind fill class for a daytimer calendar block based on
+	 * whether the entry needs activation.
+	 *
+	 * @param needActivate - `'0'` when the entry is active, any other value when it needs activation.
+	 * @returns Tailwind fill class string (primary for active, tertiary for needs-activation).
+	 */
 	function getDayTimerColor(needActivate: string): string {
 		return needActivate == '0' ? 'dark:fill-primary-500 fill-primary-700' : 'dark:fill-tertiary-500 fill-tertiary-700'
 	}
 
+	/**
+	 * Returns the Tailwind fill class for an IRC calendar block based on the
+	 * operating mode. Offsets the mode value by 10 for IRC V2 to differentiate
+	 * from V1 modes in the switch statement.
+	 *
+	 * @param mode - operating mode value as a numeric string.
+	 * @returns Tailwind fill class string, or an empty string for Eco modes (0 / 10).
+	 */
 	function getIRCColor(mode: string): string {
 		let fillColor = '';
 		let mode_ = Number(mode);
-		mode_ = view.isIRCV1 ? mode_ : (mode_ + 10); // differentiate between IRC V1 and V2
+		mode_ = isIRCV1 ? mode_ : (mode_ + 10); // differentiate between IRC V1 and V2
 		switch(mode_) {
 			case 1: // Comfort heating (green)
 			case 2: fillColor = 'dark:fill-primary-500 fill-primary-700'; break; 			// V1 cComfort cooling (green)
@@ -59,71 +77,111 @@
 		return fillColor;
 	}
 
-	function getTextColor(): string {
-		return 'dark:fill-surface-950 fill-surface-50';
-	}
-
+	/**
+	 * Converts an HH:MM time string to a decimal hour value used for SVG
+	 * y-position calculations (e.g. `'06:30'` → `6.5`).
+	 *
+	 * @param time - time string in HH:MM format.
+	 * @returns decimal hours, where each unit corresponds to 40 px on the calendar grid.
+	 */
 	function getTime(time: string): number {
 		return utils.hours2dec(time);
 	}
 
+	/**
+	 * Looks up the temperature label for an IRC calendar entry from the
+	 * temperature list passed as a prop.
+	 *
+	 * @param entry - calendar entry whose `value` field holds a temperature list ID.
+	 * @returns temperature string with degree symbol (e.g. `'21°'`), or an empty string if not found.
+	 */
 	function getTemperature(entry: Entry): string {
 		let idx = temperatureList.findIndex((item) => item.id == entry.value);
 		return (idx != -1) ? temperatureList[idx].value + '°' : '';
 	}
 
-	function getModeIndex(mode: number): number { // check index using the initial modes, as entries could have been removed
+	/**
+	 * Returns the column index of an operating mode in the initial snapshot of
+	 * modes. Using the initial list avoids column shifts when entries are deleted.
+	 *
+	 * @param mode - operating mode number to locate.
+	 * @returns zero-based column index, or `-1` if not found.
+	 */
+	function getModeIndex(mode: number): number {
 		return initialModes.findIndex((item) => item == mode);
 	}
 
-	// although we calculate with 24:00 for the graphics, we use 00:00 notation to display time 
-	// TODO: fix formatting of date-fnd notation 0:00
+	/**
+	 * Formats the from–to time range of a calendar entry for display.
+	 * Internally 24:00 is used for graphics, but the label corrects this to 00:00.
+	 *
+	 * @param time - calendar entry containing `from` and `to` time strings.
+	 * @returns human-readable range string, e.g. `'08:00 - 10:00'`.
+	 */
+	// TODO: fix formatting of date-fns notation 0:00
 	function showTime(time: Entry): string {
 		return 	utils.hours2hours(time.from) + ' - ' + 
 						utils.hours2hours(time.to, true);  // correct 24:00 -> 00:00
 	}
 
+	/**
+	 * Opens the entry editor pre-populated with a new entry for the current
+	 * operating mode, defaulting to the next full hour and a one-hour duration.
+	 * For IRC controls the initial temperature is taken from the temperature list.
+	 */
 	function addEntry(): void {
-		let isCooling = view.isCooling ? 2 : 1;
+		let coolingIdx = isCooling ? 2 : 1;
 		selectedEntry = {
 			mode: String(mode),
 			from: utils.epoch2TimeStrNextHour(Date.now()/1000),
 			to: utils.epoch2TimeStrNextHour((Date.now()/1000)+3600),
 			needActivate: '0',
-			value: view.isIRC && temperatureList && temperatureList[isCooling].id ? temperatureList[isCooling].id : '0',
+			value: isIRC && temperatureList && temperatureList[coolingIdx].id ? temperatureList[coolingIdx].id : '0',
 		}
-		calendarEntryView.label = $_('Add entry');
-		calendarEntryView.control = view.control;
-		calendarEntryView.subControl = view.subControl;
-		calendarEntryView.isIRC = view.isIRC;
-		calendarEntryView.isCooling = view.isCooling;
-		calendarEntryView.enableDelete = false;
-		calendarEntryView.openDialog = true;
+		calendarEntryTitle = $_('Add entry');
+		calendarEntryEnableDelete = false;
+		calendarEntryOpen = true;
 	}
 
+	/**
+	 * Opens the entry editor pre-populated with an existing entry for editing
+	 * or deletion.
+	 *
+	 * @param entry - the calendar entry to edit.
+	 */
 	function updateEntry(entry: Entry): void {
 		selectedEntry = entry;
-		calendarEntryView.label = $_('Update entry');
-		calendarEntryView.control = view.control;
-		calendarEntryView.subControl = view.subControl;
-		calendarEntryView.isIRC = view.isIRC;
-		calendarEntryView.isCooling = view.isCooling;
-		calendarEntryView.enableDelete = true;
-		calendarEntryView.openDialog = true;
+		calendarEntryTitle = $_('Update entry');
+		calendarEntryEnableDelete = true;
+		calendarEntryOpen = true;
 	}
 
+	/**
+	 * Returns a localised parenthetical suffix indicating whether the calendar
+	 * shows the heating or cooling schedule, shown only for IRC V1 controls.
+	 *
+	 * @returns string such as `' (Cooling)'` or `' (Heating)'`, or an empty string for non-V1 controls.
+	 */
 	function getCoolingDayTimerInfo(): string {
-		if (view.isIRCV1) {
-			return ' (' + (view.isCooling ? $_("Cooling") : $_("Heating") ) + ')';
+		if (isIRCV1) {
+			return ' (' + (isCooling ? $_("Cooling") : $_("Heating") ) + ')';
 		}
 		return '';
 	}
 
+	/**
+	 * Closes the calendar dialog and clears the initial-entries snapshot so
+	 * it is rebuilt fresh the next time the dialog opens.
+	 */
 	function close(): void {
 		initialEntries = [];
-		view.openDialog = false;
+		open = false;
 	}
 
+	/**
+	 * Snapshots the entry list and operating modes the first time entries arrive,
+	 * and recomputes the SVG canvas width based on the number of distinct modes.
+	 */
 	$effect( () => {
 		if (entries && initialEntries.length < entries.entry.length) {
 			initialEntries = entries.entry;
@@ -133,7 +191,7 @@
 	});
 </script>
 
-<LbDialog open={view.openDialog} onClose={close}
+<LbDialog {open} onClose={close}
 	title={$_("Calendar")} isFullscreen={true} zIndex="z-20">
 	{#snippet header()}
 		<header class="sticky top-0 z-1 preset-filled-surface-100-900 shadow-md">
@@ -176,14 +234,14 @@
 						{/each}
 						{#each entries?.entry as entry}
 							<g onclick={() => updateEntry(entry)}>
-								{#if view.isIRC}
+								{#if isIRC}
 									<rect class={getIRCColor(entry.value)} x={0+getModeIndex(entry.mode)*156} y={55+getTime(entry.from)*40} width="150" height={(getTime(entry.to)-getTime(entry.from))*40} rx="6"></rect>
 								{:else}
 									<rect class={getDayTimerColor(entry.needActivate)} x={0+getModeIndex(entry.mode)*156} y={55+getTime(entry.from)*40} width="150" height={(getTime(entry.to)-getTime(entry.from))*40} rx="6"></rect>
 								{/if}
-								<text class={getTextColor()} x={5+getModeIndex(entry.mode)*156} y={70+getTime(entry.from)*40} font-size="14">{showTime(entry)}</text>
-								{#if view.isIRC}
-									<text class={getTextColor()} x={5+getModeIndex(entry.mode)*156} y={90+getTime(entry.from)*40} font-size="14">{getTemperature(entry)}</text>
+								<text class="fill-surface-50-950" x={5+getModeIndex(entry.mode)*156} y={70+getTime(entry.from)*40} font-size="14">{showTime(entry)}</text>
+								{#if isIRC}
+									<text class="fill-surface-50-950" x={5+getModeIndex(entry.mode)*156} y={90+getTime(entry.from)*40} font-size="14">{getTemperature(entry)}</text>
 								{/if}
 							</g>
 						{/each}
@@ -195,4 +253,12 @@
 	{/snippet}
 </LbDialog>
 
-<LbCalendarEntry bind:view={calendarEntryView} {entries} {selectedEntry} {dayModes} {temperatureList}/>
+<LbCalendarEntry
+	bind:open={calendarEntryOpen}
+	title={calendarEntryTitle}
+	{isIRC}
+	{isCooling}
+	enableDelete={calendarEntryEnableDelete}
+	{control}
+	{subControl}
+	{entries} {selectedEntry} {dayModes} {temperatureList}/>

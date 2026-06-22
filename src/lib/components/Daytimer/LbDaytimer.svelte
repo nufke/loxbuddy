@@ -29,7 +29,7 @@
 	let passwordOpen = $state(false);
 	let outputActive = $state(false);
 	let overrideDate = $state({ start: new SvelteDate(), end: new SvelteDate(), active: false });
-	let calendarView = $state({ control: control, isIRC: false, openDialog: false });
+	let calendarOpen = $state(false);
 	let dateTimeOpen = $state(false);
 
 	let dayOfTheWeek = $derived(format(appStore.date, 'eeee'));
@@ -208,7 +208,7 @@
 					</div>
 				{/if}
 				<div class="w-full m-2 bg-surface-50-950 rounded-lg border border-white/15 hover:border-white/50"
-						onclick={(e) => { e.stopPropagation(); e.preventDefault(); calendarView.openDialog = true; }}>
+						onclick={(e) => { e.stopPropagation(); e.preventDefault(); calendarOpen = true; }}>
 					<LbTimeGrid {mode} {entries} {overrideDate} {override}/>
 					<h2 class="m-2 text-md text-center dark:text-surface-50 text-surface-950">{dayOfTheWeek}</h2>
 				</div>
@@ -251,7 +251,7 @@
 
 <LbDateTimePicker date={overrideDate.end} bind:open={dateTimeOpen} title={$_('Duration')} isDateView={true} onValueChange={(e: any) => updateTimer(e)}/>
 
-<LbCalendar bind:view={calendarView} {mode} {dayModes} {entries}/>
+<LbCalendar bind:open={calendarOpen} {control} {mode} {dayModes} {entries}/>
 
 <Toast.Group {toaster}>
 	{#snippet children(toast)}

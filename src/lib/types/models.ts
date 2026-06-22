@@ -425,18 +425,6 @@ export const EMPTY_ICON_AND_COLOR: IconAndColor = {
 	color: ''
 }
 
-export type SingleButtonView = {
-	name?: string;
-	iconName?: string;
-	iconColor?: string;
-	class?: string;
-	type: string;
-	state?: boolean;
-	click?: any;
-	mousedown?: any;
-	mouseup?: any;
-}
-
 export type ListItem = {
 	id: number;
 	name: string;
@@ -445,15 +433,6 @@ export type ListItem = {
 	correctionHeating?: number; // correction heating period 
 	correctionCooling?: number; // correction cooling period
 	visible?: boolean;
-}
-
-export type SliderBar = {
-	min: number;
-	max: number;
-	step: number;
-	position: number;
-	orientation?: string;
-	locked?: boolean;
 }
 
 export type LightItem = {
@@ -565,25 +544,6 @@ export type CalendarListItem = {
 	from: string;
 	needActivate: string;
 	value: string;
-}
-
-export type CalendarView = {
-	control: Control;
-	subControl?: Control;
-	isIRC: boolean;
-	isIRCV1: boolean;
-	isCooling: boolean;
-	openDialog: boolean;
-}
-
-export type CalendarEntryView = {
-	control: Control;
-	subControl: Control;
-	isIRC: boolean;
-	isCooling: boolean;
-	label: string;
-	enableDelete: boolean;
-	openDialog: boolean;
 }
 
 export type SecuredDetails = {

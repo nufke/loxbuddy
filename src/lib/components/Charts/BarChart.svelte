@@ -78,6 +78,15 @@
 		xOffset: number;
 	}
 
+	/**
+	 * Computes grid lines, tick positions, column width, bar width, and x offset
+	 * for the given time selector and available graph width.
+	 *
+	 * @param s - time selector: 'Day', 'Week', 'Month', 'Year', or 'All'.
+	 * @param gWidth - available pixel width for the plot area.
+	 * @param length - number of data points (used for the 'All' selector).
+	 * @returns layout object with xGrid, xTicks, columnWidth, barWidth, and xOffset.
+	 */
 	function getGraphLayout(s: string, gWidth: number, length: number): GraphLayout {
 		let xGrid: number[];
 		let xTicks: number[];
@@ -98,23 +107,56 @@
 		return { xGrid, xTicks, columnWidth, barWidth, xOffset };
 	}
 
+	/**
+	 * Derives six evenly spaced y-axis label values from the maximum of all
+	 * data values, rounded to a human-friendly step via `getRounding`.
+	 *
+	 * @param inp - scaled data array, each item containing a `values` number array.
+	 * @returns array of six y-axis tick values starting at 0.
+	 */
 	function calcValues(inp: any): number[] {
 		const values = inp.flatMap((item: any) => item.values);
 		const max = Math.max(...values);
 		return Array.from({length: 6}, (_, i) => (max <= 2) ? Number((i*(getRounding(max)/5)).toFixed(1)) : (i*(getRounding(max)/5)));
 	}
 
+	/**
+	 * Returns the smallest predefined step value that is greater than `n`,
+	 * used to produce clean y-axis tick intervals.
+	 *
+	 * @param n - the maximum data value to round up from.
+	 * @returns the nearest step from the predefined list, or 1 as fallback.
+	 */
 	function getRounding(n: number): number {
     const steps = [0.5, 1, 2, 5, 10, 20, 50, 100, 200, 500, 1000];
     return steps.find(s => s > n) ?? 1;
 	}
 
+	/**
+	 * Formats an x-axis tick label based on the active selector.
+	 * Week: day-month string derived from the first data point's timestamp.
+	 * Year: month name from the localised months list.
+	 * All: four-digit year of the corresponding data point.
+	 * Otherwise: the tick number as a string.
+	 *
+	 * @param n - tick index (1-based for Week/Year/All selectors).
+	 * @returns localised label string for the x-axis tick.
+	 */
 	function getDate(n: number): string {
 		return (selector == 'Week') && data.length ? format(data[0].ts*1000 + (n - 1) * 86400000, 'd-M') :
 			(selector == 'Year') ? months[n-1] :
 			(selector == 'All') && data.length && n > 0 ? format(data[n-1].ts*1000, 'yyyy') : String(n); // 
 	}
 
+	/**
+	 * Maps a data point to its x-axis grid index based on the active selector.
+	 * Day → hour of day, Week → ISO weekday (0-based), Month → day of month (0-based),
+	 * Year → month index, All → sequential index.
+	 *
+	 * @param point - data point object containing a Unix timestamp `ts` (seconds).
+	 * @param i - sequential index of the point, used as fallback for 'All'.
+	 * @returns zero-based x-axis grid index for the data point.
+	 */
 	function getXIndex(point: any, i: number): number {
 		const ms = point.ts * 1000;
 		switch (selector) {
@@ -126,11 +168,25 @@
 		}
 	}
 
+	/**
+	 * Returns the localised weekday name for a 1-based ISO weekday number,
+	 * rotating the locale's day list so Monday is first.
+	 *
+	 * @param n - ISO weekday number (1 = Monday … 7 = Sunday).
+	 * @returns localised weekday name string.
+	 */
 	function getDayName(n: number): string {
 		let days = $_('Days').split('|');
 		return [...days.slice(1), days[0]][n-1]; // TODO define start of week
 	}
 
+	/**
+	 * Finds the data column nearest to the pointer and updates the hover marker
+	 * position and label coordinates. Clears the hover state when the pointer
+	 * is outside any column's hit area.
+	 *
+	 * @param e - pointer move event fired on the SVG element.
+	 */
 	async function handlePointerMove(e: PointerEvent): Promise<void> {
 		const rect = (e.currentTarget as SVGSVGElement).getBoundingClientRect();
 		const mouseX = e.clientX - rect.left;
@@ -154,19 +210,40 @@
 		}
 	}
 
+	/**
+	 * Captures the pointer on the SVG so drag-moves are tracked outside the element,
+	 * then immediately processes the current position as a hover.
+	 *
+	 * @param e - pointer down event fired on the SVG element.
+	 */
 	function handlePointerDown(e: PointerEvent): void {
 		(e.currentTarget as SVGSVGElement).setPointerCapture(e.pointerId);
 		handlePointerMove(e);
 	}
 
+	/**
+	 * Clears the hover state when the pointer is released.
+	 */
 	function handlePointerUp(): void {
 		hoveredIdx = null;
 	}
 
+	/**
+	 * Clears the hover state when the pointer leaves the SVG or is cancelled.
+	 */
 	function handlePointerLeave(): void {
 		hoveredIdx = null;
 	}
 
+	/**
+	 * Positions the two hover labels so they stay within the chart bounds and
+	 * do not overlap each other. When only one label is present (`w1 === 0`)
+	 * it is centred on the marker line.
+	 *
+	 * @param x - marker line x position in SVG coordinates.
+	 * @param w0 - rendered text width of the primary (right) label in pixels.
+	 * @param w1 - rendered text width of the secondary (left) label in pixels, or 0 if absent.
+	 */
 	function clampLabels(x: number, w0: number, w1: number): void {
 		if (w1 === 0) {
 			label0X = Math.min(Math.max(x, margin.left + w0 / 2), width - margin.right - w0 / 2);
@@ -188,11 +265,22 @@
 		}
 	}
 
+	/**
+	 * Formats a scaled display value back to its original unit for the hover marker.
+	 * Reverses the scale and displayMult transformations applied to the chart data.
+	 *
+	 * @param v - scaled display value as rendered in the chart.
+	 * @returns formatted string with value and unit, e.g. '3.2 kW', or just the value if no unit.
+	 */
 	function fmtMarker(v: number): string {
 		const [val, unit] = utils.formatString(v * scale / displayMult, statistics?.format ?? '');
 		return unit ? `${val} ${unit}` : `${val}`;
 	}
 
+	/**
+	 * Keeps the chart width in sync with the viewport element whenever
+	 * the window width changes.
+	 */
 	$effect( () => {
 		if (innerWidth.current) { width = viewport.clientWidth; }
 	});

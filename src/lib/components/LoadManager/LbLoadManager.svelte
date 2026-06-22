@@ -5,20 +5,16 @@
 	import LbControl from '$lib/components/Common/LbControl.svelte';
 	import LbDialog from '$lib/components/Common/LbDialog.svelte';
 	import LbStatusBar from '$lib/components/Common/LbStatusBar.svelte';
-	import LbIcon from '$lib/components/Common/LbIcon.svelte';
 	import { appStore } from '$lib/stores/LbAppStore.svelte';
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 	import { _ } from 'svelte-i18n';
-	import { fade } from 'svelte/transition';
-	import { innerHeight } from 'svelte/reactivity/window';
+	import { scrollMarkers } from '$lib/actions/scrollMarkers';
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
+	const margin = 260;
+
 	let controlOpen = $state(false);
-	let showScrollTop = $state(false);
-	let showScrollBottom = $state(true);
-	let hasScroll = $state(true);
-	let viewport: any = $state(); // TODO make HTMLDivElement
 
 	let iconName = $derived(controlStore.getIcon(control, controlOptions.isSubControl));
 	let loads = $derived(control.details?.loads);
@@ -34,7 +30,6 @@
 	let iconColor = $derived(setColor(currentPower/maxPower));
 	let statusName =  $derived(getPowerLevel(availablePower));
 	let statusColor = $derived(setColor(currentPower/maxPower));
-	let windowHeight = $derived(innerHeight.current || 0);
 
 	/**
 	 * Formats a power value as a localised string with unit and availability label.
@@ -93,24 +88,6 @@
 	function closeControl(): void {
 		controlOpen = false;
 	}
-
-	/**
-	 * Updates scroll indicator visibility based on the current scroll position of the list viewport.
-	 * Called on mount (via $effect), on viewport resize, and on every scroll event.
-	 *
-	 * @param height - current window inner height; used to detect resize events.
-	 * @param view - the scrollable list container element.
-	 */
-	function parseScroll(height: number, view: any = undefined): void {
-		if (!view) return;
-		hasScroll = view.scrollHeight > view.clientHeight;
-		showScrollTop = height > 0 && hasScroll && (view?.scrollTop > 10);
-		showScrollBottom = height > 0 && hasScroll && (view.scrollTop + view.clientHeight < (view.scrollHeight - 10));
-	}
-
-	$effect( () => { // check scroll status and window change and viewwport construction
-		parseScroll(windowHeight, viewport);
-	});
 </script>
 
 <LbControl {controlOptions} {iconName} {iconColor} {statusName} {statusColor}
@@ -123,17 +100,7 @@
 				<LbStatusBar {maxPower} {currentPower} {mode} />
 			</div>
 			<div class="relative flex flex-col w-full">
-				{#if showScrollTop}
-					<div class="absolute z-10 left-[50%] -translate-x-1/2 -translate-y-1/2 top-[19px] text-surface-500" transition:fade={{ duration: 300 }}>
-						<LbIcon name="chevron-up" height="30" width="30"/>
-					</div>
-				{/if}
-				{#if showScrollBottom}
-					<div class="absolute z-10 left-[50%] -translate-x-1/2 -translate-y-1/2 -bottom-[19px] text-surface-500" transition:fade={{ duration: 300 }}>
-						<LbIcon name="chevron-down"height="30" width="30"/>
-					</div>
-				{/if}
-				<div class="overflow-y-auto max-h-[calc(90vh-260px)]" bind:this={viewport} onscroll={() => parseScroll(windowHeight, viewport)}>
+				<div class="overflow-y-auto" use:scrollMarkers={margin}>
 					{#each loads as load,i}
 						<button class="mt-2 w-full flex items-center justify-start rounded-lg border border-white/15 hover:border-white/50
 													bg-surface-50-950">

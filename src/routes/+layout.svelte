@@ -396,7 +396,7 @@
 				transition transition-discrete opacity-0 starting:data-[state=open]:opacity-0 data-[state=open]:opacity-100"/>
 		<Dialog.Positioner class="fixed inset-0 z-50 flex justify-start">
 			<Dialog.Content class="h-screen card bg-surface-100-900 w-sm p-4 space-y-4 shadow-xl transition transition-discrete duration-400 ease-in-out
-					-translate-x-full starting:data-[state=open]:-translate-x-full 
+					-translate-x-full starting:data-[state=open]:-translate-x-full
 					data-[state=open]:translate-x-0 max-w-[200px]">
 				<header class="grid grid-cols-2 gap-2">
 					<div class="ml-1 flex justify-left items-center">
@@ -410,8 +410,7 @@
 				</header>
 				<div class="flex flex-col">
 					{#each routes.filter((m) => m.menu && m.visible) as link (link)}
-						{@const Icon = link.icon}
-						<div onclick={() => { mobileMenuDialog = false; navigate(link.href)}} class={anchorSidebar} 
+						<div onclick={() => { mobileMenuDialog = false; navigate(link.href)}} class={anchorSidebar}
 							aria-label={link.label}>
 							<LbIcon name={link.icon} height="20" width="20" class={checkUrl(link.href) ? 'dark:text-primary-500 text-primary-700' : 'white'}/>
 							<span class="{checkUrl(link.href) ? 'dark:text-primary-500 text-primary-700' : 'white'}">{$_(link.label)}</span>

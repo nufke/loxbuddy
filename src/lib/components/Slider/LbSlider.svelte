@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import type { Control, ControlOptions, SliderBar } from '$lib/types/models';
+	import type { Control, ControlOptions } from '$lib/types/models';
 	import { DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import LbControl from '$lib/components/Common/LbControl.svelte';
 	import LbDialog from '$lib/components/Common/LbDialog.svelte';
@@ -20,29 +20,42 @@
 	let controlOpen = $state(false);
 	let passwordOpen = $state(false);
 
-	let sliderBar: SliderBar = $derived({
-		min: Number(control.details?.min),
-		max: Number(control.details?.max),
-		step: Number(control.details?.step),
-		position: Number(controlStore.getState(control.states?.value))
-	});
+	let min = $derived(Number(control.details?.min));
+	let max = $derived(Number(control.details?.max));
+	let step = $derived(Number(control.details?.step));
+	let position = $derived(Number(controlStore.getState(control.states?.value)));
 
 	let iconName = $derived(controlStore.getIcon(control, controlOptions.isSubControl));
-	let statusName =$derived(fmt.sprintf(control.details?.format, sliderBar.position));
+	let statusName = $derived(fmt.sprintf(control.details?.format, position));
 
+	/**
+	 * Steps the slider position up or down by one `step` increment and sends
+	 * the new value to the miniserver. Clamps silently at `min` and `max`
+	 * without sending a command when the limit is already reached.
+	 *
+	 * @param isUp   - Multiplier for the step direction: 1 increments (default), -1 decrements.
+	 * @param visuPw - Optional visualisation password for secured controls.
+	 */
 	function updatePosition(isUp: number = 1, visuPw?: string): void {
-		let pos = sliderBar.position + sliderBar.step * isUp; // TODO resolve rounding errors
-		if (pos > sliderBar.max) {
-			pos = sliderBar.max;
+		let pos = position + step * isUp; // TODO resolve rounding errors
+		if (pos > max) {
+			pos = max;
 			return;
 		}
-		if (pos < sliderBar.min) {
-			pos = sliderBar.min;
+		if (pos < min) {
+			pos = min;
 			return;
 		}
 		controlStore.setControl(control, String(pos), visuPw);
 	}
 
+	/**
+	 * Sends an absolute slider position to the miniserver.
+	 * Accepts either a number or a single-element array (the format returned
+	 * by the Skeleton `Slider` component's `onValueChange` event).
+	 *
+	 * @param position - The new position value, use the first element in case of a list
+	 */
 	function setPostion(position: any): void {
 		let pos: number = position.length ? position[0] : position; // skeleton Slider returns array, select first one
 		controlStore.setControl(control, String(pos)); // TODO visuPw
@@ -113,7 +126,6 @@
 	}
 </script>
 
-
 <LbControl {controlOptions} {iconName} {statusName}
 	textName={control.name} label={controlStore.getLabel(page, control)} onclick={openControl}>
 	{#snippet actions()}
@@ -142,10 +154,10 @@
 		<div class="container mt-3 flex flex-col justify-center items-center p-1 pb-3">
 			<!-- TODO slider thumbSize not working??-->
 			<Slider thumbSize={{ width: 20, height: 20}} 
-				value={[sliderBar.position]}
-				min={sliderBar.min}
-				max={sliderBar.max}
-				step={sliderBar.step}
+				value={[position]}
+				min={min}
+				max={max}
+				step={step}
 				onValueChange={(e: any) => setPostion(e.value)}>
 				<Slider.Control>
 					<Slider.Track>
@@ -156,8 +168,8 @@
 					</Slider.Thumb>
 				</Slider.Control>
 				<Slider.MarkerGroup>
-					<Slider.Marker value={sliderBar.min} />
-					<Slider.Marker value={sliderBar.max} />
+					<Slider.Marker value={min} />
+					<Slider.Marker value={max} />
 				</Slider.MarkerGroup>
 			</Slider>
 		</div>

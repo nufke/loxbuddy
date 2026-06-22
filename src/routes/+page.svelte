@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Dialog, Portal } from '@skeletonlabs/skeleton-svelte';
+	import LbDialog from '$lib/components/Common/LbDialog.svelte';
 	import { _ } from 'svelte-i18n';
 	import { lbControlSelector } from '$lib/helpers/LbControlSelector';
 	import type { Control, ControlOptions, UserDefaultStructure } from '$lib/types/models';
@@ -8,7 +8,6 @@
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 	import { flip } from 'svelte/animate';
 	import { goto } from '$app/navigation';
-	import { fadeInOut } from '$lib/helpers/styles';
 
 	let key = 'room';
 	let dragGroup = $state('');
@@ -32,10 +31,11 @@
 	let openPopup = $derived(controlStore.controlList.length == 0 && appStore.loginDialogOpen == false);
 
 	/**
-	 * Check if given control is set as favorite control
-	 * @param obj Object containing the sorting
-	 * @param control Actual control
-	 * @param key Filter based on given key
+	 * Check if given control is set as favorite control.
+	 *
+	 * @param obj - Object containing the sorting.
+	 * @param control - Actual control.
+	 * @param key - Filter based on given key.
 	 */
 	function isFavorite(obj: UserDefaultStructure, control: Control, key: string): boolean {
 		if (obj && obj[control.uuidAction] && obj[control.uuidAction][key] && isCustomSorting) { 
@@ -46,10 +46,11 @@
 	}
 
 	/**
-	 * Get the position of the given control. This defines the order in the sorting
-	 * @param obj Object containing the sorting
-	 * @param control Actual control
-	 * @param key Filter based on given key
+	 * Get the position of the given control. This defines the order in the sorting.
+	 *
+	 * @param obj - Object containing the sorting.
+	 * @param control - Actual control.
+	 * @param key - Filter based on given key.
 	 */
 	function getPosition(obj: UserDefaultStructure, control: Control, key: string): number {
 		if (obj && obj[control.uuidAction] && obj[control.uuidAction][key] && isCustomSorting) { 
@@ -60,10 +61,11 @@
 	}
 
 	/**
-	 * Helper function to swap controls when control sorting is enabled
-	 * @param list List of the controls for the given (central) room
-	 * @param item The selected control being moved
-	 * @param group Filter based on given key
+	 * Helper function to swap controls when control sorting is enabled.
+	 *
+	 * @param list - List of the controls for the given (central) room.
+	 * @param item - The selected control being moved.
+	 * @param group - Filter based on given key.
 	 */
 	function swapItems(list: Control[], item: Control, group: string): Control[] {
 		let newList = list;
@@ -80,7 +82,7 @@
 	}
 
 	/**
-	 * Helper function to close the connection dialog and return to login page
+	 * Helper function to close the connection dialog and return to login page.
 	 */
 	function cancelConnect(): void {
 		openPopup = false;
@@ -88,8 +90,9 @@
 	}
 
 	/**
-	 * Helper function to detect if the drag-handle icon is selected
-	 * @param event PointerEvent of the drag pointer
+	 * Helper function to detect if the drag-handle icon is selected.
+	 *
+	 * @param event - PointerEvent of the drag pointer.
 	 */
 	function onDragHandlePointerDown(event: PointerEvent): void {
 		dragHandlePressed = !!(event.target as Element).closest('[data-drag-handle]');
@@ -121,35 +124,25 @@
   </div>
 </div>
 
-<Dialog
-	open={openPopup}
-	onInteractOutside={()=>{openPopup=false}}>
-	<Portal>
-		<Dialog.Backdrop class="fixed inset-0 z-150 bg-surface-50-950 backdrop-blur-sm {fadeInOut}"/>
-		<Dialog.Positioner class="fixed inset-0 z-150 flex justify-center items-center p-4">
-			<Dialog.Content class="card bg-surface-100-900 p-4 pt-3 shadow-sm rounded-lg border border-white/5 hover:border-white/10
-								max-w-full max-h-full w-[350px] {fadeInOut}">
-				<Dialog.Description>
-					<div class="mt-4 grid w-full place-items-center overflow-x-scroll rounded-lg p-3 lg:overflow-visible">
-						<svg class="animate-spin w-7 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-								<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"></circle>
-								<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-						</svg>
-					</div>
-					<div class="w-full p-3 flex flex-col justify-center items-center">
-						<span>{$_("Connecting to Miniserver")}</span>
-						{#if appStore.credentials && appStore.credentials.msName.length}
-							<span>{appStore.credentials.msName}</span>
-						{/if}
-					</div>
-				</Dialog.Description>
-				<div class="flex justify-center pt-4">
-					<button class="w-full btn btn-lg bg-surface-50-950 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
-									onclick={cancelConnect}>
-						<span class="flex justify-center items-center truncate text-lg">{$_("Cancel")}</span>
-					</button>
-				</div>
-			</Dialog.Content>
-		</Dialog.Positioner>
-	</Portal>
-</Dialog>
+<LbDialog open={openPopup} onClose={cancelConnect} width="w-[350px]" zIndex="z-[150]">
+	{#snippet description()}
+		<div class="mt-4 grid w-full place-items-center overflow-x-scroll rounded-lg p-3 lg:overflow-visible">
+			<svg class="animate-spin w-7 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+				<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"></circle>
+				<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+			</svg>
+		</div>
+		<div class="w-full p-3 flex flex-col justify-center items-center">
+			<span>{$_("Connecting to Miniserver")}</span>
+			{#if appStore.credentials && appStore.credentials.msName.length}
+				<span>{appStore.credentials.msName}</span>
+			{/if}
+		</div>
+		<div class="flex justify-center pt-4">
+			<button class="w-full btn btn-lg bg-surface-50-950 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
+					onclick={cancelConnect}>
+				<span class="flex justify-center items-center truncate text-lg">{$_("Cancel")}</span>
+			</button>
+		</div>
+	{/snippet}
+</LbDialog>

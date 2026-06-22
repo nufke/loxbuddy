@@ -31,6 +31,13 @@
 		format(new Date(Number(lastEntryDate)), "PPP ") + format(new Date(Number(entryMap[lastEntryDate][0].time)), "p") 
 		: '');
 
+	/**
+	 * Sorts an Entries map so that the most recent date keys appear first,
+	 * and sorts the entries within each day from latest to earliest time.
+	 *
+	 * @param entries - unsorted map of day-epoch strings to their entry arrays.
+	 * @returns a new Entries object with keys and inner arrays sorted descending.
+	 */
 	function sortEntries(entries: Entries): Entries {
 		return Object.keys(entries)
 			.sort( (a, b) => Number(b) - Number(a))
@@ -40,6 +47,18 @@
 			}, {});
 	}
 
+	/**
+	 * Parses the raw pipe-separated tracker entry strings into a sorted `Entries`
+	 * map grouped by day.
+	 *
+	 * Each entry string is expected to match the pattern
+	 * YYYY-MM-DD ... HH:MM:SS description. Entries that do not match are silently
+	 * skipped. Matching entries are grouped by the midnight epoch of their date,
+	 * with the time converted to an absolute epoch.
+	 *
+	 * @param list - array of raw entry strings from the pipe-split state value.
+	 * @returns sorted Entries map (day epoch → Entry[]), newest day first.
+	 */
 	function updateEntries(list: string[]): Entries {
 		let entries: Entries = {};
 		list.forEach((item) => {
@@ -65,7 +84,9 @@
 		controlOpen = true;
 	}
 
-	/** Closes the control dialog. */
+	/**
+	 * Closes the control dialog.
+	 */
 	function closeControl(): void {
 		controlOpen = false;
 	}

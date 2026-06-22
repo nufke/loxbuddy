@@ -11,8 +11,7 @@
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 	import { appStore } from '$lib/stores/LbAppStore.svelte';
 	import { _ } from 'svelte-i18n';
-	import { fade } from 'svelte/transition';
-	import { innerHeight } from 'svelte/reactivity/window';
+	import { scrollMarkers } from '$lib/actions/scrollMarkers';
 
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
@@ -24,11 +23,6 @@
 	let screenSelected = $state(false);
 	let selectedControl: Control | undefined = $state();
 	let selectedControlOptions: ControlOptions | undefined = $state();
-	let viewport: any = $state();
-	let hasScroll = $state(true);
-	let showScrollTop = $state(false);
-	let showScrollBottom = $state(false);
-
 	let screenList = $derived(control.details?.controls) as ScreenItem[];
 	let screenUuid = $derived(control.details?.controls.map((item: ScreenItem) => item.uuid));
 
@@ -49,36 +43,13 @@
 	);
 
 	let selectedScreenCount = $derived(screenList.filter((item) => item.selected == true).length);
-	let windowHeight = $derived(innerHeight.current || 0);
-	let availableHeight = $derived(Math.floor(windowHeight * 0.9) - margin);
-
-	let style = $derived(
-		viewport && viewport.scrollHeight > availableHeight
-			? `height: ${availableHeight}px`
-			: 'height: auto'
-	);
 
 	let iconName = $derived(controlStore.getIcon(control, controlOptions.isSubControl));
 	let iconColor = $derived(screensClosed.length ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700');
 	let statusName = $derived(getActiveScreens(screensClosed, screensOpen, screensLocked));
 	let statusColor = $derived(screensClosed.length + screensLocked.length ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700');
 
-	$effect(() => { parseScroll(windowHeight, viewport); });
 	$effect(() => { screenList.forEach((item) => item.selected = false); });
-
-	/**
-	 * Recomputes scroll-indicator visibility from the current viewport metrics.
-	 * Called on mount/resize (via $effect) and on every scroll event.
-	 *
-	 * @param height - current window inner height (used to guard against SSR zero).
-	 * @param view - the scrollable div element bound via bind:this.
-	 */
-	function parseScroll(height: number, view: any = undefined): void {
-		if (!view) return;
-		hasScroll = view.scrollHeight > view.clientHeight;
-		showScrollTop = height > 0 && hasScroll && view.scrollTop > 10;
-		showScrollBottom = height > 0 && hasScroll && view.scrollTop + view.clientHeight < view.scrollHeight - 10;
-	}
 
 	/**
 	 * Builds a localised status string summarising how many screens are
@@ -319,18 +290,7 @@
 					</button>
 				</div>
 				<div class="relative flex flex-col w-full">
-					{#if showScrollTop}
-						<div class="absolute z-10 left-[50%] -translate-x-1/2 -translate-y-1/2 top-[10px] text-surface-500" transition:fade={{ duration: 300 }}>
-							<LbIcon name="chevron-up" height="30" width="30"/>
-						</div>
-					{/if}
-					{#if showScrollBottom}
-						<div class="absolute z-10 left-[50%] -translate-x-1/2 -translate-y-1/2 -bottom-[19px] text-surface-500" transition:fade={{ duration: 300 }}>
-							<LbIcon name="chevron-down" height="30" width="30"/>
-						</div>
-					{/if}
-					<div class="flex flex-col overflow-y-auto space-y-2" {style} bind:this={viewport}
-							onscroll={() => parseScroll(windowHeight, viewport)}>
+					<div class="flex flex-col overflow-y-auto space-y-2" use:scrollMarkers={margin}>
 						{#each screenControls as c}
 							<button class="w-full flex h-[60px] items-center justify-start rounded-lg border border-white/10 hover:border-white/50
 									{isSelected(c) ? 'bg-surface-200-800' : 'bg-surface-50-950'} px-2 py-2"

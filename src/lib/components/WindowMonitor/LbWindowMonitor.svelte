@@ -1,8 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { fade } from 'svelte/transition';
-	import { innerHeight } from 'svelte/reactivity/window';
 	import type { Control, ControlOptions, WindowListItem, Room } from '$lib/types/models';
+	import { scrollMarkers } from '$lib/actions/scrollMarkers';
 	import { DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import LbControl from '$lib/components/Common/LbControl.svelte';
 	import LbDialog from '$lib/components/Common/LbDialog.svelte';
@@ -18,10 +17,6 @@
 	const margin = 200;
 
 	let controlOpen = $state(false);
-	let viewport: any = $state();
-	let hasScroll = $state(true);
-	let showScrollTop = $state(false);
-	let showScrollBottom = $state(false);
 
 	let windowStates = $derived(String(controlStore.getState(control.states?.windowStates)));
 	let windowList: WindowListItem[] = $derived(control.details?.windows);
@@ -38,15 +33,6 @@
 	let iconColor = $derived(allClosed ? 'text-surface-950 dark:text-surface-50' : 'dark:text-primary-500 text-primary-700');
 	let statusColor = $derived(allClosed ? 'text-surface-950 dark:text-surface-50' : 'dark:text-primary-500 text-primary-700');
 	let statusName = $derived(getStatus());
-	let windowHeight = $derived(innerHeight.current || 0);
-	let availableHeight = $derived(Math.floor(windowHeight * 0.9) - margin);
-
-	let style = $derived(
-		viewport && viewport.scrollHeight > availableHeight
-			? `height: ${availableHeight}px`
-			: 'height: auto' );
-
-	$effect(() => { parseScroll(windowHeight, viewport); });
 
 	/**
 	 * Builds the summary list of open, tilted and unlocked window counts.
@@ -156,20 +142,6 @@
 	}
 
 	/**
-	 * Recomputes scroll-indicator visibility from the current viewport metrics.
-	 * Called on mount/resize (via $effect) and on every scroll event.
-	 *
-	 * @param height - current window inner height (guards against SSR zero).
-	 * @param view - the scrollable div element bound via bind:this.
-	 */
-	function parseScroll(height: number, view: any = undefined): void {
-		if (!view) return;
-		hasScroll = view.scrollHeight > view.clientHeight;
-		showScrollTop = height > 0 && hasScroll && view.scrollTop > 10;
-		showScrollBottom = height > 0 && hasScroll && view.scrollTop + view.clientHeight < view.scrollHeight - 10;
-	}
-
-	/**
 	 * Opens the control dialog. If controlOptions.action is set, that custom
 	 * action is invoked instead. At subcontrol level (no icon) the dialog is
 	 * suppressed.
@@ -199,19 +171,8 @@
 						<span class={state.isColor ? 'dark:text-primary-500 text-primary-700' : 'text-surface-950 dark:text-surface-50'}>{state.name}</span>{#if !isLast}<span>,&nbsp;</span>{/if}
 					{/each}
 				</p>
-				<div class="flex flex-col relative w-full">
-					{#if showScrollTop}
-						<div class="absolute z-10 left-[50%] -translate-x-1/2 -translate-y-1/2 top-[17px] text-surface-500" transition:fade={{ duration: 300 }}>
-							<LbIcon name="chevron-up" height="30" width="30"/>
-						</div>
-					{/if}
-					{#if showScrollBottom}
-						<div class="absolute z-10 left-[50%] -translate-x-1/2 -translate-y-1/2 -bottom-[20px] text-surface-500" transition:fade={{ duration: 300 }}>
-							<LbIcon name="chevron-down" height="30" width="30"/>
-						</div>
-					{/if}
-					<div class="flex flex-col space-y-2 overflow-y-auto w-full mt-2" {style} bind:this={viewport}
-							onscroll={() => parseScroll(windowHeight, viewport)}>
+				<div class="flex flex-col relative w-full mt-2">
+					<div class="flex flex-col space-y-2 overflow-y-auto w-full" use:scrollMarkers={margin}>
 						{#each windowStatesList as window}
 							<div class="w-full flex h-[60px] items-center justify-start rounded-lg border border-white/15 hover:border-white/50 bg-surface-50-950 px-2 py-2">
 								<div class="flex items-center truncate w-full">

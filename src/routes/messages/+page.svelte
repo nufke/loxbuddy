@@ -1,11 +1,10 @@
 <script lang="ts">
 	import { Tabs } from '@skeletonlabs/skeleton-svelte';
-	import { Dialog, Portal } from '@skeletonlabs/skeleton-svelte';
 	import type { Room, SystemStatus, SystemStatusEntry, NotificationMessage } from '$lib/types/models';
 	import LbIcon from '$lib/components/Common/LbIcon.svelte';
+	import LbDialog from '$lib/components/Common/LbDialog.svelte';
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 	import { _ } from 'svelte-i18n';
-	import { fadeInOut } from '$lib/helpers/styles';
 	import { format } from 'date-fns';
 	import { innerWidth } from 'svelte/reactivity/window';
 
@@ -112,52 +111,44 @@
 	</Tabs>
 </div>
 
-<Dialog
-	open={openDialog}
-	onInteractOutside={() => openDialog=false}>
-	<Portal>
-		<Dialog.Backdrop class="fixed inset-0 z-10 bg-surface-50-950/75 backdrop-blur-sm {fadeInOut}"/>
-		<Dialog.Positioner class="fixed inset-0 z-10 flex justify-center items-center p-4">
-			<Dialog.Content class="card bg-surface-100-900 p-4 pt-3 shadow-sm rounded-lg border border-white/5 hover:border-white/10
-								max-w-full max-h-full overflow-auto w-[450px] {fadeInOut}">
-				<header class="relative">
-					<div class="flex justify-center">
-						<div class="relative inline-flex h-18 w-18 items-center justify-center overflow-hidden rounded-full border border-white/5 dark:bg-surface-950">
-							{#if selectedEntry?.severity == 3}
-								<LbIcon class="text-red-500" name="error" width="36" height="36"/>
-							{:else if selectedEntry?.severity == 2}
-								<LbIcon class="text-orange-500" name="warning" width="36" height="36"/>
-							{:else}
-								<LbIcon class="text-cyan-500" name="info" width="36" height="36"/>
-							{/if}
-						</div>
-					</div>
-					<div class="absolute right-0 top-0">
-						<button type="button" aria-label="close" class="btn-icon w-auto" onclick={() => { openDialog = false }}>
-							<LbIcon name="x" height="16" width="16"/>
-						</button>
-					</div>
-				</header>
-				<Dialog.Description>
-					<div class="flex flex-col items-center justify-center mt-2">
-						<div>
-							<p class="h4 text-center">{@html selectedEntry?.title}</p>
-						</div>
-						<div class="m-2 w-[350px]">
-							<p class="text-lg text-center text-wrap">{@html selectedEntry?.affectedName}</p>
-							<p class="text-md text-center dark:text-surface-300 text-surface-700 text-wrap">{$_("At").toLowerCase()} {selectedEntry?.timestamps ? getDate(Number(selectedEntry?.timestamps[0])) : ''}</p>
-							{#if selectedEntry?.confirmedAt || selectedEntry?.setHistoricAt}
-								<p class="mt-5 text-md text-center dark:text-surface-300 text-surface-700 truncate">{$_(selectedEntry?.isHistoric ? "Solved at" : "Confirmed at")} {format(new Date(Number(selectedEntry?.isHistoric ? selectedEntry?.setHistoricAt : selectedEntry?.confirmedAt)*1000), "PPP p")}</p>
-							{:else}
-								<button type="button" class="mt-5 w-full btn btn-lg bg-surface-50-950 shadow-sm rounded-lg border border-white/15 hover:border-white/50" 
-										onclick={confirmEntry}>
-									<p class="text-lg">{$_("Confirm")}</p>
-								</button>
-							{/if}
-						</div>
-					</div>
-				</Dialog.Description>
-			</Dialog.Content>
-		</Dialog.Positioner>
-	</Portal>
-</Dialog>
+<LbDialog open={openDialog} onClose={() => openDialog = false}>
+	{#snippet header()}
+		<header class="relative">
+			<div class="flex justify-center">
+				<div class="relative inline-flex h-18 w-18 items-center justify-center overflow-hidden rounded-full border border-white/5 dark:bg-surface-950">
+					{#if selectedEntry?.severity == 3}
+						<LbIcon class="text-red-500" name="error" width="36" height="36"/>
+					{:else if selectedEntry?.severity == 2}
+						<LbIcon class="text-orange-500" name="warning" width="36" height="36"/>
+					{:else}
+						<LbIcon class="text-cyan-500" name="info" width="36" height="36"/>
+					{/if}
+				</div>
+			</div>
+			<div class="absolute right-0 top-0">
+				<button type="button" aria-label="close" class="btn-icon w-auto" onclick={() => openDialog = false}>
+					<LbIcon name="x" height="16" width="16"/>
+				</button>
+			</div>
+		</header>
+	{/snippet}
+	{#snippet description()}
+		<div class="flex flex-col items-center justify-center mt-2">
+			<div>
+				<p class="h4 text-center">{@html selectedEntry?.title}</p>
+			</div>
+			<div class="m-2 w-[350px]">
+				<p class="text-lg text-center text-wrap">{@html selectedEntry?.affectedName}</p>
+				<p class="text-md text-center dark:text-surface-300 text-surface-700 text-wrap">{$_("At").toLowerCase()} {selectedEntry?.timestamps ? getDate(Number(selectedEntry?.timestamps[0])) : ''}</p>
+				{#if selectedEntry?.confirmedAt || selectedEntry?.setHistoricAt}
+					<p class="mt-5 text-md text-center dark:text-surface-300 text-surface-700 truncate">{$_(selectedEntry?.isHistoric ? "Solved at" : "Confirmed at")} {format(new Date(Number(selectedEntry?.isHistoric ? selectedEntry?.setHistoricAt : selectedEntry?.confirmedAt)*1000), "PPP p")}</p>
+				{:else}
+					<button type="button" class="mt-5 w-full btn btn-lg bg-surface-50-950 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
+							onclick={confirmEntry}>
+						<p class="text-lg">{$_("Confirm")}</p>
+					</button>
+				{/if}
+			</div>
+		</div>
+	{/snippet}
+</LbDialog>

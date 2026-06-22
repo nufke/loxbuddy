@@ -22,6 +22,7 @@
 	let { control, controlOptions = DEFAULT_CONTROLOPTIONS }: { control: Control, controlOptions: ControlOptions } = $props();
 
 	const margin = 200;
+	const entryDuration = 200;
 
 	let pendingAction: ((visuPw?: string) => void) | null = null;
 	let controlOpen = $state(false);
@@ -29,7 +30,6 @@
 	let viewport: any = $state();
 	let selectedEntry = $state(0);
 	let prevEntryListLength = $state(0);
-
 	let dateTimeOpen = $state(false);
 
 	let entryObj = $derived(controlStore.getState(control.states?.entryList) as AlarmClockEntries);
@@ -42,23 +42,33 @@
 	let statusName = $derived(alarms.length ? getAlarmTime() : $_('No alarm time active'));
 	let statusColor = $derived(alarms.length ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700');
 	let windowHeight = $derived(innerHeight.current || 0);
-	let size = $derived(windowHeight * 0.9 - (viewport?.clientHeight ?? 0) - margin);
-	let style = $derived(
-		size > 0 && viewport?.clientHeight === viewport?.scrollHeight
-			? 'height: 100%'
-			: 'height: ' + ((viewport?.clientHeight ?? 0) + size) + 'px'
-	);
+	let availableHeight = $derived(Math.floor(windowHeight * 0.9) - margin);
 
-	// scroll to bottom and recompute height after a new entry is added
+	/**
+	 * Scrolls area to the bottom on every animation frame during a specified period, while
+	 * tracking the growing scrollHeight during a slide-in transition.
+	 *
+	 * @param area - the scrollable container element (area).
+	 * @param duration - how long to follow the transition in ms (default 250).
+	 */
+	function followEntry(area: HTMLElement, duration = entryDuration + 50): void {
+		const deadline = performance.now() + duration;
+		const frame = (now: number) => {
+			area.scrollTop = area.scrollHeight;
+			if (now < deadline) requestAnimationFrame(frame);
+		};
+		requestAnimationFrame(frame);
+	}
+
+	/**
+	 * Scrolls to the new entry whenever the list grows (add only, not delete).
+	 */
 	$effect(() => {
-		if (entryList.length) {
-			tick().then(() => {
-				if (viewport && prevEntryListLength !== entryIds.length) {
-					viewport.scroll({ top: viewport.scrollHeight, behavior: 'smooth' });
-					prevEntryListLength = entryIds.length;
-				}
-			});
-		}
+		const len = entryList.length;
+		tick().then(() => {
+			if (viewport && len > prevEntryListLength) followEntry(viewport);
+			prevEntryListLength = len;
+		});
 	});
 
 	/**
@@ -256,9 +266,9 @@
 {#if !controlOptions.action}
 	<LbDialog open={controlOpen} onClose={closeControl} {control} title={control.name}>
 		{#snippet description()}
-			<div class="mt-2 overflow-y-auto w-full" {style} bind:this={viewport}>
+			<div class="mt-2 overflow-y-auto w-full" style="max-height: {availableHeight}px" bind:this={viewport}>
 				{#each entryList as entry, i}
-					<div class="mt-2 p-4 bg-surface-50-950 rounded-lg" transition:slide={{ duration: 200 }}>
+					<div class="mt-2 p-4 bg-surface-50-950 rounded-lg" transition:slide={{ duration: entryDuration }}>
 						<div class="flex w-full m-auto h-[72px] justify-between">
 							<div>
 								<h1 class="text-lg truncate">

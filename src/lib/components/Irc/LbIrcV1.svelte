@@ -2,9 +2,9 @@
 	import { page } from '$app/state';
 	import { tick } from 'svelte';
 	import { SvelteDate } from 'svelte/reactivity';
-	import { innerHeight } from 'svelte/reactivity/window';
+	import { scrollMarkers } from '$lib/actions/scrollMarkers';
 	import { Toast, createToaster } from '@skeletonlabs/skeleton-svelte';
-	import type { Control, ControlOptions, ListItem, CalendarView, Entry, CalendarEntryView, CalendarListItem, EntriesAndDefaultValue, WeekDays } from '$lib/types/models';
+	import type { Control, ControlOptions, ListItem, Entry, CalendarListItem, EntriesAndDefaultValue, WeekDays } from '$lib/types/models';
 	import { DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import LbControl from '$lib/components/Common/LbControl.svelte';
 	import LbDialog from '$lib/components/Common/LbDialog.svelte';
@@ -41,19 +41,13 @@
 	let controlOpen = $state(false);
 	let selectedTab = $state<Tab>('control');
 	let overrideDate = $state({ start: new SvelteDate().valueOf(), end: new SvelteDate().valueOf() });
-	let viewport: any = $state();
-	let hasScroll = $state(true);
-	let showScrollTop = $state(false);
-	let showScrollBottom = $state(false);
 	let date: SvelteDate = $state(new SvelteDate(Date.now() + 3600000));
 	let selectedEntry: any = $state();
-
 	let dateTimeOpen = $state(false);
-	let calendarView: CalendarView = $state({ control: control, isIRC: true, isIRCV1: true, isCooling: false, openDialog: false });
-	let calendarEntryView: CalendarEntryView = $state({
-		control: control, subControl: control,
-		isIRC: false, isCooling: false, label: '', enableDelete: true, openDialog: false
-	});
+	let calendarOpen = $state(false);
+	let calendarEntryOpen = $state(false);
+	let calendarEntryLabel = $state('');
+	let calendarEntryEnableDelete = $state(true);
 
 	let temperatureDetails = $derived(control.details?.temperatures);
 	let subControls = $derived(Object.values(control.subControls) as Control[]);
@@ -82,12 +76,7 @@
 	let isEco = $derived(selectedItem?.id === 0);
 	let statusName = $derived(selectedItem ? $_(selectedItem.name) : '');
 	let statusColor = $derived(selectedItem && selectedItem.id > 0 ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700');
-	let windowHeight = $derived(innerHeight.current || 0);
-	let availableHeight = $derived(Math.floor(windowHeight * 0.9) - margin);
-	let style = $derived(viewport && viewport.scrollHeight > availableHeight ? `height: ${availableHeight}px` : 'height: auto');
 	let dayOfTheWeek = $derived(format(appStore.date, 'eeee'));
-
-	$effect(() => { parseScroll(windowHeight, viewport); });
 
 	/**
 	 * Resolves an array of state UUIDs to their current numeric temperature values.
@@ -241,17 +230,15 @@
 
 	/**
 	 * Opens the calendar view sub-dialog for the currently active subcontrol
-	 * (Heating or Cooling), passing the current cooling state.
+	 * (Heating or Cooling).
 	 */
-	function openCalendarView(): void {
-		(calendarView as any).subControl = selectedSubControl;
-		calendarView.isCooling = isCooling;
-		calendarView.openDialog = true;
+	function openCalendar(): void {
+		calendarOpen = true;
 	}
 
 	/**
-	 * Populates `calendarEntryView` from an existing schedule entry and opens
-	 * the entry editor dialog.
+	 * Finds the raw entry matching the selected calendar list item and opens
+	 * the entry editor dialog pre-populated with that entry's data.
 	 *
 	 * @param item - the calendar list item selected by the user.
 	 */
@@ -262,19 +249,15 @@
 			entry.mode === getOperatingMode(item.name[0])
 		);
 		if (selectedEntry) {
-			calendarEntryView.label = $_('Update entry');
-			calendarEntryView.control = control;
-			calendarEntryView.subControl = selectedSubControl;
-			calendarEntryView.isIRC = true;
-			calendarEntryView.isCooling = isCooling;
-			calendarEntryView.enableDelete = true;
-			calendarEntryView.openDialog = true;
+			calendarEntryLabel = $_('Update entry');
+			calendarEntryEnableDelete = true;
+			calendarEntryOpen = true;
 		}
 	}
 
 	/**
-	 * Prepopulates `calendarEntryView` with a new entry template starting at
-	 * the next full hour and opens the entry editor dialog.
+	 * Creates a new entry template starting at the next full hour and opens
+	 * the entry editor dialog with delete disabled.
 	 */
 	function addEntry(): void {
 		const coolingNr = isCooling ? 2 : 1;
@@ -285,13 +268,9 @@
 			needActivate: '0',
 			value: temperatureList[coolingNr]?.id ?? '0'
 		};
-		calendarEntryView.label = $_('Add entry');
-		calendarEntryView.control = control;
-		calendarEntryView.subControl = selectedSubControl;
-		calendarEntryView.isIRC = true;
-		calendarEntryView.isCooling = isCooling;
-		calendarEntryView.enableDelete = false;
-		calendarEntryView.openDialog = true;
+		calendarEntryLabel = $_('Add entry');
+		calendarEntryEnableDelete = false;
+		calendarEntryOpen = true;
 	}
 
 	/**
@@ -328,18 +307,7 @@
 		date = e.value;
 	}
 
-	/**
-	 * Recomputes scroll-indicator visibility from the current viewport metrics.
-	 *
-	 * @param height - current window inner height (guards against SSR zero).
-	 * @param view - the scrollable div element bound via bind:this.
-	 */
-	function parseScroll(height: number, view: any = undefined): void {
-		if (!view) return;
-		hasScroll = view.scrollHeight > view.clientHeight;
-		showScrollTop = height > 0 && hasScroll && view.scrollTop > 10;
-		showScrollBottom = height > 0 && hasScroll && view.scrollTop + view.clientHeight < view.scrollHeight - 10;
-	}
+
 </script>
 
 <LbControl {controlOptions} iconName="" iconText={tempActual} iconColor="fill-surface-950 dark:fill-surface-50"
@@ -366,7 +334,7 @@
 					</div>
 				</div>
 				<div class="w-full mt-2 bg-surface-50-950 rounded-lg border border-white/15 hover:border-white/50"
-						onclick={(e) => { e.stopPropagation(); e.preventDefault(); openCalendarView(); }}>
+						onclick={(e) => { e.stopPropagation(); e.preventDefault(); openCalendar(); }}>
 					<LbTimeGrid mode={gridMode} {entries} {overrideDate} {override}/>
 					<h2 class="m-2 text-md text-center dark:text-surface-50 text-surface-950">{dayOfTheWeek}</h2>
 				</div>
@@ -381,20 +349,21 @@
 				{/if}
 			{/if}
 			{#if selectedTab === 'preset'}
-				<div class="container mt-2 overflow-y-auto grid gap-2" {style} bind:this={viewport}
-						onscroll={() => parseScroll(windowHeight, viewport)}>
-					{#each temperatureList as listItem}
-						<button type="button"
-								class="w-full pr-4 btn btn-lg {listItem.id === selectedItem?.id ? 'bg-surface-200-800' : 'bg-surface-50-950'} shadow-sm rounded-lg border border-white/15 hover:border-white/50"
-								onclick={(e) => { e.stopPropagation(); e.preventDefault(); setTimerOverride(listItem); }}>
-							<div class="w-full flex items-center truncate">
-								<div class="mr-0 flex w-full justify-between truncate">
-									<p class="truncate text-lg dark:text-surface-50 text-surface-950">{$_(listItem.name)}</p>
-									<p class="text-lg dark:text-surface-300 text-surface-700">{tempFormat(listItem.value)}</p>
+				<div class="relative">
+					<div class="container mt-2 overflow-y-auto grid gap-2" use:scrollMarkers={margin}>
+						{#each temperatureList as listItem}
+							<button type="button"
+									class="w-full pr-4 btn btn-lg {listItem.id === selectedItem?.id ? 'bg-surface-200-800' : 'bg-surface-50-950'} shadow-sm rounded-lg border border-white/15 hover:border-white/50"
+									onclick={(e) => { e.stopPropagation(); e.preventDefault(); setTimerOverride(listItem); }}>
+								<div class="w-full flex items-center truncate">
+									<div class="mr-0 flex w-full justify-between truncate">
+										<p class="truncate text-lg dark:text-surface-50 text-surface-950">{$_(listItem.name)}</p>
+										<p class="text-lg dark:text-surface-300 text-surface-700">{tempFormat(listItem.value)}</p>
+									</div>
 								</div>
-							</div>
-						</button>
-					{/each}
+							</button>
+						{/each}
+					</div>
 				</div>
 				<button class="w-full m-0 mt-4 flex min-h-[50px] items-center justify-start rounded-lg border border-white/15 hover:border-white/50
 						bg-surface-50-950 px-2 py-2"
@@ -408,8 +377,8 @@
 				</button>
 			{/if}
 			{#if selectedTab === 'schedule'}
-				<div class="container mt-2 mb-3 overflow-y-auto" {style} bind:this={viewport}
-						onscroll={() => parseScroll(windowHeight, viewport)}>
+				<div class="relative">
+					<div class="container mt-2 mb-3 overflow-y-auto" use:scrollMarkers={margin}>
 					<div class="flex flex-col space-y-2">
 						{#each filteredEntries() as entry}
 							<button type="button"
@@ -427,9 +396,10 @@
 						{/each}
 					</div>
 				</div>
+				</div>
 				<div class="container grid grid-cols-2 gap-2">
 					<button type="button" class="w-full btn btn-lg h-[48px] bg-surface-50-950 shadow-sm text-surface-950-50 rounded-lg border border-white/15 hover:border-white/50 active:bg-primary-500"
-							onclick={openCalendarView}>
+							onclick={openCalendar}>
 						<span class="text-base">{$_('Open calendar')}</span>
 					</button>
 					<button type="button" class="w-full btn btn-lg h-[48px] bg-surface-50-950 shadow-sm text-surface-950-50 rounded-lg border border-white/15 hover:border-white/50 active:bg-primary-500"
@@ -441,17 +411,17 @@
 			<div class="relative w-full mt-6 mb-2">
 				<div class="grid h-full max-w-lg grid-cols-3 mx-auto">
 					<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {tabActive('control')}"
-							onclick={() => { viewport = undefined; selectedTab = 'control'; }}>
+							onclick={() => { selectedTab = 'control'; }}>
 						<LbIcon class={selectedTab === 'control' ? 'dark:fill-primary-500 fill-primary-700' : 'fill-surface-50'} name="thermostat" width="24" height="24"/>
 						<span class="mt-1 text-xs">{$_('Control')}</span>
 					</button>
 					<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {tabActive('preset')}"
-							onclick={() => { viewport = undefined; selectedTab = 'preset'; }}>
+							onclick={() => { selectedTab = 'preset'; }}>
 						<LbIcon name="list"/>
 						<span class="mt-1 text-xs">{$_('Preset')}</span>
 					</button>
 					<button type="button" class="inline-flex flex-col items-center justify-center px-5 group {tabActive('schedule')}"
-							onclick={() => { viewport = undefined; selectedTab = 'schedule'; }}>
+							onclick={() => { selectedTab = 'schedule'; }}>
 						<LbIcon name="calendar-clock"/>
 						<span class="mt-1 text-xs">{$_('Schedule')}</span>
 					</button>
@@ -463,9 +433,19 @@
 
 <LbDateTimePicker date={date} bind:open={dateTimeOpen} title={$_('Duration')} isDateView={true} onValueChange={(e: any) => updateTimer(e)}/>
 
-<LbCalendar bind:view={calendarView} mode={gridMode} {dayModes} {entries} {temperatureList}/>
+<LbCalendar bind:open={calendarOpen} {control} subControl={selectedSubControl}
+	isIRC={true} isIRCV1={true} {isCooling}
+	mode={gridMode} {dayModes} {entries} {temperatureList}/>
 
-<LbCalendarEntry bind:view={calendarEntryView} {entries} {selectedEntry} {dayModes} {temperatureList}/>
+<LbCalendarEntry
+	bind:open={calendarEntryOpen}
+	title={calendarEntryLabel}
+	isIRC={true}
+	{isCooling}
+	enableDelete={calendarEntryEnableDelete}
+	{control}
+	subControl={selectedSubControl}
+	{entries} {selectedEntry} {dayModes} {temperatureList}/>
 
 <Toast.Group {toaster}>
 	{#snippet children(toast)}

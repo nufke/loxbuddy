@@ -18,6 +18,9 @@
 	let loaded = $derived(current.time > 0 && daily.length);
 	let date = $derived(appStore.date);
 
+	/**
+	 * Close the weather view and resets close all sliders
+	 */
 	function close(): void {
 		appStore.weatherDialogOpen = false;
 		slider = Array.from({ length: 8 }, (_, i) => i === 0);

@@ -10,21 +10,18 @@
 	import { slide } from 'svelte/transition'
 	import { controlStore } from '$lib/stores/LbControlStore.svelte';
 
-	let { view = $bindable(), entries, selectedEntry, dayModes, temperatureList = [] } = $props();
+	let { open = $bindable(false), title = '', isIRC = false, isCooling = false, enableDelete = true,
+		control, subControl, entries, selectedEntry, dayModes, temperatureList = [] } = $props();
 
-	let isAnalog = Boolean(view.control.details?.analog);
+	let isAnalog = $derived(Boolean(control.details?.analog));
 	let isStartTime = $state(false);
 	let dateTime = $state();
-
 	let dateTimeOpen = $state(false);
 	let dateTimeTitle = $state($_('Time'));
-
 	let dayModeOpen = $state(false);
-
 	let itemDeleteOpen = $state(false);
 	let itemDeleteTitle = $state('');
 	let itemDeleteOnOk = $state<() => void>(() => {});
-
 	let temperatureOpen = $state(false);
 
 	let updatedEntries = $derived(entries.entry) as Entry[];
@@ -101,20 +98,20 @@
 	}
 
 	function publishEntries(): void {
-		let cmd = (view.isCooling ? 'setc/' : 'set/') + updatedEntries.length;
+		let cmd = (isCooling ? 'setc/' : 'set/') + updatedEntries.length;
 		updatedEntries.forEach( (entry: Entry) => { cmd += '/' + entry.mode + ';' +
-			utils.hours2min(entry.from) + ';' + 
+			utils.hours2min(entry.from) + ';' +
 			utils.hours2min(entry.to) + ';' +
 			entry.needActivate + ';' + entry.value
 		});
 
-		let control = view.isIRC ? view.subControl.uuidAction : view.control.uuidAction; // for IRC we need to use the subControl
-		controlStore.setControl(control, cmd);
+		let uuid = isIRC ? subControl : control; // for IRC we need to use the subControl
+		controlStore.setControl(uuid, cmd); // TODO VisuPw?
 		close();
 	}
 
 	function close(): void {
-		view.openDialog = false;
+		open = false;
 	}
 
 	function updateEntries(): void {
@@ -126,7 +123,7 @@
 		const from = isFullDay ? '00:00' : startTime;
 		const to = isFullDay ? '24:00' : endTime;
 		const needsActivation = needActivate ? '1' : '0';
-		const valueOfEntry = ((isAnalog || view.isIRC) ? value : '0'); // TODO set analog value, always 0 for digital daytimers
+		const valueOfEntry = ((isAnalog || isIRC) ? value : '0'); // TODO set analog value, always 0 for digital daytimers
 		modes.forEach( (mode) => {
 			changedEntries.push({ 
 				mode: mode, 
@@ -195,7 +192,7 @@
 	}
 </script>
 
-<LbDialog open={view.openDialog} onClose={close} title={view.label} zIndex="z-30">
+<LbDialog {open} onClose={close} {title} zIndex="z-30">
 	{#snippet description()}
 		<div class="flex flex-col items-center justify-center">
 			<div class="space-y-2 w-full">
@@ -206,7 +203,7 @@
 						<p class="text-right text-xs max-w-55 text-wrap truncate line-clamp-2">{getDayModes()}</p>
 					</div>
 				</button>
-				{#if view.isIRC}
+				{#if isIRC}
 				<button class="w-full btn btn-lg bg-surface-50-950 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
 								onclick={(e) => { e.stopPropagation(); openTemperatureView();}}>
 					<div class="flex w-full items-center justify-between">
@@ -245,7 +242,7 @@
 					</button>
 				</div>
 				{/if}
-				{#if !view.isIRC}
+				{#if !isIRC}
 				<button class="w-full btn btn-lg bg-surface-50-950 shadow-sm rounded-lg border border-white/15 hover:border-white/50"
 								onclick={(e) => { e.stopPropagation()}}>
 					<div class="flex w-full items-center justify-between">
@@ -259,8 +256,8 @@
 					</div>
 				</button>
 				{/if}
-				<div class="flex grid {view.enableDelete ? 'grid-cols-5' : 'grid-cols-4'} gap-2 mt-2">
-					{#if view.enableDelete}
+				<div class="flex grid {enableDelete ? 'grid-cols-5' : 'grid-cols-4'} gap-2 mt-2">
+					{#if enableDelete}
 					<button class="w-full btn btn-lg bg-surface-50-950 shadow-sm rounded-lg border border-white/15 hover:border-white/50 active:bg-primary-500"
 									onclick={openDeleteView}>
 						<div class="w-[20px] items-center justify-center text-red-500 flex w-full">

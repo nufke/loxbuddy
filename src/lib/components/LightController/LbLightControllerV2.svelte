@@ -1,8 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { tick, untrack } from 'svelte';
-	import { fade } from 'svelte/transition';
-	import { innerHeight } from 'svelte/reactivity/window';
+	import { scrollMarkers } from '$lib/actions/scrollMarkers';
 	import type { Control, ControlOptions, MoodList } from '$lib/types/models';
 	import { DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import LbControl from '$lib/components/Common/LbControl.svelte';
@@ -25,10 +24,6 @@
 	let controlOpen = $state(untrack(() => controlOptions.showDialog ?? false));
 	let passwordOpen = $state(false);
 	let selectedTab = $state<Tab>('scenes');
-	let viewport: any = $state();
-	let hasScroll = $state(true);
-	let showScrollTop = $state(false);
-	let showScrollBottom = $state(false);
 	let id = $state(0);
 
 	let moodList = $derived(controlStore.getState(control.states?.moodList)) as MoodList[];
@@ -41,32 +36,10 @@
 	let selectedItem = $derived(moodList ? moodList.findIndex((item: MoodList) => item.name === statusName) : 0);
 	let subControls = $derived(control.subControls ? Object.values(control.subControls) as Control[] : []);
 	let subControlsColorPicker = $derived(subControls.filter((c) => c.type === 'ColorPickerV2'));
-	let windowHeight = $derived(innerHeight.current || 0);
 	let margin = $derived(marginPerTab[selectedTab]);
-	let availableHeight = $derived(Math.floor(windowHeight * 0.9) - margin);
-	let style = $derived(
-		viewport && viewport.scrollHeight > availableHeight
-			? `height: ${availableHeight}px`
-			: 'height: auto'
-	);
 
 	// default id to the first ColorPickerV2 subcontrol; overridden when user selects one from the controls tab
 	$effect(() => { id = subControls.findIndex((c: any) => c.type === 'ColorPickerV2'); });
-	$effect(() => { parseScroll(windowHeight, viewport); });
-
-	/**
-	 * Recomputes scroll-indicator visibility from the current viewport metrics.
-	 * Called on mount/resize (via $effect) and on every scroll event.
-	 *
-	 * @param height - current window inner height (guards against SSR zero).
-	 * @param view - the scrollable div element bound via bind:this.
-	 */
-	function parseScroll(height: number, view: any = undefined): void {
-		if (!view) return;
-		hasScroll = view.scrollHeight > view.clientHeight;
-		showScrollTop = height > 0 && hasScroll && view.scrollTop > 10;
-		showScrollBottom = height > 0 && hasScroll && view.scrollTop + view.clientHeight < view.scrollHeight - 10;
-	}
 
 	/** Returns the active colour class when the given tab is selected. */
 	function tabActive(tab: Tab): string {
@@ -74,14 +47,11 @@
 	}
 
 	/**
-	 * Resets the scroll viewport and switches to the given tab.
-	 * Resetting viewport before switching prevents the old tab's constrained
-	 * height from briefly applying to the new tab's content.
+	 * Switches to the given tab.
 	 *
 	 * @param tab - the tab to switch to.
 	 */
 	function switchTab(tab: Tab): void {
-		viewport = undefined;
 		selectedTab = tab;
 	}
 
@@ -212,18 +182,7 @@
 					</div>
 				</div>
 				<div class="flex flex-col relative w-full mt-2">
-					{#if showScrollTop}
-						<div class="absolute z-10 left-[50%] -translate-x-1/2 -translate-y-1/2 top-[10px] text-surface-500" transition:fade={{ duration: 300 }}>
-							<LbIcon name="chevron-up" height="30" width="30"/>
-						</div>
-					{/if}
-					{#if showScrollBottom}
-						<div class="absolute z-10 left-[50%] -translate-x-1/2 -translate-y-1/2 -bottom-[19px] text-surface-500" transition:fade={{ duration: 300 }}>
-							<LbIcon name="chevron-down" height="30" width="30"/>
-						</div>
-					{/if}
-					<div class="flex flex-col overflow-y-auto w-full" {style} bind:this={viewport}
-							onscroll={() => parseScroll(windowHeight, viewport)}>
+					<div class="flex flex-col overflow-y-auto w-full" use:scrollMarkers={margin}>
 						{#if moodList}
 							<div class="grid gap-2">
 								{#each moodList as listItem, index}
@@ -240,18 +199,7 @@
 			{/if}
 			{#if selectedTab === 'controls'}
 				<div class="flex flex-col relative w-full">
-					{#if showScrollTop}
-						<div class="absolute z-10 left-[50%] -translate-x-1/2 -translate-y-1/2 top-[10px] text-surface-500" transition:fade={{ duration: 300 }}>
-							<LbIcon name="chevron-up" height="30" width="30"/>
-						</div>
-					{/if}
-					{#if showScrollBottom}
-						<div class="absolute z-10 left-[50%] -translate-x-1/2 -translate-y-1/2 -bottom-[19px] text-surface-500" transition:fade={{ duration: 300 }}>
-							<LbIcon name="chevron-down" height="30" width="30"/>
-						</div>
-					{/if}
-					<div class="overflow-y-auto" {style} bind:this={viewport}
-							onscroll={() => parseScroll(windowHeight, viewport)}>
+					<div class="overflow-y-auto" use:scrollMarkers={margin}>
 						{#each subControls as subControl, index}
 							{#if index > 0}<div class="mt-2"></div>{/if}
 							{#if subControl.type === 'Switch'}

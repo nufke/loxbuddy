@@ -4,7 +4,7 @@
 	import { format } from 'date-fns';
 	import { _ } from 'svelte-i18n';
 
-	let { date = $bindable(), view } = $props();
+	let { date = $bindable() } = $props();
 
 	let days = $_('Days').split('|');
 	let months = $_('Months').split('|');

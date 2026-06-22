@@ -81,6 +81,15 @@
 			(scaledData) ?? ''
 	);
 
+	/**
+	 * Derives six evenly spaced y-axis tick values that span the data range,
+	 * including negative values when present. Uses the smallest predefined step
+	 * that keeps the total tick count at or below 5, unless `fixedStep` is set.
+	 *
+	 * @param min - minimum scaled value across all data points.
+	 * @param max - maximum scaled value across all data points.
+	 * @returns array of six y-axis tick values, centred around zero.
+	 */
 	function calcYValues(min: number, max: number): number[] {
 		if (min === 0 && max === 0) return [0, 1, 2, 3, 4, 5];
 		const steps = [0.25, 0.5, 1, 2, 5, 10, 20, 50, 100, 200, 500, 1000];
@@ -93,10 +102,23 @@
 		return Array.from({ length: 6 }, (_, i) => (i - negCount) * step);
 	}
 
+	/**
+	 * Returns the hour-of-day (0–23) for a data point, used as its x-axis index.
+	 *
+	 * @param point - data point object containing a Unix timestamp `ts` (seconds).
+	 * @returns hour of the day extracted from the point's timestamp.
+	 */
 	function getXIndex(point: any): number {
     return getHours(point.ts * 1000);
 	}
 
+	/**
+	 * Finds the data point nearest to the pointer and updates the hover marker
+	 * position and label coordinate. Clears the hover state when the pointer
+	 * is outside any point's hit area.
+	 *
+	 * @param e - pointer move event fired on the SVG element.
+	 */
 	async function handlePointerMove(e: PointerEvent): Promise<void> {
 		const rect = (e.currentTarget as SVGSVGElement).getBoundingClientRect();
 		const mouseX = e.clientX - rect.left;
@@ -121,29 +143,59 @@
 		}
 	}
 
+	/**
+	 * Positions the hover label so it stays within the chart bounds,
+	 * centring it on the marker x position where space allows.
+	 *
+	 * @param x - marker line x position in SVG coordinates.
+	 * @param w - rendered text width of the label in pixels.
+	 */
 	function clampLabel(x: number, w: number): void {
 		const halfW = w / 2;
 		labelX = Math.min(Math.max(x, margin.left + halfW), width - margin.right - halfW);
 	}
 
+	/**
+	 * Captures the pointer on the SVG so drag-moves are tracked outside the element,
+	 * then immediately processes the current position as a hover.
+	 *
+	 * @param e - pointer down event fired on the SVG element.
+	 */
 	function handlePointerDown(e: PointerEvent): void {
 		(e.currentTarget as SVGSVGElement).setPointerCapture(e.pointerId);
 		handlePointerMove(e);
 	}
 
+	/**
+	 * Clears the hover state when the pointer is released.
+	 */
 	function handlePointerUp(): void {
 		hoveredIdx = null;
 	}
 
+	/**
+	 * Clears the hover state when the pointer leaves the SVG or is cancelled.
+	 */
 	function handlePointerLeave(): void {
 		hoveredIdx = null;
 	}
 
+	/**
+	 * Formats a scaled display value back to its original unit for the hover marker.
+	 * Reverses the scale and displayMult transformations applied to the chart data.
+	 *
+	 * @param v - scaled display value as rendered in the chart.
+	 * @returns formatted string with value and unit, e.g. '3.2 kW', or just the value if no unit.
+	 */
 	function fmtMarker(v: number): string {
 		const [val, unit] = utils.formatString(v * scale / displayMult, statistics?.format ?? '');
 		return unit ? `${val} ${unit}` : `${val}`;
 	}
 
+	/**
+	 * Keeps the chart width in sync with the viewport element whenever
+	 * the window width changes.
+	 */
 	$effect(() => {
 		if (innerWidth.current) { width = viewport.clientWidth; }
 	});

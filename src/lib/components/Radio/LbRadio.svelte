@@ -1,8 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { fade } from 'svelte/transition';
-	import { innerHeight } from 'svelte/reactivity/window';
 	import type { Control, ControlOptions } from '$lib/types/models';
+	import { scrollMarkers } from '$lib/actions/scrollMarkers';
 	import { DEFAULT_CONTROLOPTIONS } from '$lib/types/models';
 	import LbControl from '$lib/components/Common/LbControl.svelte';
 	import LbDialog from '$lib/components/Common/LbDialog.svelte';
@@ -19,10 +18,6 @@
 	let pendingAction: ((visuPw?: string) => void) | null = null;
 	let controlOpen = $state(false);
 	let passwordOpen = $state(false);
-	let viewport: any = $state();
-	let hasScroll = $state(true);
-	let showScrollTop = $state(false);
-	let showScrollBottom = $state(false);
 
 	let radioList = $derived(
 		Object.entries(control.details?.outputs).map((entry) => ({
@@ -36,30 +31,6 @@
 	let iconColor = $derived(selectedRadio ? 'dark:text-primary-500 text-primary-700' : 'text-surface-950 dark:text-surface-50');
 	let statusName = $derived(radioIndex ? radioIndex.name : 'unknown');
 	let statusColor = $derived(selectedRadio ? 'dark:text-primary-500 text-primary-700' : 'dark:text-surface-300 text-surface-700');
-	let windowHeight = $derived(innerHeight.current || 0);
-	let availableHeight = $derived(Math.floor(windowHeight * 0.9) - margin);
-	let style = $derived(
-		viewport && viewport.scrollHeight > availableHeight
-			? `height: ${availableHeight}px`
-			: 'height: auto'
-	);
-
-	$effect(() => { parseScroll(windowHeight, viewport); });
-
-	/**
-	 * Recomputes scroll-indicator visibility from the current viewport metrics.
-	 * Called on mount/resize (via $effect) and on every scroll event.
-	 *
-	 * @param height - current window inner height (guards against SSR zero).
-	 * @param view - the scrollable div element bound via bind:this.
-	 */
-	function parseScroll(height: number, view: any = undefined): void {
-		if (!view) return;
-		hasScroll = view.scrollHeight > view.clientHeight;
-		showScrollTop = height > 0 && hasScroll && view.scrollTop > 10;
-		showScrollBottom = height > 0 && hasScroll && view.scrollTop + view.clientHeight < view.scrollHeight - 10;
-	}
-
 	/**
 	 * Opens the control dialog. If controlOptions.action is set, that custom
 	 * action is invoked instead. At subcontrol level (no icon) the dialog is
@@ -173,18 +144,7 @@
 				</div>
 			</div>
 			<div class="flex flex-col relative w-full mt-2">
-				{#if showScrollTop}
-					<div class="absolute z-10 left-[50%] -translate-x-1/2 -translate-y-1/2 top-[10px] text-surface-500" transition:fade={{ duration: 300 }}>
-						<LbIcon name="chevron-up" height="30" width="30"/>
-					</div>
-				{/if}
-				{#if showScrollBottom}
-					<div class="absolute z-10 left-[50%] -translate-x-1/2 -translate-y-1/2 -bottom-[19px] text-surface-500" transition:fade={{ duration: 300 }}>
-						<LbIcon name="chevron-down" height="30" width="30"/>
-					</div>
-				{/if}
-				<div class="flex flex-col overflow-y-auto w-full" {style} bind:this={viewport}
-						onscroll={() => parseScroll(windowHeight, viewport)}>
+				<div class="flex flex-col overflow-y-auto w-full" use:scrollMarkers={margin}>
 					<div class="grid gap-2">
 						{#each radioList as listItem}
 							<button type="button"

@@ -15,29 +15,33 @@
 	];
 
 	let logLevel = $derived(appStore.logLevel);
-	let LogLevelText = $derived(logLevelOptions.find(o => o.level === logLevel)?.name ?? 'Info');
+	let logLevelText = $derived(logLevelOptions.find(o => o.level === logLevel)?.name ?? 'Info');
 	let logLevelOpen = $state(false);
+
+	type Item = { label: string; onclick: () => void; value?: () => string };
+
+	const items: Item[] = [
+		{ label: 'Log level',      onclick: () => logLevelOpen = true, value: () => $_(logLevelText) },
+		{ label: 'App log',        onclick: () => goto(page.url + '/applog') },
+		{ label: 'Miniserver log', onclick: () => goto(page.url + '/mslog') },
+	];
 </script>
 
 <div class="container pt-3 flex flex-col max-w-[640px] w-screen mx-auto">
 	<div>
 		<p class="pl-5 h5">{$_("Logs")}</p>
 	</div>
-	<button aria-current="true" type="button" class="flex w-full justify-between border-b dark:border-surface-900 border-surface-200 p-3 pr-5 pl-5 text-left text-lg"
-					onclick={() => logLevelOpen = true}>
-		<p>{$_("Log level")}</p>
-		<p>{$_(LogLevelText)}</p>
-	</button>
-	<button aria-current="true" type="button" class="flex w-full justify-between border-b dark:border-surface-900 border-surface-200 p-3 pr-5 pl-5 text-left text-lg"
-			onclick={() => goto(page.url + '/applog')}>
-		<p>{$_("App log")}</p>
-		<LbIcon name="mage:chevron-right"></LbIcon>
-	</button>
-	<button aria-current="true" type="button" class="flex w-full justify-between border-b dark:border-surface-900 border-surface-200 p-3 pr-5 pl-5 text-left text-lg"
-			onclick={() => goto(page.url + '/mslog')}>
-		<p>{$_("Miniserver log")}</p>
-		<LbIcon name="mage:chevron-right"></LbIcon>
-	</button>
+	{#each items as item}
+		<button aria-current="true" type="button" class="flex w-full justify-between border-b dark:border-surface-900 border-surface-200 p-3 pr-5 pl-5 text-left text-lg"
+				onclick={item.onclick}>
+			<p>{$_(item.label)}</p>
+			{#if item.value}
+				<p>{item.value()}</p>
+			{:else}
+				<LbIcon name="mage:chevron-right" />
+			{/if}
+		</button>
+	{/each}
 </div>
 
 <LbDialog open={logLevelOpen} onClose={() => logLevelOpen = false}
